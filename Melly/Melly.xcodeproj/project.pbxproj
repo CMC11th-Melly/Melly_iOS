@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BA879CDB5363EAB940476BC9 /* libPods-Melly.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C05BE5F7DE65A72A784FC35 /* libPods-Melly.a */; };
+		BFA3398F28C82A4E00C1CD4C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFA3398E28C82A4E00C1CD4C /* GoogleService-Info.plist */; };
+		BFA3399328C832E500C1CD4C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399228C832E500C1CD4C /* LoginViewController.swift */; };
+		BFA3399628C8349B00C1CD4C /* UIKitExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399528C8349B00C1CD4C /* UIKitExtension.swift */; };
+		BFA3399828C836F300C1CD4C /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399728C836F300C1CD4C /* LoginViewModel.swift */; };
 		BFF84EAC28C6D40B00892CB5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAB28C6D40B00892CB5 /* AppDelegate.swift */; };
 		BFF84EAE28C6D40B00892CB5 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAD28C6D40B00892CB5 /* SceneDelegate.swift */; };
 		BFF84EB028C6D40B00892CB5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAF28C6D40B00892CB5 /* ViewController.swift */; };
@@ -16,6 +21,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		071A50D0B491B33B25C24E7C /* Pods-Melly.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Melly.debug.xcconfig"; path = "Target Support Files/Pods-Melly/Pods-Melly.debug.xcconfig"; sourceTree = "<group>"; };
+		4C05BE5F7DE65A72A784FC35 /* libPods-Melly.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Melly.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8ABC0D681966E3BF5094BEBD /* Pods-Melly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Melly.release.xcconfig"; path = "Target Support Files/Pods-Melly/Pods-Melly.release.xcconfig"; sourceTree = "<group>"; };
+		BFA3398E28C82A4E00C1CD4C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		BFA3399228C832E500C1CD4C /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		BFA3399528C8349B00C1CD4C /* UIKitExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitExtension.swift; sourceTree = "<group>"; };
+		BFA3399728C836F300C1CD4C /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		BFF84EA828C6D40B00892CB5 /* Melly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Melly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFF84EAB28C6D40B00892CB5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFF84EAD28C6D40B00892CB5 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -31,17 +43,46 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA879CDB5363EAB940476BC9 /* libPods-Melly.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5E641E69FB9F32094F1D0756 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				071A50D0B491B33B25C24E7C /* Pods-Melly.debug.xcconfig */,
+				8ABC0D681966E3BF5094BEBD /* Pods-Melly.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		BFA3399028C832B900C1CD4C /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				BFA3399228C832E500C1CD4C /* LoginViewController.swift */,
+				BFA3399728C836F300C1CD4C /* LoginViewModel.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		BFA3399428C8348400C1CD4C /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				BFA3399528C8349B00C1CD4C /* UIKitExtension.swift */,
+			);
+			path = Util;
+			sourceTree = "<group>";
+		};
 		BFF84E9F28C6D40B00892CB5 = {
 			isa = PBXGroup;
 			children = (
 				BFF84EAA28C6D40B00892CB5 /* Melly */,
 				BFF84EA928C6D40B00892CB5 /* Products */,
+				5E641E69FB9F32094F1D0756 /* Pods */,
+				D1B2ED6D40475CC2E290BCA9 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,15 +97,26 @@
 		BFF84EAA28C6D40B00892CB5 /* Melly */ = {
 			isa = PBXGroup;
 			children = (
+				BFA3399428C8348400C1CD4C /* Util */,
+				BFA3399028C832B900C1CD4C /* Login */,
 				BFF84EAB28C6D40B00892CB5 /* AppDelegate.swift */,
 				BFF84EAD28C6D40B00892CB5 /* SceneDelegate.swift */,
 				BFF84EAF28C6D40B00892CB5 /* ViewController.swift */,
 				BFF84EB128C6D40B00892CB5 /* Main.storyboard */,
+				BFA3398E28C82A4E00C1CD4C /* GoogleService-Info.plist */,
 				BFF84EB428C6D40D00892CB5 /* Assets.xcassets */,
 				BFF84EB628C6D40D00892CB5 /* LaunchScreen.storyboard */,
 				BFF84EB928C6D40D00892CB5 /* Info.plist */,
 			);
 			path = Melly;
+			sourceTree = "<group>";
+		};
+		D1B2ED6D40475CC2E290BCA9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4C05BE5F7DE65A72A784FC35 /* libPods-Melly.a */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -74,9 +126,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BFF84EBC28C6D40D00892CB5 /* Build configuration list for PBXNativeTarget "Melly" */;
 			buildPhases = (
+				DB440BEA8BD619320549F003 /* [CP] Check Pods Manifest.lock */,
 				BFF84EA428C6D40B00892CB5 /* Sources */,
 				BFF84EA528C6D40B00892CB5 /* Frameworks */,
 				BFF84EA628C6D40B00892CB5 /* Resources */,
+				4993B8C6364770EEF5FFE7B4 /* [CP] Embed Pods Frameworks */,
+				65CE0EAECD005B3B3B59BDC2 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -126,6 +181,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFF84EB828C6D40D00892CB5 /* LaunchScreen.storyboard in Resources */,
+				BFA3398F28C82A4E00C1CD4C /* GoogleService-Info.plist in Resources */,
 				BFF84EB528C6D40D00892CB5 /* Assets.xcassets in Resources */,
 				BFF84EB328C6D40B00892CB5 /* Main.storyboard in Resources */,
 			);
@@ -133,13 +189,75 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		4993B8C6364770EEF5FFE7B4 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Melly/Pods-Melly-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Melly/Pods-Melly-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Melly/Pods-Melly-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		65CE0EAECD005B3B3B59BDC2 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Melly/Pods-Melly-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Melly/Pods-Melly-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Melly/Pods-Melly-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DB440BEA8BD619320549F003 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Melly-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		BFF84EA428C6D40B00892CB5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFA3399328C832E500C1CD4C /* LoginViewController.swift in Sources */,
 				BFF84EB028C6D40B00892CB5 /* ViewController.swift in Sources */,
+				BFA3399828C836F300C1CD4C /* LoginViewModel.swift in Sources */,
 				BFF84EAC28C6D40B00892CB5 /* AppDelegate.swift in Sources */,
+				BFA3399628C8349B00C1CD4C /* UIKitExtension.swift in Sources */,
 				BFF84EAE28C6D40B00892CB5 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -284,6 +402,7 @@
 		};
 		BFF84EBD28C6D40D00892CB5 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 071A50D0B491B33B25C24E7C /* Pods-Melly.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -313,6 +432,7 @@
 		};
 		BFF84EBE28C6D40D00892CB5 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8ABC0D681966E3BF5094BEBD /* Pods-Melly.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

@@ -2,9 +2,31 @@
 # platform :ios, '9.0'
 
 target 'Melly' do
-  # Comment the next line if you don't want to use dynamic frameworks
-  use_frameworks!
 
+#Login API
+pod 'GoogleSignIn'
+pod 'naveridlogin-sdk-ios'
+pod 'KakaoSDKCommon'
+pod 'KakaoSDKAuth'
+pod 'KakaoSDKUser'
+pod 'RxKakaoSDKCommon'
+pod 'RxKakaoSDKAuth'
+pod 'RxKakaoSDKUser'
+
+#Server API
+pod 'Alamofire'
+pod 'RxAlamofire'
+
+#UI framework
+pod 'SnapKit', '~> 5.0.0'
+pod 'Then'
+pod 'RxSwift'
+pod 'RxCocoa'
+
+#Firebase
+pod 'Firebase/Auth'
+pod 'Firebase/Core'
+pod 'FirebaseAnalytics'
   # Pods for Melly
 
 end
