@@ -14,6 +14,8 @@ import KakaoSDKUser
 import RxKakaoSDKAuth
 import KakaoSDKAuth
 import RxKakaoSDKUser
+import Alamofire
+import RxAlamofire
 
 class LoginViewModel {
     
@@ -24,10 +26,12 @@ class LoginViewModel {
     struct Input {
         let googleLoginObserver = PublishRelay<UIViewController>()
         let kakaoLoginObserver = PublishRelay<Void>()
+        let appleLoginObserver = PublishRelay<Void>()
+        let defaultLoginObserver = PublishRelay<Void>()
     }
     
     struct Output {
-        
+        let outputData = PublishRelay<String>()
     }
     
     init() {
@@ -47,6 +51,20 @@ class LoginViewModel {
             .subscribe(onNext: {
                 self.kakaoLogin()
             }).disposed(by: disposeBag)
+        
+        input.defaultLoginObserver
+            .flatMap(checkServer)
+            .subscribe { event in
+                switch event {
+                case .next(let result):
+                    self.output.outputData.accept(result)
+                case .error(let error):
+                    print(error)
+                case .completed:
+                    break
+                }
+            }.disposed(by: disposeBag)
+        
     }
     
     func googleLogin(_ vc: UIViewController) -> Observable<Void> {
@@ -96,6 +114,22 @@ class LoginViewModel {
                 .disposed(by: disposeBag)
         }
         
+    }
+    
+    func checkServer() -> Observable<String> {
+        
+        return Observable.create { observer in
+            
+            RxAlamofire.requestData(.get, "http://3.39.218.234/api/health")
+                .subscribe(onNext: { response in
+                    if let dataStr = String(data: response.1, encoding: .utf8) {
+                        observer.onNext(dataStr)
+                    }
+                }).disposed(by: self.disposeBag)
+            
+            
+            return Disposables.create()
+        }
     }
     
     

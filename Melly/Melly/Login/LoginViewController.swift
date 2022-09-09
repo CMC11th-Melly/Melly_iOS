@@ -14,6 +14,7 @@ import GoogleSignIn
 import RxKakaoSDKAuth
 import KakaoSDKAuth
 import NaverThirdPartyLogin
+import AuthenticationServices
 
 class LoginViewController: UIViewController {
     
@@ -35,6 +36,10 @@ class LoginViewController: UIViewController {
     
     let appleLoginBt = UIButton(type: .custom).then {
         $0.setImage(UIImage(named: "appleLogo"), for: .normal)
+    }
+    
+    let loginBt = UIButton(type: .custom).then {
+        $0.setTitle("통신확인", for: .normal)
     }
     
     override func viewDidLoad() {
@@ -63,6 +68,14 @@ extension LoginViewController {
             $0.centerY.equalToSuperview()
         }
         
+        safeArea.addSubview(loginBt)
+        loginBt.snp.makeConstraints {
+            $0.top.equalTo(apiFieldStack.snp.bottom).offset(30)
+            $0.width.equalTo(100)
+            $0.height.equalTo(100)
+            $0.centerX.equalToSuperview()
+        }
+        
     }
     
     func bind() {
@@ -86,10 +99,24 @@ extension LoginViewController {
                 self.naverLoginInstance?.requestThirdPartyLogin()
             }).disposed(by: disposeBag)
         
+        appleLoginBt.rx.tap
+            .subscribe(onNext: {
+                self.appleLogin()
+            }).disposed(by: disposeBag)
+        
+        loginBt.rx.tap
+            .bind(to: vm.input.defaultLoginObserver)
+            .disposed(by: disposeBag)
+        
     }
     
     func bindOutput() {
-        
+        vm.output.outputData.asSignal()
+            .emit(onNext: { value in
+                let alertController = UIAlertController(title: "통신", message: value, preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: "확인", style: .cancel, handler: nil))
+                self.present(alertController, animated: true)
+            }).disposed(by: disposeBag)
     }
     
     
@@ -116,4 +143,32 @@ extension LoginViewController: NaverThirdPartyLoginConnectionDelegate {
     func oauth20Connection(_ oauthConnection: NaverThirdPartyLoginConnection!, didFailWithError error: Error!) {
         print("[Error] : ", error.localizedDescription)
     }
+}
+
+extension LoginViewController: ASAuthorizationControllerDelegate {
+    
+    func appleLogin() {
+        let request = ASAuthorizationAppleIDProvider().createRequest()
+        request.requestedScopes = [.fullName, .email]
+        let controller = ASAuthorizationController(authorizationRequests: [request])
+        controller.delegate = self
+        controller.presentationContextProvider = self as? ASAuthorizationControllerPresentationContextProviding
+        controller.performRequests()
+    }
+    
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        if let credential = authorization.credential as? ASAuthorizationAppleIDCredential {
+            let user = credential.user
+            print("👨‍🍳 \(user)")
+            if let email = credential.email {
+                print("✉️ \(email)")
+            }
+        }
+    }
+    
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        print("error \(error)")
+    }
+    
+    
 }
