@@ -40,6 +40,8 @@ class LoginViewController: UIViewController {
     
     let loginBt = UIButton(type: .custom).then {
         $0.setTitle("통신확인", for: .normal)
+        $0.setTitleColor(UIColor.black, for: .normal)
+        
     }
     
     override func viewDidLoad() {
@@ -124,12 +126,22 @@ extension LoginViewController {
 
 extension LoginViewController: NaverThirdPartyLoginConnectionDelegate {
     
-    func oauth20ConnectionDidFinishRequestACTokenWithAuthCode() {
+    private func getNaverInfo() {
+        
         guard let isValidAccessToken = naverLoginInstance?.isValidAccessTokenExpireTimeNow() else { return }
         if !isValidAccessToken { return }
         guard let accessToken = naverLoginInstance?.accessToken else { return }
-        print(accessToken)
-        //getJWT(accessToken, provider: "naver")
+        DispatchQueue.main.async {
+            let alertController = UIAlertController(title: "통신", message: accessToken, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "확인", style: .cancel, handler: nil))
+            self.present(alertController, animated: true)
+        }
+        
+    }
+    
+    func oauth20ConnectionDidFinishRequestACTokenWithAuthCode() {
+        print("네아로 로그인")
+        self.getNaverInfo()
     }
     
     func oauth20ConnectionDidFinishRequestACTokenWithRefreshToken() {
@@ -162,6 +174,13 @@ extension LoginViewController: ASAuthorizationControllerDelegate {
             print("👨‍🍳 \(user)")
             if let email = credential.email {
                 print("✉️ \(email)")
+            }
+            if let token = String(data: credential.identityToken ?? Data(), encoding: .utf8) {
+                DispatchQueue.main.async {
+                    let alertController = UIAlertController(title: "통신", message: token, preferredStyle: .alert)
+                    alertController.addAction(UIAlertAction(title: "확인", style: .cancel, handler: nil))
+                    self.present(alertController, animated: true)
+                }
             }
         }
     }

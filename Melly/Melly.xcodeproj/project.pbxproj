@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		BA879CDB5363EAB940476BC9 /* libPods-Melly.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C05BE5F7DE65A72A784FC35 /* libPods-Melly.a */; };
+		BF0A11C928CDCDEB00B06DE1 /* MainTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0A11C828CDCDEB00B06DE1 /* MainTabViewController.swift */; };
 		BFA3398F28C82A4E00C1CD4C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFA3398E28C82A4E00C1CD4C /* GoogleService-Info.plist */; };
 		BFA3399328C832E500C1CD4C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399228C832E500C1CD4C /* LoginViewController.swift */; };
 		BFA3399628C8349B00C1CD4C /* UIKitExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399528C8349B00C1CD4C /* UIKitExtension.swift */; };
@@ -24,6 +25,7 @@
 		071A50D0B491B33B25C24E7C /* Pods-Melly.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Melly.debug.xcconfig"; path = "Target Support Files/Pods-Melly/Pods-Melly.debug.xcconfig"; sourceTree = "<group>"; };
 		4C05BE5F7DE65A72A784FC35 /* libPods-Melly.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Melly.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8ABC0D681966E3BF5094BEBD /* Pods-Melly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Melly.release.xcconfig"; path = "Target Support Files/Pods-Melly/Pods-Melly.release.xcconfig"; sourceTree = "<group>"; };
+		BF0A11C828CDCDEB00B06DE1 /* MainTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabViewController.swift; sourceTree = "<group>"; };
 		BFA3398E28C82A4E00C1CD4C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BFA3399228C832E500C1CD4C /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		BFA3399528C8349B00C1CD4C /* UIKitExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitExtension.swift; sourceTree = "<group>"; };
@@ -58,6 +60,14 @@
 				8ABC0D681966E3BF5094BEBD /* Pods-Melly.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		BF0A11C728CDCDA600B06DE1 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				BF0A11C828CDCDEB00B06DE1 /* MainTabViewController.swift */,
+			);
+			path = Main;
 			sourceTree = "<group>";
 		};
 		BFA3399028C832B900C1CD4C /* Login */ = {
@@ -98,6 +108,7 @@
 		BFF84EAA28C6D40B00892CB5 /* Melly */ = {
 			isa = PBXGroup;
 			children = (
+				BF0A11C728CDCDA600B06DE1 /* Main */,
 				BFBDC76828C9A98400DA6330 /* Melly.entitlements */,
 				BFA3399428C8348400C1CD4C /* Util */,
 				BFA3399028C832B900C1CD4C /* Login */,
@@ -260,6 +271,7 @@
 				BFA3399828C836F300C1CD4C /* LoginViewModel.swift in Sources */,
 				BFF84EAC28C6D40B00892CB5 /* AppDelegate.swift in Sources */,
 				BFA3399628C8349B00C1CD4C /* UIKitExtension.swift in Sources */,
+				BF0A11C928CDCDEB00B06DE1 /* MainTabViewController.swift in Sources */,
 				BFF84EAE28C6D40B00892CB5 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -429,7 +441,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -460,7 +472,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

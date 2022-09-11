@@ -38,8 +38,8 @@ class LoginViewModel {
         input.googleLoginObserver.flatMap(googleLogin)
             .subscribe { event in
                 switch event {
-                case .next(_):
-                    print("next")
+                case .next(let token):
+                    self.output.outputData.accept(token)
                 case .error(let error):
                     print(error)
                 case .completed:
@@ -48,9 +48,17 @@ class LoginViewModel {
             }.disposed(by: disposeBag)
         
         input.kakaoLoginObserver
-            .subscribe(onNext: {
-                self.kakaoLogin()
-            }).disposed(by: disposeBag)
+            .flatMap(kakaoLogin)
+            .subscribe{ event in
+                switch event {
+                case .next(let token):
+                    self.output.outputData.accept(token)
+                case .error(let error):
+                    print(error)
+                case .completed:
+                    break
+                }
+            }.disposed(by: disposeBag)
         
         input.defaultLoginObserver
             .flatMap(checkServer)
@@ -67,7 +75,7 @@ class LoginViewModel {
         
     }
     
-    func googleLogin(_ vc: UIViewController) -> Observable<Void> {
+    func googleLogin(_ vc: UIViewController) -> Observable<String> {
         
         return Observable.create { observe in
             
@@ -76,7 +84,11 @@ class LoginViewModel {
             
             GIDSignIn.sharedInstance.signIn(with: signInConfig, presenting: vc) { user, error in
                 if let error = error {
-                    print(error)
+                    observe.onError(error)
+                }
+                
+                if let userToken = user?.authentication.idToken {
+                    observe.onNext(userToken)
                 }
             }
             
@@ -84,35 +96,42 @@ class LoginViewModel {
         }
     }
     
-    func kakaoLogin() {
+    func kakaoLogin() -> Observable<String> {
         
-        if UserApi.isKakaoTalkLoginAvailable() {
-            UserApi.shared.rx.loginWithKakaoTalk()
-                .subscribe { event in
-                    switch event {
-                    case .next(let token):
-                        print(token)
-                    case .completed:
-                        break
-                    case .error(let error):
-                        print(error)
+        
+        return Observable.create { observer in
+            
+            if UserApi.isKakaoTalkLoginAvailable() {
+                UserApi.shared.rx.loginWithKakaoTalk()
+                    .subscribe { event in
+                        switch event {
+                        case .next(let token):
+                            observer.onNext(token.accessToken)
+                        case .completed:
+                            break
+                        case .error(let error):
+                            observer.onError(error)
+                        }
                     }
-                }
-                .disposed(by: disposeBag)
-        } else {
-            UserApi.shared.rx.loginWithKakaoAccount()
-                .subscribe { event in
-                    switch event {
-                    case .next(let token):
-                        print(token)
-                    case .completed:
-                        break
-                    case .error(let error):
-                        print(error)
+                    .disposed(by: self.disposeBag)
+            } else {
+                UserApi.shared.rx.loginWithKakaoAccount()
+                    .subscribe { event in
+                        switch event {
+                        case .next(let token):
+                            observer.onNext(token.accessToken)
+                        case .completed:
+                            break
+                        case .error(let error):
+                            observer.onError(error)
+                        }
                     }
-                }
-                .disposed(by: disposeBag)
+                    .disposed(by: self.disposeBag)
+            }
+            
+            return Disposables.create()
         }
+        
         
     }
     
