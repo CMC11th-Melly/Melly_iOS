@@ -22,6 +22,8 @@ pod 'SnapKit', '~> 5.0.0'
 pod 'Then'
 pod 'RxSwift'
 pod 'RxCocoa'
+pod 'NMapsMap'
+pod 'FloatingPanel'
 
 #Firebase
 pod 'Firebase/Auth'

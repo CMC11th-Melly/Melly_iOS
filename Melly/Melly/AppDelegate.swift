@@ -13,6 +13,8 @@ import RxKakaoSDKAuth
 import KakaoSDKAuth
 import KakaoSDKCommon
 import NaverThirdPartyLogin
+import NMapsMap
+
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -29,6 +31,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         instance?.consumerKey = kConsumerKey
         instance?.consumerSecret = kConsumerSecret
         instance?.appName = kServiceAppName
+        
+        NMFAuthManager.shared().clientId = "4f8brsaqzw"
+        
         
         return true
     }

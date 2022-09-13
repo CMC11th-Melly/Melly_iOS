@@ -8,7 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		BA879CDB5363EAB940476BC9 /* libPods-Melly.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C05BE5F7DE65A72A784FC35 /* libPods-Melly.a */; };
-		BF0A11C928CDCDEB00B06DE1 /* MainTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0A11C828CDCDEB00B06DE1 /* MainTabViewController.swift */; };
+		BF0A11C928CDCDEB00B06DE1 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0A11C828CDCDEB00B06DE1 /* MainViewController.swift */; };
+		BF5A7F4528D0591A000A1B08 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5A7F4428D0591A000A1B08 /* HomeViewController.swift */; };
+		BF5A7F4728D05926000A1B08 /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5A7F4628D05926000A1B08 /* ContainerViewController.swift */; };
+		BF8F9AD728D064D700EAA49E /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F9AD628D064D700EAA49E /* ContentViewController.swift */; };
 		BFA3398F28C82A4E00C1CD4C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFA3398E28C82A4E00C1CD4C /* GoogleService-Info.plist */; };
 		BFA3399328C832E500C1CD4C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399228C832E500C1CD4C /* LoginViewController.swift */; };
 		BFA3399628C8349B00C1CD4C /* UIKitExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399528C8349B00C1CD4C /* UIKitExtension.swift */; };
@@ -25,7 +28,10 @@
 		071A50D0B491B33B25C24E7C /* Pods-Melly.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Melly.debug.xcconfig"; path = "Target Support Files/Pods-Melly/Pods-Melly.debug.xcconfig"; sourceTree = "<group>"; };
 		4C05BE5F7DE65A72A784FC35 /* libPods-Melly.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Melly.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8ABC0D681966E3BF5094BEBD /* Pods-Melly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Melly.release.xcconfig"; path = "Target Support Files/Pods-Melly/Pods-Melly.release.xcconfig"; sourceTree = "<group>"; };
-		BF0A11C828CDCDEB00B06DE1 /* MainTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabViewController.swift; sourceTree = "<group>"; };
+		BF0A11C828CDCDEB00B06DE1 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		BF5A7F4428D0591A000A1B08 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		BF5A7F4628D05926000A1B08 /* ContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerViewController.swift; sourceTree = "<group>"; };
+		BF8F9AD628D064D700EAA49E /* ContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewController.swift; sourceTree = "<group>"; };
 		BFA3398E28C82A4E00C1CD4C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BFA3399228C832E500C1CD4C /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		BFA3399528C8349B00C1CD4C /* UIKitExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitExtension.swift; sourceTree = "<group>"; };
@@ -65,7 +71,10 @@
 		BF0A11C728CDCDA600B06DE1 /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				BF0A11C828CDCDEB00B06DE1 /* MainTabViewController.swift */,
+				BF0A11C828CDCDEB00B06DE1 /* MainViewController.swift */,
+				BF5A7F4428D0591A000A1B08 /* HomeViewController.swift */,
+				BF5A7F4628D05926000A1B08 /* ContainerViewController.swift */,
+				BF8F9AD628D064D700EAA49E /* ContentViewController.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -266,12 +275,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF8F9AD728D064D700EAA49E /* ContentViewController.swift in Sources */,
 				BFA3399328C832E500C1CD4C /* LoginViewController.swift in Sources */,
 				BFF84EB028C6D40B00892CB5 /* ViewController.swift in Sources */,
 				BFA3399828C836F300C1CD4C /* LoginViewModel.swift in Sources */,
+				BF5A7F4528D0591A000A1B08 /* HomeViewController.swift in Sources */,
 				BFF84EAC28C6D40B00892CB5 /* AppDelegate.swift in Sources */,
 				BFA3399628C8349B00C1CD4C /* UIKitExtension.swift in Sources */,
-				BF0A11C928CDCDEB00B06DE1 /* MainTabViewController.swift in Sources */,
+				BF0A11C928CDCDEB00B06DE1 /* MainViewController.swift in Sources */,
+				BF5A7F4728D05926000A1B08 /* ContainerViewController.swift in Sources */,
 				BFF84EAE28C6D40B00892CB5 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -50,6 +50,7 @@ PODS:
     - GoogleUtilities/Environment (~> 7.6)
     - GoogleUtilities/UserDefaults (~> 7.6)
     - PromisesObjC (< 3.0, >= 1.2)
+  - FloatingPanel (2.5.4)
   - GoogleAppMeasurement (8.10.0):
     - GoogleAppMeasurement/AdIdSupport (= 8.10.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.6)
@@ -118,6 +119,7 @@ PODS:
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
   - naveridlogin-sdk-ios (4.1.3)
+  - NMapsMap (3.16.0)
   - PromisesObjC (2.0.0)
   - RxAlamofire (6.1.1):
     - RxAlamofire/Core (= 6.1.1)
@@ -155,11 +157,13 @@ DEPENDENCIES:
   - Firebase/Auth
   - Firebase/Core
   - FirebaseAnalytics
+  - FloatingPanel
   - GoogleSignIn
   - KakaoSDKAuth
   - KakaoSDKCommon
   - KakaoSDKUser
   - naveridlogin-sdk-ios
+  - NMapsMap
   - RxAlamofire
   - RxCocoa
   - RxKakaoSDKAuth
@@ -179,6 +183,7 @@ SPEC REPOS:
     - FirebaseCore
     - FirebaseCoreDiagnostics
     - FirebaseInstallations
+    - FloatingPanel
     - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleSignIn
@@ -190,6 +195,7 @@ SPEC REPOS:
     - KakaoSDKUser
     - nanopb
     - naveridlogin-sdk-ios
+    - NMapsMap
     - PromisesObjC
     - RxAlamofire
     - RxCocoa
@@ -210,6 +216,7 @@ SPEC CHECKSUMS:
   FirebaseCore: 04186597c095da37d90ff9fd3e53bc61a1ff2440
   FirebaseCoreDiagnostics: 56fb7216d87e0e6ec2feddefa9d8a392fe8b2c18
   FirebaseInstallations: 830327b45345ffc859eaa9c17bcd5ae893fd5425
+  FloatingPanel: 387377aa46a9b088e5f8f5f2a8d2c00c61e67298
   GoogleAppMeasurement: a3311dbcf3ea651e5a070fe8559b57c174ada081
   GoogleDataTransport: 629c20a4d363167143f30ea78320d5a7eb8bd940
   GoogleSignIn: fd381840dbe7c1137aa6dc30849a5c3e070c034a
@@ -221,6 +228,7 @@ SPEC CHECKSUMS:
   KakaoSDKUser: d878977e0ba6b365cfeac3b6319cdf4231713bea
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   naveridlogin-sdk-ios: b9d7c20677981177ed994ecb1c8c2b49f223277d
+  NMapsMap: a2593320fca2bb09e521c05b4dffee4da42e96ed
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
   RxAlamofire: beb75a1c452d0de225651db4903f5d29d034a620
   RxCocoa: 4baf94bb35f2c0ab31bc0cb9f1900155f646ba42
@@ -232,6 +240,6 @@ SPEC CHECKSUMS:
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   Then: acfe0be7e98221c6204e12f8161459606d5d822d
 
-PODFILE CHECKSUM: 0767eaff28bd33854ac0e36e2da42831d11e4e4a
+PODFILE CHECKSUM: 7791e3d7fdd45967d7f50ce12d8e931d9e485235
 
 COCOAPODS: 1.11.2

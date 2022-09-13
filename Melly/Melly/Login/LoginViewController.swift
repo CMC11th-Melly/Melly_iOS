@@ -38,8 +38,13 @@ class LoginViewController: UIViewController {
         $0.setImage(UIImage(named: "appleLogo"), for: .normal)
     }
     
-    let loginBt = UIButton(type: .custom).then {
+    let serverBt = UIButton(type: .custom).then {
         $0.setTitle("통신확인", for: .normal)
+        $0.setTitleColor(UIColor.black, for: .normal)
+    }
+    
+    let loginBt = UIButton(type: .custom).then {
+        $0.setTitle("로그인", for: .normal)
         $0.setTitleColor(UIColor.black, for: .normal)
         
     }
@@ -78,6 +83,14 @@ extension LoginViewController {
             $0.centerX.equalToSuperview()
         }
         
+        safeArea.addSubview(serverBt)
+        serverBt.snp.makeConstraints {
+            $0.top.equalTo(loginBt.snp.bottom).offset(30)
+            $0.width.equalTo(100)
+            $0.height.equalTo(100)
+            $0.centerX.equalToSuperview()
+        }
+        
     }
     
     func bind() {
@@ -107,6 +120,18 @@ extension LoginViewController {
             }).disposed(by: disposeBag)
         
         loginBt.rx.tap
+            .subscribe(onNext: {
+                
+                
+                let vc = ContainerViewController()
+                vc.modalTransitionStyle = .crossDissolve
+                vc.modalPresentationStyle = .fullScreen
+                self.present(vc, animated: true, completion: nil)
+                
+                
+            }).disposed(by: disposeBag)
+        
+        serverBt.rx.tap
             .bind(to: vm.input.defaultLoginObserver)
             .disposed(by: disposeBag)
         
@@ -140,7 +165,6 @@ extension LoginViewController: NaverThirdPartyLoginConnectionDelegate {
     }
     
     func oauth20ConnectionDidFinishRequestACTokenWithAuthCode() {
-        print("네아로 로그인")
         self.getNaverInfo()
     }
     
