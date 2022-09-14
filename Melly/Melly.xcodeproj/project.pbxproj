@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		BA879CDB5363EAB940476BC9 /* libPods-Melly.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C05BE5F7DE65A72A784FC35 /* libPods-Melly.a */; };
 		BF0A11C928CDCDEB00B06DE1 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0A11C828CDCDEB00B06DE1 /* MainViewController.swift */; };
+		BF34F87B28D1915B00EA1C16 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF34F87A28D1915B00EA1C16 /* User.swift */; };
 		BF5A7F4528D0591A000A1B08 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5A7F4428D0591A000A1B08 /* HomeViewController.swift */; };
 		BF5A7F4728D05926000A1B08 /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5A7F4628D05926000A1B08 /* ContainerViewController.swift */; };
 		BF8F9AD728D064D700EAA49E /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F9AD628D064D700EAA49E /* ContentViewController.swift */; };
@@ -18,8 +19,7 @@
 		BFA3399828C836F300C1CD4C /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399728C836F300C1CD4C /* LoginViewModel.swift */; };
 		BFF84EAC28C6D40B00892CB5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAB28C6D40B00892CB5 /* AppDelegate.swift */; };
 		BFF84EAE28C6D40B00892CB5 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAD28C6D40B00892CB5 /* SceneDelegate.swift */; };
-		BFF84EB028C6D40B00892CB5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAF28C6D40B00892CB5 /* ViewController.swift */; };
-		BFF84EB328C6D40B00892CB5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFF84EB128C6D40B00892CB5 /* Main.storyboard */; };
+		BFF84EB028C6D40B00892CB5 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAF28C6D40B00892CB5 /* SplashViewController.swift */; };
 		BFF84EB528C6D40D00892CB5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFF84EB428C6D40D00892CB5 /* Assets.xcassets */; };
 		BFF84EB828C6D40D00892CB5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFF84EB628C6D40D00892CB5 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
@@ -29,6 +29,7 @@
 		4C05BE5F7DE65A72A784FC35 /* libPods-Melly.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Melly.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8ABC0D681966E3BF5094BEBD /* Pods-Melly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Melly.release.xcconfig"; path = "Target Support Files/Pods-Melly/Pods-Melly.release.xcconfig"; sourceTree = "<group>"; };
 		BF0A11C828CDCDEB00B06DE1 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		BF34F87A28D1915B00EA1C16 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		BF5A7F4428D0591A000A1B08 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		BF5A7F4628D05926000A1B08 /* ContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerViewController.swift; sourceTree = "<group>"; };
 		BF8F9AD628D064D700EAA49E /* ContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewController.swift; sourceTree = "<group>"; };
@@ -40,8 +41,7 @@
 		BFF84EA828C6D40B00892CB5 /* Melly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Melly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFF84EAB28C6D40B00892CB5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFF84EAD28C6D40B00892CB5 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		BFF84EAF28C6D40B00892CB5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		BFF84EB228C6D40B00892CB5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		BFF84EAF28C6D40B00892CB5 /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
 		BFF84EB428C6D40D00892CB5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BFF84EB728C6D40D00892CB5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BFF84EB928C6D40D00892CB5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -77,6 +77,14 @@
 				BF8F9AD628D064D700EAA49E /* ContentViewController.swift */,
 			);
 			path = Main;
+			sourceTree = "<group>";
+		};
+		BF34F87928D1915000EA1C16 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				BF34F87A28D1915B00EA1C16 /* User.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		BFA3399028C832B900C1CD4C /* Login */ = {
@@ -117,14 +125,14 @@
 		BFF84EAA28C6D40B00892CB5 /* Melly */ = {
 			isa = PBXGroup;
 			children = (
-				BF0A11C728CDCDA600B06DE1 /* Main */,
+				BF34F87928D1915000EA1C16 /* Model */,
 				BFBDC76828C9A98400DA6330 /* Melly.entitlements */,
+				BF0A11C728CDCDA600B06DE1 /* Main */,
 				BFA3399428C8348400C1CD4C /* Util */,
 				BFA3399028C832B900C1CD4C /* Login */,
 				BFF84EAB28C6D40B00892CB5 /* AppDelegate.swift */,
 				BFF84EAD28C6D40B00892CB5 /* SceneDelegate.swift */,
-				BFF84EAF28C6D40B00892CB5 /* ViewController.swift */,
-				BFF84EB128C6D40B00892CB5 /* Main.storyboard */,
+				BFF84EAF28C6D40B00892CB5 /* SplashViewController.swift */,
 				BFA3398E28C82A4E00C1CD4C /* GoogleService-Info.plist */,
 				BFF84EB428C6D40D00892CB5 /* Assets.xcassets */,
 				BFF84EB628C6D40D00892CB5 /* LaunchScreen.storyboard */,
@@ -205,7 +213,6 @@
 				BFF84EB828C6D40D00892CB5 /* LaunchScreen.storyboard in Resources */,
 				BFA3398F28C82A4E00C1CD4C /* GoogleService-Info.plist in Resources */,
 				BFF84EB528C6D40D00892CB5 /* Assets.xcassets in Resources */,
-				BFF84EB328C6D40B00892CB5 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -277,7 +284,7 @@
 			files = (
 				BF8F9AD728D064D700EAA49E /* ContentViewController.swift in Sources */,
 				BFA3399328C832E500C1CD4C /* LoginViewController.swift in Sources */,
-				BFF84EB028C6D40B00892CB5 /* ViewController.swift in Sources */,
+				BFF84EB028C6D40B00892CB5 /* SplashViewController.swift in Sources */,
 				BFA3399828C836F300C1CD4C /* LoginViewModel.swift in Sources */,
 				BF5A7F4528D0591A000A1B08 /* HomeViewController.swift in Sources */,
 				BFF84EAC28C6D40B00892CB5 /* AppDelegate.swift in Sources */,
@@ -285,20 +292,13 @@
 				BF0A11C928CDCDEB00B06DE1 /* MainViewController.swift in Sources */,
 				BF5A7F4728D05926000A1B08 /* ContainerViewController.swift in Sources */,
 				BFF84EAE28C6D40B00892CB5 /* SceneDelegate.swift in Sources */,
+				BF34F87B28D1915B00EA1C16 /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		BFF84EB128C6D40B00892CB5 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				BFF84EB228C6D40B00892CB5 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		BFF84EB628C6D40D00892CB5 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -440,7 +440,7 @@
 				INFOPLIST_FILE = Melly/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -471,7 +471,7 @@
 				INFOPLIST_FILE = Melly/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
