@@ -34,7 +34,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         NMFAuthManager.shared().clientId = "4f8brsaqzw"
         
-        
         return true
     }
 

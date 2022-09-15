@@ -16,11 +16,24 @@ import KakaoSDKAuth
 import NaverThirdPartyLogin
 import AuthenticationServices
 
-class LoginViewController: UIViewController {
+class MainLoginViewController: UIViewController {
     
     let naverLoginInstance = NaverThirdPartyLoginConnection.getSharedInstance()
-    let vm = LoginViewModel()
+    let vm = MainLoginViewModel()
     let disposeBag = DisposeBag()
+    
+    let welcomeLabel = UILabel().then {
+        $0.text = "어서오세요,\n소중한 메모리를 담아보세요!"
+        $0.font = UIFont.systemFont(ofSize: 26)
+        $0.textColor = .black
+        $0.textAlignment = .center
+        $0.numberOfLines = 2
+    }
+    
+    let logoImageView = UIImageView(image: UIImage(systemName: "bubble.left.and.bubble.right.fill"))
+    
+    let loginBT = CustomButton(title: "로그인")
+    let signUpBT = CustomButton(title: "회원가입")
     
     let googleLoginBt = UIButton(type: .custom).then {
         $0.setImage(UIImage(named: "googleLogo"), for: .normal)
@@ -38,17 +51,6 @@ class LoginViewController: UIViewController {
         $0.setImage(UIImage(named: "appleLogo"), for: .normal)
     }
     
-    let serverBt = UIButton(type: .custom).then {
-        $0.setTitle("통신확인", for: .normal)
-        $0.setTitleColor(UIColor.black, for: .normal)
-    }
-    
-    let loginBt = UIButton(type: .custom).then {
-        $0.setTitle("로그인", for: .normal)
-        $0.setTitleColor(UIColor.black, for: .normal)
-        
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
@@ -57,37 +59,51 @@ class LoginViewController: UIViewController {
     
 }
 
-extension LoginViewController {
+extension MainLoginViewController {
     
     func setUI() {
         
         view.backgroundColor = .white
         
+        safeArea.addSubview(welcomeLabel)
+        welcomeLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(91)
+            $0.centerX.equalToSuperview()
+        }
+        
+        safeArea.addSubview(logoImageView)
+        logoImageView.snp.makeConstraints {
+            $0.top.equalTo(welcomeLabel.snp.bottom).offset(71)
+            $0.centerX.equalToSuperview()
+            $0.width.equalTo(248)
+            $0.height.equalTo(163)
+        }
+        
+        safeArea.addSubview(loginBT)
+        loginBT.snp.makeConstraints {
+            $0.top.equalTo(logoImageView.snp.bottom).offset(91)
+            $0.leading.equalToSuperview().offset(30)
+            $0.trailing.equalToSuperview().offset(-30)
+            $0.height.equalTo(56)
+        }
+        
+        safeArea.addSubview(signUpBT)
+        signUpBT.snp.makeConstraints {
+            $0.top.equalTo(loginBT.snp.bottom).offset(16)
+            $0.leading.equalToSuperview().offset(30)
+            $0.trailing.equalToSuperview().offset(-30)
+            $0.height.equalTo(56)
+        }
+        
         let apiFieldStack = UIStackView(arrangedSubviews: [kakaoLoginBt, naverLoginBt, googleLoginBt, appleLoginBt]).then {
             $0.axis = .horizontal
-            $0.spacing = 10
+            $0.spacing = 28
             $0.distribution = .fillEqually
         }
-        
+
         safeArea.addSubview(apiFieldStack)
         apiFieldStack.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.centerY.equalToSuperview()
-        }
-        
-        safeArea.addSubview(loginBt)
-        loginBt.snp.makeConstraints {
-            $0.top.equalTo(apiFieldStack.snp.bottom).offset(30)
-            $0.width.equalTo(100)
-            $0.height.equalTo(100)
-            $0.centerX.equalToSuperview()
-        }
-        
-        safeArea.addSubview(serverBt)
-        serverBt.snp.makeConstraints {
-            $0.top.equalTo(loginBt.snp.bottom).offset(30)
-            $0.width.equalTo(100)
-            $0.height.equalTo(100)
+            $0.top.equalTo(signUpBT.snp.bottom).offset(46)
             $0.centerX.equalToSuperview()
         }
         
@@ -119,20 +135,12 @@ extension LoginViewController {
                 self.appleLogin()
             }).disposed(by: disposeBag)
         
-        loginBt.rx.tap
-            .subscribe(onNext: {
-                
-                
-                let vc = ContainerViewController()
-                vc.modalTransitionStyle = .crossDissolve
-                vc.modalPresentationStyle = .fullScreen
-                self.present(vc, animated: true, completion: nil)
-                
-                
-            }).disposed(by: disposeBag)
-        
-        serverBt.rx.tap
+        loginBT.rx.tap
             .bind(to: vm.input.defaultLoginObserver)
+            .disposed(by: disposeBag)
+        
+        signUpBT.rx.tap
+            .bind(to: vm.input.signupObserver)
             .disposed(by: disposeBag)
         
     }
@@ -149,7 +157,7 @@ extension LoginViewController {
     
 }
 
-extension LoginViewController: NaverThirdPartyLoginConnectionDelegate {
+extension MainLoginViewController: NaverThirdPartyLoginConnectionDelegate {
     
     private func getNaverInfo() {
         
@@ -181,7 +189,7 @@ extension LoginViewController: NaverThirdPartyLoginConnectionDelegate {
     }
 }
 
-extension LoginViewController: ASAuthorizationControllerDelegate {
+extension MainLoginViewController: ASAuthorizationControllerDelegate {
     
     func appleLogin() {
         let request = ASAuthorizationAppleIDProvider().createRequest()

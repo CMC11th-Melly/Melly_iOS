@@ -10,13 +10,15 @@
 		BA879CDB5363EAB940476BC9 /* libPods-Melly.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C05BE5F7DE65A72A784FC35 /* libPods-Melly.a */; };
 		BF0A11C928CDCDEB00B06DE1 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0A11C828CDCDEB00B06DE1 /* MainViewController.swift */; };
 		BF34F87B28D1915B00EA1C16 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF34F87A28D1915B00EA1C16 /* User.swift */; };
+		BF34F87D28D19DE700EA1C16 /* CustomComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF34F87C28D19DE700EA1C16 /* CustomComponent.swift */; };
+		BF34F88128D1A60400EA1C16 /* DefaultLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF34F88028D1A60300EA1C16 /* DefaultLoginViewController.swift */; };
 		BF5A7F4528D0591A000A1B08 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5A7F4428D0591A000A1B08 /* HomeViewController.swift */; };
 		BF5A7F4728D05926000A1B08 /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5A7F4628D05926000A1B08 /* ContainerViewController.swift */; };
 		BF8F9AD728D064D700EAA49E /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F9AD628D064D700EAA49E /* ContentViewController.swift */; };
 		BFA3398F28C82A4E00C1CD4C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFA3398E28C82A4E00C1CD4C /* GoogleService-Info.plist */; };
-		BFA3399328C832E500C1CD4C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399228C832E500C1CD4C /* LoginViewController.swift */; };
+		BFA3399328C832E500C1CD4C /* MainLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399228C832E500C1CD4C /* MainLoginViewController.swift */; };
 		BFA3399628C8349B00C1CD4C /* UIKitExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399528C8349B00C1CD4C /* UIKitExtension.swift */; };
-		BFA3399828C836F300C1CD4C /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399728C836F300C1CD4C /* LoginViewModel.swift */; };
+		BFA3399828C836F300C1CD4C /* MainLoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399728C836F300C1CD4C /* MainLoginViewModel.swift */; };
 		BFF84EAC28C6D40B00892CB5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAB28C6D40B00892CB5 /* AppDelegate.swift */; };
 		BFF84EAE28C6D40B00892CB5 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAD28C6D40B00892CB5 /* SceneDelegate.swift */; };
 		BFF84EB028C6D40B00892CB5 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAF28C6D40B00892CB5 /* SplashViewController.swift */; };
@@ -30,13 +32,15 @@
 		8ABC0D681966E3BF5094BEBD /* Pods-Melly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Melly.release.xcconfig"; path = "Target Support Files/Pods-Melly/Pods-Melly.release.xcconfig"; sourceTree = "<group>"; };
 		BF0A11C828CDCDEB00B06DE1 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		BF34F87A28D1915B00EA1C16 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		BF34F87C28D19DE700EA1C16 /* CustomComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomComponent.swift; sourceTree = "<group>"; };
+		BF34F88028D1A60300EA1C16 /* DefaultLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLoginViewController.swift; sourceTree = "<group>"; };
 		BF5A7F4428D0591A000A1B08 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		BF5A7F4628D05926000A1B08 /* ContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerViewController.swift; sourceTree = "<group>"; };
 		BF8F9AD628D064D700EAA49E /* ContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewController.swift; sourceTree = "<group>"; };
 		BFA3398E28C82A4E00C1CD4C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		BFA3399228C832E500C1CD4C /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		BFA3399228C832E500C1CD4C /* MainLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainLoginViewController.swift; sourceTree = "<group>"; };
 		BFA3399528C8349B00C1CD4C /* UIKitExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitExtension.swift; sourceTree = "<group>"; };
-		BFA3399728C836F300C1CD4C /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
+		BFA3399728C836F300C1CD4C /* MainLoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainLoginViewModel.swift; sourceTree = "<group>"; };
 		BFBDC76828C9A98400DA6330 /* Melly.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Melly.entitlements; sourceTree = "<group>"; };
 		BFF84EA828C6D40B00892CB5 /* Melly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Melly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFF84EAB28C6D40B00892CB5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -87,11 +91,35 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		BF34F87E28D1A3EC00EA1C16 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				BFA3399228C832E500C1CD4C /* MainLoginViewController.swift */,
+				BFA3399728C836F300C1CD4C /* MainLoginViewModel.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		BF34F87F28D1A43900EA1C16 /* Default */ = {
+			isa = PBXGroup;
+			children = (
+				BF34F88028D1A60300EA1C16 /* DefaultLoginViewController.swift */,
+			);
+			path = Default;
+			sourceTree = "<group>";
+		};
+		BF34F88228D1A68A00EA1C16 /* SignUp */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = SignUp;
+			sourceTree = "<group>";
+		};
 		BFA3399028C832B900C1CD4C /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				BFA3399228C832E500C1CD4C /* LoginViewController.swift */,
-				BFA3399728C836F300C1CD4C /* LoginViewModel.swift */,
+				BF34F87F28D1A43900EA1C16 /* Default */,
+				BF34F87E28D1A3EC00EA1C16 /* Main */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -100,6 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				BFA3399528C8349B00C1CD4C /* UIKitExtension.swift */,
+				BF34F87C28D19DE700EA1C16 /* CustomComponent.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -125,13 +154,14 @@
 		BFF84EAA28C6D40B00892CB5 /* Melly */ = {
 			isa = PBXGroup;
 			children = (
+				BF34F88228D1A68A00EA1C16 /* SignUp */,
 				BF34F87928D1915000EA1C16 /* Model */,
 				BFBDC76828C9A98400DA6330 /* Melly.entitlements */,
 				BF0A11C728CDCDA600B06DE1 /* Main */,
 				BFA3399428C8348400C1CD4C /* Util */,
 				BFA3399028C832B900C1CD4C /* Login */,
-				BFF84EAB28C6D40B00892CB5 /* AppDelegate.swift */,
 				BFF84EAD28C6D40B00892CB5 /* SceneDelegate.swift */,
+				BFF84EAB28C6D40B00892CB5 /* AppDelegate.swift */,
 				BFF84EAF28C6D40B00892CB5 /* SplashViewController.swift */,
 				BFA3398E28C82A4E00C1CD4C /* GoogleService-Info.plist */,
 				BFF84EB428C6D40D00892CB5 /* Assets.xcassets */,
@@ -283,14 +313,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF8F9AD728D064D700EAA49E /* ContentViewController.swift in Sources */,
-				BFA3399328C832E500C1CD4C /* LoginViewController.swift in Sources */,
+				BFA3399328C832E500C1CD4C /* MainLoginViewController.swift in Sources */,
 				BFF84EB028C6D40B00892CB5 /* SplashViewController.swift in Sources */,
-				BFA3399828C836F300C1CD4C /* LoginViewModel.swift in Sources */,
+				BFA3399828C836F300C1CD4C /* MainLoginViewModel.swift in Sources */,
 				BF5A7F4528D0591A000A1B08 /* HomeViewController.swift in Sources */,
 				BFF84EAC28C6D40B00892CB5 /* AppDelegate.swift in Sources */,
+				BF34F87D28D19DE700EA1C16 /* CustomComponent.swift in Sources */,
 				BFA3399628C8349B00C1CD4C /* UIKitExtension.swift in Sources */,
 				BF0A11C928CDCDEB00B06DE1 /* MainViewController.swift in Sources */,
 				BF5A7F4728D05926000A1B08 /* ContainerViewController.swift in Sources */,
+				BF34F88128D1A60400EA1C16 /* DefaultLoginViewController.swift in Sources */,
 				BFF84EAE28C6D40B00892CB5 /* SceneDelegate.swift in Sources */,
 				BF34F87B28D1915B00EA1C16 /* User.swift in Sources */,
 			);
