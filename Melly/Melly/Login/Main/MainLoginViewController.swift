@@ -136,8 +136,12 @@ extension MainLoginViewController {
             }).disposed(by: disposeBag)
         
         loginBT.rx.tap
-            .bind(to: vm.input.defaultLoginObserver)
-            .disposed(by: disposeBag)
+            .subscribe(onNext: {
+                let vc = DefaultLoginViewController()
+                vc.modalTransitionStyle = .crossDissolve
+                vc.modalPresentationStyle = .fullScreen
+                self.present(vc, animated: true)
+            }).disposed(by: disposeBag)
         
         signUpBT.rx.tap
             .bind(to: vm.input.signupObserver)
