@@ -157,9 +157,9 @@
 		BFF84EAA28C6D40B00892CB5 /* Melly */ = {
 			isa = PBXGroup;
 			children = (
+				BFBDC76828C9A98400DA6330 /* Melly.entitlements */,
 				BF34F88228D1A68A00EA1C16 /* SignUp */,
 				BF34F87928D1915000EA1C16 /* Model */,
-				BFBDC76828C9A98400DA6330 /* Melly.entitlements */,
 				BF0A11C728CDCDA600B06DE1 /* Main */,
 				BFA3399428C8348400C1CD4C /* Util */,
 				BFA3399028C832B900C1CD4C /* Login */,

@@ -10,8 +10,8 @@ import Foundation
 struct User: Codable, Identifiable {
     
     var id = UUID()
-    var email:String
-    var pw:String
+    var email:String = ""
+    var pw:String = ""
     
     
     

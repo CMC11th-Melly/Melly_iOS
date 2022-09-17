@@ -38,13 +38,16 @@ class DefaultLoginViewController: UIViewController {
         $0.text = "비밀번호"
         $0.font = UIFont.systemFont(ofSize: 16)
         $0.textColor = .black
+       
     }
     
-    let pwTf = CustomTetField(title: "비밀번호를 입력해주세요.")
+    let pwTf = CustomTetField(title: "비밀번호를 입력해주세요.").then {
+        $0.isSecureTextEntry = true
+    }
     
     let findEmailBT = UIButton(type: .custom).then {
         $0.setTitle("아이디 찾기", for: .normal)
-        $0.titleLabel?.textColor = .black
+        $0.setTitleColor(.black, for: .normal)
         $0.titleLabel?.font = UIFont.systemFont(ofSize: 14)
     }
     
@@ -54,13 +57,17 @@ class DefaultLoginViewController: UIViewController {
     
     let findPwBT = UIButton(type: .custom).then {
         $0.setTitle("비밀번호 찾기", for: .normal)
-        $0.titleLabel?.textColor = .black
+        $0.setTitleColor(.black, for: .normal)
         $0.titleLabel?.font = UIFont.systemFont(ofSize: 14)
     }
     
-    let alertView = AlertLabel("아이디를 정확히 입력해주세요.")
+    let alertView = AlertLabel().then {
+        $0.isHidden = true
+    }
     
-    let loginBT = CustomButton(title: "로그인")
+    let loginBT = CustomButton(title: "로그인").then {
+        $0.isEnabled = false
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -89,8 +96,6 @@ extension DefaultLoginViewController {
             $0.leading.top.trailing.equalToSuperview()
             $0.bottom.equalTo(layoutView2.snp.top)
         }
-        
-        
         
         layoutView1.addSubview(backBT)
         backBT.snp.makeConstraints {
@@ -144,13 +149,13 @@ extension DefaultLoginViewController {
         
         layoutView1.addSubview(findEmailBT)
         findEmailBT.snp.makeConstraints {
-            $0.top.equalTo(pwTf.snp.bottom).offset(72)
+            $0.top.equalTo(pwTf.snp.bottom).offset(67)
             $0.trailing.equalTo(separator.snp.leading).offset(-13)
         }
         
         layoutView1.addSubview(findPwBT)
         findPwBT.snp.makeConstraints {
-            $0.top.equalTo(pwTf.snp.bottom).offset(72)
+            $0.top.equalTo(pwTf.snp.bottom).offset(67)
             $0.leading.equalTo(separator.snp.trailing).offset(13)
         }
         
@@ -184,9 +189,63 @@ extension DefaultLoginViewController {
             .subscribe(onNext: {
                 self.dismiss(animated: true, completion: nil)
             }).disposed(by: disposeBag)
+        
+        emailTf.rx.controlEvent([.editingDidEnd])
+            .map { self.emailTf.text ?? "" }
+            .bind(to: vm.input.emailObserver)
+            .disposed(by: disposeBag)
+        
+        pwTf.rx.controlEvent([.editingDidEnd])
+            .map { self.pwTf.text ?? "" }
+            .bind(to: vm.input.pwObserver)
+            .disposed(by: disposeBag)
+        
+        loginBT.rx.tap
+            .bind(to: vm.input.loginObserver)
+            .disposed(by: disposeBag)
     }
     
     func bindOutput() {
+        
+        vm.output.emailValid.asDriver(onErrorJustReturn: false).drive(onNext: { valid in
+            
+            DispatchQueue.main.async {
+                if valid {
+                    self.alertView.isHidden = true
+                    self.alertView.labelView.text = ""
+                } else {
+                    self.alertView.isHidden = false
+                    self.alertView.labelView.text = "아이디를 정확히 입력해주세요."
+                }
+            }
+            
+        }).disposed(by: disposeBag)
+        
+        vm.output.pwValid.asDriver(onErrorJustReturn: false)
+            .drive(onNext: { valid in
+            
+            DispatchQueue.main.async {
+                if valid {
+                    self.alertView.isHidden = true
+                    self.alertView.labelView.text = ""
+                } else {
+                    self.alertView.isHidden = false
+                    self.alertView.labelView.text = "비밀번호를 정확히 입력해주세요."
+                }
+            }
+            
+        }).disposed(by: disposeBag)
+        
+        vm.output.loginValid.asDriver(onErrorJustReturn: false)
+            .drive(onNext: { valid in
+                if valid {
+                    self.loginBT.isEnabled = true
+                    self.loginBT.backgroundColor = .orange
+                } else {
+                    self.loginBT.isEnabled = false
+                    self.loginBT.backgroundColor = .gray
+                }
+            }).disposed(by: disposeBag)
         
     }
     

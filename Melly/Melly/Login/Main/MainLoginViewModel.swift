@@ -22,6 +22,7 @@ class MainLoginViewModel {
     let input = Input()
     let output = Output()
     let disposeBag = DisposeBag()
+    var user = User()
     
     struct Input {
         let googleLoginObserver = PublishRelay<UIViewController>()
@@ -61,18 +62,7 @@ class MainLoginViewModel {
                 }
             }.disposed(by: disposeBag)
         
-        input.defaultLoginObserver
-            .flatMap(login)
-            .subscribe { event in
-                switch event {
-                case .next(let token):
-                    self.output.outputData.accept(token)
-                case .error(let error):
-                    print(error)
-                case .completed:
-                    break
-                }
-            }.disposed(by: disposeBag)
+        
         
         input.signupObserver
             .flatMap(signup)
@@ -193,26 +183,7 @@ class MainLoginViewModel {
         }
     }
     
-    func login(/*id: String, pw: String*/) -> Observable<String> {
-        
-        return Observable.create { observer in
-            let parameters:Parameters = ["email": "eotlr680@naver.com",
-                                         "password": "12345678"]
-            let header:HTTPHeaders = [ "Connection":"close",
-                                       "Content-Type":"application/json"]
-            
-            RxAlamofire.requestData(.post, "http://3.39.218.234/auth/login", parameters: parameters, encoding: JSONEncoding.default, headers: header)
-                .subscribe(onNext: { response in
-                    if let dataStr = String(data: response.1, encoding: .utf8) {
-                        observer.onNext(dataStr)
-                    }
-                }).disposed(by: self.disposeBag)
-            
-            
-            return Disposables.create()
-        }
-        
-    }
+    
     
     func signup(/*id: String, pw: String*/) -> Observable<String> {
         

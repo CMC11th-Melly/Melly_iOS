@@ -71,13 +71,15 @@ class BackButton: UIButton {
 
 class AlertLabel: UIView {
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    let imageView = UIImageView(image: UIImage(systemName: "exclamationmark.circle.fill"))
+    let labelView = UILabel().then {
+        $0.text = ""
+        $0.textColor = .black
+        $0.font = UIFont.systemFont(ofSize: 16)
     }
     
-    convenience init(_ label: String) {
-        self.init(frame: .zero)
-        let imageView = UIImageView(image: UIImage(systemName: "exclamationmark.circle.fill"))
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         self.backgroundColor = .gray
         self.layer.cornerRadius = 12
         
@@ -87,18 +89,13 @@ class AlertLabel: UIView {
             $0.leading.equalToSuperview().offset(24)
         }
         
-        let label = UILabel().then {
-            $0.text = label
-            $0.font = UIFont.systemFont(ofSize: 16)
-        }
-        
-        self.addSubview(label)
-        label.snp.makeConstraints {
+        self.addSubview(labelView)
+        labelView.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.leading.equalTo(imageView.snp.trailing).offset(17)
         }
-        
     }
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
