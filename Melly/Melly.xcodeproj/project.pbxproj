@@ -20,6 +20,10 @@
 		BFA3399328C832E500C1CD4C /* MainLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399228C832E500C1CD4C /* MainLoginViewController.swift */; };
 		BFA3399628C8349B00C1CD4C /* UIKitExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399528C8349B00C1CD4C /* UIKitExtension.swift */; };
 		BFA3399828C836F300C1CD4C /* MainLoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399728C836F300C1CD4C /* MainLoginViewModel.swift */; };
+		BFD6C56D28D723CD0092A6E5 /* SignUpOneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6C56C28D723CD0092A6E5 /* SignUpOneViewController.swift */; };
+		BFD6C56F28D724160092A6E5 /* SignUpOneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6C56E28D724160092A6E5 /* SignUpOneViewModel.swift */; };
+		BFD6C57428D733260092A6E5 /* SignUpTwoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6C57328D733260092A6E5 /* SignUpTwoViewModel.swift */; };
+		BFD6C57628D7373F0092A6E5 /* SignUpTwoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6C57528D7373F0092A6E5 /* SignUpTwoViewController.swift */; };
 		BFF84EAC28C6D40B00892CB5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAB28C6D40B00892CB5 /* AppDelegate.swift */; };
 		BFF84EAE28C6D40B00892CB5 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAD28C6D40B00892CB5 /* SceneDelegate.swift */; };
 		BFF84EB028C6D40B00892CB5 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAF28C6D40B00892CB5 /* SplashViewController.swift */; };
@@ -44,6 +48,10 @@
 		BFA3399528C8349B00C1CD4C /* UIKitExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitExtension.swift; sourceTree = "<group>"; };
 		BFA3399728C836F300C1CD4C /* MainLoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainLoginViewModel.swift; sourceTree = "<group>"; };
 		BFBDC76828C9A98400DA6330 /* Melly.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Melly.entitlements; sourceTree = "<group>"; };
+		BFD6C56C28D723CD0092A6E5 /* SignUpOneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpOneViewController.swift; sourceTree = "<group>"; };
+		BFD6C56E28D724160092A6E5 /* SignUpOneViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpOneViewModel.swift; sourceTree = "<group>"; };
+		BFD6C57328D733260092A6E5 /* SignUpTwoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpTwoViewModel.swift; sourceTree = "<group>"; };
+		BFD6C57528D7373F0092A6E5 /* SignUpTwoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpTwoViewController.swift; sourceTree = "<group>"; };
 		BFF84EA828C6D40B00892CB5 /* Melly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Melly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFF84EAB28C6D40B00892CB5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFF84EAD28C6D40B00892CB5 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -111,13 +119,6 @@
 			path = Default;
 			sourceTree = "<group>";
 		};
-		BF34F88228D1A68A00EA1C16 /* SignUp */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = SignUp;
-			sourceTree = "<group>";
-		};
 		BFA3399028C832B900C1CD4C /* Login */ = {
 			isa = PBXGroup;
 			children = (
@@ -134,6 +135,41 @@
 				BF34F87C28D19DE700EA1C16 /* CustomComponent.swift */,
 			);
 			path = Util;
+			sourceTree = "<group>";
+		};
+		BFD6C56B28D723520092A6E5 /* SignUp */ = {
+			isa = PBXGroup;
+			children = (
+				BFD6C57228D72DC60092A6E5 /* Step3 */,
+				BFD6C57128D72DBF0092A6E5 /* Step2 */,
+				BFD6C57028D72DB00092A6E5 /* Step1 */,
+			);
+			path = SignUp;
+			sourceTree = "<group>";
+		};
+		BFD6C57028D72DB00092A6E5 /* Step1 */ = {
+			isa = PBXGroup;
+			children = (
+				BFD6C56C28D723CD0092A6E5 /* SignUpOneViewController.swift */,
+				BFD6C56E28D724160092A6E5 /* SignUpOneViewModel.swift */,
+			);
+			path = Step1;
+			sourceTree = "<group>";
+		};
+		BFD6C57128D72DBF0092A6E5 /* Step2 */ = {
+			isa = PBXGroup;
+			children = (
+				BFD6C57328D733260092A6E5 /* SignUpTwoViewModel.swift */,
+				BFD6C57528D7373F0092A6E5 /* SignUpTwoViewController.swift */,
+			);
+			path = Step2;
+			sourceTree = "<group>";
+		};
+		BFD6C57228D72DC60092A6E5 /* Step3 */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Step3;
 			sourceTree = "<group>";
 		};
 		BFF84E9F28C6D40B00892CB5 = {
@@ -157,8 +193,8 @@
 		BFF84EAA28C6D40B00892CB5 /* Melly */ = {
 			isa = PBXGroup;
 			children = (
+				BFD6C56B28D723520092A6E5 /* SignUp */,
 				BFBDC76828C9A98400DA6330 /* Melly.entitlements */,
-				BF34F88228D1A68A00EA1C16 /* SignUp */,
 				BF34F87928D1915000EA1C16 /* Model */,
 				BF0A11C728CDCDA600B06DE1 /* Main */,
 				BFA3399428C8348400C1CD4C /* Util */,
@@ -316,14 +352,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF8F9AD728D064D700EAA49E /* ContentViewController.swift in Sources */,
+				BFD6C57628D7373F0092A6E5 /* SignUpTwoViewController.swift in Sources */,
 				BFA3399328C832E500C1CD4C /* MainLoginViewController.swift in Sources */,
+				BFD6C56F28D724160092A6E5 /* SignUpOneViewModel.swift in Sources */,
 				BFF84EB028C6D40B00892CB5 /* SplashViewController.swift in Sources */,
+				BFD6C57428D733260092A6E5 /* SignUpTwoViewModel.swift in Sources */,
 				BFA3399828C836F300C1CD4C /* MainLoginViewModel.swift in Sources */,
 				BF5A7F4528D0591A000A1B08 /* HomeViewController.swift in Sources */,
 				BFF84EAC28C6D40B00892CB5 /* AppDelegate.swift in Sources */,
 				BF7E3CCA28D43F0E007C3236 /* DefaultLoginVIewModel.swift in Sources */,
 				BF34F87D28D19DE700EA1C16 /* CustomComponent.swift in Sources */,
 				BFA3399628C8349B00C1CD4C /* UIKitExtension.swift in Sources */,
+				BFD6C56D28D723CD0092A6E5 /* SignUpOneViewController.swift in Sources */,
 				BF0A11C928CDCDEB00B06DE1 /* MainViewController.swift in Sources */,
 				BF5A7F4728D05926000A1B08 /* ContainerViewController.swift in Sources */,
 				BF34F88128D1A60400EA1C16 /* DefaultLoginViewController.swift in Sources */,
