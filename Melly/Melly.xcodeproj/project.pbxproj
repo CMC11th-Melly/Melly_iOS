@@ -24,6 +24,8 @@
 		BFD6C56F28D724160092A6E5 /* SignUpOneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6C56E28D724160092A6E5 /* SignUpOneViewModel.swift */; };
 		BFD6C57428D733260092A6E5 /* SignUpTwoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6C57328D733260092A6E5 /* SignUpTwoViewModel.swift */; };
 		BFD6C57628D7373F0092A6E5 /* SignUpTwoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6C57528D7373F0092A6E5 /* SignUpTwoViewController.swift */; };
+		BFDC1BF728D8094A005ADC6A /* SignUpThreeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDC1BF628D8094A005ADC6A /* SignUpThreeViewController.swift */; };
+		BFDC1BF928D8096D005ADC6A /* SignUpThreeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDC1BF828D8096D005ADC6A /* SignUpThreeViewModel.swift */; };
 		BFF84EAC28C6D40B00892CB5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAB28C6D40B00892CB5 /* AppDelegate.swift */; };
 		BFF84EAE28C6D40B00892CB5 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAD28C6D40B00892CB5 /* SceneDelegate.swift */; };
 		BFF84EB028C6D40B00892CB5 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAF28C6D40B00892CB5 /* SplashViewController.swift */; };
@@ -52,6 +54,8 @@
 		BFD6C56E28D724160092A6E5 /* SignUpOneViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpOneViewModel.swift; sourceTree = "<group>"; };
 		BFD6C57328D733260092A6E5 /* SignUpTwoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpTwoViewModel.swift; sourceTree = "<group>"; };
 		BFD6C57528D7373F0092A6E5 /* SignUpTwoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpTwoViewController.swift; sourceTree = "<group>"; };
+		BFDC1BF628D8094A005ADC6A /* SignUpThreeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpThreeViewController.swift; sourceTree = "<group>"; };
+		BFDC1BF828D8096D005ADC6A /* SignUpThreeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpThreeViewModel.swift; sourceTree = "<group>"; };
 		BFF84EA828C6D40B00892CB5 /* Melly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Melly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFF84EAB28C6D40B00892CB5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFF84EAD28C6D40B00892CB5 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -168,6 +172,8 @@
 		BFD6C57228D72DC60092A6E5 /* Step3 */ = {
 			isa = PBXGroup;
 			children = (
+				BFDC1BF628D8094A005ADC6A /* SignUpThreeViewController.swift */,
+				BFDC1BF828D8096D005ADC6A /* SignUpThreeViewModel.swift */,
 			);
 			path = Step3;
 			sourceTree = "<group>";
@@ -358,7 +364,9 @@
 				BFF84EB028C6D40B00892CB5 /* SplashViewController.swift in Sources */,
 				BFD6C57428D733260092A6E5 /* SignUpTwoViewModel.swift in Sources */,
 				BFA3399828C836F300C1CD4C /* MainLoginViewModel.swift in Sources */,
+				BFDC1BF928D8096D005ADC6A /* SignUpThreeViewModel.swift in Sources */,
 				BF5A7F4528D0591A000A1B08 /* HomeViewController.swift in Sources */,
+				BFDC1BF728D8094A005ADC6A /* SignUpThreeViewController.swift in Sources */,
 				BFF84EAC28C6D40B00892CB5 /* AppDelegate.swift in Sources */,
 				BF7E3CCA28D43F0E007C3236 /* DefaultLoginVIewModel.swift in Sources */,
 				BF34F87D28D19DE700EA1C16 /* CustomComponent.swift in Sources */,

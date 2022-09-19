@@ -103,3 +103,45 @@ class AlertLabel: UIView {
     
     
 }
+
+class DropMenuButton: UIButton {
+    
+    let labelView = UILabel().then {
+        $0.text = ""
+        $0.font = UIFont.systemFont(ofSize: 16)
+        $0.textColor = .gray
+    }
+    
+    let imgView = UIImageView(image: UIImage(named: "dropdown"))
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.layer.cornerRadius = 12
+        self.layer.borderColor = CGColor(red: 226/255, green: 229/255, blue: 233/255, alpha: 1)
+        self.layer.borderWidth = 1
+        
+        addSubview(labelView)
+        labelView.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalToSuperview().offset(22)
+        }
+        
+        addSubview(imgView)
+        imgView.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.trailing.equalToSuperview().offset(-26)
+        }
+        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    convenience init(_ text: String) {
+        self.init()
+        labelView.text = text
+        
+    }
+    
+}

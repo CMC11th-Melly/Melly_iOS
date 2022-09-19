@@ -5,6 +5,7 @@ PODS:
     - AppAuth/ExternalUserAgent (= 1.4.0)
   - AppAuth/Core (1.4.0)
   - AppAuth/ExternalUserAgent (1.4.0)
+  - DropDown (2.3.13)
   - Firebase/Auth (8.10.0):
     - Firebase/CoreOnly
     - FirebaseAuth (~> 8.10.0)
@@ -154,6 +155,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire
+  - DropDown
   - Firebase/Auth
   - Firebase/Core
   - FirebaseAnalytics
@@ -177,6 +179,7 @@ SPEC REPOS:
   trunk:
     - Alamofire
     - AppAuth
+    - DropDown
     - Firebase
     - FirebaseAnalytics
     - FirebaseAuth
@@ -210,6 +213,7 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   Alamofire: 1c4fb5369c3fe93d2857c780d8bbe09f06f97e7c
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
+  DropDown: 8a2116376c1981888557f72ec2ffc9a5e0e456ec
   Firebase: 44213362f1dcc52555b935dc925ed35ac55f1b20
   FirebaseAnalytics: 319c9b3b1bdd400d60e2f415dff0c5f6959e6760
   FirebaseAuth: 59a2d2b933b5b79e18fb1e6ad230c6abdaa73d26
@@ -240,6 +244,6 @@ SPEC CHECKSUMS:
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   Then: acfe0be7e98221c6204e12f8161459606d5d822d
 
-PODFILE CHECKSUM: 7791e3d7fdd45967d7f50ce12d8e931d9e485235
+PODFILE CHECKSUM: 5d123301064f0f0a9d2216dab690065c4681d06e
 
 COCOAPODS: 1.11.2

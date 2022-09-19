@@ -24,6 +24,7 @@ pod 'RxSwift'
 pod 'RxCocoa'
 pod 'NMapsMap'
 pod 'FloatingPanel'
+pod 'DropDown'
 
 #Firebase
 pod 'Firebase/Auth'

@@ -12,7 +12,7 @@ struct User: Codable, Identifiable {
     var id = UUID()
     var email:String = ""
     var pw:String = ""
-    
-    
+    var name:String = "머식"
+    var gender:String = ""
     
 }

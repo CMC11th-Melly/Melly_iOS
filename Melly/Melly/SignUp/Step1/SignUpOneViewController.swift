@@ -196,20 +196,31 @@ extension SignUpOneViewController {
             .disposed(by: disposeBag)
         
         nextBT.rx.tap
-            .bind(to: vm.input.nextObserver)
+            .subscribe(onNext: {
+                let vm = SignUpTwoViewModel(self.vm.user)
+                let vc = SignUpTwoViewController(vm: vm)
+                vc.modalTransitionStyle = .crossDissolve
+                vc.modalPresentationStyle = .fullScreen
+                self.present(vc, animated: true)
+            })
             .disposed(by: disposeBag)
     }
     
     func bindOutput() {
         
-        vm.output.emailValid.asDriver(onErrorJustReturn: false).drive(onNext: { valid in
-            
-            if valid {
-                self.alertView.isHidden = true
-                self.alertView.labelView.text = ""
-            } else {
+        vm.output.emailValid.asDriver(onErrorJustReturn: .notAvailable).drive(onNext: { valid in
+            self.alertView.labelView.text = valid.rawValue
+            switch valid {
+            case .notAvailable:
                 self.alertView.isHidden = false
-                self.alertView.labelView.text = "아이디를 정확히 입력해주세요."
+            case .correct:
+                self.alertView.isHidden = true
+            case .serverError:
+                self.alertView.isHidden = false
+            case .alreadyExsist:
+                self.alertView.isHidden = false
+            case .nameNotAvailable:
+                break
             }
             
         }).disposed(by: disposeBag)
