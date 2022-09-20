@@ -9,7 +9,12 @@ import UIKit
 import Then
 import DropDown
 import RxSwift
-
+import RxCocoa
+import RxRelay
+import Photos
+import PhotosUI
+import RxAlamofire
+import Alamofire
 
 class SignUpThreeViewController: UIViewController {
     
@@ -42,6 +47,11 @@ class SignUpThreeViewController: UIViewController {
         $0.layer.cornerRadius = 10
         $0.backgroundColor = .gray
         $0.textAlignment = .center
+    }
+    
+    let selectPhotoBT = UIButton(type: .custom).then {
+        $0.setTitle("포토", for: .normal)
+        $0.setTitleColor(.black, for: .normal)
     }
     
     let skipButton = UIButton(type: .custom).then {
@@ -127,6 +137,15 @@ extension SignUpThreeViewController {
             $0.height.equalTo(58)
         }
         
+        layoutView1.addSubview(selectPhotoBT)
+        selectPhotoBT.snp.makeConstraints {
+            $0.top.equalTo(selectBT.snp.bottom).offset(20)
+            $0.leading.equalToSuperview().offset(30)
+            $0.trailing.equalToSuperview().offset(-30)
+            $0.height.equalTo(58)
+        }
+        
+        
         
         
         layoutView2.addSubview(recomandLabel)
@@ -172,6 +191,16 @@ extension SignUpThreeViewController {
             self!.selectBT.imgView.image = UIImage(named: "dropdown")
         }
         
+        selectPhotoBT.rx.tap
+            .subscribe(onNext: {
+                var config = PHPickerConfiguration(photoLibrary: .shared())
+                config.selectionLimit = 1
+                config.filter = PHPickerFilter.any(of: [.images])
+                let vc = PHPickerViewController(configuration: config)
+                vc.delegate = self
+                self.present(vc, animated: true)
+            }).disposed(by: disposeBag)
+        
         // 취소 시 처리
         menu.cancelAction = { [weak self] in
             //빈 화면 터치 시 DropDown이 사라지고 아이콘을 원래대로 변경
@@ -183,5 +212,60 @@ extension SignUpThreeViewController {
     func bindOutput() {
         
     }
+    
+}
+
+extension SignUpThreeViewController: PHPickerViewControllerDelegate {
+    
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true, completion: nil)
+        results.forEach { result in
+            result.itemProvider.loadObject(ofClass: UIImage.self) { reading, error in
+                guard let image = reading as? UIImage, error == nil else {
+                    return
+                }
+                
+                let header:HTTPHeaders = [
+                            "Content-Type": "multipart/form-data"
+                        ]
+                
+                let pngData = image.pngData() ?? Data()
+                let realUrl = URL(string: "http://3.39.218.234/api/imageTest")
+                let url:Alamofire.URLConvertible = realUrl!
+                
+                AF.upload(multipartFormData: { multipartFormData in
+                    multipartFormData.append(pngData, withName: "image", fileName: "test.png", mimeType: "image/png")
+                }, to: url, method: .post, headers: header)
+                    .responseData { response in
+                        switch response.result {
+                        case .success(let data):
+                            print("성공\(data)")
+                        case .failure(let error):
+                            print(error)
+                        }
+                    }
+                    
+                
+//                RxAlamofire.upload(multipartFormData: { multipartFormData in
+//                    multipartFormData.append(pngData, withName: "image", fileName: "test.png", mimeType: "image/png")
+//                }, to: url, method: .post, headers: header)
+//
+//                    .subscribe({ event in
+//                        switch event {
+//                        case .next(let response):
+//                            print(response)
+//                        case .onError(let error):
+//                            print(error)
+//                        case .completed:
+//                            break
+//                        }
+//
+//                    }).disposed(by: disposeBag)
+//
+                    
+            }
+        }
+    }
+    
     
 }
