@@ -164,32 +164,8 @@ class MainLoginViewModel {
                     }
                 }).disposed(by: self.disposeBag)
             
-            
             return Disposables.create()
         }
-    }
-    
-    
-    
-    func signup(/*id: String, pw: String*/) -> Observable<String> {
-        
-        return Observable.create { observer in
-            let parameters:Parameters = ["email": "eotlr680@naver.com",
-                                         "password": "12345678"]
-            let header:HTTPHeaders = [ "Connection":"close",
-                                       "Content-Type":"application/json"]
-            
-            RxAlamofire.requestData(.post, "http://3.39.218.234/auth/signup", parameters: parameters, encoding: JSONEncoding.default, headers: header)
-                .subscribe(onNext: { response in
-                    if let dataStr = String(data: response.1, encoding: .utf8) {
-                        observer.onNext(dataStr)
-                    }
-                }).disposed(by: self.disposeBag)
-            
-            
-            return Disposables.create()
-        }
-        
     }
     
     

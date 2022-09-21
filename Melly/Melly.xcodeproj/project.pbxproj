@@ -7,13 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BA879CDB5363EAB940476BC9 /* libPods-Melly.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C05BE5F7DE65A72A784FC35 /* libPods-Melly.a */; };
+		8A6B155365F0AD9DE2737496 /* Pods_Melly.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A7603E7F416A7C7EC318D97 /* Pods_Melly.framework */; };
 		BF0A11C928CDCDEB00B06DE1 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0A11C828CDCDEB00B06DE1 /* MainViewController.swift */; };
 		BF34F87B28D1915B00EA1C16 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF34F87A28D1915B00EA1C16 /* User.swift */; };
 		BF34F87D28D19DE700EA1C16 /* CustomComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF34F87C28D19DE700EA1C16 /* CustomComponent.swift */; };
 		BF34F88128D1A60400EA1C16 /* DefaultLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF34F88028D1A60300EA1C16 /* DefaultLoginViewController.swift */; };
 		BF5A7F4528D0591A000A1B08 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5A7F4428D0591A000A1B08 /* HomeViewController.swift */; };
 		BF5A7F4728D05926000A1B08 /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5A7F4628D05926000A1B08 /* ContainerViewController.swift */; };
+		BF638A8E28DAA96D0031233F /* ResponseData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF638A8D28DAA96D0031233F /* ResponseData.swift */; };
+		BF638A9228DAD6050031233F /* FoundationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF638A9128DAD6050031233F /* FoundationExtension.swift */; };
+		BF638A9528DADFD10031233F /* Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF638A9428DADFD10031233F /* Enum.swift */; };
 		BF7E3CCA28D43F0E007C3236 /* DefaultLoginVIewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7E3CC928D43F0E007C3236 /* DefaultLoginVIewModel.swift */; };
 		BF8F9AD728D064D700EAA49E /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F9AD628D064D700EAA49E /* ContentViewController.swift */; };
 		BFA3398F28C82A4E00C1CD4C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFA3398E28C82A4E00C1CD4C /* GoogleService-Info.plist */; };
@@ -35,7 +38,7 @@
 
 /* Begin PBXFileReference section */
 		071A50D0B491B33B25C24E7C /* Pods-Melly.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Melly.debug.xcconfig"; path = "Target Support Files/Pods-Melly/Pods-Melly.debug.xcconfig"; sourceTree = "<group>"; };
-		4C05BE5F7DE65A72A784FC35 /* libPods-Melly.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Melly.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3A7603E7F416A7C7EC318D97 /* Pods_Melly.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Melly.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8ABC0D681966E3BF5094BEBD /* Pods-Melly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Melly.release.xcconfig"; path = "Target Support Files/Pods-Melly/Pods-Melly.release.xcconfig"; sourceTree = "<group>"; };
 		BF0A11C828CDCDEB00B06DE1 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		BF34F87A28D1915B00EA1C16 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -43,6 +46,9 @@
 		BF34F88028D1A60300EA1C16 /* DefaultLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLoginViewController.swift; sourceTree = "<group>"; };
 		BF5A7F4428D0591A000A1B08 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		BF5A7F4628D05926000A1B08 /* ContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerViewController.swift; sourceTree = "<group>"; };
+		BF638A8D28DAA96D0031233F /* ResponseData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseData.swift; sourceTree = "<group>"; };
+		BF638A9128DAD6050031233F /* FoundationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoundationExtension.swift; sourceTree = "<group>"; };
+		BF638A9428DADFD10031233F /* Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enum.swift; sourceTree = "<group>"; };
 		BF7E3CC928D43F0E007C3236 /* DefaultLoginVIewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLoginVIewModel.swift; sourceTree = "<group>"; };
 		BF8F9AD628D064D700EAA49E /* ContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewController.swift; sourceTree = "<group>"; };
 		BFA3398E28C82A4E00C1CD4C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -70,7 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BA879CDB5363EAB940476BC9 /* libPods-Melly.a in Frameworks */,
+				8A6B155365F0AD9DE2737496 /* Pods_Melly.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -101,6 +107,7 @@
 			isa = PBXGroup;
 			children = (
 				BF34F87A28D1915B00EA1C16 /* User.swift */,
+				BF638A8D28DAA96D0031233F /* ResponseData.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -137,6 +144,8 @@
 			children = (
 				BFA3399528C8349B00C1CD4C /* UIKitExtension.swift */,
 				BF34F87C28D19DE700EA1C16 /* CustomComponent.swift */,
+				BF638A9128DAD6050031233F /* FoundationExtension.swift */,
+				BF638A9428DADFD10031233F /* Enum.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -219,7 +228,7 @@
 		D1B2ED6D40475CC2E290BCA9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				4C05BE5F7DE65A72A784FC35 /* libPods-Melly.a */,
+				3A7603E7F416A7C7EC318D97 /* Pods_Melly.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -236,7 +245,6 @@
 				BFF84EA528C6D40B00892CB5 /* Frameworks */,
 				BFF84EA628C6D40B00892CB5 /* Resources */,
 				4993B8C6364770EEF5FFE7B4 /* [CP] Embed Pods Frameworks */,
-				65CE0EAECD005B3B3B59BDC2 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -311,23 +319,6 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Melly/Pods-Melly-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		65CE0EAECD005B3B3B59BDC2 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Melly/Pods-Melly-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Melly/Pods-Melly-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Melly/Pods-Melly-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		DB440BEA8BD619320549F003 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -358,11 +349,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF8F9AD728D064D700EAA49E /* ContentViewController.swift in Sources */,
+				BF638A8E28DAA96D0031233F /* ResponseData.swift in Sources */,
 				BFD6C57628D7373F0092A6E5 /* SignUpTwoViewController.swift in Sources */,
 				BFA3399328C832E500C1CD4C /* MainLoginViewController.swift in Sources */,
 				BFD6C56F28D724160092A6E5 /* SignUpOneViewModel.swift in Sources */,
 				BFF84EB028C6D40B00892CB5 /* SplashViewController.swift in Sources */,
+				BF638A9228DAD6050031233F /* FoundationExtension.swift in Sources */,
 				BFD6C57428D733260092A6E5 /* SignUpTwoViewModel.swift in Sources */,
+				BF638A9528DADFD10031233F /* Enum.swift in Sources */,
 				BFA3399828C836F300C1CD4C /* MainLoginViewModel.swift in Sources */,
 				BFDC1BF928D8096D005ADC6A /* SignUpThreeViewModel.swift in Sources */,
 				BF5A7F4528D0591A000A1B08 /* HomeViewController.swift in Sources */,
@@ -445,7 +439,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -500,7 +494,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -536,6 +530,9 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.neordinary.CMC11th.Melly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -568,6 +565,9 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.neordinary.CMC11th.Melly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;

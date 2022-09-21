@@ -29,6 +29,7 @@ class DefaultLoginViewModel {
         var loginValid = PublishRelay<Bool>()
         var emailValid = PublishRelay<Bool>()
         var pwValid = PublishRelay<Bool>()
+        var loginResponse = PublishRelay<Error?>()
     }
     
     init() {
@@ -36,7 +37,6 @@ class DefaultLoginViewModel {
         input.emailObserver
             .subscribe(onNext: { value in
                 self.user.email = value
-                print(self.user)
             }).disposed(by: disposeBag)
         
         input.emailObserver
@@ -66,10 +66,11 @@ class DefaultLoginViewModel {
             .flatMap(login)
             .subscribe { event in
                 switch event {
-                case .next(let str):
-                    print(str)
+                case .next(let user):
+                    User.loginedUser = user
+                    self.output.loginResponse.accept(nil)
                 case .error(let error):
-                    print(error.localizedDescription)
+                    self.output.loginResponse.accept(error)
                 case .completed:
                     break
                 }
@@ -77,7 +78,7 @@ class DefaultLoginViewModel {
         
     }
     
-    func login(/*id: String, pw: String*/) -> Observable<String> {
+    func login() -> Observable<User> {
         
         return Observable.create { observer in
             let parameters:Parameters = ["email": self.user.email,
@@ -86,12 +87,32 @@ class DefaultLoginViewModel {
                                        "Content-Type":"application/json"]
             
             RxAlamofire.requestData(.post, "http://3.39.218.234/auth/login", parameters: parameters, encoding: JSONEncoding.default, headers: header)
-                .subscribe(onNext: { response in
-                    if let dataStr = String(data: response.1, encoding: .utf8) {
-                        observer.onNext(dataStr)
+                .subscribe({ event in
+                    switch event {
+                    case .next(let response):
+                        let decoder = JSONDecoder()
+                        if let json = try? decoder.decode(ResponseData.self, from: response.1) {
+                            if json.message == "로그인 완료" {
+                                if let dic = json.data?["user"] as? [String:Any] {
+                                 
+                                    if let user = dictionaryToObject(objectType: User.self, dictionary: dic) {
+                                        observer.onNext(user)
+                                    }
+                                }
+                            } else {
+                                let error = MellyError(code: json.code, msg: json.message)
+                                observer.onError(error)
+                            }
+                        } else {
+                            let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
+                            observer.onError(error)
+                        }
+                    case .error(let error):
+                        observer.onError(error)
+                    case .completed:
+                        break
                     }
                 }).disposed(by: self.disposeBag)
-            
             
             return Disposables.create()
         }

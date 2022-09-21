@@ -1,7 +1,9 @@
 # Uncomment the next line to define a global platform for your project
-# platform :ios, '9.0'
+platform :ios, '14.0'
 
 target 'Melly' do
+use_modular_headers!
+use_frameworks!
 
 #Login API
 pod 'GoogleSignIn'
@@ -30,6 +32,4 @@ pod 'DropDown'
 pod 'Firebase/Auth'
 pod 'Firebase/Core'
 pod 'FirebaseAnalytics'
-  # Pods for Melly
-
 end

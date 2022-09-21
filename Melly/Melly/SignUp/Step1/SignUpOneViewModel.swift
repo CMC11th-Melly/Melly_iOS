@@ -89,11 +89,12 @@ class SignUpOneViewModel {
                     .subscribe({ event in
                         switch event {
                         case .next(let response):
-                            if let json = try? JSONSerialization.jsonObject(with: response.1, options: []) as? [String:Any] {
-                                if let isTrue = json["duplicated"] as? Bool {
-                                    observer.onNext(isTrue ? .alreadyExsist : .correct)
+                            let decoder = JSONDecoder()
+                            if let json = try? decoder.decode(ResponseData.self, from: response.1) {
+                                if json.message == "사용해도 좋은 닉네임입니다" {
+                                    observer.onNext(.correct)
                                 } else {
-                                    observer.onNext(.serverError)
+                                    observer.onNext(.alreadyExsist)
                                 }
                             } else {
                                 observer.onNext(.serverError)

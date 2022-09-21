@@ -117,7 +117,7 @@ extension SignUpThreeViewController {
             $0.height.equalTo(20)
         }
         
-        signUpLabel.text = "\(vm.user.name)님의\n성별은 무엇인가요?"
+        signUpLabel.text = "\(vm.user.nickname)님의\n성별은 무엇인가요?"
         layoutView1.addSubview(signUpLabel)
         signUpLabel.snp.makeConstraints {
             $0.top.equalTo(backBT.snp.bottom).offset(56)
@@ -186,7 +186,12 @@ extension SignUpThreeViewController {
         
         menu.selectionAction = { [weak self] (index, item) in
             //선택한 Item을 TextField에 넣어준다.
-            self!.vm.user.gender = item
+            if item == "남성" {
+                self!.vm.user.gender = true
+            } else {
+                self!.vm.user.gender = false
+            }
+            
             self!.selectBT.labelView.text = item
             self!.selectBT.imgView.image = UIImage(named: "dropdown")
         }
@@ -245,6 +250,9 @@ extension SignUpThreeViewController: PHPickerViewControllerDelegate {
                         }
                     }
                     
+                
+                
+                
                 
 //                RxAlamofire.upload(multipartFormData: { multipartFormData in
 //                    multipartFormData.append(pngData, withName: "image", fileName: "test.png", mimeType: "image/png")
