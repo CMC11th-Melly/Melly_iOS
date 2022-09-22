@@ -62,7 +62,6 @@ class MainLoginViewController: UIViewController {
 extension MainLoginViewController {
     
     func setUI() {
-        
         view.backgroundColor = .white
         
         safeArea.addSubview(welcomeLabel)
@@ -172,11 +171,7 @@ extension MainLoginViewController: NaverThirdPartyLoginConnectionDelegate {
         guard let isValidAccessToken = naverLoginInstance?.isValidAccessTokenExpireTimeNow() else { return }
         if !isValidAccessToken { return }
         guard let accessToken = naverLoginInstance?.accessToken else { return }
-        DispatchQueue.main.async {
-            let alertController = UIAlertController(title: "통신", message: accessToken, preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: "확인", style: .cancel, handler: nil))
-            self.present(alertController, animated: true)
-        }
+        vm.input.naverAppleLoginObserver.accept((accessToken, LoginType.naver))
         
     }
     

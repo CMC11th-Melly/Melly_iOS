@@ -21,10 +21,12 @@ class SignUpTwoViewModel {
     
     struct Input {
         let nameObserver = PublishRelay<String>()
+        let nextObserver = PublishRelay<Void>()
     }
     
     struct Output {
         var nameValid = PublishRelay<EmailValid>()
+        let nextEvent = PublishRelay<User>()
     }
     
     init(_ user: User) {
@@ -35,6 +37,10 @@ class SignUpTwoViewModel {
             .subscribe(onNext: { value in
                 self.output.nameValid.accept(value)
             }).disposed(by: disposeBag)
+        
+        input.nextObserver.subscribe(onNext: {
+            self.output.nextEvent.accept(self.user)
+        }).disposed(by: disposeBag)
         
         
     }

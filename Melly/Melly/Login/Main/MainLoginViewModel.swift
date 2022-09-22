@@ -27,7 +27,7 @@ class MainLoginViewModel {
     struct Input {
         let googleLoginObserver = PublishRelay<UIViewController>()
         let kakaoLoginObserver = PublishRelay<Void>()
-        let appleLoginObserver = PublishRelay<Void>()
+        let naverAppleLoginObserver = PublishRelay<(String, LoginType)>()
     }
     
     struct Output {
@@ -61,6 +61,11 @@ class MainLoginViewModel {
             }.disposed(by: disposeBag)
         
         
+        input.naverAppleLoginObserver
+            .flatMap { self.checkUser(token: $0.0, type: $0.1) }
+            .subscribe({ event in
+                
+            }).disposed(by: disposeBag)
         
         
         
@@ -98,7 +103,7 @@ class MainLoginViewModel {
                         switch event {
                         case .next(let token):
                             
-                            self.checkUser(token: token.accessToken, type: "kakao")
+                            self.checkUser(token: token.accessToken, type: LoginType.kakao)
                                 .subscribe { event in
                                     switch event {
                                     case .next(let str):
@@ -122,7 +127,7 @@ class MainLoginViewModel {
                     .subscribe { event in
                         switch event {
                         case .next(let token):
-                            self.checkUser(token: token.accessToken, type: "kakao")
+                            self.checkUser(token: token.accessToken, type: LoginType.kakao)
                                 .subscribe { event in
                                     switch event {
                                     case .next(let str):
@@ -148,19 +153,31 @@ class MainLoginViewModel {
         
     }
     
-    func checkUser(token: String, type: String) -> Observable<String> {
+    func checkUser(token: String, type: LoginType) -> Observable<String> {
         
         return Observable.create { observer in
             
             let parameters:Parameters = ["accessToken": token,
-                                         "snsType": type]
+                                         "provider": type.rawValue]
+            
             let header:HTTPHeaders = [ "Connection":"close",
                                        "Content-Type":"application/json"]
             
+            
             RxAlamofire.requestData(.post, "http://3.39.218.234/auth/social", parameters: parameters, encoding: JSONEncoding.default, headers: header)
-                .subscribe(onNext: { response in
-                    if let dataStr = String(data: response.1, encoding: .utf8) {
-                        observer.onNext(dataStr)
+                .subscribe({ event in
+                    switch event {
+                    case .next(let response):
+                        let decoder = JSONDecoder()
+                        if let json = try? decoder.decode(ResponseData.self, from: response.1) {
+                            print(json)
+                        } else {
+                            
+                        }
+                    case .error(let error):
+                        observer.onError(error)
+                    case .completed:
+                        break
                     }
                 }).disposed(by: self.disposeBag)
             

@@ -17,6 +17,10 @@
 		BF638A8E28DAA96D0031233F /* ResponseData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF638A8D28DAA96D0031233F /* ResponseData.swift */; };
 		BF638A9228DAD6050031233F /* FoundationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF638A9128DAD6050031233F /* FoundationExtension.swift */; };
 		BF638A9528DADFD10031233F /* Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF638A9428DADFD10031233F /* Enum.swift */; };
+		BF63C38A28DBED2E00A37CF3 /* Pretendard-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = BF63C38628DBED2E00A37CF3 /* Pretendard-Bold.otf */; };
+		BF63C38B28DBED2E00A37CF3 /* Pretendard-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = BF63C38728DBED2E00A37CF3 /* Pretendard-Medium.otf */; };
+		BF63C38C28DBED2E00A37CF3 /* Pretendard-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = BF63C38828DBED2E00A37CF3 /* Pretendard-Regular.otf */; };
+		BF63C38D28DBED2E00A37CF3 /* Pretendard-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = BF63C38928DBED2E00A37CF3 /* Pretendard-SemiBold.otf */; };
 		BF7E3CCA28D43F0E007C3236 /* DefaultLoginVIewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7E3CC928D43F0E007C3236 /* DefaultLoginVIewModel.swift */; };
 		BF8F9AD728D064D700EAA49E /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F9AD628D064D700EAA49E /* ContentViewController.swift */; };
 		BFA3398F28C82A4E00C1CD4C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFA3398E28C82A4E00C1CD4C /* GoogleService-Info.plist */; };
@@ -49,6 +53,10 @@
 		BF638A8D28DAA96D0031233F /* ResponseData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseData.swift; sourceTree = "<group>"; };
 		BF638A9128DAD6050031233F /* FoundationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoundationExtension.swift; sourceTree = "<group>"; };
 		BF638A9428DADFD10031233F /* Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enum.swift; sourceTree = "<group>"; };
+		BF63C38628DBED2E00A37CF3 /* Pretendard-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Bold.otf"; sourceTree = "<group>"; };
+		BF63C38728DBED2E00A37CF3 /* Pretendard-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.otf"; sourceTree = "<group>"; };
+		BF63C38828DBED2E00A37CF3 /* Pretendard-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.otf"; sourceTree = "<group>"; };
+		BF63C38928DBED2E00A37CF3 /* Pretendard-SemiBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-SemiBold.otf"; sourceTree = "<group>"; };
 		BF7E3CC928D43F0E007C3236 /* DefaultLoginVIewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLoginVIewModel.swift; sourceTree = "<group>"; };
 		BF8F9AD628D064D700EAA49E /* ContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewController.swift; sourceTree = "<group>"; };
 		BFA3398E28C82A4E00C1CD4C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -130,6 +138,17 @@
 			path = Default;
 			sourceTree = "<group>";
 		};
+		BF63C38528DBECA700A37CF3 /* Font */ = {
+			isa = PBXGroup;
+			children = (
+				BF63C38628DBED2E00A37CF3 /* Pretendard-Bold.otf */,
+				BF63C38728DBED2E00A37CF3 /* Pretendard-Medium.otf */,
+				BF63C38828DBED2E00A37CF3 /* Pretendard-Regular.otf */,
+				BF63C38928DBED2E00A37CF3 /* Pretendard-SemiBold.otf */,
+			);
+			path = Font;
+			sourceTree = "<group>";
+		};
 		BFA3399028C832B900C1CD4C /* Login */ = {
 			isa = PBXGroup;
 			children = (
@@ -208,6 +227,7 @@
 		BFF84EAA28C6D40B00892CB5 /* Melly */ = {
 			isa = PBXGroup;
 			children = (
+				BF63C38528DBECA700A37CF3 /* Font */,
 				BFD6C56B28D723520092A6E5 /* SignUp */,
 				BFBDC76828C9A98400DA6330 /* Melly.entitlements */,
 				BF34F87928D1915000EA1C16 /* Model */,
@@ -294,6 +314,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFF84EB828C6D40D00892CB5 /* LaunchScreen.storyboard in Resources */,
+				BF63C38C28DBED2E00A37CF3 /* Pretendard-Regular.otf in Resources */,
+				BF63C38D28DBED2E00A37CF3 /* Pretendard-SemiBold.otf in Resources */,
+				BF63C38B28DBED2E00A37CF3 /* Pretendard-Medium.otf in Resources */,
+				BF63C38A28DBED2E00A37CF3 /* Pretendard-Bold.otf in Resources */,
 				BFA3398F28C82A4E00C1CD4C /* GoogleService-Info.plist in Resources */,
 				BFF84EB528C6D40D00892CB5 /* Assets.xcassets in Resources */,
 			);

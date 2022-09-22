@@ -83,6 +83,7 @@ class DefaultLoginViewModel {
         return Observable.create { observer in
             let parameters:Parameters = ["email": self.user.email,
                                          "password": self.user.pw]
+            
             let header:HTTPHeaders = [ "Connection":"close",
                                        "Content-Type":"application/json"]
             

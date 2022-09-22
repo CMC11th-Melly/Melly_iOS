@@ -28,16 +28,50 @@ class SignUpThreeViewController: UIViewController {
     
     let signUpLabel = UILabel().then {
         
-        $0.font = UIFont.systemFont(ofSize: 26)
+        $0.font = UIFont.init(name: "Pretendard-Bold", size: 26)
         $0.textColor = .black
         $0.textAlignment = .left
         $0.numberOfLines = 2
     }
     
-    let selectBT = DropMenuButton("성별을 선택해주세요.")
+    let profileLb = UILabel().then {
+        $0.text = "프로필"
+        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+    }
     
-    let menu = DropDown().then {
+    let profileView = UIImageView(image: UIImage(named: "profile")).then {
+        $0.isUserInteractionEnabled = true
+        $0.layer.cornerRadius = 65
+        $0.clipsToBounds = true
+    }
+    
+    let profileSelectBT = UIButton(type: .custom).then {
+        $0.setImage(UIImage(named: "camera"), for: .normal)
+    }
+    
+    let genderLb = UILabel().then {
+        $0.text = "성별"
+        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+    }
+    
+    let genderSelectBT = DropMenuButton("성별")
+    
+    let genderMenu = DropDown().then {
         $0.dataSource = ["남자", "여자"]
+    }
+    
+    let ageLb = UILabel().then {
+        $0.text = "연령"
+        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+    }
+    
+    let ageSelectBT = DropMenuButton("연령")
+    
+    let ageMenu = DropDown().then {
+        $0.dataSource = ["10대", "20대", "30대", "40대", "50대", "60대 이상"]
     }
     
     let recomandLabel = UILabel().then {
@@ -49,21 +83,17 @@ class SignUpThreeViewController: UIViewController {
         $0.textAlignment = .center
     }
     
-    let selectPhotoBT = UIButton(type: .custom).then {
-        $0.setTitle("포토", for: .normal)
-        $0.setTitleColor(.black, for: .normal)
-    }
-    
     let skipButton = UIButton(type: .custom).then {
         let title = "나중에 할게요"
         let attributedString = NSMutableAttributedString(string: title)
+        let font = UIFont(name: "Pretendard-SemiBold", size: 16)!
         attributedString.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: NSRange(location: 0, length: title.count))
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: title.count))
+        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1), range: NSRange(location: 0, length: title.count))
         $0.setAttributedTitle(attributedString, for: .normal)
     }
     
-    let nextBT = CustomButton(title: "다음").then {
-        $0.isEnabled = false
-    }
+    let nextBT = CustomButton(title: "완료")
     
     init(vm: SignUpThreeViewModel) {
         self.vm = vm
@@ -117,36 +147,69 @@ extension SignUpThreeViewController {
             $0.height.equalTo(20)
         }
         
-        signUpLabel.text = "\(vm.user.nickname)님의\n성별은 무엇인가요?"
+        signUpLabel.text = "\(vm.user.nickname)님의\n프로필을 완성해볼까요?"
         layoutView1.addSubview(signUpLabel)
         signUpLabel.snp.makeConstraints {
-            $0.top.equalTo(backBT.snp.bottom).offset(56)
+            $0.top.equalTo(backBT.snp.bottom).offset(37)
             $0.leading.equalToSuperview().offset(30)
         }
         
-        menu.cellHeight = 56
-        menu.cornerRadius = 12
-        menu.anchorView = selectBT
-        menu.bottomOffset = CGPoint(x: 0, y: (menu.anchorView?.plainView.bounds.height)!)
-        
-        layoutView1.addSubview(selectBT)
-        selectBT.snp.makeConstraints {
-            $0.top.equalTo(signUpLabel.snp.bottom).offset(62)
+        layoutView1.addSubview(profileLb)
+        profileLb.snp.makeConstraints {
+            $0.top.equalTo(signUpLabel.snp.bottom).offset(28)
             $0.leading.equalToSuperview().offset(30)
+        }
+        
+        layoutView1.addSubview(profileView)
+        profileView.snp.makeConstraints {
+            $0.top.equalTo(profileLb.snp.bottom).offset(28)
+            $0.centerX.equalToSuperview()
+            $0.width.height.equalTo(130)
+        }
+        
+        layoutView1.addSubview(profileSelectBT)
+        profileSelectBT.snp.makeConstraints {
+            $0.bottom.trailing.equalTo(profileView)
+            $0.width.height.equalTo(42)
+        }
+        
+        layoutView1.addSubview(genderLb)
+        genderLb.snp.makeConstraints {
+            $0.top.equalTo(profileView.snp.bottom).offset(50)
+            $0.leading.equalToSuperview().offset(30)
+        }
+        
+        layoutView1.addSubview(ageLb)
+        ageLb.snp.makeConstraints {
+            $0.top.equalTo(profileView.snp.bottom).offset(50)
+            $0.leading.equalToSuperview().offset(self.view.frame.width / 2 + 8)
+        }
+        
+        layoutView1.addSubview(genderSelectBT)
+        genderSelectBT.snp.makeConstraints {
+            $0.top.equalTo(genderLb.snp.bottom).offset(7)
+            $0.leading.equalToSuperview().offset(30)
+            $0.height.equalTo(58)
+            $0.width.equalTo((self.view.frame.width / 2) - 38)
+        }
+        
+        genderMenu.anchorView = genderSelectBT
+        genderMenu.cellHeight = 56
+        genderMenu.cornerRadius = 12
+        genderMenu.direction = .bottom
+        
+        layoutView1.addSubview(ageSelectBT)
+        ageSelectBT.snp.makeConstraints {
+            $0.top.equalTo(genderLb.snp.bottom).offset(7)
             $0.trailing.equalToSuperview().offset(-30)
             $0.height.equalTo(58)
+            $0.width.equalTo((self.view.frame.width / 2) - 38)
         }
         
-        layoutView1.addSubview(selectPhotoBT)
-        selectPhotoBT.snp.makeConstraints {
-            $0.top.equalTo(selectBT.snp.bottom).offset(20)
-            $0.leading.equalToSuperview().offset(30)
-            $0.trailing.equalToSuperview().offset(-30)
-            $0.height.equalTo(58)
-        }
-        
-        
-        
+        ageMenu.anchorView = ageSelectBT
+        ageMenu.cellHeight = 56
+        ageMenu.cornerRadius = 12
+        ageMenu.bottomOffset = CGPoint(x: 0, y: genderMenu.anchorView!.plainView.bounds.height)
         
         layoutView2.addSubview(recomandLabel)
         recomandLabel.snp.makeConstraints {
@@ -170,6 +233,7 @@ extension SignUpThreeViewController {
             $0.height.equalTo(56)
         }
         
+        
     }
     
     func bind() {
@@ -178,49 +242,98 @@ extension SignUpThreeViewController {
     }
     
     func bindInput() {
-        selectBT.rx.tap
+        genderSelectBT.rx.tap
             .subscribe(onNext: {
-                self.menu.show()
-                self.selectBT.imgView.image = UIImage(named: "dropup")
+                self.genderMenu.show()
+                self.genderSelectBT.imgView.image = UIImage(named: "dropup")
             }).disposed(by: disposeBag)
         
-        menu.selectionAction = { [weak self] (index, item) in
+        genderMenu.selectionAction = { [weak self] (index, item) in
             //선택한 Item을 TextField에 넣어준다.
-            if item == "남성" {
-                self!.vm.user.gender = true
-            } else {
-                self!.vm.user.gender = false
-            }
-            
-            self!.selectBT.labelView.text = item
-            self!.selectBT.imgView.image = UIImage(named: "dropdown")
+            self!.vm.input.genderObserver.accept(item)
+            self!.genderSelectBT.labelView.text = item
+            self!.genderSelectBT.imgView.image = UIImage(named: "dropdown")
         }
-        
-        selectPhotoBT.rx.tap
-            .subscribe(onNext: {
-                var config = PHPickerConfiguration(photoLibrary: .shared())
-                config.selectionLimit = 1
-                config.filter = PHPickerFilter.any(of: [.images])
-                let vc = PHPickerViewController(configuration: config)
-                vc.delegate = self
-                self.present(vc, animated: true)
-            }).disposed(by: disposeBag)
         
         // 취소 시 처리
-        menu.cancelAction = { [weak self] in
+        genderMenu.cancelAction = { [weak self] in
             //빈 화면 터치 시 DropDown이 사라지고 아이콘을 원래대로 변경
-            self!.selectBT.imgView.image = UIImage(named: "dropdown")
+            self!.genderSelectBT.imgView.image = UIImage(named: "dropdown")
         }
+        
+        ageSelectBT.rx.tap
+            .subscribe(onNext: {
+                self.ageMenu.show()
+                self.ageSelectBT.imgView.image = UIImage(named: "dropup")
+            }).disposed(by: disposeBag)
+        
+        ageMenu.selectionAction = { [weak self] (index, item) in
+            self!.vm.input.ageObserver.accept(item)
+            self!.ageSelectBT.labelView.text = item
+            self!.ageSelectBT.imgView.image = UIImage(named: "dropdown")
+        }
+        
+        ageMenu.cancelAction = { [weak self] in
+            self!.ageSelectBT.imgView.image = UIImage(named: "dropdown")
+        }
+        
+        profileSelectBT.rx.tap
+            .subscribe(onNext: {
+                
+                let alert = UIAlertController(title: "프로필 사진 추가하기", message: nil, preferredStyle: .actionSheet)
+                
+                let pickerAction = UIAlertAction(title: "앨범에서 사진 선택", style: .default) { _ in
+                    var config = PHPickerConfiguration(photoLibrary: .shared())
+                    config.selectionLimit = 1
+                    config.filter = PHPickerFilter.any(of: [.images])
+                    let vc = PHPickerViewController(configuration: config)
+                    vc.delegate = self
+                    self.present(vc, animated: true)
+                }
+                
+                let cameraAction = UIAlertAction(title: "사진 촬영하기", style: .default) { _ in
+                    let picker = UIImagePickerController()
+                    picker.sourceType = .camera
+                    picker.delegate = self
+                    self.present(picker, animated: true)
+                }
+                
+                let defaultAction = UIAlertAction(title: "기본 이미지로 변경", style: .default) { _ in
+                    self.vm.input.profileImgObserver.accept(nil)
+                }
+                
+                let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+                
+                alert.addAction(pickerAction)
+                alert.addAction(cameraAction)
+                alert.addAction(defaultAction)
+                alert.addAction(cancelAction)
+                self.present(alert, animated: true)
+                
+            }).disposed(by: disposeBag)
         
     }
     
     func bindOutput() {
         
+        vm.output.imageValue.asDriver(onErrorJustReturn: nil)
+            .drive(onNext: { image in
+                
+                if let image = image {
+                    DispatchQueue.main.async {
+                        self.profileView.image = image
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        self.profileView.image = UIImage(named: "profile")
+                    }
+                }
+            }).disposed(by: disposeBag)
     }
     
 }
 
-extension SignUpThreeViewController: PHPickerViewControllerDelegate {
+extension SignUpThreeViewController: PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true, completion: nil)
@@ -230,50 +343,23 @@ extension SignUpThreeViewController: PHPickerViewControllerDelegate {
                     return
                 }
                 
-                let header:HTTPHeaders = [
-                            "Content-Type": "multipart/form-data"
-                        ]
-                
-                let pngData = image.pngData() ?? Data()
-                let realUrl = URL(string: "http://3.39.218.234/api/imageTest")
-                let url:Alamofire.URLConvertible = realUrl!
-                
-                AF.upload(multipartFormData: { multipartFormData in
-                    multipartFormData.append(pngData, withName: "image", fileName: "test.png", mimeType: "image/png")
-                }, to: url, method: .post, headers: header)
-                    .responseData { response in
-                        switch response.result {
-                        case .success(let data):
-                            print("성공\(data)")
-                        case .failure(let error):
-                            print(error)
-                        }
-                    }
-                    
-                
-                
-                
-                
-//                RxAlamofire.upload(multipartFormData: { multipartFormData in
-//                    multipartFormData.append(pngData, withName: "image", fileName: "test.png", mimeType: "image/png")
-//                }, to: url, method: .post, headers: header)
-//
-//                    .subscribe({ event in
-//                        switch event {
-//                        case .next(let response):
-//                            print(response)
-//                        case .onError(let error):
-//                            print(error)
-//                        case .completed:
-//                            break
-//                        }
-//
-//                    }).disposed(by: disposeBag)
-//
-                    
+                self.vm.input.profileImgObserver.accept(image)
+
             }
         }
     }
     
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
+            return
+        }
+        picker.dismiss(animated: true)
+        vm.input.profileImgObserver.accept(image)
+        
+    }
     
 }

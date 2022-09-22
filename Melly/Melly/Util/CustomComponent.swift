@@ -19,8 +19,9 @@ class CustomButton: UIButton {
         self.init()
         self.setTitle(title, for: .normal)
         self.layer.cornerRadius = 12
-        self.titleLabel?.font = UIFont.systemFont(ofSize: 16)
-        self.backgroundColor = UIColor.gray
+        self.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+        self.titleLabel?.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        self.backgroundColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1)
     }
     
     required init?(coder: NSCoder) {
@@ -60,7 +61,7 @@ class BackButton: UIButton {
     
     convenience init() {
         self.init(frame: .zero)
-        self.setImage(UIImage(systemName: "arrow.backward"), for: .normal)
+        self.setImage(UIImage(named: "back"), for: .normal)
     }
     
     required init?(coder: NSCoder) {
@@ -74,8 +75,8 @@ class AlertLabel: UIView {
     let imageView = UIImageView(image: UIImage(systemName: "exclamationmark.circle.fill"))
     let labelView = UILabel().then {
         $0.text = ""
-        $0.textColor = .black
-        $0.font = UIFont.systemFont(ofSize: 16)
+        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-Regular", size: 16)
     }
     
     override init(frame: CGRect) {
@@ -108,8 +109,8 @@ class DropMenuButton: UIButton {
     
     let labelView = UILabel().then {
         $0.text = ""
-        $0.font = UIFont.systemFont(ofSize: 16)
-        $0.textColor = .gray
+        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-Regular", size: 16)
     }
     
     let imgView = UIImageView(image: UIImage(named: "dropdown"))
@@ -129,7 +130,7 @@ class DropMenuButton: UIButton {
         addSubview(imgView)
         imgView.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.trailing.equalToSuperview().offset(-26)
+            $0.trailing.equalToSuperview().offset(-31)
         }
         
     }
