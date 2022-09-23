@@ -12,7 +12,7 @@ struct User: Codable, Identifiable {
     static var loginedUser:User?
     
     enum Codingkeys: String, CodingKey {
-        case id = "uid"
+        case uid
         case email
         case pw = "password"
         case nickname
@@ -24,18 +24,19 @@ struct User: Codable, Identifiable {
     }
     
     var id = UUID().uuidString
+    var uid:String = ""
     var email:String = ""
     var pw:String = ""
     var nickname:String = ""
-    var gender:String = ""
-    var provider:String = "DEFAULT"
+    var gender:String = "DEFAULT"
+    var provider:String
     var userSeq = 1
     var profileImage:String? = nil
     var ageGroup:String = ""
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.id = (try? container.decode(String.self, forKey: .id)) ?? ""
+        self.uid = (try? container.decode(String.self, forKey: .uid)) ?? ""
         self.email = (try? container.decode(String.self, forKey: .email)) ?? ""
         self.pw = (try? container.decode(String.self, forKey: .pw)) ?? ""
         self.nickname = (try? container.decode(String.self, forKey: .nickname)) ?? ""
@@ -46,7 +47,10 @@ struct User: Codable, Identifiable {
         self.ageGroup = (try? container.decode(String.self, forKey: .ageGroup)) ?? ""
     }
     
-    init() {}
+    init(_ provider:LoginType = .Default, uid: String = "" ) {
+        self.provider = provider.rawValue
+        self.uid = uid
+    }
     
     
 }

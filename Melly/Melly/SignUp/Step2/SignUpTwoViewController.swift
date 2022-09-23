@@ -22,13 +22,13 @@ class SignUpTwoViewController: UIViewController {
 
     let signUpLabel = UILabel().then {
         $0.text = "MELLY에서\n사용할 이름은 무엇인가요?"
-        $0.font = UIFont.systemFont(ofSize: 26)
-        $0.textColor = .black
+        $0.font = UIFont(name: "Pretendard-Bold", size: 26)
+        $0.textColor = UIColor(red: 0.098, green: 0.122, blue: 0.157, alpha: 1)
         $0.textAlignment = .left
         $0.numberOfLines = 2
     }
 
-    let nameTf = CustomTetField(title: "이름을 입력해주세요.")
+    let nameTf = CustomTextField(title: "이름을 입력해주세요.")
 
     let alertView = AlertLabel().then {
         $0.isHidden = true
@@ -116,7 +116,6 @@ extension SignUpTwoViewController {
         }
 
 
-
     }
 
     func bind() {
@@ -135,9 +134,9 @@ extension SignUpTwoViewController {
             .bind(to: vm.input.nameObserver)
             .disposed(by: disposeBag)
         
-        nextBT.rx.tap.subscribe(onNext: {
-            
-        }).disposed(by: disposeBag)
+        nextBT.rx.tap
+            .bind(to: vm.input.nextObserver)
+            .disposed(by: disposeBag)
     }
 
     func bindOutput() {
@@ -159,6 +158,14 @@ extension SignUpTwoViewController {
 
         }).disposed(by: disposeBag)
 
+        vm.output.nextEvent.asSignal()
+            .emit(onNext: { user in
+                let vm = SignUpThreeViewModel(user)
+                let vc = SignUpThreeViewController(vm: vm)
+                vc.modalPresentationStyle = .fullScreen
+                vc.modalTransitionStyle = .crossDissolve
+                self.present(vc, animated: true)
+            }).disposed(by: disposeBag)
 
     }
 

@@ -83,8 +83,11 @@ class MainLoginViewModel {
                     observe.onError(error)
                 }
                 
-                if let userToken = user?.authentication.idToken {
-                    observe.onNext(userToken)
+                if let userToken = user?.authentication.accessToken {
+                    self.checkUser(token: userToken, type: .google)
+                        .subscribe(onNext: { value in
+                            
+                        }).disposed(by: self.disposeBag)
                 }
             }
             

@@ -22,39 +22,33 @@ class SignUpOneViewController: UIViewController {
     
     let loginLabel = UILabel().then {
         $0.text = "회원가입"
-        $0.font = UIFont.systemFont(ofSize: 26)
-        $0.textColor = .black
+        $0.font =  UIFont(name: "Pretendard-Bold", size: 26)
+        $0.textColor = UIColor(red: 0.098, green: 0.122, blue: 0.157, alpha: 1)
     }
     
     let emailLabel = UILabel().then {
-        $0.text = "아이디"
-        $0.font = UIFont.systemFont(ofSize: 16)
-        $0.textColor = .black
+        $0.text = "이메일 *"
+        $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
     }
     
-    let emailTf = CustomTetField(title: "이메일 주소를 입력해주세요.")
+    let emailTf = CustomTextField(title: "이메일 주소를 입력해주세요.")
     
     let pwLabel = UILabel().then {
-        $0.text = "비밀번호"
-        $0.font = UIFont.systemFont(ofSize: 16)
-        $0.textColor = .black
-        
+        $0.text = "비밀번호 *"
+        $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
     }
     
-    let pwTf = CustomTetField(title: "비밀번호를 입력해주세요.").then {
-        $0.isSecureTextEntry = true
-    }
+    let pwTf = CustomTextField(title: "비밀번호를 입력해주세요.", isSecure: true)
     
     let pwCheckLabel = UILabel().then {
-        $0.text = "비밀번호 확인"
-        $0.font = UIFont.systemFont(ofSize: 16)
-        $0.textColor = .black
-        
+        $0.text = "비밀번호 확인 *"
+        $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
     }
     
-    let pwCheckTf = CustomTetField(title: "비밀번호를 입력해주세요.").then {
-        $0.isSecureTextEntry = true
-    }
+    let pwCheckTf = CustomTextField(title: "비밀번호를 입력해주세요.", isSecure: true)
     
     let alertView = AlertLabel().then {
         $0.isHidden = true
@@ -196,13 +190,7 @@ extension SignUpOneViewController {
             .disposed(by: disposeBag)
         
         nextBT.rx.tap
-            .subscribe(onNext: {
-                let vm = SignUpTwoViewModel(self.vm.user)
-                let vc = SignUpTwoViewController(vm: vm)
-                vc.modalTransitionStyle = .crossDissolve
-                vc.modalPresentationStyle = .fullScreen
-                self.present(vc, animated: true)
-            })
+            .bind(to: vm.input.nextObserver)
             .disposed(by: disposeBag)
     }
     
@@ -211,16 +199,10 @@ extension SignUpOneViewController {
         vm.output.emailValid.asDriver(onErrorJustReturn: .notAvailable).drive(onNext: { valid in
             self.alertView.labelView.text = valid.rawValue
             switch valid {
-            case .notAvailable:
-                self.alertView.isHidden = false
             case .correct:
                 self.alertView.isHidden = true
-            case .serverError:
+            default:
                 self.alertView.isHidden = false
-            case .alreadyExsist:
-                self.alertView.isHidden = false
-            case .nameNotAvailable:
-                break
             }
             
         }).disposed(by: disposeBag)
@@ -259,6 +241,15 @@ extension SignUpOneViewController {
                     self.nextBT.isEnabled = false
                     self.nextBT.backgroundColor = .gray
                 }
+            }).disposed(by: disposeBag)
+        
+        vm.output.userValue.asSignal()
+            .emit(onNext: { user in
+                let vm = SignUpTwoViewModel(user)
+                let vc = SignUpTwoViewController(vm: vm)
+                vc.modalTransitionStyle = .crossDissolve
+                vc.modalPresentationStyle = .fullScreen
+                self.present(vc, animated: true)
             }).disposed(by: disposeBag)
         
     }

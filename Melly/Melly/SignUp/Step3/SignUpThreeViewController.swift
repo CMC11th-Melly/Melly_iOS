@@ -42,7 +42,7 @@ class SignUpThreeViewController: UIViewController {
     
     let profileView = UIImageView(image: UIImage(named: "profile")).then {
         $0.isUserInteractionEnabled = true
-        $0.layer.cornerRadius = 65
+        $0.layer.cornerRadius = 22
         $0.clipsToBounds = true
     }
     

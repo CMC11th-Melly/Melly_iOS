@@ -23,9 +23,16 @@ class MainLoginViewController: UIViewController {
     let disposeBag = DisposeBag()
     
     let welcomeLabel = UILabel().then {
-        $0.text = "어서오세요,\n소중한 메모리를 담아보세요!"
-        $0.font = UIFont.systemFont(ofSize: 26)
-        $0.textColor = .black
+        let text = "어서오세요,\n소중한 메모리를 담아보세요!"
+        let attrString = NSMutableAttributedString(string: text)
+        let font = UIFont(name: "Pretendard-Bold", size: 26)!
+        let color = UIColor(red: 0.098, green: 0.122, blue: 0.157, alpha: 1)
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 5
+        attrString.addAttribute(.foregroundColor, value: color, range: NSRange(location: 0, length: text.count))
+        attrString.addAttribute(.font, value: font, range: NSRange(location: 0, length: text.count))
+        attrString.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: text.count))
+        $0.attributedText = attrString
         $0.textAlignment = .center
         $0.numberOfLines = 2
     }
@@ -192,6 +199,7 @@ extension MainLoginViewController: NaverThirdPartyLoginConnectionDelegate {
     }
 }
 
+
 extension MainLoginViewController: ASAuthorizationControllerDelegate {
     
     func appleLogin() {
@@ -205,17 +213,8 @@ extension MainLoginViewController: ASAuthorizationControllerDelegate {
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         if let credential = authorization.credential as? ASAuthorizationAppleIDCredential {
-            let user = credential.user
-            print("👨‍🍳 \(user)")
-            if let email = credential.email {
-                print("✉️ \(email)")
-            }
             if let token = String(data: credential.identityToken ?? Data(), encoding: .utf8) {
-                DispatchQueue.main.async {
-                    let alertController = UIAlertController(title: "통신", message: token, preferredStyle: .alert)
-                    alertController.addAction(UIAlertAction(title: "확인", style: .cancel, handler: nil))
-                    self.present(alertController, animated: true)
-                }
+                vm.input.naverAppleLoginObserver.accept((token, .apple))
             }
         }
     }

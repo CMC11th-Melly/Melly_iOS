@@ -11,13 +11,6 @@ import RxCocoa
 import Alamofire
 import RxAlamofire
 
-enum EmailValid:String {
-    case notAvailable = "올바른 이메일 형식이 아닙니다."
-    case alreadyExsist = "이미 존재하는 아이디입니다."
-    case serverError = "네트워크 상태를 확인해주세요."
-    case correct = ""
-    case nameNotAvailable = "이름은 한글, 영어만 입력 가능해요."
-}
 
 class SignUpOneViewModel {
     
@@ -31,6 +24,7 @@ class SignUpOneViewModel {
         let emailObserver = PublishRelay<String>()
         let pwObserver = PublishRelay<String>()
         let pwCheckObserver = PublishRelay<String>()
+        let nextObserver = PublishRelay<Void>()
     }
     
     struct Output {
@@ -38,6 +32,7 @@ class SignUpOneViewModel {
         var emailValid = PublishRelay<EmailValid>()
         var pwValid = PublishRelay<Bool>()
         var pwCheckValid = PublishRelay<Bool>()
+        let userValue = PublishRelay<User>()
     }
     
     init() {
@@ -72,6 +67,10 @@ class SignUpOneViewModel {
                 self.output.nextValid.accept(valid)
             }).disposed(by: disposeBag)
         
+        input.nextObserver.subscribe(onNext: {
+            self.output.userValue.accept(self.user)
+        }).disposed(by: disposeBag)
+        
         
     }
     
@@ -91,7 +90,8 @@ class SignUpOneViewModel {
                         case .next(let response):
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: response.1) {
-                                if json.message == "사용해도 좋은 닉네임입니다" {
+                                
+                                if json.message == "사용해도 좋은 이메일입니다" {
                                     observer.onNext(.correct)
                                 } else {
                                     observer.onNext(.alreadyExsist)

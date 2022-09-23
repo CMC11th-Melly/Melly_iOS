@@ -27,10 +27,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         instance?.isInAppOauthEnable = true
         instance?.isNaverAppOauthEnable = true
-        instance?.serviceUrlScheme = kServiceAppUrlScheme
-        instance?.consumerKey = kConsumerKey
-        instance?.consumerSecret = kConsumerSecret
-        instance?.appName = kServiceAppName
+        instance?.serviceUrlScheme = "naverlogin"
+        instance?.consumerKey = "jtQc03hW31ZbOhWbv35m"
+        instance?.consumerSecret = "SabQEJMs1l"
+        instance?.appName = "Melly"
         
         NMFAuthManager.shared().clientId = "4f8brsaqzw"
         

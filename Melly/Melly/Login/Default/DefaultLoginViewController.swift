@@ -22,43 +22,40 @@ class DefaultLoginViewController: UIViewController {
     
     let loginLabel = UILabel().then {
         $0.text = "로그인"
-        $0.font = UIFont.systemFont(ofSize: 26)
-        $0.textColor = .black
+        $0.font = UIFont(name: "Pretendard-Bold", size: 26)
+        $0.textColor = UIColor(red: 0.098, green: 0.122, blue: 0.157, alpha: 1)
     }
     
     let emailLabel = UILabel().then {
         $0.text = "아이디"
-        $0.font = UIFont.systemFont(ofSize: 16)
-        $0.textColor = .black
+        $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
     }
     
-    let emailTf = CustomTetField(title: "이메일 주소를 입력해주세요.")
+    let emailTf = CustomTextField(title: "이메일 주소를 입력해주세요.")
     
     let pwLabel = UILabel().then {
         $0.text = "비밀번호"
-        $0.font = UIFont.systemFont(ofSize: 16)
-        $0.textColor = .black
-        
+        $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
     }
     
-    let pwTf = CustomTetField(title: "비밀번호를 입력해주세요.").then {
-        $0.isSecureTextEntry = true
-    }
+    let pwTf = CustomTextField(title: "비밀번호를 입력해주세요.", isSecure: true)
     
     let findEmailBT = UIButton(type: .custom).then {
         $0.setTitle("아이디 찾기", for: .normal)
-        $0.setTitleColor(.black, for: .normal)
-        $0.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        $0.setTitleColor(UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1), for: .normal)
+        $0.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 14)
     }
     
     let separator = UIView().then {
-        $0.backgroundColor = .gray
+        $0.backgroundColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
     }
     
     let findPwBT = UIButton(type: .custom).then {
         $0.setTitle("비밀번호 찾기", for: .normal)
-        $0.setTitleColor(.black, for: .normal)
-        $0.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        $0.setTitleColor(UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1), for: .normal)
+        $0.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 14)
     }
     
     let alertView = AlertLabel().then {

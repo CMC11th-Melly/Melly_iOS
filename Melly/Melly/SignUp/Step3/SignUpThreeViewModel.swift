@@ -34,9 +34,9 @@ class SignUpThreeViewModel {
         
         input.ageObserver.subscribe(onNext: { value in
             if value == "남성" {
-                self.user.gender = "male"
+                self.user.gender = "MALE"
             } else {
-                self.user.gender = "female"
+                self.user.gender = "FEMALE"
             }
         }).disposed(by: disposeBag)
         

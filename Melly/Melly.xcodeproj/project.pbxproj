@@ -12,6 +12,8 @@
 		BF34F87B28D1915B00EA1C16 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF34F87A28D1915B00EA1C16 /* User.swift */; };
 		BF34F87D28D19DE700EA1C16 /* CustomComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF34F87C28D19DE700EA1C16 /* CustomComponent.swift */; };
 		BF34F88128D1A60400EA1C16 /* DefaultLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF34F88028D1A60300EA1C16 /* DefaultLoginViewController.swift */; };
+		BF3F0E9A28DD701900AED582 /* SignUpZeroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3F0E9928DD701800AED582 /* SignUpZeroViewController.swift */; };
+		BF3F0E9C28DD70F500AED582 /* SignUpZeroViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3F0E9B28DD70F400AED582 /* SignUpZeroViewModel.swift */; };
 		BF5A7F4528D0591A000A1B08 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5A7F4428D0591A000A1B08 /* HomeViewController.swift */; };
 		BF5A7F4728D05926000A1B08 /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5A7F4628D05926000A1B08 /* ContainerViewController.swift */; };
 		BF638A8E28DAA96D0031233F /* ResponseData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF638A8D28DAA96D0031233F /* ResponseData.swift */; };
@@ -48,6 +50,8 @@
 		BF34F87A28D1915B00EA1C16 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		BF34F87C28D19DE700EA1C16 /* CustomComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomComponent.swift; sourceTree = "<group>"; };
 		BF34F88028D1A60300EA1C16 /* DefaultLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLoginViewController.swift; sourceTree = "<group>"; };
+		BF3F0E9928DD701800AED582 /* SignUpZeroViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpZeroViewController.swift; sourceTree = "<group>"; };
+		BF3F0E9B28DD70F400AED582 /* SignUpZeroViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpZeroViewModel.swift; sourceTree = "<group>"; };
 		BF5A7F4428D0591A000A1B08 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		BF5A7F4628D05926000A1B08 /* ContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerViewController.swift; sourceTree = "<group>"; };
 		BF638A8D28DAA96D0031233F /* ResponseData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseData.swift; sourceTree = "<group>"; };
@@ -138,6 +142,15 @@
 			path = Default;
 			sourceTree = "<group>";
 		};
+		BF3F0E9828DD6FF100AED582 /* Step0 */ = {
+			isa = PBXGroup;
+			children = (
+				BF3F0E9928DD701800AED582 /* SignUpZeroViewController.swift */,
+				BF3F0E9B28DD70F400AED582 /* SignUpZeroViewModel.swift */,
+			);
+			path = Step0;
+			sourceTree = "<group>";
+		};
 		BF63C38528DBECA700A37CF3 /* Font */ = {
 			isa = PBXGroup;
 			children = (
@@ -172,6 +185,7 @@
 		BFD6C56B28D723520092A6E5 /* SignUp */ = {
 			isa = PBXGroup;
 			children = (
+				BF3F0E9828DD6FF100AED582 /* Step0 */,
 				BFD6C57228D72DC60092A6E5 /* Step3 */,
 				BFD6C57128D72DBF0092A6E5 /* Step2 */,
 				BFD6C57028D72DB00092A6E5 /* Step1 */,
@@ -384,6 +398,7 @@
 				BFA3399828C836F300C1CD4C /* MainLoginViewModel.swift in Sources */,
 				BFDC1BF928D8096D005ADC6A /* SignUpThreeViewModel.swift in Sources */,
 				BF5A7F4528D0591A000A1B08 /* HomeViewController.swift in Sources */,
+				BF3F0E9C28DD70F500AED582 /* SignUpZeroViewModel.swift in Sources */,
 				BFDC1BF728D8094A005ADC6A /* SignUpThreeViewController.swift in Sources */,
 				BFF84EAC28C6D40B00892CB5 /* AppDelegate.swift in Sources */,
 				BF7E3CCA28D43F0E007C3236 /* DefaultLoginVIewModel.swift in Sources */,
@@ -394,6 +409,7 @@
 				BF5A7F4728D05926000A1B08 /* ContainerViewController.swift in Sources */,
 				BF34F88128D1A60400EA1C16 /* DefaultLoginViewController.swift in Sources */,
 				BFF84EAE28C6D40B00892CB5 /* SceneDelegate.swift in Sources */,
+				BF3F0E9A28DD701900AED582 /* SignUpZeroViewController.swift in Sources */,
 				BF34F87B28D1915B00EA1C16 /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -8,6 +8,8 @@
 import Foundation
 import UIKit
 import Then
+import RxSwift
+import RxCocoa
 
 class CustomButton: UIButton {
     
@@ -30,16 +32,66 @@ class CustomButton: UIButton {
     
 }
 
-class CustomTetField: UITextField {
+class CustomTextField: UITextField {
+    
+    enum CurrentPasswordInputStatus {
+        case invalidPassword
+        case validPassword
+    }
+    
+    private let disposeBag = DisposeBag()
+    private var currentPasswordInputStatus: CurrentPasswordInputStatus = .invalidPassword
+    let textResetEvent = PublishSubject<Void>()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setupViews()
     }
     
-    convenience init(title: String) {
+    convenience init(title: String, isSecure: Bool = false) {
         self.init()
         self.placeholder = title
-        self.font = UIFont.systemFont(ofSize: 14)
+        if isSecure {
+            self.isSecureTextEntry = true
+            let wrapedView = UIView()
+            wrapedView.snp.makeConstraints {
+                $0.height.equalTo(self.frame.height)
+                $0.width.equalTo(45)
+            }
+            let rightButton = UIButton()
+            rightButton.contentMode = .scaleAspectFit
+            rightButton.setImage(UIImage(named: "open_eye"), for: .normal)
+            wrapedView.addSubview(rightButton)
+            rightButton.snp.makeConstraints {
+                $0.leading.equalToSuperview()
+                $0.centerY.equalToSuperview()
+            }
+            rightView = wrapedView
+            rightViewMode = .always
+            
+            rightButton.rx.tap.asDriver { _ in .never() }
+                .drive(onNext: { [weak self] in
+                    self?.updateCurrentStatus(rightButton)
+                }).disposed(by: disposeBag)
+            
+        }
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func updateCurrentStatus(_ bt: UIButton) {
+        isSecureTextEntry.toggle()
+        if isSecureTextEntry {
+            bt.setImage(UIImage(named: "open_eye"), for: .normal)
+        } else {
+            bt.setImage(UIImage(named: "close_eye"), for: .normal)
+        }
+    }
+    
+    private func setupViews() {
+        self.font = UIFont(name: "Pretendard-Regular", size: 14)
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 21, height: self.frame.height))
         self.leftView = paddingView
         self.leftViewMode = .always
@@ -47,11 +99,9 @@ class CustomTetField: UITextField {
         self.layer.cornerRadius = 12
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
 }
+
+
 
 class BackButton: UIButton {
     
@@ -72,7 +122,7 @@ class BackButton: UIButton {
 
 class AlertLabel: UIView {
     
-    let imageView = UIImageView(image: UIImage(systemName: "exclamationmark.circle.fill"))
+    let imageView = UIImageView(image: UIImage(named: "alert"))
     let labelView = UILabel().then {
         $0.text = ""
         $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
