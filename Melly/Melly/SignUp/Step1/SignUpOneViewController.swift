@@ -13,7 +13,7 @@ import RxCocoa
 class SignUpOneViewController: UIViewController {
     
     private var disposeBag = DisposeBag()
-    var vm = SignUpOneViewModel()
+    var vm:SignUpOneViewModel
     
     let layoutView1 = UIView()
     let layoutView2 = UIView()
@@ -56,6 +56,15 @@ class SignUpOneViewController: UIViewController {
     
     let nextBT = CustomButton(title: "다음").then {
         $0.isEnabled = false
+    }
+    
+    init(vm: SignUpOneViewModel) {
+        self.vm = vm
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {

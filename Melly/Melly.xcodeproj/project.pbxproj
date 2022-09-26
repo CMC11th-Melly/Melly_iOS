@@ -23,8 +23,10 @@
 		BF63C38B28DBED2E00A37CF3 /* Pretendard-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = BF63C38728DBED2E00A37CF3 /* Pretendard-Medium.otf */; };
 		BF63C38C28DBED2E00A37CF3 /* Pretendard-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = BF63C38828DBED2E00A37CF3 /* Pretendard-Regular.otf */; };
 		BF63C38D28DBED2E00A37CF3 /* Pretendard-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = BF63C38928DBED2E00A37CF3 /* Pretendard-SemiBold.otf */; };
+		BF7CAAFF28DE04B60076CD1A /* AgreeNTermsText.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7CAAFE28DE04B60076CD1A /* AgreeNTermsText.swift */; };
 		BF7E3CCA28D43F0E007C3236 /* DefaultLoginVIewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7E3CC928D43F0E007C3236 /* DefaultLoginVIewModel.swift */; };
-		BF8F9AD728D064D700EAA49E /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F9AD628D064D700EAA49E /* ContentViewController.swift */; };
+		BF81F96E28E1732A007E5D35 /* RecommandCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81F96D28E1732A007E5D35 /* RecommandCollectionViewCell.swift */; };
+		BF8F9AD728D064D700EAA49E /* RecommandViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F9AD628D064D700EAA49E /* RecommandViewController.swift */; };
 		BFA3398F28C82A4E00C1CD4C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFA3398E28C82A4E00C1CD4C /* GoogleService-Info.plist */; };
 		BFA3399328C832E500C1CD4C /* MainLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399228C832E500C1CD4C /* MainLoginViewController.swift */; };
 		BFA3399628C8349B00C1CD4C /* UIKitExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399528C8349B00C1CD4C /* UIKitExtension.swift */; };
@@ -61,8 +63,10 @@
 		BF63C38728DBED2E00A37CF3 /* Pretendard-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.otf"; sourceTree = "<group>"; };
 		BF63C38828DBED2E00A37CF3 /* Pretendard-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.otf"; sourceTree = "<group>"; };
 		BF63C38928DBED2E00A37CF3 /* Pretendard-SemiBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-SemiBold.otf"; sourceTree = "<group>"; };
+		BF7CAAFE28DE04B60076CD1A /* AgreeNTermsText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgreeNTermsText.swift; sourceTree = "<group>"; };
 		BF7E3CC928D43F0E007C3236 /* DefaultLoginVIewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLoginVIewModel.swift; sourceTree = "<group>"; };
-		BF8F9AD628D064D700EAA49E /* ContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewController.swift; sourceTree = "<group>"; };
+		BF81F96D28E1732A007E5D35 /* RecommandCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommandCollectionViewCell.swift; sourceTree = "<group>"; };
+		BF8F9AD628D064D700EAA49E /* RecommandViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommandViewController.swift; sourceTree = "<group>"; };
 		BFA3398E28C82A4E00C1CD4C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BFA3399228C832E500C1CD4C /* MainLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainLoginViewController.swift; sourceTree = "<group>"; };
 		BFA3399528C8349B00C1CD4C /* UIKitExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitExtension.swift; sourceTree = "<group>"; };
@@ -107,10 +111,10 @@
 		BF0A11C728CDCDA600B06DE1 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				BF81F96C28E1627F007E5D35 /* RecommandView */,
 				BF0A11C828CDCDEB00B06DE1 /* MainViewController.swift */,
 				BF5A7F4428D0591A000A1B08 /* HomeViewController.swift */,
 				BF5A7F4628D05926000A1B08 /* ContainerViewController.swift */,
-				BF8F9AD628D064D700EAA49E /* ContentViewController.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -162,6 +166,15 @@
 			path = Font;
 			sourceTree = "<group>";
 		};
+		BF81F96C28E1627F007E5D35 /* RecommandView */ = {
+			isa = PBXGroup;
+			children = (
+				BF8F9AD628D064D700EAA49E /* RecommandViewController.swift */,
+				BF81F96D28E1732A007E5D35 /* RecommandCollectionViewCell.swift */,
+			);
+			path = RecommandView;
+			sourceTree = "<group>";
+		};
 		BFA3399028C832B900C1CD4C /* Login */ = {
 			isa = PBXGroup;
 			children = (
@@ -178,6 +191,7 @@
 				BF34F87C28D19DE700EA1C16 /* CustomComponent.swift */,
 				BF638A9128DAD6050031233F /* FoundationExtension.swift */,
 				BF638A9428DADFD10031233F /* Enum.swift */,
+				BF7CAAFE28DE04B60076CD1A /* AgreeNTermsText.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -386,7 +400,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF8F9AD728D064D700EAA49E /* ContentViewController.swift in Sources */,
+				BF8F9AD728D064D700EAA49E /* RecommandViewController.swift in Sources */,
 				BF638A8E28DAA96D0031233F /* ResponseData.swift in Sources */,
 				BFD6C57628D7373F0092A6E5 /* SignUpTwoViewController.swift in Sources */,
 				BFA3399328C832E500C1CD4C /* MainLoginViewController.swift in Sources */,
@@ -402,6 +416,7 @@
 				BFDC1BF728D8094A005ADC6A /* SignUpThreeViewController.swift in Sources */,
 				BFF84EAC28C6D40B00892CB5 /* AppDelegate.swift in Sources */,
 				BF7E3CCA28D43F0E007C3236 /* DefaultLoginVIewModel.swift in Sources */,
+				BF81F96E28E1732A007E5D35 /* RecommandCollectionViewCell.swift in Sources */,
 				BF34F87D28D19DE700EA1C16 /* CustomComponent.swift in Sources */,
 				BFA3399628C8349B00C1CD4C /* UIKitExtension.swift in Sources */,
 				BFD6C56D28D723CD0092A6E5 /* SignUpOneViewController.swift in Sources */,
@@ -410,6 +425,7 @@
 				BF34F88128D1A60400EA1C16 /* DefaultLoginViewController.swift in Sources */,
 				BFF84EAE28C6D40B00892CB5 /* SceneDelegate.swift in Sources */,
 				BF3F0E9A28DD701900AED582 /* SignUpZeroViewController.swift in Sources */,
+				BF7CAAFF28DE04B60076CD1A /* AgreeNTermsText.swift in Sources */,
 				BF34F87B28D1915B00EA1C16 /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

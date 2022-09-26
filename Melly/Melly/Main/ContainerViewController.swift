@@ -39,11 +39,9 @@ extension ContainerViewController {
         
         //Home
         homeVC.delegate = self
-        let navVC = UINavigationController(rootViewController: homeVC)
-        addChild(navVC)
-        view.addSubview(navVC.view)
-        navVC.didMove(toParent: self)
-        self.navVC = navVC
+        addChild(homeVC)
+        view.addSubview(homeVC.view)
+        homeVC.didMove(toParent: self)
         
     }
     

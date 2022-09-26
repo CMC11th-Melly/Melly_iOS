@@ -87,7 +87,7 @@ class DefaultLoginViewModel {
             let header:HTTPHeaders = [ "Connection":"close",
                                        "Content-Type":"application/json"]
             
-            RxAlamofire.requestData(.post, "http://3.39.218.234/auth/login", parameters: parameters, encoding: JSONEncoding.default, headers: header)
+            RxAlamofire.requestData(.post, "https://api.melly.kr/auth/login", parameters: parameters, encoding: JSONEncoding.default, headers: header)
                 .subscribe({ event in
                     switch event {
                     case .next(let response):

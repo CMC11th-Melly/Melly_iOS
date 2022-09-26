@@ -196,3 +196,90 @@ class DropMenuButton: UIButton {
     }
     
 }
+
+class TermsNAgreeView: UIView {
+    
+    let subOneBT = UIButton(type: .custom).then {
+        $0.setImage(UIImage(named: "disagree_terms"), for: .normal)
+    }
+    
+    let subOneLB = UILabel().then {
+        $0.text = "이용약관 (필수)"
+        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+    }
+    
+    let subOneSlideBT = UIButton(type: .custom).then {
+        $0.setImage(UIImage(named: "close_terms"), for: .normal)
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    convenience init(_ text: String) {
+        self.init()
+        subOneLB.text = text
+        
+    }
+    
+    private func setUI() {
+        addSubview(subOneBT)
+        addSubview(subOneLB)
+        addSubview(subOneSlideBT)
+        
+        subOneBT.snp.makeConstraints {
+            $0.leading.equalToSuperview()
+            $0.top.equalToSuperview()
+        }
+        
+        subOneLB.snp.makeConstraints {
+            $0.leading.equalTo(subOneBT.snp.trailing).offset(15)
+            $0.centerY.equalToSuperview()
+        }
+        
+        subOneSlideBT.snp.makeConstraints {
+            $0.trailing.equalToSuperview()
+            $0.centerY.equalToSuperview()
+        }
+    }
+}
+
+
+class MainTextField: UITextField {
+    
+    
+    let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 51, height: 44))
+    let bt = UIButton(frame: CGRect(x:15.92, y: 0, width: 18.4, height: 44))
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupViews()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+    private func setupViews() {
+        self.font = UIFont(name: "Pretendard-Regular", size: 14)
+        self.placeholder = "장소, 메모리, 그룹, 키워드 검색"
+        self.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        
+        bt.setImage(UIImage(named: "hamburger"), for: .normal)
+        bt.imageView?.contentMode = .scaleAspectFit
+        paddingView.addSubview(bt)
+        
+        self.leftView = paddingView
+        self.leftViewMode = .always
+        self.backgroundColor = .white
+        self.layer.cornerRadius = 12
+    }
+    
+}

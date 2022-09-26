@@ -42,8 +42,7 @@ class SignUpThreeViewController: UIViewController {
     
     let profileView = UIImageView(image: UIImage(named: "profile")).then {
         $0.isUserInteractionEnabled = true
-        $0.layer.cornerRadius = 22
-        $0.clipsToBounds = true
+        
     }
     
     let profileSelectBT = UIButton(type: .custom).then {
@@ -164,13 +163,12 @@ extension SignUpThreeViewController {
         profileView.snp.makeConstraints {
             $0.top.equalTo(profileLb.snp.bottom).offset(28)
             $0.centerX.equalToSuperview()
-            $0.width.height.equalTo(130)
         }
         
         layoutView1.addSubview(profileSelectBT)
         profileSelectBT.snp.makeConstraints {
-            $0.bottom.trailing.equalTo(profileView)
-            $0.width.height.equalTo(42)
+            $0.top.equalTo(profileView.snp.top).offset(75)
+            $0.leading.equalTo(profileView.snp.leading).offset(80)
         }
         
         layoutView1.addSubview(genderLb)
@@ -242,6 +240,12 @@ extension SignUpThreeViewController {
     }
     
     func bindInput() {
+        
+        backBT.rx.tap
+            .subscribe(onNext: {
+                self.dismiss(animated: true)
+            }).disposed(by: disposeBag)
+        
         genderSelectBT.rx.tap
             .subscribe(onNext: {
                 self.genderMenu.show()
@@ -312,6 +316,10 @@ extension SignUpThreeViewController {
                 
             }).disposed(by: disposeBag)
         
+        nextBT.rx.tap
+            .bind(to: vm.input.signUpObserver)
+            .disposed(by: disposeBag)
+        
     }
     
     func bindOutput() {
@@ -344,7 +352,6 @@ extension SignUpThreeViewController: PHPickerViewControllerDelegate, UIImagePick
                 }
                 
                 self.vm.input.profileImgObserver.accept(image)
-
             }
         }
     }
@@ -357,6 +364,7 @@ extension SignUpThreeViewController: PHPickerViewControllerDelegate, UIImagePick
         guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
             return
         }
+        
         picker.dismiss(animated: true)
         vm.input.profileImgObserver.accept(image)
         

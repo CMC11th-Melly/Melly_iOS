@@ -151,7 +151,8 @@ extension MainLoginViewController {
         
         signUpBT.rx.tap
             .subscribe(onNext: {
-                let vc = SignUpOneViewController()
+                let vm = SignUpZeroViewModel(User())
+                let vc = SignUpZeroViewController(vm: vm)
                 vc.modalTransitionStyle = .crossDissolve
                 vc.modalPresentationStyle = .fullScreen
                 self.present(vc, animated: true)
@@ -160,11 +161,15 @@ extension MainLoginViewController {
     }
     
     func bindOutput() {
-        vm.output.outputData.asSignal()
-            .emit(onNext: { value in
-                let alertController = UIAlertController(title: "통신", message: value, preferredStyle: .alert)
-                alertController.addAction(UIAlertAction(title: "확인", style: .cancel, handler: nil))
-                self.present(alertController, animated: true)
+        vm.output.outputData.asDriver(onErrorJustReturn: User())
+            .drive(onNext: { value in
+                let vm = SignUpZeroViewModel(value)
+                let vc = SignUpZeroViewController(vm: vm)
+                vc.modalTransitionStyle = .crossDissolve
+                vc.modalPresentationStyle = .fullScreen
+                self.present(vc, animated: true)
+                
+                
             }).disposed(by: disposeBag)
     }
     

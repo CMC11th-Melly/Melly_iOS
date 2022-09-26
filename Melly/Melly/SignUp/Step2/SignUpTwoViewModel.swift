@@ -62,13 +62,14 @@ class SignUpTwoViewModel {
                     let header:HTTPHeaders = [ "Connection":"close",
                                                "Content-Type":"application/json"]
                     
-                    RxAlamofire.requestData(.post, "http://3.39.218.234/auth/nickname", parameters: parameters, encoding: JSONEncoding.default, headers: header)
+                    RxAlamofire.requestData(.post, "https://api.melly.kr/auth/nickname", parameters: parameters, encoding: JSONEncoding.default, headers: header)
                         .subscribe({ event in
                             switch event {
                             case .next(let response):
                                 let decoder = JSONDecoder()
                                 if let json = try? decoder.decode(ResponseData.self, from: response.1) {
-                                    if json.message == "사용해도 좋은 닉네임입니다" {
+                                    print(json)
+                                    if json.message == "사용해도 좋은 닉네임입니다." {
                                         observer.onNext(.correct)
                                     } else {
                                         observer.onNext(.alreadyExsist)

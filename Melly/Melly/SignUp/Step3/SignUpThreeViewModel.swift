@@ -64,6 +64,12 @@ class SignUpThreeViewModel {
             }
         }).disposed(by: disposeBag)
         
+        input.signUpObserver
+            .flatMap(signUp)
+            .subscribe(onNext: { value in
+                
+            }).disposed(by: disposeBag)
+        
     }
     
     func signUp() -> Observable<String> {
@@ -75,7 +81,7 @@ class SignUpThreeViewModel {
                     ]
             
             let str = self.user.provider == LoginType.Default.rawValue ? "/auth/signup" : "/auth/social/signup"
-            let realUrl = URL(string: "http://3.39.218.234\(str)")
+            let realUrl = URL(string: "https://api.melly.kr\(str)")
             let url:Alamofire.URLConvertible = realUrl!
             var parameters:[String:Any] = [
                 "nickname": self.user.nickname,
@@ -100,8 +106,12 @@ class SignUpThreeViewModel {
             }, to: url, method: .post, headers: header)
                 .responseData { response in
                     switch response.result {
-                    case .success(let data):
-                        print("성공\(data)")
+                    case .success(let response):
+                        
+                        let decoder = JSONDecoder()
+                        if let json = try? decoder.decode(ResponseData.self, from: response) {
+                            print(json)
+                        }
                     case .failure(let error):
                         observer.onError(error)
                     }

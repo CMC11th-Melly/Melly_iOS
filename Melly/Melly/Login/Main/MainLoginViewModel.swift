@@ -31,7 +31,7 @@ class MainLoginViewModel {
     }
     
     struct Output {
-        let outputData = PublishRelay<String>()
+        let outputData = PublishRelay<User>()
     }
     
     init() {
@@ -63,15 +63,15 @@ class MainLoginViewModel {
         
         input.naverAppleLoginObserver
             .flatMap { self.checkUser(token: $0.0, type: $0.1) }
-            .subscribe({ event in
-                
+            .subscribe(onNext: { value in
+                self.output.outputData.accept(value)
             }).disposed(by: disposeBag)
         
         
         
     }
     
-    func googleLogin(_ vc: UIViewController) -> Observable<String> {
+    func googleLogin(_ vc: UIViewController) -> Observable<User> {
         
         return Observable.create { observe in
             
@@ -86,7 +86,7 @@ class MainLoginViewModel {
                 if let userToken = user?.authentication.accessToken {
                     self.checkUser(token: userToken, type: .google)
                         .subscribe(onNext: { value in
-                            
+                            observe.onNext(value)
                         }).disposed(by: self.disposeBag)
                 }
             }
@@ -95,7 +95,7 @@ class MainLoginViewModel {
         }
     }
     
-    func kakaoLogin() -> Observable<String> {
+    func kakaoLogin() -> Observable<User> {
         
         
         return Observable.create { observer in
@@ -109,8 +109,8 @@ class MainLoginViewModel {
                             self.checkUser(token: token.accessToken, type: LoginType.kakao)
                                 .subscribe { event in
                                     switch event {
-                                    case .next(let str):
-                                        observer.onNext(str)
+                                    case .next(let user):
+                                        observer.onNext(user)
                                     case .completed:
                                         break
                                     case .error(let error):
@@ -133,8 +133,8 @@ class MainLoginViewModel {
                             self.checkUser(token: token.accessToken, type: LoginType.kakao)
                                 .subscribe { event in
                                     switch event {
-                                    case .next(let str):
-                                        observer.onNext(str)
+                                    case .next(let user):
+                                        observer.onNext(user)
                                     case .completed:
                                         break
                                     case .error(let error):
@@ -156,7 +156,7 @@ class MainLoginViewModel {
         
     }
     
-    func checkUser(token: String, type: LoginType) -> Observable<String> {
+    func checkUser(token: String, type: LoginType) -> Observable<User> {
         
         return Observable.create { observer in
             
@@ -167,13 +167,18 @@ class MainLoginViewModel {
                                        "Content-Type":"application/json"]
             
             
-            RxAlamofire.requestData(.post, "http://3.39.218.234/auth/social", parameters: parameters, encoding: JSONEncoding.default, headers: header)
+            RxAlamofire.requestData(.post, "https://api.melly.kr/auth/social", parameters: parameters, encoding: JSONEncoding.default, headers: header)
                 .subscribe({ event in
                     switch event {
                     case .next(let response):
                         let decoder = JSONDecoder()
                         if let json = try? decoder.decode(ResponseData.self, from: response.1) {
-                            print(json)
+                            if let dic = json.data?["user"] as? [String:Any] {
+                             
+                                if let user = dictionaryToObject(objectType: User.self, dictionary: dic) {
+                                    observer.onNext(user)
+                                }
+                            }
                         } else {
                             
                         }

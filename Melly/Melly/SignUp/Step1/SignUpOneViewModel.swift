@@ -18,7 +18,7 @@ class SignUpOneViewModel {
     
     let input = Input()
     var output = Output()
-    var user = User()
+    var user:User
     
     struct Input {
         let emailObserver = PublishRelay<String>()
@@ -35,8 +35,8 @@ class SignUpOneViewModel {
         let userValue = PublishRelay<User>()
     }
     
-    init() {
-        
+    init(_ user: User) {
+        self.user = user
         
         input.emailObserver
             .flatMap(checkID)
@@ -84,14 +84,13 @@ class SignUpOneViewModel {
                 let header:HTTPHeaders = [ "Connection":"close",
                                            "Content-Type":"application/json"]
                 
-                RxAlamofire.requestData(.post, "http://3.39.218.234/auth/email", parameters: parameters, encoding: JSONEncoding.default, headers: header)
+                RxAlamofire.requestData(.post, "https://api.melly.kr/auth/email", parameters: parameters, encoding: JSONEncoding.default, headers: header)
                     .subscribe({ event in
                         switch event {
                         case .next(let response):
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: response.1) {
-                                
-                                if json.message == "사용해도 좋은 이메일입니다" {
+                                if json.message == "사용해도 좋은 이메일입니다." {
                                     observer.onNext(.correct)
                                 } else {
                                     observer.onNext(.alreadyExsist)
