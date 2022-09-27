@@ -29,7 +29,7 @@ class DefaultLoginViewModel {
         var loginValid = PublishRelay<Bool>()
         var emailValid = PublishRelay<Bool>()
         var pwValid = PublishRelay<Bool>()
-        var loginResponse = PublishRelay<Error?>()
+        var loginResponse = PublishRelay<MellyError?>()
     }
     
     init() {
@@ -70,7 +70,14 @@ class DefaultLoginViewModel {
                     User.loginedUser = user
                     self.output.loginResponse.accept(nil)
                 case .error(let error):
-                    self.output.loginResponse.accept(error)
+                    if var mellyError = error as? MellyError {
+                        if mellyError.msg == "" {
+                            mellyError.msg = error.localizedDescription
+                            self.output.loginResponse.accept(mellyError)
+                        } else {
+                            self.output.loginResponse.accept(mellyError)
+                        }
+                    }
                 case .completed:
                     break
                 }

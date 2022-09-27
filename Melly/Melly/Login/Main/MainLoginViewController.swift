@@ -22,6 +22,7 @@ class MainLoginViewController: UIViewController {
     let vm = MainLoginViewModel()
     let disposeBag = DisposeBag()
     
+    
     let welcomeLabel = UILabel().then {
         let text = "어서오세요,\n소중한 메모리를 담아보세요!"
         let attrString = NSMutableAttributedString(string: text)
@@ -161,15 +162,28 @@ extension MainLoginViewController {
     }
     
     func bindOutput() {
-        vm.output.outputData.asDriver(onErrorJustReturn: User())
+        vm.output.outputData.asDriver(onErrorJustReturn: (true, User()))
             .drive(onNext: { value in
-                let vm = SignUpZeroViewModel(value)
-                let vc = SignUpZeroViewController(vm: vm)
-                vc.modalTransitionStyle = .crossDissolve
-                vc.modalPresentationStyle = .fullScreen
-                self.present(vc, animated: true)
                 
-                
+                if value.0 {
+                    let vm = SignUpZeroViewModel(value.1)
+                    let vc = SignUpZeroViewController(vm: vm)
+                    vc.modalTransitionStyle = .crossDissolve
+                    vc.modalPresentationStyle = .fullScreen
+                    self.present(vc, animated: true)
+                } else {
+                    User.loginedUser = value.1
+                    let vc = ContainerViewController()
+                    vc.modalTransitionStyle = .crossDissolve
+                    vc.modalPresentationStyle = .fullScreen
+                    self.present(vc, animated: true)
+                }
+            }).disposed(by: disposeBag)
+        
+        vm.output.errorData.asDriver(onErrorJustReturn: MellyError(code: 999, msg: "관리자에게 문의하세요."))
+            .drive(onNext: { value in
+                let alert = UIAlertController(title: "에러", message: value.msg, preferredStyle: .alert)
+                self.present(alert, animated: true)
             }).disposed(by: disposeBag)
     }
     

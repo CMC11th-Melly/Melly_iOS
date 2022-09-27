@@ -17,8 +17,8 @@ class SplashViewController: UIViewController {
         super.viewDidLayoutSubviews()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            
-            let vc = ContainerViewController()
+            let vm = SignUpThreeViewModel(User())
+            let vc = SignUpThreeViewController(vm: vm)
             vc.modalTransitionStyle = .crossDissolve
             vc.modalPresentationStyle = .fullScreen
             self.present(vc, animated: true)

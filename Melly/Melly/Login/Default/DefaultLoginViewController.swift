@@ -250,7 +250,10 @@ extension DefaultLoginViewController {
                     self.alertView.isHidden = false
                     self.alertView.labelView.text = error.localizedDescription
                 } else {
-                    //로그인 후 메인으로 이동
+                    let vc = ContainerViewController()
+                    vc.modalTransitionStyle = .crossDissolve
+                    vc.modalPresentationStyle = .fullScreen
+                    self.present(vc, animated: true)
                 }
                 
             }).disposed(by: disposeBag)

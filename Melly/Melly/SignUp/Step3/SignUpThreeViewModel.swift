@@ -18,6 +18,9 @@ class SignUpThreeViewModel {
     let input = Input()
     let output = Output()
     
+    let genderData = Observable<[String]>.of(["남성", "여성"])
+    let ageData = Observable<[String]>.of(["10대", "20대", "30대", "40대", "50대", "60대", "70대 이상"])
+    
     struct Input {
         let genderObserver = PublishRelay<String>()
         let ageObserver = PublishRelay<String>()
@@ -93,11 +96,11 @@ class SignUpThreeViewModel {
                 parameters["email"] = self.user.email
                 parameters["password"] = self.user.pw
             }
-            
+                        
             AF.upload(multipartFormData: { multipartFormData in
                 
                 if let profileData = self.profileData {
-                    multipartFormData.append(profileData, withName: "image", fileName: "test.png", mimeType: "image/png")
+                    multipartFormData.append(profileData, withName: "profileImage", fileName: "test.png", mimeType: "image/png")
                 }
                 for (key, value) in parameters {
                     multipartFormData.append("\(value)".data(using: .utf8)!, withName: key)
@@ -108,11 +111,15 @@ class SignUpThreeViewModel {
                     switch response.result {
                     case .success(let response):
                         
+                        let str = String(data: response, encoding: .utf8)
+                        print(str)
+                        
                         let decoder = JSONDecoder()
                         if let json = try? decoder.decode(ResponseData.self, from: response) {
                             print(json)
                         }
                     case .failure(let error):
+                        print("에러\(error.localizedDescription)")
                         observer.onError(error)
                     }
                 }

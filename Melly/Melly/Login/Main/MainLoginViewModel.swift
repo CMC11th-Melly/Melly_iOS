@@ -31,7 +31,9 @@ class MainLoginViewModel {
     }
     
     struct Output {
-        let outputData = PublishRelay<User>()
+        
+        let outputData = PublishRelay<(Bool, User)>()
+        let errorData = PublishRelay<MellyError>()
     }
     
     init() {
@@ -41,7 +43,14 @@ class MainLoginViewModel {
                 case .next(let token):
                     self.output.outputData.accept(token)
                 case .error(let error):
-                    print(error)
+                    if var mellyError = error as? MellyError {
+                        if mellyError.msg == "" {
+                            mellyError.msg = error.localizedDescription
+                            self.output.errorData.accept(mellyError)
+                        } else {
+                            self.output.errorData.accept(mellyError)
+                        }
+                    }
                 case .completed:
                     break
                 }
@@ -54,7 +63,14 @@ class MainLoginViewModel {
                 case .next(let token):
                     self.output.outputData.accept(token)
                 case .error(let error):
-                    print(error)
+                    if var mellyError = error as? MellyError {
+                        if mellyError.msg == "" {
+                            mellyError.msg = error.localizedDescription
+                            self.output.errorData.accept(mellyError)
+                        } else {
+                            self.output.errorData.accept(mellyError)
+                        }
+                    }
                 case .completed:
                     break
                 }
@@ -63,15 +79,26 @@ class MainLoginViewModel {
         
         input.naverAppleLoginObserver
             .flatMap { self.checkUser(token: $0.0, type: $0.1) }
-            .subscribe(onNext: { value in
-                self.output.outputData.accept(value)
-            }).disposed(by: disposeBag)
-        
-        
-        
+            .subscribe { event in
+                switch event {
+                case .next(let value):
+                    self.output.outputData.accept(value)
+                case .error(let error):
+                    if var mellyError = error as? MellyError {
+                        if mellyError.msg == "" {
+                            mellyError.msg = error.localizedDescription
+                            self.output.errorData.accept(mellyError)
+                        } else {
+                            self.output.errorData.accept(mellyError)
+                        }
+                    }
+                case .completed:
+                    break
+                }
+            }.disposed(by: disposeBag)
     }
     
-    func googleLogin(_ vc: UIViewController) -> Observable<User> {
+    func googleLogin(_ vc: UIViewController) -> Observable<(Bool, User)> {
         
         return Observable.create { observe in
             
@@ -83,7 +110,7 @@ class MainLoginViewModel {
                     observe.onError(error)
                 }
                 
-                if let userToken = user?.authentication.accessToken {
+                if let userToken = user?.authentication.idToken {
                     self.checkUser(token: userToken, type: .google)
                         .subscribe(onNext: { value in
                             observe.onNext(value)
@@ -95,7 +122,7 @@ class MainLoginViewModel {
         }
     }
     
-    func kakaoLogin() -> Observable<User> {
+    func kakaoLogin() -> Observable<(Bool, User)> {
         
         
         return Observable.create { observer in
@@ -156,7 +183,7 @@ class MainLoginViewModel {
         
     }
     
-    func checkUser(token: String, type: LoginType) -> Observable<User> {
+    func checkUser(token: String, type: LoginType) -> Observable<(Bool, User)> {
         
         return Observable.create { observer in
             
@@ -174,13 +201,14 @@ class MainLoginViewModel {
                         let decoder = JSONDecoder()
                         if let json = try? decoder.decode(ResponseData.self, from: response.1) {
                             if let dic = json.data?["user"] as? [String:Any] {
-                             
                                 if let user = dictionaryToObject(objectType: User.self, dictionary: dic) {
-                                    observer.onNext(user)
+                                    let newUser = json.data?["newUser"] as! Bool
+                                    observer.onNext((newUser, user))
                                 }
                             }
                         } else {
-                            
+                            let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
+                            observer.onError(error)
                         }
                     case .error(let error):
                         observer.onError(error)

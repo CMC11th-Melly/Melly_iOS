@@ -144,6 +144,7 @@ class AlertLabel: UIView {
         labelView.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.leading.equalTo(imageView.snp.trailing).offset(17)
+            $0.trailing.equalToSuperview().offset(-24)
         }
     }
     

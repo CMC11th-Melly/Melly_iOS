@@ -12,7 +12,11 @@ import RxCocoa
 
 
 class RecommandViewController: UIViewController {
-
+    
+    private let disposeBag = DisposeBag()
+    
+    let data = Observable<[String]>.of(["", "", "", ""])
+    
     let mainSV = UIScrollView().then {
         $0.backgroundColor = .white
         $0.showsHorizontalScrollIndicator = false
@@ -35,6 +39,14 @@ class RecommandViewController: UIViewController {
         $0.font = UIFont(name: "Pretendard-Medium", size: 14)
     }
     
+    let recommandCV: UICollectionView = {
+        let flowLayout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
+        collectionView.backgroundColor = .white
+        collectionView.isScrollEnabled = false
+        return collectionView
+    }()
+    
     let separator = UIView().then {
         $0.backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
     }
@@ -55,13 +67,22 @@ class RecommandViewController: UIViewController {
         $0.font = UIFont(name: "Pretendard-Medium", size: 14)
     }
     
+    let hotLocationCV: UICollectionView = {
+        let flowLayout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
+        collectionView.backgroundColor = .white
+        return collectionView
+    }()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setCV()
         setUI()
         bind()
+        
     }
-
+    
 }
 
 extension RecommandViewController {
@@ -86,7 +107,62 @@ extension RecommandViewController {
             $0.leading.equalToSuperview().offset(30)
         }
         
+        mainSV.addSubview(recommandCV)
+        recommandCV.snp.makeConstraints {
+            $0.top.equalTo(recommandSubLabel.snp.bottom)
+            $0.leading.trailing.equalTo(safeArea)
+        }
+        
+        recommandCV.updateContentSize()
+        
+        mainSV.addSubview(separator)
+        separator.snp.makeConstraints {
+            $0.leading.trailing.equalTo(safeArea)
+            $0.height.equalTo(1)
+            $0.top.equalTo(recommandCV.snp.bottom)
+        }
+        
+        mainSV.addSubview(hotLabel)
+        hotLabel.snp.makeConstraints {
+            $0.top.equalTo(separator.snp.bottom).offset(27)
+            $0.leading.equalToSuperview().offset(30)
+        }
+        
+        mainSV.addSubview(hotSubLabel)
+        hotSubLabel.snp.makeConstraints {
+            $0.top.equalTo(hotLabel.snp.bottom).offset(9)
+            $0.leading.equalToSuperview().offset(30)
+        }
+        
+        mainSV.addSubview(hotLocationCV)
+        hotLocationCV.snp.makeConstraints {
+            $0.top.equalTo(hotSubLabel.snp.bottom)
+            $0.leading.trailing.equalTo(safeArea)
+            $0.height.equalTo(1106)
+        }
+        
         mainSV.updateContentSize()
+    }
+    
+    func setCV() {
+        recommandCV.dataSource = nil
+        recommandCV.delegate = nil
+        recommandCV.rx.setDelegate(self).disposed(by: disposeBag)
+        recommandCV.register(RecommandCollectionViewCell.self, forCellWithReuseIdentifier: "recommand")
+        
+        data
+            .bind(to: recommandCV.rx.items(cellIdentifier: "recommand", cellType: RecommandCollectionViewCell.self)) { row, element, cell in
+                
+            }.disposed(by: disposeBag)
+        
+        hotLocationCV.dataSource = nil
+        hotLocationCV.delegate = nil
+        hotLocationCV.rx.setDelegate(self).disposed(by: disposeBag)
+        hotLocationCV.register(RecommandCollectionViewCell.self, forCellWithReuseIdentifier: "hot")
+        data
+            .bind(to: hotLocationCV.rx.items(cellIdentifier: "hot", cellType: RecommandCollectionViewCell.self)) { row, element, cell in
+                
+            }.disposed(by: disposeBag)
     }
     
     func bind() {
@@ -100,6 +176,27 @@ extension RecommandViewController {
     
     func bindOutput() {
         
+    }
+    
+}
+
+extension RecommandViewController: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 33, left: 0, bottom: 28, right: 0)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 40
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 40
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = self.view.frame.width - 60
+        return CGSize(width: width, height: 342)
     }
     
 }

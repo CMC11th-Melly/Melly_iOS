@@ -7,7 +7,6 @@
 
 import UIKit
 import Then
-import DropDown
 import RxSwift
 import RxCocoa
 import RxRelay
@@ -22,7 +21,9 @@ class SignUpThreeViewController: UIViewController {
     private var disposeBag = DisposeBag()
     
     let layoutView1 = UIView()
-    let layoutView2 = UIView()
+    let layoutView2 = UIScrollView()
+    let contentView = UIView()
+    let layoutView3 = UIView()
     
     let backBT = BackButton()
     
@@ -42,7 +43,8 @@ class SignUpThreeViewController: UIViewController {
     
     let profileView = UIImageView(image: UIImage(named: "profile")).then {
         $0.isUserInteractionEnabled = true
-        
+        $0.clipsToBounds = true
+        $0.layer.cornerRadius = 22
     }
     
     let profileSelectBT = UIButton(type: .custom).then {
@@ -55,11 +57,14 @@ class SignUpThreeViewController: UIViewController {
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
     }
     
-    let genderSelectBT = DropMenuButton("성별")
+    let genderCV: UICollectionView = {
+        let flowLayout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
+        collectionView.backgroundColor = .white
+        collectionView.isScrollEnabled = false
+        return collectionView
+    }()
     
-    let genderMenu = DropDown().then {
-        $0.dataSource = ["남자", "여자"]
-    }
     
     let ageLb = UILabel().then {
         $0.text = "연령"
@@ -67,11 +72,14 @@ class SignUpThreeViewController: UIViewController {
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
     }
     
-    let ageSelectBT = DropMenuButton("연령")
+    let ageCV: UICollectionView = {
+        let flowLayout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
+        collectionView.backgroundColor = .white
+        collectionView.isScrollEnabled = false
+        return collectionView
+    }()
     
-    let ageMenu = DropDown().then {
-        $0.dataSource = ["10대", "20대", "30대", "40대", "50대", "60대 이상"]
-    }
     
     let recomandLabel = UILabel().then {
         $0.text = "성별을 입력하면 장소 추천을 받을 수 있어요"
@@ -106,6 +114,7 @@ class SignUpThreeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setCV()
         setUI()
         bind()
     }
@@ -127,16 +136,26 @@ extension SignUpThreeViewController {
     func setUI() {
         self.view.backgroundColor = .white
         
+        safeArea.addSubview(layoutView3)
         safeArea.addSubview(layoutView2)
         safeArea.addSubview(layoutView1)
-        layoutView2.snp.makeConstraints {
+        
+        layoutView3.snp.makeConstraints {
             $0.leading.bottom.trailing.equalToSuperview()
             $0.height.equalTo(190)
         }
+        
         layoutView1.snp.makeConstraints {
             $0.leading.top.trailing.equalToSuperview()
-            $0.bottom.equalTo(layoutView2.snp.top)
+            $0.height.equalTo(145)
         }
+        
+        layoutView2.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
+            $0.top.equalTo(layoutView1.snp.bottom)
+            $0.bottom.equalTo(layoutView3.snp.top)
+        }
+        
         
         layoutView1.addSubview(backBT)
         backBT.snp.makeConstraints {
@@ -153,63 +172,61 @@ extension SignUpThreeViewController {
             $0.leading.equalToSuperview().offset(30)
         }
         
-        layoutView1.addSubview(profileLb)
+        layoutView2.addSubview(contentView)
+        contentView.snp.makeConstraints {
+            $0.width.centerX.top.bottom.equalToSuperview()
+        }
+        
+        contentView.addSubview(profileLb)
         profileLb.snp.makeConstraints {
-            $0.top.equalTo(signUpLabel.snp.bottom).offset(28)
+            $0.top.equalToSuperview().offset(28)
             $0.leading.equalToSuperview().offset(30)
         }
         
-        layoutView1.addSubview(profileView)
+        contentView.addSubview(profileView)
         profileView.snp.makeConstraints {
             $0.top.equalTo(profileLb.snp.bottom).offset(28)
-            $0.centerX.equalToSuperview()
+            $0.centerX.equalTo(safeArea)
+            $0.width.height.equalTo(130)
         }
         
-        layoutView1.addSubview(profileSelectBT)
+        contentView.addSubview(profileSelectBT)
         profileSelectBT.snp.makeConstraints {
             $0.top.equalTo(profileView.snp.top).offset(75)
             $0.leading.equalTo(profileView.snp.leading).offset(80)
         }
         
-        layoutView1.addSubview(genderLb)
+        contentView.addSubview(genderLb)
         genderLb.snp.makeConstraints {
             $0.top.equalTo(profileView.snp.bottom).offset(50)
             $0.leading.equalToSuperview().offset(30)
         }
         
-        layoutView1.addSubview(ageLb)
-        ageLb.snp.makeConstraints {
-            $0.top.equalTo(profileView.snp.bottom).offset(50)
-            $0.leading.equalToSuperview().offset(self.view.frame.width / 2 + 8)
-        }
-        
-        layoutView1.addSubview(genderSelectBT)
-        genderSelectBT.snp.makeConstraints {
+        contentView.addSubview(genderCV)
+        genderCV.snp.makeConstraints {
             $0.top.equalTo(genderLb.snp.bottom).offset(7)
             $0.leading.equalToSuperview().offset(30)
-            $0.height.equalTo(58)
-            $0.width.equalTo((self.view.frame.width / 2) - 38)
+            $0.trailing.equalTo(safeArea).offset(-30)
+            $0.height.equalTo(56)
         }
         
-        genderMenu.anchorView = genderSelectBT
-        genderMenu.cellHeight = 56
-        genderMenu.cornerRadius = 12
-        genderMenu.direction = .bottom
-        
-        layoutView1.addSubview(ageSelectBT)
-        ageSelectBT.snp.makeConstraints {
-            $0.top.equalTo(genderLb.snp.bottom).offset(7)
-            $0.trailing.equalToSuperview().offset(-30)
-            $0.height.equalTo(58)
-            $0.width.equalTo((self.view.frame.width / 2) - 38)
+        contentView.addSubview(ageLb)
+        ageLb.snp.makeConstraints {
+            $0.top.equalTo(genderCV.snp.bottom).offset(27)
+            $0.leading.equalToSuperview().offset(30)
         }
         
-        ageMenu.anchorView = ageSelectBT
-        ageMenu.cellHeight = 56
-        ageMenu.cornerRadius = 12
-        ageMenu.bottomOffset = CGPoint(x: 0, y: genderMenu.anchorView!.plainView.bounds.height)
+        contentView.addSubview(ageCV)
+        ageCV.snp.makeConstraints {
+            $0.top.equalTo(ageLb.snp.bottom).offset(7)
+            $0.leading.equalToSuperview().offset(30)
+            $0.trailing.equalTo(safeArea).offset(-30)
+            $0.height.equalTo(254)
+            $0.bottom.equalToSuperview()
+        }
         
-        layoutView2.addSubview(recomandLabel)
+        
+        layoutView3.addSubview(recomandLabel)
         recomandLabel.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.leading.equalToSuperview().offset(56)
@@ -217,20 +234,19 @@ extension SignUpThreeViewController {
             $0.height.equalTo(39)
         }
         
-        layoutView2.addSubview(skipButton)
+        layoutView3.addSubview(skipButton)
         skipButton.snp.makeConstraints {
             $0.top.equalTo(recomandLabel.snp.bottom).offset(27)
             $0.centerX.equalToSuperview()
         }
         
-        layoutView2.addSubview(nextBT)
+        layoutView3.addSubview(nextBT)
         nextBT.snp.makeConstraints {
             $0.top.equalTo(skipButton.snp.bottom).offset(36)
             $0.leading.equalToSuperview().offset(30)
             $0.trailing.equalToSuperview().offset(-30)
             $0.height.equalTo(56)
         }
-        
         
     }
     
@@ -246,40 +262,6 @@ extension SignUpThreeViewController {
                 self.dismiss(animated: true)
             }).disposed(by: disposeBag)
         
-        genderSelectBT.rx.tap
-            .subscribe(onNext: {
-                self.genderMenu.show()
-                self.genderSelectBT.imgView.image = UIImage(named: "dropup")
-            }).disposed(by: disposeBag)
-        
-        genderMenu.selectionAction = { [weak self] (index, item) in
-            //선택한 Item을 TextField에 넣어준다.
-            self!.vm.input.genderObserver.accept(item)
-            self!.genderSelectBT.labelView.text = item
-            self!.genderSelectBT.imgView.image = UIImage(named: "dropdown")
-        }
-        
-        // 취소 시 처리
-        genderMenu.cancelAction = { [weak self] in
-            //빈 화면 터치 시 DropDown이 사라지고 아이콘을 원래대로 변경
-            self!.genderSelectBT.imgView.image = UIImage(named: "dropdown")
-        }
-        
-        ageSelectBT.rx.tap
-            .subscribe(onNext: {
-                self.ageMenu.show()
-                self.ageSelectBT.imgView.image = UIImage(named: "dropup")
-            }).disposed(by: disposeBag)
-        
-        ageMenu.selectionAction = { [weak self] (index, item) in
-            self!.vm.input.ageObserver.accept(item)
-            self!.ageSelectBT.labelView.text = item
-            self!.ageSelectBT.imgView.image = UIImage(named: "dropdown")
-        }
-        
-        ageMenu.cancelAction = { [weak self] in
-            self!.ageSelectBT.imgView.image = UIImage(named: "dropdown")
-        }
         
         profileSelectBT.rx.tap
             .subscribe(onNext: {
@@ -339,6 +321,53 @@ extension SignUpThreeViewController {
             }).disposed(by: disposeBag)
     }
     
+    func setCV() {
+        genderCV.dataSource = nil
+        genderCV.delegate = nil
+        genderCV.rx.setDelegate(self).disposed(by: disposeBag)
+        genderCV.register(SignUpCell.self, forCellWithReuseIdentifier: "gender")
+        
+        
+        vm.genderData
+            .bind(to: genderCV.rx.items(cellIdentifier: "gender", cellType: SignUpCell.self)) { row, element, cell in
+                cell.textLB.text = element
+                
+            }.disposed(by: disposeBag)
+        
+        genderCV.rx.itemSelected
+            .map { index in
+                let cell = self.genderCV.cellForItem(at: index) as? SignUpCell
+                return cell?.textLB.text ?? ""
+            }.bind(to: vm.input.genderObserver)
+            .disposed(by: disposeBag)
+        
+        
+        
+        ageCV.dataSource = nil
+        ageCV.delegate = nil
+        ageCV.rx.setDelegate(self).disposed(by: disposeBag)
+        ageCV.register(SignUpCell.self, forCellWithReuseIdentifier: "age")
+        
+        ageCV.rx.itemDeselected
+            .subscribe(onNext: { value in
+                let cell = self.ageCV.cellForItem(at: value) as? SignUpCell
+                cell?.isSelect()
+            }).disposed(by: disposeBag)
+        
+        ageCV.rx.itemSelected
+            .map { index in
+                let cell = self.ageCV.cellForItem(at: index) as? SignUpCell
+                cell?.isSelect()
+                return cell?.textLB.text ?? ""
+            }.bind(to: vm.input.ageObserver)
+            .disposed(by: disposeBag)
+        
+        vm.ageData
+            .bind(to: ageCV.rx.items(cellIdentifier: "age", cellType: SignUpCell.self)) { row, element, cell in
+                cell.textLB.text = element
+            }.disposed(by: disposeBag)
+    }
+    
 }
 
 extension SignUpThreeViewController: PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -369,5 +398,72 @@ extension SignUpThreeViewController: PHPickerViewControllerDelegate, UIImagePick
         vm.input.profileImgObserver.accept(image)
         
     }
+    
+}
+
+extension SignUpThreeViewController: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 10
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 10
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = (self.view.frame.width - 70) / 2
+        return CGSize(width: width, height: 56)
+    }
+    
+    
+    
+}
+
+
+class SignUpCell: UICollectionViewCell {
+    
+    
+    let textLB = UILabel().then {
+        $0.textColor = UIColor(red: 0.545, green: 0.584, blue: 0.631, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupView()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupView()
+    }
+    
+    func setupView() {
+        
+        self.layer.cornerRadius = 12
+        self.layer.borderWidth = 1
+        self.layer.borderColor = UIColor(red: 0.965, green: 0.969, blue: 0.973, alpha: 1).cgColor
+        addSubview(textLB)
+        textLB.snp.makeConstraints {
+            $0.centerX.centerY.equalToSuperview()
+        }
+    }
+    
+    func isSelect() {
+        if self.isSelected {
+            self.backgroundColor = .gray
+            self.textLB.textColor = .black
+        } else {
+            self.backgroundColor = .white
+            self.textLB.textColor = UIColor(red: 0.545, green: 0.584, blue: 0.631, alpha: 1)
+        }
+    }
+    
+   
     
 }
