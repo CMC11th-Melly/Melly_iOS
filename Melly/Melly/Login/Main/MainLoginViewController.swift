@@ -22,6 +22,8 @@ class MainLoginViewController: UIViewController {
     let vm = MainLoginViewModel()
     let disposeBag = DisposeBag()
     
+    let scrollView = UIScrollView()
+    let contentView = UIView()
     
     let welcomeLabel = UILabel().then {
         let text = "어서오세요,\n소중한 메모리를 담아보세요!"
@@ -72,13 +74,23 @@ extension MainLoginViewController {
     func setUI() {
         view.backgroundColor = .white
         
-        safeArea.addSubview(welcomeLabel)
+        safeArea.addSubview(scrollView)
+        scrollView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        scrollView.addSubview(contentView)
+        contentView.snp.makeConstraints {
+            $0.width.centerX.top.bottom.equalToSuperview()
+        }
+        
+        contentView.addSubview(welcomeLabel)
         welcomeLabel.snp.makeConstraints {
             $0.top.equalToSuperview().offset(91)
             $0.centerX.equalToSuperview()
         }
         
-        safeArea.addSubview(logoImageView)
+        contentView.addSubview(logoImageView)
         logoImageView.snp.makeConstraints {
             $0.top.equalTo(welcomeLabel.snp.bottom).offset(71)
             $0.centerX.equalToSuperview()
@@ -86,19 +98,19 @@ extension MainLoginViewController {
             $0.height.equalTo(163)
         }
         
-        safeArea.addSubview(loginBT)
+        contentView.addSubview(loginBT)
         loginBT.snp.makeConstraints {
             $0.top.equalTo(logoImageView.snp.bottom).offset(91)
             $0.leading.equalToSuperview().offset(30)
-            $0.trailing.equalToSuperview().offset(-30)
+            $0.trailing.equalTo(safeArea).offset(-30)
             $0.height.equalTo(56)
         }
         
-        safeArea.addSubview(signUpBT)
+        contentView.addSubview(signUpBT)
         signUpBT.snp.makeConstraints {
             $0.top.equalTo(loginBT.snp.bottom).offset(16)
             $0.leading.equalToSuperview().offset(30)
-            $0.trailing.equalToSuperview().offset(-30)
+            $0.trailing.equalTo(safeArea).offset(-30)
             $0.height.equalTo(56)
         }
         
@@ -108,10 +120,11 @@ extension MainLoginViewController {
             $0.distribution = .fillEqually
         }
 
-        safeArea.addSubview(apiFieldStack)
+        contentView.addSubview(apiFieldStack)
         apiFieldStack.snp.makeConstraints {
             $0.top.equalTo(signUpBT.snp.bottom).offset(46)
             $0.centerX.equalToSuperview()
+            $0.bottom.equalToSuperview().offset(-10)
         }
         
     }

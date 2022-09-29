@@ -15,8 +15,12 @@ class SignUpOneViewController: UIViewController {
     private var disposeBag = DisposeBag()
     var vm:SignUpOneViewModel
     
-    let layoutView1 = UIView()
-    let layoutView2 = UIView()
+    let scrollView = UIScrollView().then {
+        $0.showsVerticalScrollIndicator = false
+        $0.showsHorizontalScrollIndicator = false
+        $0.layoutIfNeeded()
+    }
+    let contentView = UIView()
     
     let backBT = BackButton()
     
@@ -71,6 +75,7 @@ class SignUpOneViewController: UIViewController {
         super.viewDidLoad()
         setUI()
         bind()
+        setSV()
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -79,23 +84,22 @@ class SignUpOneViewController: UIViewController {
     
 }
 
-extension SignUpOneViewController {
+extension SignUpOneViewController: UIScrollViewDelegate {
     
     func setUI() {
         self.view.backgroundColor = .white
-        
-        safeArea.addSubview(layoutView2)
-        safeArea.addSubview(layoutView1)
-        layoutView2.snp.makeConstraints {
-            $0.leading.bottom.trailing.equalToSuperview()
-            $0.height.equalTo(130)
-        }
-        layoutView1.snp.makeConstraints {
-            $0.leading.top.trailing.equalToSuperview()
-            $0.bottom.equalTo(layoutView2.snp.top)
+        scrollView.delegate = self
+        safeArea.addSubview(scrollView)
+        scrollView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
         }
         
-        layoutView1.addSubview(backBT)
+        scrollView.addSubview(contentView)
+        contentView.snp.makeConstraints {
+            $0.width.centerX.top.bottom.equalToSuperview()
+        }
+        
+        contentView.addSubview(backBT)
         backBT.snp.makeConstraints {
             $0.top.equalToSuperview().offset(15)
             $0.leading.equalToSuperview().offset(30)
@@ -103,19 +107,19 @@ extension SignUpOneViewController {
             $0.height.equalTo(20)
         }
         
-        layoutView1.addSubview(loginLabel)
+        contentView.addSubview(loginLabel)
         loginLabel.snp.makeConstraints {
             $0.top.equalTo(backBT.snp.bottom).offset(56)
             $0.leading.equalToSuperview().offset(30)
         }
         
-        layoutView1.addSubview(emailLabel)
+        contentView.addSubview(emailLabel)
         emailLabel.snp.makeConstraints {
             $0.top.equalTo(loginLabel.snp.bottom).offset(46)
             $0.leading.equalToSuperview().offset(30)
         }
         
-        layoutView1.addSubview(emailTf)
+        contentView.addSubview(emailTf)
         emailTf.snp.makeConstraints {
             $0.top.equalTo(emailLabel.snp.bottom).offset(8)
             $0.leading.equalToSuperview().offset(30)
@@ -123,13 +127,13 @@ extension SignUpOneViewController {
             $0.height.equalTo(56)
         }
         
-        layoutView1.addSubview(pwLabel)
+        contentView.addSubview(pwLabel)
         pwLabel.snp.makeConstraints {
             $0.top.equalTo(emailTf.snp.bottom).offset(48)
             $0.leading.equalToSuperview().offset(30)
         }
         
-        layoutView1.addSubview(pwTf)
+        contentView.addSubview(pwTf)
         pwTf.snp.makeConstraints {
             $0.top.equalTo(pwLabel.snp.bottom).offset(8)
             $0.leading.equalToSuperview().offset(30)
@@ -137,13 +141,13 @@ extension SignUpOneViewController {
             $0.height.equalTo(56)
         }
         
-        layoutView1.addSubview(pwCheckLabel)
+        contentView.addSubview(pwCheckLabel)
         pwCheckLabel.snp.makeConstraints {
             $0.top.equalTo(pwTf.snp.bottom).offset(48)
             $0.leading.equalToSuperview().offset(30)
         }
         
-        layoutView1.addSubview(pwCheckTf)
+        contentView.addSubview(pwCheckTf)
         pwCheckTf.snp.makeConstraints {
             $0.top.equalTo(pwCheckLabel.snp.bottom).offset(8)
             $0.leading.equalToSuperview().offset(30)
@@ -152,20 +156,21 @@ extension SignUpOneViewController {
         }
         
         
-        layoutView2.addSubview(alertView)
+        contentView.addSubview(alertView)
         alertView.snp.makeConstraints {
-            $0.top.equalToSuperview()
+            $0.top.equalTo(pwCheckTf.snp.bottom).offset(129)
             $0.leading.equalToSuperview().offset(30)
             $0.trailing.equalToSuperview().offset(-30)
             $0.height.equalTo(56)
         }
         
-        layoutView2.addSubview(nextBT)
+        contentView.addSubview(nextBT)
         nextBT.snp.makeConstraints {
             $0.top.equalTo(alertView.snp.bottom).offset(8)
             $0.leading.equalToSuperview().offset(30)
             $0.trailing.equalToSuperview().offset(-30)
             $0.height.equalTo(56)
+            $0.bottom.equalToSuperview()
         }
         
         
@@ -263,5 +268,43 @@ extension SignUpOneViewController {
         
     }
     
+    func setSV() {
+        let singleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(myTapMethod))
+        
+        singleTapGestureRecognizer.numberOfTapsRequired = 1
+        
+        singleTapGestureRecognizer.isEnabled = true
+        
+        singleTapGestureRecognizer.cancelsTouchesInView = false
+        
+        scrollView.addGestureRecognizer(singleTapGestureRecognizer)
+        
+        NotificationCenter.default.addObserver(self,selector: #selector(self.keyboardDidShow(notification:)),
+                                               name: UIResponder.keyboardDidShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self,selector: #selector(self.keyboardDidHide(notification:)),
+                                               name: UIResponder.keyboardDidHideNotification, object: nil)
+    }
+    
+    @objc func myTapMethod(sender: UITapGestureRecognizer) {
+        self.view.endEditing(true)
+    }
+    
+    //MARK: Methods to manage keybaord
+    @objc func keyboardDidShow(notification: NSNotification) {
+        let info = notification.userInfo
+        let keyBoardSize = info![UIResponder.keyboardFrameEndUserInfoKey] as! CGRect
+        scrollView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyBoardSize.height, right: 0.0)
+        scrollView.scrollIndicatorInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyBoardSize.height, right: 0.0)
+    }
+    
+    @objc func keyboardDidHide(notification: NSNotification) {
+        
+        scrollView.contentInset = UIEdgeInsets.zero
+        scrollView.scrollIndicatorInsets = UIEdgeInsets.zero
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+            self.view.endEditing(true)
+    }
     
 }

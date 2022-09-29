@@ -101,14 +101,16 @@ class DefaultLoginViewModel {
                         let decoder = JSONDecoder()
                         if let json = try? decoder.decode(ResponseData.self, from: response.1) {
                             if json.message == "로그인 완료" {
-                                if let dic = json.data?["user"] as? [String:Any] {
+                                if let dic = json.data?["user"] as? [String:Any],
+                                   let token = json.data?["token"] as? String {
                                  
-                                    if let user = dictionaryToObject(objectType: User.self, dictionary: dic) {
+                                    if var user = dictionaryToObject(objectType: User.self, dictionary: dic) {
+                                        user.jwtToken = token
                                         observer.onNext(user)
                                     }
                                 }
                             } else {
-                                let error = MellyError(code: json.code, msg: json.message)
+                                let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
                                 observer.onError(error)
                             }
                         } else {

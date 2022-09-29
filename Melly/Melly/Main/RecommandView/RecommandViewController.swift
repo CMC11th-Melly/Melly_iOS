@@ -23,6 +23,8 @@ class RecommandViewController: UIViewController {
         $0.showsVerticalScrollIndicator = false
     }
     
+    let contentView = UIView()
+    
     let recomandLabel = UILabel().then {
         let text = "소피아에게 추천하는 메모리 장소"
         let attributedString = NSMutableAttributedString(string: text)
@@ -71,6 +73,7 @@ class RecommandViewController: UIViewController {
         let flowLayout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.backgroundColor = .white
+        collectionView.isScrollEnabled = false
         return collectionView
     }()
     
@@ -95,53 +98,59 @@ extension RecommandViewController {
             $0.edges.equalToSuperview()
         }
         
-        mainSV.addSubview(recomandLabel)
+        mainSV.addSubview(contentView)
+        contentView.snp.makeConstraints {
+            $0.width.centerX.top.bottom.equalToSuperview()
+        }
+        
+        contentView.addSubview(recomandLabel)
         recomandLabel.snp.makeConstraints {
             $0.top.equalToSuperview().offset(43)
             $0.leading.equalToSuperview().offset(30)
         }
         
-        mainSV.addSubview(recommandSubLabel)
+        contentView.addSubview(recommandSubLabel)
         recommandSubLabel.snp.makeConstraints {
             $0.top.equalTo(recomandLabel.snp.bottom).offset(9)
             $0.leading.equalToSuperview().offset(30)
         }
         
-        mainSV.addSubview(recommandCV)
+        contentView.addSubview(recommandCV)
         recommandCV.snp.makeConstraints {
             $0.top.equalTo(recommandSubLabel.snp.bottom)
             $0.leading.trailing.equalTo(safeArea)
+            $0.height.equalTo(1134)
         }
         
-        recommandCV.updateContentSize()
         
-        mainSV.addSubview(separator)
+        contentView.addSubview(separator)
         separator.snp.makeConstraints {
             $0.leading.trailing.equalTo(safeArea)
             $0.height.equalTo(1)
-            $0.top.equalTo(recommandCV.snp.bottom)
+            $0.top.equalTo(recommandCV.snp.bottom).offset(28)
         }
         
-        mainSV.addSubview(hotLabel)
+        contentView.addSubview(hotLabel)
         hotLabel.snp.makeConstraints {
             $0.top.equalTo(separator.snp.bottom).offset(27)
             $0.leading.equalToSuperview().offset(30)
         }
         
-        mainSV.addSubview(hotSubLabel)
+        contentView.addSubview(hotSubLabel)
         hotSubLabel.snp.makeConstraints {
             $0.top.equalTo(hotLabel.snp.bottom).offset(9)
             $0.leading.equalToSuperview().offset(30)
         }
         
-        mainSV.addSubview(hotLocationCV)
+        contentView.addSubview(hotLocationCV)
         hotLocationCV.snp.makeConstraints {
             $0.top.equalTo(hotSubLabel.snp.bottom)
             $0.leading.trailing.equalTo(safeArea)
-            $0.height.equalTo(1106)
+            $0.height.equalTo(1139)
+            $0.bottom.equalToSuperview()
         }
         
-        mainSV.updateContentSize()
+        //mainSV.updateContentSize()
     }
     
     func setCV() {
@@ -183,7 +192,7 @@ extension RecommandViewController {
 extension RecommandViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 33, left: 0, bottom: 28, right: 0)
+        return UIEdgeInsets(top: 33, left: 0, bottom: 0, right: 0)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {

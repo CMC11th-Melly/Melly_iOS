@@ -33,6 +33,7 @@ struct User: Codable, Identifiable {
     var userSeq = 1
     var profileImage:String? = nil
     var ageGroup:String = ""
+    var jwtToken:String = ""
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)

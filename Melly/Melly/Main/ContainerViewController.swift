@@ -16,7 +16,7 @@ class ContainerViewController: UIViewController {
     
     private var menuState:MenuState = .closed
     
-    let mainVC = MainViewController()
+    let sideBarVC = SideBarViewController()
     let homeVC = HomeViewController()
     var navVC:UINavigationController?
     
@@ -30,18 +30,20 @@ class ContainerViewController: UIViewController {
 extension ContainerViewController {
     
     func setUI() {
-        view.backgroundColor = .red
+        view.backgroundColor = .white
         
         //Main
-        addChild(mainVC)
-        view.addSubview(mainVC.view)
-        mainVC.didMove(toParent: self)
+//        addChild(sideBarVC)
+//        view.addSubview(sideBarVC.view)
+//        sideBarVC.didMove(toParent: self)
         
         //Home
         homeVC.delegate = self
-        addChild(homeVC)
-        view.addSubview(homeVC.view)
-        homeVC.didMove(toParent: self)
+        let navVC = UINavigationController(rootViewController: homeVC)
+        addChild(navVC)
+        view.addSubview(navVC.view)
+        navVC.didMove(toParent: self)
+        self.navVC = navVC
         
     }
     

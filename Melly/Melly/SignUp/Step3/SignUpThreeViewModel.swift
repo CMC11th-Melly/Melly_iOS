@@ -30,6 +30,7 @@ class SignUpThreeViewModel {
     
     struct Output {
         let imageValue = PublishRelay<UIImage?>()
+        let userValue = PublishRelay<String?>()
     }
     
     init(_ user: User) {
@@ -44,7 +45,7 @@ class SignUpThreeViewModel {
         }).disposed(by: disposeBag)
         
         input.profileImgObserver.subscribe(onNext: { value in
-            self.profileData = value?.pngData()
+            self.profileData = value?.jpegData(compressionQuality: 1)
             self.output.imageValue.accept(value)
         }).disposed(by: disposeBag)
         
@@ -69,13 +70,27 @@ class SignUpThreeViewModel {
         
         input.signUpObserver
             .flatMap(signUp)
-            .subscribe(onNext: { value in
-                
+            .subscribe({ event in
+                switch event {
+                case .completed:
+                    break
+                case .error(let error):
+                    if let mellyError = error as? MellyError {
+                        if mellyError.msg == "" {
+                            self.output.userValue.accept(error.localizedDescription)
+                        } else {
+                            self.output.userValue.accept(mellyError.msg)
+                        }
+                    }
+                case .next(let user):
+                    User.loginedUser = user
+                    self.output.userValue.accept(nil)
+                }
             }).disposed(by: disposeBag)
         
     }
     
-    func signUp() -> Observable<String> {
+    func signUp() -> Observable<User> {
         
         return Observable.create { observer in
             
@@ -95,12 +110,14 @@ class SignUpThreeViewModel {
             if self.user.provider == LoginType.Default.rawValue {
                 parameters["email"] = self.user.email
                 parameters["password"] = self.user.pw
+            } else {
+                parameters["uid"] = self.user.uid
             }
                         
             AF.upload(multipartFormData: { multipartFormData in
                 
                 if let profileData = self.profileData {
-                    multipartFormData.append(profileData, withName: "profileImage", fileName: "test.png", mimeType: "image/png")
+                    multipartFormData.append(profileData, withName: "profileImage", fileName: "test.jpeg", mimeType: "image/jpeg")
                 }
                 for (key, value) in parameters {
                     multipartFormData.append("\(value)".data(using: .utf8)!, withName: key)
@@ -110,16 +127,20 @@ class SignUpThreeViewModel {
                 .responseData { response in
                     switch response.result {
                     case .success(let response):
-                        
-                        let str = String(data: response, encoding: .utf8)
-                        print(str)
-                        
                         let decoder = JSONDecoder()
                         if let json = try? decoder.decode(ResponseData.self, from: response) {
-                            print(json)
+                            if json.message == "로그인 완료" {
+                                if let dic = json.data?["user"] as? [String:Any] {
+                                    if let user = dictionaryToObject(objectType: User.self, dictionary: dic) {
+                                        observer.onNext(user)
+                                    }
+                                }
+                            } else {
+                                let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
+                                observer.onError(error)
+                            }
                         }
                     case .failure(let error):
-                        print("에러\(error.localizedDescription)")
                         observer.onError(error)
                     }
                 }

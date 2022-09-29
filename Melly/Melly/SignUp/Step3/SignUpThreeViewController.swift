@@ -319,6 +319,22 @@ extension SignUpThreeViewController {
                     }
                 }
             }).disposed(by: disposeBag)
+        
+        vm.output.userValue.asDriver(onErrorJustReturn: nil)
+            .drive(onNext: { value in
+                
+                if let value = value {
+                    //MARK: 에러처리
+                    print(value)
+                } else {
+                    let vc = ContainerViewController()
+                    vc.modalTransitionStyle = .crossDissolve
+                    vc.modalPresentationStyle = .fullScreen
+                    self.present(vc, animated: true)
+                }
+                
+            }).disposed(by: disposeBag)
+        
     }
     
     func setCV() {
@@ -341,23 +357,14 @@ extension SignUpThreeViewController {
             }.bind(to: vm.input.genderObserver)
             .disposed(by: disposeBag)
         
-        
-        
         ageCV.dataSource = nil
         ageCV.delegate = nil
         ageCV.rx.setDelegate(self).disposed(by: disposeBag)
         ageCV.register(SignUpCell.self, forCellWithReuseIdentifier: "age")
-        
-        ageCV.rx.itemDeselected
-            .subscribe(onNext: { value in
-                let cell = self.ageCV.cellForItem(at: value) as? SignUpCell
-                cell?.isSelect()
-            }).disposed(by: disposeBag)
-        
+                
         ageCV.rx.itemSelected
             .map { index in
                 let cell = self.ageCV.cellForItem(at: index) as? SignUpCell
-                cell?.isSelect()
                 return cell?.textLB.text ?? ""
             }.bind(to: vm.input.ageObserver)
             .disposed(by: disposeBag)
@@ -366,6 +373,10 @@ extension SignUpThreeViewController {
             .bind(to: ageCV.rx.items(cellIdentifier: "age", cellType: SignUpCell.self)) { row, element, cell in
                 cell.textLB.text = element
             }.disposed(by: disposeBag)
+        
+        
+        
+        
     }
     
 }
@@ -421,7 +432,6 @@ extension SignUpThreeViewController: UICollectionViewDelegateFlowLayout {
     }
     
     
-    
 }
 
 
@@ -454,16 +464,18 @@ class SignUpCell: UICollectionViewCell {
         }
     }
     
-    func isSelect() {
-        if self.isSelected {
-            self.backgroundColor = .gray
-            self.textLB.textColor = .black
-        } else {
-            self.backgroundColor = .white
-            self.textLB.textColor = UIColor(red: 0.545, green: 0.584, blue: 0.631, alpha: 1)
+    override var isSelected: Bool {
+        didSet {
+            if isSelected {
+                textLB.textColor = UIColor(red: 0.098, green: 0.122, blue: 0.157, alpha: 1)
+                backgroundColor = UIColor(red: 0.965, green: 0.969, blue: 0.973, alpha: 1)
+                
+            } else {
+                textLB.textColor = UIColor(red: 0.545, green: 0.584, blue: 0.631, alpha: 1)
+                backgroundColor = .white
+            }
         }
     }
-    
    
     
 }

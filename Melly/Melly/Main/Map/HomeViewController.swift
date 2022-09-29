@@ -11,6 +11,7 @@ import RxCocoa
 import RxSwift
 import FloatingPanel
 import NMapsMap
+import CoreLocation
 
 protocol HomeViewControllerDelegate:AnyObject {
     func didTapMenuButton()
@@ -20,8 +21,11 @@ class HomeViewController: UIViewController {
 
     weak var delegate: HomeViewControllerDelegate?
     var disposeBag = DisposeBag()
+    var locationManager: CLLocationManager!
+    let vm = MainMapViewModel()
     
-    let mapView = NMFMapView(frame: .zero).then {
+    
+   private lazy var mapView = NMFMapView(frame: .zero).then {
         $0.isUserInteractionEnabled = true
     }
     
@@ -48,6 +52,9 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        self.locationManager.requestWhenInUseAuthorization()
         setUI()
         bind()
     }
@@ -60,6 +67,8 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController {
     func setUI() {
+        
+        navigationController?.isNavigationBarHidden = true
         view.backgroundColor = .white
         
         view.addSubview(layoutView)
@@ -116,6 +125,7 @@ extension HomeViewController {
     
     func bind() {
         bindInput()
+        bindOutput()
     }
     
     func bindInput() {
@@ -125,10 +135,45 @@ extension HomeViewController {
                 self.delegate?.didTapMenuButton()
             }).disposed(by: disposeBag)
         
+        myLocationBT.rx.tap.subscribe(onNext: {
+            self.locationManager.requestWhenInUseAuthorization()
+            
+            if self.mapView.positionMode == .direction {
+                self.mapView.positionMode = .disabled
+            } else {
+                self.mapView.positionMode = .direction
+            }
+            
+        }).disposed(by: disposeBag)
+        
+        
+    }
+    
+    func bindOutput() {
+        
+        vm.output.markerValue.asDriver(onErrorJustReturn: [])
+            .drive(onNext: { marker in
+                print(marker)
+            }).disposed(by: disposeBag)
         
     }
     
 }
+
+extension HomeViewController: CLLocationManagerDelegate {
+    
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        switch status {
+        case .restricted, .denied:
+            self.locationManager.requestWhenInUseAuthorization()
+        default:
+            break
+        }
+    }
+    
+}
+
+
 
 
 class CustomFloatingPanelLayout: FloatingPanelLayout{
@@ -144,3 +189,4 @@ class CustomFloatingPanelLayout: FloatingPanelLayout{
             ]
         }
 }
+

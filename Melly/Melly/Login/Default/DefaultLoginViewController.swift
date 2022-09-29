@@ -250,6 +250,7 @@ extension DefaultLoginViewController {
                     self.alertView.isHidden = false
                     self.alertView.labelView.text = error.localizedDescription
                 } else {
+                    print(User.loginedUser)
                     let vc = ContainerViewController()
                     vc.modalTransitionStyle = .crossDissolve
                     vc.modalPresentationStyle = .fullScreen
