@@ -10,19 +10,25 @@ import Alamofire
 import RxCocoa
 import RxSwift
 import RxAlamofire
+import NMapsMap
 
 class MainMapViewModel {
     
     let disposeBag = DisposeBag()
     let input = Input()
     let output = Output()
+    var marker:[Marker] = []
+    var filterGroup = GroupFilter.all
     
     struct Input {
-        let initMarkerObserver = BehaviorRelay<Void>(value: ())
+        let initMarkerObserver = BehaviorRelay<GroupFilter>(value: .all)
+        let touchMarkerObserver = PublishRelay<Int>()
+        let filterGroupObserver = PublishRelay<GroupFilter>()
     }
     
     struct Output {
-        let markerValue = PublishRelay<[Marker]>()
+        let markerValue = PublishRelay<[NMFMarker]>()
+        let filterValue = PublishRelay<GroupFilter>()
     }
     
     init() {
@@ -32,8 +38,27 @@ class MainMapViewModel {
             .flatMap(createMarker)
             .subscribe({ event in
                 switch event {
-                case .next(let marker):
-                    self.output.markerValue.accept(marker)
+                case .next(let markers):
+                    DispatchQueue.global().async {
+                        
+                        var totalMarkers = [NMFMarker]()
+                        for i in 0..<markers.count {
+                            
+                            let marker = NMFMarker(position: NMGLatLng(lat: markers[i].position.lat, lng: markers[i].position.lng))
+                            marker.iconImage = NMFOverlayImage(image: UIImage(named: "marker")!)
+                            marker.captionText = "\(markers[i].memoryCount)"
+                            marker.captionAligns = [NMFAlignType.center]
+                            marker.captionTextSize = 10
+                            marker.captionColor = .white
+                            marker.touchHandler = { (overlay) -> Bool in
+                                self.input.touchMarkerObserver.accept(i)
+                                return true
+                            }
+                            totalMarkers.append(marker)
+                        }
+                        self.output.markerValue.accept(totalMarkers)
+                    }
+                    
                 case .error(let error):
                     print(error)
                 case .completed:
@@ -41,16 +66,22 @@ class MainMapViewModel {
                 }
             }).disposed(by: disposeBag)
         
+        input.filterGroupObserver.subscribe(onNext: { value in
+            self.filterGroup = self.filterGroup == value ? .all : value
+            self.input.initMarkerObserver.accept(self.filterGroup)
+        }).disposed(by: disposeBag)
+        
+        
     }
     
     
-    func createMarker() -> Observable<[Marker]> {
+    func createMarker(_ filter: GroupFilter) -> Observable<[Marker]> {
         
         return Observable.create { observer in
             
             if let user = User.loginedUser {
                 
-                let parameters:Parameters = ["groupType": ""]
+                let parameters:Parameters = ["groupType": filter.rawValue]
                 let header:HTTPHeaders = [
                     "Connection":"keep-alive",
                     "Content-Type":"application/json",
@@ -62,10 +93,31 @@ class MainMapViewModel {
                         switch response.result {
                         case .success(let data):
                             let decoder = JSONDecoder()
-                            if let json = try? decoder.decode([Marker].self, from: data) {
-                                observer.onNext(json)
+                            if let json = try? decoder.decode(ResponseData.self, from: data) {
+                                if json.message == "유저가 메모리 작성한 장소 조회" {
+                                    
+                                    if let data = try? JSONSerialization.data(withJSONObject: json.data?["place"] as Any) {
+                                        
+                                        if let markers = try? decoder.decode([Marker].self, from: data) {
+                                            self.marker = markers
+                                    
+                                            observer.onNext(markers)
+                                        } else {
+                                            observer.onNext([])
+                                        }
+                                        
+                                    } else {
+                                        observer.onNext([])
+                                    }
+                                    
+                                } else {
+                                    let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
+                                    observer.onError(error)
+                                }
+                                
                             } else {
-                                //에러처리
+                                let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
+                                observer.onError(error)
                             }
                         case .failure(let error):
                             observer.onError(error)

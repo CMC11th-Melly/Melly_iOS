@@ -284,3 +284,44 @@ class MainTextField: UITextField {
     }
     
 }
+
+
+class GroupToggleButton: UIButton {
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.titleLabel?.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        self.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 14)
+        self.backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
+        self.layer.cornerRadius = 12
+        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    convenience init(_ text: String) {
+        self.init()
+        self.setTitle(text, for: .normal)
+        self.setTitle(text, for: .selected)
+    }
+    
+    override var isSelected: Bool {
+        didSet {
+            if isSelected {
+                self.titleLabel?.textColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
+                self.backgroundColor = UIColor(red: 0.427, green: 0.459, blue: 0.506, alpha: 1)
+                
+            } else {
+                self.titleLabel?.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+                self.backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
+            }
+        }
+    }
+    
+    
+    
+    
+}
+

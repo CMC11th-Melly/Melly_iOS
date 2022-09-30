@@ -29,3 +29,30 @@ enum EmailValid:String {
     case nameCountNotAvailable = "2자리 이상 입력해주세요."
 }
 
+enum GroupFilter: String {
+    case family = "FAMILY"
+    case company = "COMPANY"
+    case couple = "COUPLE"
+    case friend = "FRIEND"
+    case all = "ALL"
+    // FAMILY, COMPANY, COUPLE, FRIEND, ALL
+    
+    
+   static func getValue(_ text: String) -> GroupFilter {
+        switch text {
+        case "연인만":
+            return .couple
+        case "가족만":
+            return .family
+        case "동료만":
+            return .company
+        case "친구만":
+            return .friend
+        default:
+            return .all
+        }
+        
+        
+    }
+    
+}
