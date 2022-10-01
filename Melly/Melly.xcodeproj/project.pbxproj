@@ -11,6 +11,8 @@
 		BF075F8128E52BC500E581E7 /* Marker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF075F8028E52BC500E581E7 /* Marker.swift */; };
 		BF075F8428E52D6B00E581E7 /* MainMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF075F8328E52D6B00E581E7 /* MainMapViewModel.swift */; };
 		BF0A11C928CDCDEB00B06DE1 /* SideBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0A11C828CDCDEB00B06DE1 /* SideBarViewController.swift */; };
+		BF3121DA28E8185F003916A4 /* ITLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3121D928E8185F003916A4 /* ITLocation.swift */; };
+		BF3121DC28E81C83003916A4 /* RecommandViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3121DB28E81C83003916A4 /* RecommandViewModel.swift */; };
 		BF34F87B28D1915B00EA1C16 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF34F87A28D1915B00EA1C16 /* User.swift */; };
 		BF34F87D28D19DE700EA1C16 /* CustomComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF34F87C28D19DE700EA1C16 /* CustomComponent.swift */; };
 		BF34F88128D1A60400EA1C16 /* DefaultLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF34F88028D1A60300EA1C16 /* DefaultLoginViewController.swift */; };
@@ -53,6 +55,8 @@
 		BF075F8028E52BC500E581E7 /* Marker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Marker.swift; sourceTree = "<group>"; };
 		BF075F8328E52D6B00E581E7 /* MainMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMapViewModel.swift; sourceTree = "<group>"; };
 		BF0A11C828CDCDEB00B06DE1 /* SideBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarViewController.swift; sourceTree = "<group>"; };
+		BF3121D928E8185F003916A4 /* ITLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ITLocation.swift; sourceTree = "<group>"; };
+		BF3121DB28E81C83003916A4 /* RecommandViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommandViewModel.swift; sourceTree = "<group>"; };
 		BF34F87A28D1915B00EA1C16 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		BF34F87C28D19DE700EA1C16 /* CustomComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomComponent.swift; sourceTree = "<group>"; };
 		BF34F88028D1A60300EA1C16 /* DefaultLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLoginViewController.swift; sourceTree = "<group>"; };
@@ -138,6 +142,7 @@
 				BF34F87A28D1915B00EA1C16 /* User.swift */,
 				BF638A8D28DAA96D0031233F /* ResponseData.swift */,
 				BF075F8028E52BC500E581E7 /* Marker.swift */,
+				BF3121D928E8185F003916A4 /* ITLocation.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -185,6 +190,7 @@
 			children = (
 				BF8F9AD628D064D700EAA49E /* RecommandViewController.swift */,
 				BF81F96D28E1732A007E5D35 /* RecommandCollectionViewCell.swift */,
+				BF3121DB28E81C83003916A4 /* RecommandViewModel.swift */,
 			);
 			path = RecommandView;
 			sourceTree = "<group>";
@@ -423,6 +429,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF8F9AD728D064D700EAA49E /* RecommandViewController.swift in Sources */,
+				BF3121DC28E81C83003916A4 /* RecommandViewModel.swift in Sources */,
 				BF638A8E28DAA96D0031233F /* ResponseData.swift in Sources */,
 				BFD6C57628D7373F0092A6E5 /* SignUpTwoViewController.swift in Sources */,
 				BFA3399328C832E500C1CD4C /* MainLoginViewController.swift in Sources */,
@@ -441,6 +448,7 @@
 				BFF84EAC28C6D40B00892CB5 /* AppDelegate.swift in Sources */,
 				BF7E3CCA28D43F0E007C3236 /* DefaultLoginVIewModel.swift in Sources */,
 				BF81F96E28E1732A007E5D35 /* RecommandCollectionViewCell.swift in Sources */,
+				BF3121DA28E8185F003916A4 /* ITLocation.swift in Sources */,
 				BF34F87D28D19DE700EA1C16 /* CustomComponent.swift in Sources */,
 				BFA3399628C8349B00C1CD4C /* UIKitExtension.swift in Sources */,
 				BFD6C56D28D723CD0092A6E5 /* SignUpOneViewController.swift in Sources */,

@@ -6,6 +6,9 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
+
 
 class RecommandCollectionViewCell: UICollectionViewCell {
     
@@ -155,8 +158,7 @@ class RecommandCollectionViewCell: UICollectionViewCell {
             $0.trailing.equalToSuperview().offset(-25)
         }
         
-        
-        
     }
+    
     
 }

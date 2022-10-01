@@ -11,6 +11,10 @@ import Then
 
 class SideBarViewController: UIViewController {
 
+    
+    
+    
+    
     let contentView = UIView()
     
     let profileImage = UIImageView(image: UIImage(named: "profile")).then {
@@ -185,11 +189,5 @@ extension SideBarViewController {
             $0.top.equalTo(termsBT.snp.bottom).offset(27)
             $0.leading.equalToSuperview().offset(30)
         }
-        
-        
-        
-        
-        
-        
     }
 }
