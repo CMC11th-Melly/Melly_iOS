@@ -32,10 +32,10 @@ extension ContainerViewController {
     func setUI() {
         view.backgroundColor = .white
         
-        //Main
-//        addChild(sideBarVC)
-//        view.addSubview(sideBarVC.view)
-//        sideBarVC.didMove(toParent: self)
+        
+        addChild(sideBarVC)
+        view.addSubview(sideBarVC.view)
+        sideBarVC.didMove(toParent: self)
         
         //Home
         homeVC.delegate = self

@@ -10,10 +10,6 @@ import UIKit
 import Then
 
 class SideBarViewController: UIViewController {
-
-    
-    
-    
     
     let contentView = UIView()
     
@@ -136,7 +132,7 @@ extension SideBarViewController {
         separatorOne.snp.makeConstraints {
             $0.top.equalTo(profileImage.snp.bottom).offset(42)
             $0.leading.equalToSuperview().offset(30)
-            $0.trailing.equalToSuperview().offset(-30)
+            $0.width.equalTo(self.view.frame.size.width - 160)
             $0.height.equalTo(1)
         }
         
@@ -162,7 +158,7 @@ extension SideBarViewController {
         separatorTwo.snp.makeConstraints {
             $0.top.equalTo(scrapBT.snp.bottom).offset(44)
             $0.leading.equalToSuperview().offset(30)
-            $0.trailing.equalToSuperview().offset(-30)
+            $0.width.equalTo(self.view.frame.size.width - 160)
             $0.height.equalTo(1)
         }
         
