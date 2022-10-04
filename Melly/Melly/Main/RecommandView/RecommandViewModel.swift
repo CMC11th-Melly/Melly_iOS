@@ -39,8 +39,6 @@ class RecommandViewModel {
                     break
                 }
             }).disposed(by: disposeBag)
-        
-        
     }
     
     func getTrendsPlace() -> Observable<[ItLocation]> {

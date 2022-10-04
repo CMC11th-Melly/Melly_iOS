@@ -293,6 +293,7 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
                return true
            }
        }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 16
     }

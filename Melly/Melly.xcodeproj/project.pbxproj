@@ -11,6 +11,9 @@
 		BF075F8128E52BC500E581E7 /* Marker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF075F8028E52BC500E581E7 /* Marker.swift */; };
 		BF075F8428E52D6B00E581E7 /* MainMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF075F8328E52D6B00E581E7 /* MainMapViewModel.swift */; };
 		BF0A11C928CDCDEB00B06DE1 /* SideBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0A11C828CDCDEB00B06DE1 /* SideBarViewController.swift */; };
+		BF2814FF28EBC619004F6A31 /* ResearchLaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2814FE28EBC619004F6A31 /* ResearchLaunchViewController.swift */; };
+		BF28150128EBE54A004F6A31 /* ResearchMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF28150028EBE54A004F6A31 /* ResearchMainViewController.swift */; };
+		BF28150328EBF7E7004F6A31 /* ResearchMainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF28150228EBF7E7004F6A31 /* ResearchMainViewModel.swift */; };
 		BF3121DA28E8185F003916A4 /* ITLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3121D928E8185F003916A4 /* ITLocation.swift */; };
 		BF3121DC28E81C83003916A4 /* RecommandViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3121DB28E81C83003916A4 /* RecommandViewModel.swift */; };
 		BF34F87B28D1915B00EA1C16 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF34F87A28D1915B00EA1C16 /* User.swift */; };
@@ -55,6 +58,9 @@
 		BF075F8028E52BC500E581E7 /* Marker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Marker.swift; sourceTree = "<group>"; };
 		BF075F8328E52D6B00E581E7 /* MainMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMapViewModel.swift; sourceTree = "<group>"; };
 		BF0A11C828CDCDEB00B06DE1 /* SideBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarViewController.swift; sourceTree = "<group>"; };
+		BF2814FE28EBC619004F6A31 /* ResearchLaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResearchLaunchViewController.swift; sourceTree = "<group>"; };
+		BF28150028EBE54A004F6A31 /* ResearchMainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResearchMainViewController.swift; sourceTree = "<group>"; };
+		BF28150228EBF7E7004F6A31 /* ResearchMainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResearchMainViewModel.swift; sourceTree = "<group>"; };
 		BF3121D928E8185F003916A4 /* ITLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ITLocation.swift; sourceTree = "<group>"; };
 		BF3121DB28E81C83003916A4 /* RecommandViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommandViewModel.swift; sourceTree = "<group>"; };
 		BF34F87A28D1915B00EA1C16 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -134,6 +140,16 @@
 				BF5A7F4628D05926000A1B08 /* ContainerViewController.swift */,
 			);
 			path = Main;
+			sourceTree = "<group>";
+		};
+		BF2814FD28EBC2F9004F6A31 /* Research */ = {
+			isa = PBXGroup;
+			children = (
+				BF2814FE28EBC619004F6A31 /* ResearchLaunchViewController.swift */,
+				BF28150028EBE54A004F6A31 /* ResearchMainViewController.swift */,
+				BF28150228EBF7E7004F6A31 /* ResearchMainViewModel.swift */,
+			);
+			path = Research;
 			sourceTree = "<group>";
 		};
 		BF34F87928D1915000EA1C16 /* Model */ = {
@@ -275,6 +291,7 @@
 		BFF84EAA28C6D40B00892CB5 /* Melly */ = {
 			isa = PBXGroup;
 			children = (
+				BF2814FD28EBC2F9004F6A31 /* Research */,
 				BF63C38528DBECA700A37CF3 /* Font */,
 				BFD6C56B28D723520092A6E5 /* SignUp */,
 				BFBDC76828C9A98400DA6330 /* Melly.entitlements */,
@@ -434,11 +451,13 @@
 				BFD6C57628D7373F0092A6E5 /* SignUpTwoViewController.swift in Sources */,
 				BFA3399328C832E500C1CD4C /* MainLoginViewController.swift in Sources */,
 				BFD6C56F28D724160092A6E5 /* SignUpOneViewModel.swift in Sources */,
+				BF28150328EBF7E7004F6A31 /* ResearchMainViewModel.swift in Sources */,
 				BFF84EB028C6D40B00892CB5 /* SplashViewController.swift in Sources */,
 				BF638A9228DAD6050031233F /* FoundationExtension.swift in Sources */,
 				BFD6C57428D733260092A6E5 /* SignUpTwoViewModel.swift in Sources */,
 				BF638A9528DADFD10031233F /* Enum.swift in Sources */,
 				BFA3399828C836F300C1CD4C /* MainLoginViewModel.swift in Sources */,
+				BF28150128EBE54A004F6A31 /* ResearchMainViewController.swift in Sources */,
 				BFDC1BF928D8096D005ADC6A /* SignUpThreeViewModel.swift in Sources */,
 				BF5A7F4528D0591A000A1B08 /* HomeViewController.swift in Sources */,
 				BF075F8428E52D6B00E581E7 /* MainMapViewModel.swift in Sources */,
@@ -448,6 +467,7 @@
 				BFF84EAC28C6D40B00892CB5 /* AppDelegate.swift in Sources */,
 				BF7E3CCA28D43F0E007C3236 /* DefaultLoginVIewModel.swift in Sources */,
 				BF81F96E28E1732A007E5D35 /* RecommandCollectionViewCell.swift in Sources */,
+				BF2814FF28EBC619004F6A31 /* ResearchLaunchViewController.swift in Sources */,
 				BF3121DA28E8185F003916A4 /* ITLocation.swift in Sources */,
 				BF34F87D28D19DE700EA1C16 /* CustomComponent.swift in Sources */,
 				BFA3399628C8349B00C1CD4C /* UIKitExtension.swift in Sources */,
