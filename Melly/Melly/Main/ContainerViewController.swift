@@ -9,10 +9,7 @@ import UIKit
 
 class ContainerViewController: UIViewController {
 
-    enum MenuState {
-        case opened
-        case closed
-    }
+   
     
     private var menuState:MenuState = .closed
     

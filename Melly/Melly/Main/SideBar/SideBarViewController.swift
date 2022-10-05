@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import Then
+import Kingfisher
 
 class SideBarViewController: UIViewController {
     
@@ -88,6 +89,10 @@ class SideBarViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        setData()
     }
     
     override func viewDidLayoutSubviews() {
@@ -184,6 +189,17 @@ extension SideBarViewController {
         logoutBT.snp.makeConstraints {
             $0.top.equalTo(termsBT.snp.bottom).offset(27)
             $0.leading.equalToSuperview().offset(30)
+        }
+    }
+    
+    func setData() {
+        if let user = User.loginedUser {
+            userNameLb.text = user.nickname
+            if let image = user.profileImage {
+                let url = URL(string: image)!
+                profileImage.kf.setImage(with: url)
+            }
+            
         }
     }
 }

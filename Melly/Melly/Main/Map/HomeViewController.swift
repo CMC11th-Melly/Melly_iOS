@@ -29,9 +29,13 @@ class HomeViewController: UIViewController {
         $0.backgroundColor = .clear
     }
     
+    let locationFloatingPanel = FloatingPanelController()
+    let locationVC = LocationViewController()
+    
     
     private lazy var mapView = NMFMapView(frame: .zero).then {
         $0.isUserInteractionEnabled = true
+       
         $0.positionMode = .disabled
     }
     
@@ -90,6 +94,7 @@ class HomeViewController: UIViewController {
 extension HomeViewController {
     
     func setMap() {
+        mapView.touchDelegate = self
         locationManager = CLLocationManager()
         locationManager.delegate = self
         self.locationManager.requestWhenInUseAuthorization()
@@ -97,6 +102,7 @@ extension HomeViewController {
     }
     
     func setUI() {
+        
         
         navigationController?.isNavigationBarHidden = true
         view.backgroundColor = .white
@@ -163,6 +169,8 @@ extension HomeViewController {
         fpc.addPanel(toParent: self)
         fpc.layout = CustomFloatingPanelLayout()
         fpc.show()
+        
+        
         
     }
     
@@ -252,6 +260,11 @@ extension HomeViewController {
                 
             }).disposed(by: disposeBag)
         
+        vm.output.locationPickerValue.subscribe(onNext: { value in
+            
+            
+        }).disposed(by: disposeBag)
+        
         
     }
     
@@ -272,6 +285,30 @@ extension HomeViewController: CLLocationManagerDelegate {
             self.mapView.moveCamera(cameraUpdate)
         }
     }
+    
+}
+
+extension HomeViewController: NMFMapViewTouchDelegate, LocationViewControllerDelegate {
+    
+    func didDismissButton() {
+        locationFloatingPanel.removePanelFromParent(animated: true)
+        locationFloatingPanel.hide(animated: true)
+        
+        mapView.locationOverlay.hidden = true
+    }
+    
+    func mapView(_ mapView: NMFMapView, didTapMap latlng: NMGLatLng, point: CGPoint) {
+        
+        locationFloatingPanel.isRemovalInteractionEnabled = true
+        locationFloatingPanel.set(contentViewController: locationVC)
+        locationFloatingPanel.addPanel(toParent: self)
+        locationFloatingPanel.layout = CustomFloatingPanelLayout()
+        locationFloatingPanel.show(animated: true)
+        
+        mapView.locationOverlay.location = latlng
+        
+    }
+    
     
 }
 
@@ -320,6 +357,22 @@ class CustomFloatingPanelLayout: FloatingPanelLayout{
         ]
     }
 }
+
+class LocationFloatingPanelLayout: FloatingPanelLayout{
+    var position: FloatingPanelPosition = .bottom
+    var initialState: FloatingPanelState = .tip
+    
+    
+    var anchors: [FloatingPanelState: FloatingPanelLayoutAnchoring] {
+        return [
+            .tip: FloatingPanelLayoutAnchor(absoluteInset: 248.0, edge: .bottom, referenceGuide: .superview)
+        ]
+    }
+}
+
+
+
+
 
 class FilterCell: UICollectionViewCell {
     

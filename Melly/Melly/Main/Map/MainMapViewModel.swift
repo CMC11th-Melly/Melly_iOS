@@ -14,6 +14,8 @@ import NMapsMap
 
 class MainMapViewModel {
     
+    private var menuState:MenuState = .closed
+    
     let disposeBag = DisposeBag()
     let input = Input()
     let output = Output()
@@ -24,11 +26,13 @@ class MainMapViewModel {
         let initMarkerObserver = BehaviorRelay<GroupFilter>(value: .all)
         let touchMarkerObserver = PublishRelay<Int>()
         let filterGroupObserver = PublishRelay<GroupFilter>()
+        let locationPickerObserver = PublishRelay<MenuState>()
     }
     
     struct Output {
         let markerValue = PublishRelay<[NMFMarker]>()
         let filterValue = PublishRelay<GroupFilter>()
+        let locationPickerValue = PublishRelay<MenuState>()
     }
     
     init() {
@@ -69,6 +73,10 @@ class MainMapViewModel {
         input.filterGroupObserver.subscribe(onNext: { value in
             self.filterGroup = self.filterGroup == value ? .all : value
             self.input.initMarkerObserver.accept(self.filterGroup)
+        }).disposed(by: disposeBag)
+        
+        input.locationPickerObserver.subscribe(onNext: { value in
+            self.output.locationPickerValue.accept(value)
         }).disposed(by: disposeBag)
         
         

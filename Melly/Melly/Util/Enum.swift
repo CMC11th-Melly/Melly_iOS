@@ -12,6 +12,11 @@ public struct MellyError: Error {
     var msg: String
 }
 
+enum MenuState {
+    case opened
+    case closed
+}
+
 enum LoginType:String {
     case kakao = "KAKAO"
     case naver = "NAVER"
