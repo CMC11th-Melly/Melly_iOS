@@ -325,3 +325,47 @@ class GroupToggleButton: UIButton {
     
 }
 
+class ResearchComponent: UIView {
+    
+    let imageView = UIImageView()
+    
+    let label = UILabel().then {
+        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-SemiBold", size: 15)
+    }
+    
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    convenience init(_ text: String, _ image: String) {
+        self.init()
+        imageView.image = UIImage(named: image)
+        label.text = text
+    }
+    
+    private func setUI() {
+        backgroundColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1)
+        layer.cornerRadius = 12
+        
+        addSubview(imageView)
+        imageView.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalToSuperview().offset(25)
+            $0.width.height.equalTo(26)
+        }
+        
+        addSubview(label)
+        label.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalTo(imageView.snp.trailing).offset(15)
+        }
+    }
+    
+}

@@ -44,6 +44,10 @@
 		BFD6C57628D7373F0092A6E5 /* SignUpTwoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6C57528D7373F0092A6E5 /* SignUpTwoViewController.swift */; };
 		BFDC1BF728D8094A005ADC6A /* SignUpThreeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDC1BF628D8094A005ADC6A /* SignUpThreeViewController.swift */; };
 		BFDC1BF928D8096D005ADC6A /* SignUpThreeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDC1BF828D8096D005ADC6A /* SignUpThreeViewModel.swift */; };
+		BFDE616E28ED12A10099FF97 /* ResearchLoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE616D28ED12A10099FF97 /* ResearchLoadingViewController.swift */; };
+		BFDE617128ED13F70099FF97 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE617028ED13F70099FF97 /* SearchViewController.swift */; };
+		BFDE617328ED179F0099FF97 /* ResearchResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE617228ED179F0099FF97 /* ResearchResultViewController.swift */; };
+		BFDE617628ED59DB0099FF97 /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE617528ED59DB0099FF97 /* LocationViewController.swift */; };
 		BFF84EAC28C6D40B00892CB5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAB28C6D40B00892CB5 /* AppDelegate.swift */; };
 		BFF84EAE28C6D40B00892CB5 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAD28C6D40B00892CB5 /* SceneDelegate.swift */; };
 		BFF84EB028C6D40B00892CB5 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAF28C6D40B00892CB5 /* SplashViewController.swift */; };
@@ -92,6 +96,10 @@
 		BFD6C57528D7373F0092A6E5 /* SignUpTwoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpTwoViewController.swift; sourceTree = "<group>"; };
 		BFDC1BF628D8094A005ADC6A /* SignUpThreeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpThreeViewController.swift; sourceTree = "<group>"; };
 		BFDC1BF828D8096D005ADC6A /* SignUpThreeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpThreeViewModel.swift; sourceTree = "<group>"; };
+		BFDE616D28ED12A10099FF97 /* ResearchLoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResearchLoadingViewController.swift; sourceTree = "<group>"; };
+		BFDE617028ED13F70099FF97 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		BFDE617228ED179F0099FF97 /* ResearchResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResearchResultViewController.swift; sourceTree = "<group>"; };
+		BFDE617528ED59DB0099FF97 /* LocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
 		BFF84EA828C6D40B00892CB5 /* Melly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Melly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFF84EAB28C6D40B00892CB5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFF84EAD28C6D40B00892CB5 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -134,6 +142,8 @@
 		BF0A11C728CDCDA600B06DE1 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				BFDE617428ED576F0099FF97 /* LocationView */,
+				BFDE616F28ED13EA0099FF97 /* Search */,
 				BF075F8228E52CC700E581E7 /* Map */,
 				BFFCF2BC28E3FFAC0011701D /* SideBar */,
 				BF81F96C28E1627F007E5D35 /* RecommandView */,
@@ -148,6 +158,8 @@
 				BF2814FE28EBC619004F6A31 /* ResearchLaunchViewController.swift */,
 				BF28150028EBE54A004F6A31 /* ResearchMainViewController.swift */,
 				BF28150228EBF7E7004F6A31 /* ResearchMainViewModel.swift */,
+				BFDE616D28ED12A10099FF97 /* ResearchLoadingViewController.swift */,
+				BFDE617228ED179F0099FF97 /* ResearchResultViewController.swift */,
 			);
 			path = Research;
 			sourceTree = "<group>";
@@ -268,6 +280,22 @@
 				BFDC1BF828D8096D005ADC6A /* SignUpThreeViewModel.swift */,
 			);
 			path = Step3;
+			sourceTree = "<group>";
+		};
+		BFDE616F28ED13EA0099FF97 /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				BFDE617028ED13F70099FF97 /* SearchViewController.swift */,
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
+		BFDE617428ED576F0099FF97 /* LocationView */ = {
+			isa = PBXGroup;
+			children = (
+				BFDE617528ED59DB0099FF97 /* LocationViewController.swift */,
+			);
+			path = LocationView;
 			sourceTree = "<group>";
 		};
 		BFF84E9F28C6D40B00892CB5 = {
@@ -452,6 +480,7 @@
 				BFA3399328C832E500C1CD4C /* MainLoginViewController.swift in Sources */,
 				BFD6C56F28D724160092A6E5 /* SignUpOneViewModel.swift in Sources */,
 				BF28150328EBF7E7004F6A31 /* ResearchMainViewModel.swift in Sources */,
+				BFDE617628ED59DB0099FF97 /* LocationViewController.swift in Sources */,
 				BFF84EB028C6D40B00892CB5 /* SplashViewController.swift in Sources */,
 				BF638A9228DAD6050031233F /* FoundationExtension.swift in Sources */,
 				BFD6C57428D733260092A6E5 /* SignUpTwoViewModel.swift in Sources */,
@@ -461,6 +490,7 @@
 				BFDC1BF928D8096D005ADC6A /* SignUpThreeViewModel.swift in Sources */,
 				BF5A7F4528D0591A000A1B08 /* HomeViewController.swift in Sources */,
 				BF075F8428E52D6B00E581E7 /* MainMapViewModel.swift in Sources */,
+				BFDE617328ED179F0099FF97 /* ResearchResultViewController.swift in Sources */,
 				BF3F0E9C28DD70F500AED582 /* SignUpZeroViewModel.swift in Sources */,
 				BF075F8128E52BC500E581E7 /* Marker.swift in Sources */,
 				BFDC1BF728D8094A005ADC6A /* SignUpThreeViewController.swift in Sources */,
@@ -471,9 +501,11 @@
 				BF3121DA28E8185F003916A4 /* ITLocation.swift in Sources */,
 				BF34F87D28D19DE700EA1C16 /* CustomComponent.swift in Sources */,
 				BFA3399628C8349B00C1CD4C /* UIKitExtension.swift in Sources */,
+				BFDE616E28ED12A10099FF97 /* ResearchLoadingViewController.swift in Sources */,
 				BFD6C56D28D723CD0092A6E5 /* SignUpOneViewController.swift in Sources */,
 				BF0A11C928CDCDEB00B06DE1 /* SideBarViewController.swift in Sources */,
 				BF5A7F4728D05926000A1B08 /* ContainerViewController.swift in Sources */,
+				BFDE617128ED13F70099FF97 /* SearchViewController.swift in Sources */,
 				BF34F88128D1A60400EA1C16 /* DefaultLoginViewController.swift in Sources */,
 				BFF84EAE28C6D40B00892CB5 /* SceneDelegate.swift in Sources */,
 				BF3F0E9A28DD701900AED582 /* SignUpZeroViewController.swift in Sources */,

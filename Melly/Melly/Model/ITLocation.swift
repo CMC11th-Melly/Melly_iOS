@@ -9,14 +9,17 @@ import Foundation
 
 struct ItLocation:Codable {
     let placeInfo:Place
-    let memoryInfo:Place
+    let memoryInfo:Memory
 }
 
 struct Memory:Codable {
     let memoryId: Int
-    let memoryImage:String
+    let memoryImages:[String]
     let title:String
     let content:String
+    let groupName:String
+    let stars:Int
+    let keywords:[String]
     
 }
 
@@ -26,4 +29,5 @@ struct Place:Codable {
     let placeCategory:String
     let isScraped:Bool
     let placeName:String
+    let recommendType:String
 }

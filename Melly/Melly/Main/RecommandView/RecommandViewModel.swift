@@ -16,13 +16,13 @@ class RecommandViewModel {
     let input = Input()
     let output = Output()
     
-    
     struct Input {
         
     }
     
     struct Output {
-        
+        let hotLocationObserver = PublishRelay<[ItLocation]>()
+        let trendsLocationObserver = PublishRelay<[ItLocation]>()
     }
     
     init() {
@@ -31,8 +31,8 @@ class RecommandViewModel {
             .subscribe({ event in
                 switch event {
                 case .next((let hot, let trends)):
-                    print(hot)
-                    print(trends)
+                    self.output.hotLocationObserver.accept(hot)
+                    self.output.trendsLocationObserver.accept(trends)
                 case .error(let error):
                     print(error)
                 case .completed:
@@ -120,9 +120,8 @@ class RecommandViewModel {
                         case .success(let data):
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                if json.message == "핫한 장소" {
-                                    
-                                    if let data = try? JSONSerialization.data(withJSONObject: json.data?["trend"] as Any) {
+                                if json.message == "추천 장소" {
+                                    if let data = try? JSONSerialization.data(withJSONObject: json.data?["recommend"] as Any) {
                                         
                                         if let locations = try? decoder.decode([ItLocation].self, from: data) {
                                     

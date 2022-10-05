@@ -18,6 +18,7 @@ pod 'RxKakaoSDKUser'
 #Server API
 pod 'Alamofire'
 pod 'RxAlamofire'
+pod 'Kingfisher'
 
 #UI framework
 pod 'SnapKit', '~> 5.0.0'

@@ -103,7 +103,10 @@ extension ResearchMainViewController {
                 if value == 0 {
                     self.dismiss(animated: true)
                 } else if value == 4 {
-                    
+                    let vc = ResearchLaunchViewController()
+                    vc.modalTransitionStyle = .crossDissolve
+                    vc.modalPresentationStyle = .fullScreen
+                    self.present(vc, animated: true)
                 } else {
                     let value = value - 1
                     let contentOffset = CGPoint(x: Int(self.view.frame.width) * value, y: 0)

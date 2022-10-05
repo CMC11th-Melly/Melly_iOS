@@ -51,8 +51,21 @@ enum GroupFilter: String {
         default:
             return .all
         }
-        
-        
+    }
+    
+    static func getKoValue(_ text: String) -> String {
+        switch text {
+        case "FAMILY":
+            return "가족과"
+        case "COMPANY":
+            return "동료와"
+        case "COUPLE":
+            return "연인과"
+        case "FRIEND":
+            return "친구와"
+        default:
+            return "모두와"
+        }
     }
     
 }

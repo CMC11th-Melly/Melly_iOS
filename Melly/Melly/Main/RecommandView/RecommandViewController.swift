@@ -14,6 +14,7 @@ import RxCocoa
 class RecommandViewController: UIViewController {
     
     private let disposeBag = DisposeBag()
+    let vm = RecommandViewModel()
     
     let data = Observable<[String]>.of(["", "", "", ""])
     
@@ -159,18 +160,19 @@ extension RecommandViewController {
         recommandCV.rx.setDelegate(self).disposed(by: disposeBag)
         recommandCV.register(RecommandCollectionViewCell.self, forCellWithReuseIdentifier: "recommand")
         
-        data
+        vm.output.trendsLocationObserver
             .bind(to: recommandCV.rx.items(cellIdentifier: "recommand", cellType: RecommandCollectionViewCell.self)) { row, element, cell in
-                
+                cell.setData(element)
             }.disposed(by: disposeBag)
         
         hotLocationCV.dataSource = nil
         hotLocationCV.delegate = nil
         hotLocationCV.rx.setDelegate(self).disposed(by: disposeBag)
         hotLocationCV.register(RecommandCollectionViewCell.self, forCellWithReuseIdentifier: "hot")
-        data
+        
+        vm.output.hotLocationObserver
             .bind(to: hotLocationCV.rx.items(cellIdentifier: "hot", cellType: RecommandCollectionViewCell.self)) { row, element, cell in
-                
+                cell.setData(element)
             }.disposed(by: disposeBag)
     }
     
