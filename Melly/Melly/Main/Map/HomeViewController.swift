@@ -40,7 +40,30 @@ class HomeViewController: UIViewController {
     }
     
     let layoutView = UIView()
-    let mainTextField = MainTextField()
+    let mainView = UIView().then {
+        $0.backgroundColor = .white
+        $0.layer.cornerRadius = 12
+        $0.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.12).cgColor
+        $0.layer.shadowOpacity = 1
+        $0.layer.shadowRadius = 6
+        $0.layer.shadowOffset = CGSize(width: 1, height: 1)
+    }
+    
+    let sideBarBT = UIButton(type: .custom).then {
+        $0.setImage(UIImage(named: "hamburger"), for: .normal)
+    }
+    
+    let goSearchBT = UIButton(type: .custom).then {
+        $0.setTitle("장소, 메모리 검색", for: .normal)
+        $0.titleLabel?.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 14)
+    }
+    
+    let cancelSearchBT = UIButton(type: .custom).then {
+        $0.setImage(UIImage(named: "search_x"), for: .normal)
+    }
+    
+    
     
     let addGroupView = UIView().then {
         $0.backgroundColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
@@ -69,11 +92,8 @@ class HomeViewController: UIViewController {
     }()
     
     let friendBT = GroupToggleButton("친구만")
-    
     let loverBT = GroupToggleButton("연인만")
-    
     let familyBT = GroupToggleButton("가족만")
-    
     let teamBT = GroupToggleButton("동료만")
     
     
@@ -102,11 +122,8 @@ extension HomeViewController {
     }
     
     func setUI() {
-        
-        
         navigationController?.isNavigationBarHidden = true
         view.backgroundColor = .white
-        
         
         view.addSubview(layoutView)
         layoutView.snp.makeConstraints {
@@ -120,18 +137,39 @@ extension HomeViewController {
         }
         
         
-        safeArea.addSubview(mainTextField)
-        mainTextField.snp.makeConstraints {
+        safeArea.addSubview(mainView)
+        mainView.snp.makeConstraints {
             $0.top.equalToSuperview().offset(13)
             $0.leading.equalToSuperview().offset(30)
             $0.trailing.equalToSuperview().offset(-30)
             $0.height.equalTo(44)
         }
         
+        mainView.addSubview(sideBarBT)
+        sideBarBT.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(13)
+            $0.centerY.equalToSuperview()
+        }
+        
+        mainView.addSubview(cancelSearchBT)
+        cancelSearchBT.snp.makeConstraints {
+            $0.trailing.equalToSuperview().offset(-16)
+            $0.centerY.equalToSuperview()
+        }
+        
+        mainView.addSubview(goSearchBT)
+        goSearchBT.snp.makeConstraints {
+            $0.leading.equalTo(sideBarBT.snp.trailing).offset(14)
+            $0.trailing.equalTo(cancelSearchBT.snp.leading).offset(-14)
+            $0.centerY.equalToSuperview()
+        }
+        
+        
+        
         
         safeArea.addSubview(filterCV)
         filterCV.snp.makeConstraints {
-            $0.top.equalTo(mainTextField.snp.bottom).offset(22)
+            $0.top.equalTo(mainView.snp.bottom).offset(22)
             $0.leading.equalToSuperview().offset(30)
             $0.trailing.equalToSuperview().offset(-30)
             $0.height.equalTo(30)
@@ -206,10 +244,17 @@ extension HomeViewController {
     
     func bindInput() {
         
-        mainTextField.bt.rx.tap
+        sideBarBT.rx.tap
             .subscribe(onNext: {
                 self.delegate?.didTapMenuButton()
             }).disposed(by: disposeBag)
+        
+        goSearchBT.rx.tap.subscribe(onNext: {
+            let vc = SearchViewController()
+            vc.modalTransitionStyle = .crossDissolve
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
+        }).disposed(by: disposeBag)
         
         myLocationBT.rx.tap.subscribe(onNext: {
             self.locationManager.requestWhenInUseAuthorization()
@@ -369,9 +414,6 @@ class LocationFloatingPanelLayout: FloatingPanelLayout{
         ]
     }
 }
-
-
-
 
 
 class FilterCell: UICollectionViewCell {
