@@ -162,14 +162,17 @@ class RecommandCollectionViewCell: UICollectionViewCell {
     
     func setData(_ itLocation: ItLocation) {
         
-        var url = URL(string: itLocation.placeInfo.placeImage)!
-        mainImageView.kf.setImage(with: url)
+        if let urlString = itLocation.placeInfo.placeImage {
+            let url = URL(string: urlString)!
+            mainImageView.kf.setImage(with: url)
+        }
+        
         categoryLb.text = "\(GroupFilter.getKoValue(itLocation.placeInfo.recommendType)) 추천"
         locationCategoryLB.text = itLocation.placeInfo.placeCategory
         locationLB.text = itLocation.placeInfo.placeName
         //스크랩 관련 추가해야함 image 없음
         
-        url = URL(string: itLocation.memoryInfo.memoryImages[0])!
+        let url = URL(string: itLocation.memoryInfo.memoryImages[0])!
         bubbleImageView.kf.setImage(with: url)
         bubbleTitleLB.text = itLocation.memoryInfo.title
         bubbleContentLB.text = itLocation.memoryInfo.content

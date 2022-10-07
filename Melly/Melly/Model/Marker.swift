@@ -21,3 +21,6 @@ struct Marker:Codable {
     let memoryCount:Int
     
 }
+
+
+

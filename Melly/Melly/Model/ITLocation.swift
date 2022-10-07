@@ -25,9 +25,12 @@ struct Memory:Codable {
 
 struct Place:Codable {
     let placeId:Int
-    let placeImage:String
-    let placeCategory:String
-    let isScraped:Bool
-    let placeName:String
+    let position:Position
+    let myMemoryCount:Int
+    let otherMemoryCount:Int
+    var placeImage:String?
+    var placeCategory:String
+    var isScraped:Bool
+    var placeName:String
     let recommendType:String
 }

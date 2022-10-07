@@ -32,12 +32,11 @@ class HomeViewController: UIViewController {
     let locationFloatingPanel = FloatingPanelController()
     let locationVC = LocationViewController()
     
-    
     private lazy var mapView = NMFMapView(frame: .zero).then {
         $0.isUserInteractionEnabled = true
-       
         $0.positionMode = .disabled
     }
+    
     
     let layoutView = UIView()
     let mainView = UIView().then {
@@ -55,14 +54,14 @@ class HomeViewController: UIViewController {
     
     let goSearchBT = UIButton(type: .custom).then {
         $0.setTitle("장소, 메모리 검색", for: .normal)
-        $0.titleLabel?.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.titleLabel?.textColor = .red
         $0.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 14)
     }
     
     let cancelSearchBT = UIButton(type: .custom).then {
         $0.setImage(UIImage(named: "search_x"), for: .normal)
+        $0.isHidden = true
     }
-    
     
     
     let addGroupView = UIView().then {
@@ -114,7 +113,6 @@ class HomeViewController: UIViewController {
 extension HomeViewController {
     
     func setMap() {
-        mapView.touchDelegate = self
         locationManager = CLLocationManager()
         locationManager.delegate = self
         self.locationManager.requestWhenInUseAuthorization()
@@ -151,21 +149,18 @@ extension HomeViewController {
             $0.centerY.equalToSuperview()
         }
         
-        mainView.addSubview(cancelSearchBT)
-        cancelSearchBT.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-16)
-            $0.centerY.equalToSuperview()
-        }
-        
         mainView.addSubview(goSearchBT)
         goSearchBT.snp.makeConstraints {
             $0.leading.equalTo(sideBarBT.snp.trailing).offset(14)
-            $0.trailing.equalTo(cancelSearchBT.snp.leading).offset(-14)
             $0.centerY.equalToSuperview()
         }
         
-        
-        
+        mainView.addSubview(cancelSearchBT)
+        cancelSearchBT.snp.makeConstraints {
+            $0.leading.greaterThanOrEqualTo(goSearchBT.snp.trailing).offset(14)
+            $0.trailing.equalToSuperview().offset(-16)
+            $0.centerY.equalToSuperview()
+        }
         
         safeArea.addSubview(filterCV)
         filterCV.snp.makeConstraints {
@@ -199,8 +194,6 @@ extension HomeViewController {
             $0.centerX.centerY.equalToSuperview()
         }
         
-        
-        
         let fpc = FloatingPanelController()
         let vc = RecommandViewController()
         fpc.set(contentViewController: vc)
@@ -208,7 +201,8 @@ extension HomeViewController {
         fpc.layout = CustomFloatingPanelLayout()
         fpc.show()
         
-        
+        locationFloatingPanel.set(contentViewController: locationVC)
+        locationFloatingPanel.layout = LocationFloatingPanelLayout()
         
     }
     
@@ -251,9 +245,22 @@ extension HomeViewController {
         
         goSearchBT.rx.tap.subscribe(onNext: {
             let vc = SearchViewController()
+            vc.delegate = self
             vc.modalTransitionStyle = .crossDissolve
             vc.modalPresentationStyle = .fullScreen
             self.present(vc, animated: true)
+        }).disposed(by: disposeBag)
+        
+        cancelSearchBT.rx.tap.subscribe(onNext: {
+            self.locationFloatingPanel.hide(animated: true) {
+                // Remove the floating panel view from your controller's view.
+                self.locationFloatingPanel.view.removeFromSuperview()
+                // Remove the floating panel controller from the controller hierarchy.
+                self.locationFloatingPanel.removeFromParent()
+            }
+            self.mapView.locationOverlay.hidden = true
+            self.goSearchBT.setTitle("장소, 메모리 검색", for: .normal)
+            self.cancelSearchBT.isHidden = true
         }).disposed(by: disposeBag)
         
         myLocationBT.rx.tap.subscribe(onNext: {
@@ -315,6 +322,23 @@ extension HomeViewController {
     
 }
 
+extension HomeViewController: SearchViewControllerDelegate {
+    
+    
+    func showLocationPopupView(_ place: Place) {
+        let location = NMGLatLng(lat: place.position.lat, lng: place.position.lng)
+        let cameraUpdate = NMFCameraUpdate(scrollTo: location)
+        mapView.locationOverlay.hidden = false
+        mapView.locationOverlay.location = location
+        mapView.moveCamera(cameraUpdate)
+
+        goSearchBT.setTitle(place.placeName, for: .normal)
+        cancelSearchBT.isHidden = false
+        locationFloatingPanel.addPanel(toParent: self)
+    }
+    
+}
+
 extension HomeViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -330,30 +354,6 @@ extension HomeViewController: CLLocationManagerDelegate {
             self.mapView.moveCamera(cameraUpdate)
         }
     }
-    
-}
-
-extension HomeViewController: NMFMapViewTouchDelegate, LocationViewControllerDelegate {
-    
-    func didDismissButton() {
-        locationFloatingPanel.removePanelFromParent(animated: true)
-        locationFloatingPanel.hide(animated: true)
-        
-        mapView.locationOverlay.hidden = true
-    }
-    
-    func mapView(_ mapView: NMFMapView, didTapMap latlng: NMGLatLng, point: CGPoint) {
-        
-        locationFloatingPanel.isRemovalInteractionEnabled = true
-        locationFloatingPanel.set(contentViewController: locationVC)
-        locationFloatingPanel.addPanel(toParent: self)
-        locationFloatingPanel.layout = CustomFloatingPanelLayout()
-        locationFloatingPanel.show(animated: true)
-        
-        mapView.locationOverlay.location = latlng
-        
-    }
-    
     
 }
 
