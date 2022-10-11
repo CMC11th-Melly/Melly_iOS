@@ -15,7 +15,6 @@ import KakaoSDKCommon
 import NaverThirdPartyLogin
 import NMapsMap
 
-
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -58,7 +57,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         let naverInstance = NaverThirdPartyLoginConnection.getSharedInstance().application(app, open: url, options: options)
-        
         let googleInstance = GIDSignIn.sharedInstance.handle(url)
         return googleInstance || naverInstance
     }

@@ -17,7 +17,7 @@ protocol HomeViewControllerDelegate:AnyObject {
     func didTapMenuButton()
 }
 
-class HomeViewController: UIViewController {
+class MainMapViewController: UIViewController {
     
     let filterData = Observable<[String]>.of(["친구만", "연인만", "가족만", "동료만"])
     var markers = [NMFMarker]()
@@ -25,9 +25,15 @@ class HomeViewController: UIViewController {
     var disposeBag = DisposeBag()
     var locationManager: CLLocationManager!
     let vm = MainMapViewModel()
+    
+    
+    
     let secretView = UIView().then {
         $0.backgroundColor = .clear
     }
+    
+    let popUpVm = PopUpViewModel.instance
+    let scrapFloatingPanel = FloatingPanelController()
     
     let locationFloatingPanel = FloatingPanelController()
     let locationVC = LocationViewController()
@@ -56,6 +62,7 @@ class HomeViewController: UIViewController {
         $0.setTitle("장소, 메모리 검색", for: .normal)
         $0.titleLabel?.textColor = .red
         $0.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 14)
+        $0.backgroundColor = .clear
     }
     
     let cancelSearchBT = UIButton(type: .custom).then {
@@ -95,6 +102,10 @@ class HomeViewController: UIViewController {
     let familyBT = GroupToggleButton("가족만")
     let teamBT = GroupToggleButton("동료만")
     
+    let scrapAlert = AlertLabel().then {
+        $0.labelView.text = "스크랩 완료"
+        $0.isHidden = true
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -110,7 +121,7 @@ class HomeViewController: UIViewController {
     
 }
 
-extension HomeViewController {
+extension MainMapViewController {
     
     func setMap() {
         locationManager = CLLocationManager()
@@ -182,20 +193,31 @@ extension HomeViewController {
             $0.centerY.centerX.equalToSuperview()
         }
         
-        mapView.addSubview(myLocationView)
+        safeArea.addSubview(myLocationView)
         myLocationView.snp.makeConstraints {
             $0.bottom.equalTo(addGroupView.snp.top).offset(-15)
             $0.trailing.equalToSuperview().offset(-30)
             $0.width.height.equalTo(50)
         }
         
+        
+        
         myLocationView.addSubview(myLocationBT)
         myLocationBT.snp.makeConstraints {
             $0.centerX.centerY.equalToSuperview()
         }
         
+        safeArea.addSubview(scrapAlert)
+        scrapAlert.snp.makeConstraints {
+            $0.bottom.equalTo(self.mapView.snp.bottom).offset(-20)
+            $0.leading.equalToSuperview().offset(30)
+            $0.trailing.equalToSuperview().offset(-30)
+            $0.height.equalTo(56)
+        }
+        
         let fpc = FloatingPanelController()
         let vc = RecommandViewController()
+        vc.delegate = self
         fpc.set(contentViewController: vc)
         fpc.addPanel(toParent: self)
         fpc.layout = CustomFloatingPanelLayout()
@@ -203,6 +225,8 @@ extension HomeViewController {
         
         locationFloatingPanel.set(contentViewController: locationVC)
         locationFloatingPanel.layout = LocationFloatingPanelLayout()
+        scrapFloatingPanel.layout = ScrapFloatingPanelLayout()
+        scrapFloatingPanel.isRemovalInteractionEnabled = true
         
     }
     
@@ -312,18 +336,54 @@ extension HomeViewController {
                 
             }).disposed(by: disposeBag)
         
-        vm.output.locationPickerValue.subscribe(onNext: { value in
-            
-            
-        }).disposed(by: disposeBag)
         
+        vm.output.locationValue
+            .subscribe({ event in
+                switch event {
+                case .completed:
+                    break
+                case .error(let error):
+                    print(error)
+                case .next(let place):
+                    self.goSearchBT.setTitle(place.placeName, for: .normal)
+                    self.cancelSearchBT.isHidden = false
+                    self.locationVC.place = place
+                    self.locationFloatingPanel.addPanel(toParent: self)
+                }
+            }).disposed(by: disposeBag)
+        
+        popUpVm.output.goToBookmarkView
+            .subscribe(onNext: { value in
+                
+                let vc = ScrapViewController(value)
+                self.scrapFloatingPanel.set(contentViewController: vc)
+                self.scrapFloatingPanel.addPanel(toParent: self)
+                
+            }).disposed(by: disposeBag)
+        
+        popUpVm.input.hideBookmarkPopUpObserver
+            .subscribe(onNext: {
+                self.scrapFloatingPanel.view.removeFromSuperview()
+                self.scrapFloatingPanel.removeFromParent()
+            }).disposed(by: disposeBag)
+        
+        popUpVm.output.completeBookmark.asDriver(onErrorJustReturn: ())
+            .drive(onNext: {
+                self.scrapAlert.isHidden = false
+                self.scrapFloatingPanel.view.removeFromSuperview()
+                self.scrapFloatingPanel.removeFromParent()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    UIView.animate(withDuration: 1.5) {
+                        self.scrapAlert.isHidden = true
+                    }
+                }
+            }).disposed(by: disposeBag)
         
     }
     
 }
 
-extension HomeViewController: SearchViewControllerDelegate {
-    
+extension MainMapViewController: GoPlaceDelegate {
     
     func showLocationPopupView(_ place: Place) {
         let location = NMGLatLng(lat: place.position.lat, lng: place.position.lng)
@@ -331,15 +391,15 @@ extension HomeViewController: SearchViewControllerDelegate {
         mapView.locationOverlay.hidden = false
         mapView.locationOverlay.location = location
         mapView.moveCamera(cameraUpdate)
-
         goSearchBT.setTitle(place.placeName, for: .normal)
         cancelSearchBT.isHidden = false
+        locationVC.place = place
         locationFloatingPanel.addPanel(toParent: self)
     }
     
 }
 
-extension HomeViewController: CLLocationManagerDelegate {
+extension MainMapViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         switch status {
@@ -358,7 +418,7 @@ extension HomeViewController: CLLocationManagerDelegate {
 }
 
 
-extension HomeViewController: UICollectionViewDelegateFlowLayout {
+extension MainMapViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
@@ -370,6 +430,7 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
            }
            if cell.isSelected {
                collectionView.deselectItem(at: indexPath, animated: true)
+               
                return false
            } else {
                return true
@@ -411,6 +472,19 @@ class LocationFloatingPanelLayout: FloatingPanelLayout{
     var anchors: [FloatingPanelState: FloatingPanelLayoutAnchoring] {
         return [
             .tip: FloatingPanelLayoutAnchor(absoluteInset: 248.0, edge: .bottom, referenceGuide: .superview)
+        ]
+    }
+}
+
+class ScrapFloatingPanelLayout: FloatingPanelLayout{
+    var position: FloatingPanelPosition = .bottom
+    var initialState: FloatingPanelState = .full
+    
+    
+    var anchors: [FloatingPanelState: FloatingPanelLayoutAnchoring] {
+        return [
+            .full: FloatingPanelLayoutAnchor(fractionalInset: 0.85, edge: .bottom, referenceGuide: .superview),
+            
         ]
     }
 }

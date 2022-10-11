@@ -8,8 +8,8 @@
 import Foundation
 
 struct ItLocation:Codable {
-    let placeInfo:Place
-    let memoryInfo:Memory
+    let placeInfo:PlaceInfo
+    let memoryInfo:[Memory]
 }
 
 struct Memory:Codable {
@@ -20,7 +20,16 @@ struct Memory:Codable {
     let groupName:String
     let stars:Int
     let keywords:[String]
+}
+
+struct PlaceInfo:Codable {
     
+    let placeId:Int
+    var isScraped:Bool
+    var placeImage:String?
+    var placeCategory:String
+    var placeName:String
+    let recommendType:String
 }
 
 struct Place:Codable {

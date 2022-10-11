@@ -12,7 +12,11 @@ import Kingfisher
 
 class RecommandCollectionViewCell: UICollectionViewCell {
     
-    let mainImageView = UIImageView().then {
+    private let disposeBag = DisposeBag()
+    let vm = RecommandViewModel.instance
+    var itLocation:ItLocation?
+    
+    let mainImageView = UIButton(type: .custom).then {
         $0.backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
         $0.isUserInteractionEnabled = true
         $0.layer.masksToBounds = true
@@ -161,21 +165,27 @@ class RecommandCollectionViewCell: UICollectionViewCell {
     }
     
     func setData(_ itLocation: ItLocation) {
+        self.itLocation = itLocation
         
         if let urlString = itLocation.placeInfo.placeImage {
             let url = URL(string: urlString)!
-            mainImageView.kf.setImage(with: url)
+            mainImageView.kf.setImage(with: url, for: .normal)
         }
+        
+        mainImageView.rx.tap
+            .map { itLocation.placeInfo }
+            .bind(to: vm.input.placeObserver)
+            .disposed(by: disposeBag)
+        
         
         categoryLb.text = "\(GroupFilter.getKoValue(itLocation.placeInfo.recommendType)) 추천"
         locationCategoryLB.text = itLocation.placeInfo.placeCategory
         locationLB.text = itLocation.placeInfo.placeName
-        //스크랩 관련 추가해야함 image 없음
         
-        let url = URL(string: itLocation.memoryInfo.memoryImages[0])!
+        let url = URL(string: itLocation.memoryInfo[0].memoryImages[0])!
         bubbleImageView.kf.setImage(with: url)
-        bubbleTitleLB.text = itLocation.memoryInfo.title
-        bubbleContentLB.text = itLocation.memoryInfo.content
+        bubbleTitleLB.text = itLocation.memoryInfo[0].title
+        bubbleContentLB.text = itLocation.memoryInfo[0].content
         
     }
     

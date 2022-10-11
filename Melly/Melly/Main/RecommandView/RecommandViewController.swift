@@ -14,9 +14,8 @@ import RxCocoa
 class RecommandViewController: UIViewController {
     
     private let disposeBag = DisposeBag()
-    let vm = RecommandViewModel()
-    
-    let data = Observable<[String]>.of(["", "", "", ""])
+    let vm = RecommandViewModel.instance
+    weak var delegate:GoPlaceDelegate?
     
     let mainSV = UIScrollView().then {
         $0.backgroundColor = .white
@@ -92,6 +91,11 @@ class RecommandViewController: UIViewController {
 extension RecommandViewController {
     
     func setUI() {
+        
+        if let user = User.loginedUser {
+            recomandLabel.text = "\(user.nickname)에게 추천하는 메모리 장소"
+        }
+        
         view.backgroundColor = .white
         
         safeArea.addSubview(mainSV)
@@ -177,17 +181,13 @@ extension RecommandViewController {
     }
     
     func bind() {
-        bindInput()
-        bindOutput()
+        
+        vm.output.goToPlace
+            .subscribe(onNext: { value in
+                self.delegate?.showLocationPopupView(value)
+            }).disposed(by: disposeBag)
     }
     
-    func bindInput() {
-        
-    }
-    
-    func bindOutput() {
-        
-    }
     
 }
 

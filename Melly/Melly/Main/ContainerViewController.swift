@@ -14,7 +14,7 @@ class ContainerViewController: UIViewController {
     private var menuState:MenuState = .closed
     
     let sideBarVC = SideBarViewController()
-    let homeVC = HomeViewController()
+    let homeVC = MainMapViewController()
     var navVC:UINavigationController?
     
     override func viewDidLoad() {

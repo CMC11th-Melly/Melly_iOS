@@ -138,6 +138,7 @@ class AlertLabel: UIView {
         imageView.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.leading.equalToSuperview().offset(24)
+            $0.width.height.equalTo(22)
         }
         
         self.addSubview(labelView)

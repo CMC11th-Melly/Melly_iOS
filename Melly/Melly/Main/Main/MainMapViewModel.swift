@@ -14,8 +14,6 @@ import NMapsMap
 
 class MainMapViewModel {
     
-    private var menuState:MenuState = .closed
-    
     let disposeBag = DisposeBag()
     let input = Input()
     let output = Output()
@@ -26,13 +24,13 @@ class MainMapViewModel {
         let initMarkerObserver = BehaviorRelay<GroupFilter>(value: .all)
         let touchMarkerObserver = PublishRelay<Int>()
         let filterGroupObserver = PublishRelay<GroupFilter>()
-        let locationPickerObserver = PublishRelay<MenuState>()
     }
     
     struct Output {
         let markerValue = PublishRelay<[NMFMarker]>()
         let filterValue = PublishRelay<GroupFilter>()
-        let locationPickerValue = PublishRelay<MenuState>()
+        let locationValue = PublishRelay<Place>()
+        let errorValue = PublishRelay<String>()
     }
     
     init() {
@@ -55,7 +53,7 @@ class MainMapViewModel {
                             marker.captionTextSize = 10
                             marker.captionColor = .white
                             marker.touchHandler = { (overlay) -> Bool in
-                                self.input.touchMarkerObserver.accept(i)
+                                self.input.touchMarkerObserver.accept(markers[i].placeId)
                                 return true
                             }
                             totalMarkers.append(marker)
@@ -64,7 +62,13 @@ class MainMapViewModel {
                     }
                     
                 case .error(let error):
-                    print(error)
+                    if let mellyError = error as? MellyError {
+                        if mellyError.msg == "" {
+                            self.output.errorValue.accept(error.localizedDescription)
+                        } else {
+                            self.output.errorValue.accept(mellyError.msg)
+                        }
+                    }
                 case .completed:
                     break
                 }
@@ -75,10 +79,26 @@ class MainMapViewModel {
             self.input.initMarkerObserver.accept(self.filterGroup)
         }).disposed(by: disposeBag)
         
-        input.locationPickerObserver.subscribe(onNext: { value in
-            self.output.locationPickerValue.accept(value)
-        }).disposed(by: disposeBag)
         
+        
+        input.touchMarkerObserver
+            .flatMap(clickMarker)
+            .subscribe({ event in
+                switch event {
+                case .next(let place):
+                    self.output.locationValue.accept(place)
+                case .error(let error):
+                    if let mellyError = error as? MellyError {
+                        if mellyError.msg == "" {
+                            self.output.errorValue.accept(error.localizedDescription)
+                        } else {
+                            self.output.errorValue.accept(mellyError.msg)
+                        }
+                    }
+                case .completed:
+                    break
+                }
+            }).disposed(by: disposeBag)
         
     }
     
@@ -136,6 +156,60 @@ class MainMapViewModel {
             
             return Disposables.create()
         }
+    }
+    
+    func clickMarker(_ placeId: Int) -> Observable<Place> {
+        
+        return Observable.create { observer in
+            
+            if let user = User.loginedUser {
+                
+                let header:HTTPHeaders = [
+                    "Connection":"keep-alive",
+                    "Content-Type":"application/json",
+                    "Authorization" : "Bearer \(user.jwtToken)"
+                    ]
+                
+                AF.request("https://api.melly.kr/api/place/\(placeId)/search", method: .get, headers: header)
+                    .responseData { response in
+                        switch response.result {
+                        case .success(let data):
+                            let decoder = JSONDecoder()
+                            
+                            
+                            
+                            if let json = try? decoder.decode(ResponseData.self, from: data) {
+                                
+                                if json.message == "메모리 제목으로 장소 검색" {
+                                    
+                                    if let data = try? JSONSerialization.data(withJSONObject: json.data?["placeInfo"] as Any) {
+                                        
+                                        if let place = try? decoder.decode(Place.self, from: data) {
+                                    
+                                            observer.onNext(place)
+                                        }
+                                        
+                                    }
+                                } else {
+                                    let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
+                                    observer.onError(error)
+                                }
+                                
+                            } else {
+                                let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
+                                observer.onError(error)
+                            }
+                        case .failure(let error):
+                            observer.onError(error)
+                        }
+                    }
+                
+            }
+            
+            
+            return Disposables.create()
+        }
+        
     }
     
 }

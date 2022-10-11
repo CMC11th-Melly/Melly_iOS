@@ -9,17 +9,16 @@ import UIKit
 import RxCocoa
 import RxSwift
 
-protocol SearchViewControllerDelegate:AnyObject {
+protocol GoPlaceDelegate:AnyObject {
     func showLocationPopupView(_ place: Place)
 }
-
 
 class SearchViewController: UIViewController {
     
     private let disposeBag = DisposeBag()
     private let vm = SearchViewModel()
     
-    weak var delegate:SearchViewControllerDelegate?
+    weak var delegate:GoPlaceDelegate?
     
     var isSearch:Bool = false {
         didSet {
@@ -140,13 +139,16 @@ extension SearchViewController {
         recentCV.register(SearchCell.self, forCellWithReuseIdentifier: "recent")
         
         recentCV.rx.itemSelected
-            .subscribe(onNext: { value in
-                print("recentCV")
-            }).disposed(by: disposeBag)
+            .map { index in
+                let cell = self.recentCV.cellForItem(at: index) as! SearchCell
+                return cell.search!
+            }
+            .bind(to: vm.input.clickSearchObserver)
+            .disposed(by: disposeBag)
         
         vm.output.recentValue
             .bind(to: recentCV.rx.items(cellIdentifier: "recent", cellType: SearchCell.self)) { row, element, cell in
-                cell.search = element
+                cell.setData(element, self.vm)
             }.disposed(by: disposeBag)
         
         searchCV.dataSource = nil
@@ -164,7 +166,7 @@ extension SearchViewController {
         
         vm.output.searchValue
             .bind(to: searchCV.rx.items(cellIdentifier: "search", cellType: SearchCell.self)) { row, element, cell in
-                cell.search = element
+                cell.setData(element, self.vm)
             }.disposed(by: disposeBag)
         
         
@@ -251,12 +253,9 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
 
 
 class SearchCell: UICollectionViewCell {
-    
-    var search:Search? {
-        didSet {
-            setData()
-        }
-    }
+    private let disposeBag = DisposeBag()
+    var vm:SearchViewModel?
+    var search:Search?
     
     let imageView = UIImageView()
     
@@ -276,11 +275,13 @@ class SearchCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
+        
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupView()
+        
     }
     
     private func setupView() {
@@ -307,16 +308,25 @@ class SearchCell: UICollectionViewCell {
         
     }
     
-    private func setData() {
-        if let search = search {
-            locationLB.text = search.title
-            imageView.image = UIImage(named: search.img)
-            self.removeButton.isHidden = search.isRecent ? false : true
-        }
+    func setData(_ search: Search, _ vm: SearchViewModel) {
         
-        
+        locationLB.text = search.title
+        imageView.image = UIImage(named: search.img)
+        self.removeButton.isHidden = search.isRecent ? false : true
+        self.search = search
+        self.vm = vm
+        bind()
     }
     
+    
+    func bind() {
+        
+        removeButton.rx.tap
+            .map { self.search! }
+            .bind(to: vm!.input.removeRecentObserver)
+            .disposed(by: disposeBag)
+        
+    }
     
 }
 

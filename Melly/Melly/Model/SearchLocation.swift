@@ -16,12 +16,11 @@ struct SearchLocation: Codable {
     let display:Int
     let items:[LocationItem]
     
-    
 }
 
 
-
-struct Search {
+struct Search:Codable, Equatable {
+    
     let img:String
     let title:String
     var category:String = ""

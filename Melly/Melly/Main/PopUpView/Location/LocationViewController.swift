@@ -10,12 +10,20 @@ import RxSwift
 import RxCocoa
 
 
-
 class LocationViewController: UIViewController {
 
+    let vm = PopUpViewModel.instance
+    
+    var place:Place? {
+        didSet {
+            setData()
+        }
+    }
+    
     let contentView = UIView().then {
         $0.backgroundColor = .white
     }
+    
     let disposeBag = DisposeBag()
     
     let locationLB = UILabel().then {
@@ -107,12 +115,14 @@ extension LocationViewController {
         myMemoryLB.snp.makeConstraints {
             $0.top.equalTo(locationLB.snp.bottom).offset(27)
             $0.leading.equalToSuperview().offset(30)
+            $0.height.equalTo(30)
         }
         
         contentView.addSubview(ourMemoryLB)
         ourMemoryLB.snp.makeConstraints {
             $0.top.equalTo(locationLB.snp.bottom).offset(27)
             $0.leading.equalTo(myMemoryLB.snp.trailing).offset(10)
+            $0.height.equalTo(30)
         }
         
         contentView.addSubview(showMemoryBT)
@@ -126,7 +136,7 @@ extension LocationViewController {
         contentView.addSubview(writeMemoryBT)
         writeMemoryBT.snp.makeConstraints {
             $0.top.equalTo(myMemoryLB.snp.bottom).offset(29)
-            $0.leading.equalTo(showMemoryBT.snp.trailing).offset(30)
+            $0.leading.equalTo(showMemoryBT.snp.trailing).offset(10)
             $0.height.equalTo(56)
             $0.width.equalTo((self.view.frame.width - 70) / 2)
         }
@@ -139,10 +149,27 @@ extension LocationViewController {
     }
     
     func bindInput() {
-        
+        bookmarkBT.rx.tap
+            .map { self.place! }
+            .bind(to: vm.input.bookmarkPopUpObserver)
+            .disposed(by: disposeBag)
     }
     
     func bindOutput() {
+        vm.output.completeBookmark.asDriver(onErrorJustReturn: ())
+            .drive(onNext: {
+                self.place?.isScraped = true
+            }).disposed(by: disposeBag)
+    }
+    
+    func setData() {
+        
+        if let place = place {
+            locationLB.text = place.placeName
+            categoryLB.text = place.placeCategory
+            myMemoryLB.text = "내 메모리 \(place.myMemoryCount)개"
+            ourMemoryLB.text = "이 장소에 저장된 메모리 \(place.otherMemoryCount)개"
+        }
         
     }
     

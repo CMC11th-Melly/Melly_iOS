@@ -21,7 +21,7 @@
 		BF34F88128D1A60400EA1C16 /* DefaultLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF34F88028D1A60300EA1C16 /* DefaultLoginViewController.swift */; };
 		BF3F0E9A28DD701900AED582 /* SignUpZeroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3F0E9928DD701800AED582 /* SignUpZeroViewController.swift */; };
 		BF3F0E9C28DD70F500AED582 /* SignUpZeroViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3F0E9B28DD70F400AED582 /* SignUpZeroViewModel.swift */; };
-		BF5A7F4528D0591A000A1B08 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5A7F4428D0591A000A1B08 /* HomeViewController.swift */; };
+		BF5A7F4528D0591A000A1B08 /* MainMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5A7F4428D0591A000A1B08 /* MainMapViewController.swift */; };
 		BF5A7F4728D05926000A1B08 /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5A7F4628D05926000A1B08 /* ContainerViewController.swift */; };
 		BF5AEB4628EF0C6400537ED5 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5AEB4528EF0C6400537ED5 /* SearchViewModel.swift */; };
 		BF638A8E28DAA96D0031233F /* ResponseData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF638A8D28DAA96D0031233F /* ResponseData.swift */; };
@@ -44,6 +44,8 @@
 		BFD6C56F28D724160092A6E5 /* SignUpOneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6C56E28D724160092A6E5 /* SignUpOneViewModel.swift */; };
 		BFD6C57428D733260092A6E5 /* SignUpTwoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6C57328D733260092A6E5 /* SignUpTwoViewModel.swift */; };
 		BFD6C57628D7373F0092A6E5 /* SignUpTwoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6C57528D7373F0092A6E5 /* SignUpTwoViewController.swift */; };
+		BFDA0B2C28F533E0008FE376 /* ScrapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDA0B2B28F533E0008FE376 /* ScrapViewController.swift */; };
+		BFDA0B3028F54190008FE376 /* PopUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDA0B2F28F54190008FE376 /* PopUpViewModel.swift */; };
 		BFDC1BF728D8094A005ADC6A /* SignUpThreeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDC1BF628D8094A005ADC6A /* SignUpThreeViewController.swift */; };
 		BFDC1BF928D8096D005ADC6A /* SignUpThreeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDC1BF828D8096D005ADC6A /* SignUpThreeViewModel.swift */; };
 		BFDE616E28ED12A10099FF97 /* ResearchLoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE616D28ED12A10099FF97 /* ResearchLoadingViewController.swift */; };
@@ -74,7 +76,7 @@
 		BF34F88028D1A60300EA1C16 /* DefaultLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLoginViewController.swift; sourceTree = "<group>"; };
 		BF3F0E9928DD701800AED582 /* SignUpZeroViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpZeroViewController.swift; sourceTree = "<group>"; };
 		BF3F0E9B28DD70F400AED582 /* SignUpZeroViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpZeroViewModel.swift; sourceTree = "<group>"; };
-		BF5A7F4428D0591A000A1B08 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		BF5A7F4428D0591A000A1B08 /* MainMapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMapViewController.swift; sourceTree = "<group>"; };
 		BF5A7F4628D05926000A1B08 /* ContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerViewController.swift; sourceTree = "<group>"; };
 		BF5AEB4528EF0C6400537ED5 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 		BF638A8D28DAA96D0031233F /* ResponseData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseData.swift; sourceTree = "<group>"; };
@@ -98,6 +100,8 @@
 		BFD6C56E28D724160092A6E5 /* SignUpOneViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpOneViewModel.swift; sourceTree = "<group>"; };
 		BFD6C57328D733260092A6E5 /* SignUpTwoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpTwoViewModel.swift; sourceTree = "<group>"; };
 		BFD6C57528D7373F0092A6E5 /* SignUpTwoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpTwoViewController.swift; sourceTree = "<group>"; };
+		BFDA0B2B28F533E0008FE376 /* ScrapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrapViewController.swift; sourceTree = "<group>"; };
+		BFDA0B2F28F54190008FE376 /* PopUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpViewModel.swift; sourceTree = "<group>"; };
 		BFDC1BF628D8094A005ADC6A /* SignUpThreeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpThreeViewController.swift; sourceTree = "<group>"; };
 		BFDC1BF828D8096D005ADC6A /* SignUpThreeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpThreeViewModel.swift; sourceTree = "<group>"; };
 		BFDE616D28ED12A10099FF97 /* ResearchLoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResearchLoadingViewController.swift; sourceTree = "<group>"; };
@@ -134,21 +138,21 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		BF075F8228E52CC700E581E7 /* Map */ = {
+		BF075F8228E52CC700E581E7 /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				BF5A7F4428D0591A000A1B08 /* HomeViewController.swift */,
+				BF5A7F4428D0591A000A1B08 /* MainMapViewController.swift */,
 				BF075F8328E52D6B00E581E7 /* MainMapViewModel.swift */,
 			);
-			path = Map;
+			path = Main;
 			sourceTree = "<group>";
 		};
 		BF0A11C728CDCDA600B06DE1 /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				BFDE617428ED576F0099FF97 /* LocationView */,
+				BFDE617428ED576F0099FF97 /* PopUpView */,
 				BFDE616F28ED13EA0099FF97 /* Search */,
-				BF075F8228E52CC700E581E7 /* Map */,
+				BF075F8228E52CC700E581E7 /* Main */,
 				BFFCF2BC28E3FFAC0011701D /* SideBar */,
 				BF81F96C28E1627F007E5D35 /* RecommandView */,
 				BF5A7F4628D05926000A1B08 /* ContainerViewController.swift */,
@@ -287,6 +291,22 @@
 			path = Step3;
 			sourceTree = "<group>";
 		};
+		BFDA0B2D28F54179008FE376 /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				BFDE617528ED59DB0099FF97 /* LocationViewController.swift */,
+			);
+			path = Location;
+			sourceTree = "<group>";
+		};
+		BFDA0B2E28F54182008FE376 /* Scrap */ = {
+			isa = PBXGroup;
+			children = (
+				BFDA0B2B28F533E0008FE376 /* ScrapViewController.swift */,
+			);
+			path = Scrap;
+			sourceTree = "<group>";
+		};
 		BFDE616F28ED13EA0099FF97 /* Search */ = {
 			isa = PBXGroup;
 			children = (
@@ -296,12 +316,14 @@
 			path = Search;
 			sourceTree = "<group>";
 		};
-		BFDE617428ED576F0099FF97 /* LocationView */ = {
+		BFDE617428ED576F0099FF97 /* PopUpView */ = {
 			isa = PBXGroup;
 			children = (
-				BFDE617528ED59DB0099FF97 /* LocationViewController.swift */,
+				BFDA0B2F28F54190008FE376 /* PopUpViewModel.swift */,
+				BFDA0B2E28F54182008FE376 /* Scrap */,
+				BFDA0B2D28F54179008FE376 /* Location */,
 			);
-			path = LocationView;
+			path = PopUpView;
 			sourceTree = "<group>";
 		};
 		BFF84E9F28C6D40B00892CB5 = {
@@ -489,13 +511,15 @@
 				BFD0F7A228EEB40C0053C5CC /* SearchLocation.swift in Sources */,
 				BFDE617628ED59DB0099FF97 /* LocationViewController.swift in Sources */,
 				BFF84EB028C6D40B00892CB5 /* SplashViewController.swift in Sources */,
+				BFDA0B3028F54190008FE376 /* PopUpViewModel.swift in Sources */,
 				BF638A9228DAD6050031233F /* FoundationExtension.swift in Sources */,
 				BFD6C57428D733260092A6E5 /* SignUpTwoViewModel.swift in Sources */,
 				BF638A9528DADFD10031233F /* Enum.swift in Sources */,
 				BFA3399828C836F300C1CD4C /* MainLoginViewModel.swift in Sources */,
 				BF28150128EBE54A004F6A31 /* ResearchMainViewController.swift in Sources */,
 				BFDC1BF928D8096D005ADC6A /* SignUpThreeViewModel.swift in Sources */,
-				BF5A7F4528D0591A000A1B08 /* HomeViewController.swift in Sources */,
+				BFDA0B2C28F533E0008FE376 /* ScrapViewController.swift in Sources */,
+				BF5A7F4528D0591A000A1B08 /* MainMapViewController.swift in Sources */,
 				BF075F8428E52D6B00E581E7 /* MainMapViewModel.swift in Sources */,
 				BFDE617328ED179F0099FF97 /* ResearchResultViewController.swift in Sources */,
 				BF3F0E9C28DD70F500AED582 /* SignUpZeroViewModel.swift in Sources */,
