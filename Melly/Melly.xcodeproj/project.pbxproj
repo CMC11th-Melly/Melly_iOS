@@ -39,6 +39,10 @@
 		BFA3399328C832E500C1CD4C /* MainLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399228C832E500C1CD4C /* MainLoginViewController.swift */; };
 		BFA3399628C8349B00C1CD4C /* UIKitExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399528C8349B00C1CD4C /* UIKitExtension.swift */; };
 		BFA3399828C836F300C1CD4C /* MainLoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399728C836F300C1CD4C /* MainLoginViewModel.swift */; };
+		BFC9367E28F6475600A2C53F /* MemoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC9367D28F6475600A2C53F /* MemoryListViewController.swift */; };
+		BFC9368128F6A44100A2C53F /* OurMemoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC9368028F6A44100A2C53F /* OurMemoryListViewController.swift */; };
+		BFC9368328F6A46C00A2C53F /* OtherMemoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC9368228F6A46C00A2C53F /* OtherMemoryListViewController.swift */; };
+		BFC9368528F6A57A00A2C53F /* MemoryListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC9368428F6A57A00A2C53F /* MemoryListCollectionViewCell.swift */; };
 		BFD0F7A228EEB40C0053C5CC /* SearchLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD0F7A128EEB40C0053C5CC /* SearchLocation.swift */; };
 		BFD6C56D28D723CD0092A6E5 /* SignUpOneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6C56C28D723CD0092A6E5 /* SignUpOneViewController.swift */; };
 		BFD6C56F28D724160092A6E5 /* SignUpOneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6C56E28D724160092A6E5 /* SignUpOneViewModel.swift */; };
@@ -95,6 +99,10 @@
 		BFA3399528C8349B00C1CD4C /* UIKitExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitExtension.swift; sourceTree = "<group>"; };
 		BFA3399728C836F300C1CD4C /* MainLoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainLoginViewModel.swift; sourceTree = "<group>"; };
 		BFBDC76828C9A98400DA6330 /* Melly.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Melly.entitlements; sourceTree = "<group>"; };
+		BFC9367D28F6475600A2C53F /* MemoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryListViewController.swift; sourceTree = "<group>"; };
+		BFC9368028F6A44100A2C53F /* OurMemoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OurMemoryListViewController.swift; sourceTree = "<group>"; };
+		BFC9368228F6A46C00A2C53F /* OtherMemoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherMemoryListViewController.swift; sourceTree = "<group>"; };
+		BFC9368428F6A57A00A2C53F /* MemoryListCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryListCollectionViewCell.swift; sourceTree = "<group>"; };
 		BFD0F7A128EEB40C0053C5CC /* SearchLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchLocation.swift; sourceTree = "<group>"; };
 		BFD6C56C28D723CD0092A6E5 /* SignUpOneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpOneViewController.swift; sourceTree = "<group>"; };
 		BFD6C56E28D724160092A6E5 /* SignUpOneViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpOneViewModel.swift; sourceTree = "<group>"; };
@@ -150,6 +158,7 @@
 		BF0A11C728CDCDA600B06DE1 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				BFC9367C28F6473F00A2C53F /* Memory */,
 				BFDE617428ED576F0099FF97 /* PopUpView */,
 				BFDE616F28ED13EA0099FF97 /* Search */,
 				BF075F8228E52CC700E581E7 /* Main */,
@@ -251,6 +260,25 @@
 				BF7CAAFE28DE04B60076CD1A /* AgreeNTermsText.swift */,
 			);
 			path = Util;
+			sourceTree = "<group>";
+		};
+		BFC9367C28F6473F00A2C53F /* Memory */ = {
+			isa = PBXGroup;
+			children = (
+				BFC9367F28F6A43200A2C53F /* MemoryList */,
+			);
+			path = Memory;
+			sourceTree = "<group>";
+		};
+		BFC9367F28F6A43200A2C53F /* MemoryList */ = {
+			isa = PBXGroup;
+			children = (
+				BFC9367D28F6475600A2C53F /* MemoryListViewController.swift */,
+				BFC9368028F6A44100A2C53F /* OurMemoryListViewController.swift */,
+				BFC9368228F6A46C00A2C53F /* OtherMemoryListViewController.swift */,
+				BFC9368428F6A57A00A2C53F /* MemoryListCollectionViewCell.swift */,
+			);
+			path = MemoryList;
 			sourceTree = "<group>";
 		};
 		BFD6C56B28D723520092A6E5 /* SignUp */ = {
@@ -503,7 +531,9 @@
 			files = (
 				BF8F9AD728D064D700EAA49E /* RecommandViewController.swift in Sources */,
 				BF3121DC28E81C83003916A4 /* RecommandViewModel.swift in Sources */,
+				BFC9367E28F6475600A2C53F /* MemoryListViewController.swift in Sources */,
 				BF638A8E28DAA96D0031233F /* ResponseData.swift in Sources */,
+				BFC9368328F6A46C00A2C53F /* OtherMemoryListViewController.swift in Sources */,
 				BFD6C57628D7373F0092A6E5 /* SignUpTwoViewController.swift in Sources */,
 				BFA3399328C832E500C1CD4C /* MainLoginViewController.swift in Sources */,
 				BFD6C56F28D724160092A6E5 /* SignUpOneViewModel.swift in Sources */,
@@ -520,6 +550,7 @@
 				BFDC1BF928D8096D005ADC6A /* SignUpThreeViewModel.swift in Sources */,
 				BFDA0B2C28F533E0008FE376 /* ScrapViewController.swift in Sources */,
 				BF5A7F4528D0591A000A1B08 /* MainMapViewController.swift in Sources */,
+				BFC9368528F6A57A00A2C53F /* MemoryListCollectionViewCell.swift in Sources */,
 				BF075F8428E52D6B00E581E7 /* MainMapViewModel.swift in Sources */,
 				BFDE617328ED179F0099FF97 /* ResearchResultViewController.swift in Sources */,
 				BF3F0E9C28DD70F500AED582 /* SignUpZeroViewModel.swift in Sources */,
@@ -538,6 +569,7 @@
 				BF0A11C928CDCDEB00B06DE1 /* SideBarViewController.swift in Sources */,
 				BF5A7F4728D05926000A1B08 /* ContainerViewController.swift in Sources */,
 				BFDE617128ED13F70099FF97 /* SearchViewController.swift in Sources */,
+				BFC9368128F6A44100A2C53F /* OurMemoryListViewController.swift in Sources */,
 				BF34F88128D1A60400EA1C16 /* DefaultLoginViewController.swift in Sources */,
 				BFF84EAE28C6D40B00892CB5 /* SceneDelegate.swift in Sources */,
 				BF3F0E9A28DD701900AED582 /* SignUpZeroViewController.swift in Sources */,
