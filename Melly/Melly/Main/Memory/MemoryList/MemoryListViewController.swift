@@ -10,13 +10,14 @@ import RxCocoa
 import RxSwift
 
 class MemoryListViewController: UIViewController {
-
+    
     let disposeBag = DisposeBag()
     
-    let scrollView = UIScrollView()
-    
+    let scrollView = UIScrollView().then {
+        $0.showsVerticalScrollIndicator = false
+        $0.showsHorizontalScrollIndicator = false
+    }
     let contentView = UIView()
-    
     let bottomView = UIView()
     
     let locationTitleLB = UILabel().then {
@@ -51,12 +52,38 @@ class MemoryListViewController: UIViewController {
     
     let memorySegmentedControl = UnderlineSegmentedControl(items: ["나의 메모리", "이 장소 메모리"]).then {
         $0.selectedSegmentIndex = 0
+    }
+    
+    private lazy var pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil).then {
+        $0.setViewControllers([self.dataView[0]], direction: .forward, animated: true)
+        $0.isPagingEnabled = false
+        $0.delegate = self
+        $0.dataSource = self
         
     }
     
+    private let ourMemoryViewController = OurMemoryListViewController()
+    private let otherMemoryViewController = OtherMemoryListViewController()
     
+    
+    var dataView: [UIViewController] { [self.ourMemoryViewController, self.otherMemoryViewController] }
     
     let writeMemoryBT = CustomButton(title: "이 장소에 메모리 쓰기")
+    
+    var currentPage: Int = 0 {
+        didSet {
+          // from segmentedControl -> pageViewController 업데이트
+          print(oldValue, self.currentPage)
+          let direction: UIPageViewController.NavigationDirection = oldValue <= self.currentPage ? .forward : .reverse
+          self.pageViewController.setViewControllers(
+            [dataView[self.currentPage]],
+            direction: direction,
+            animated: true,
+            completion: nil
+          )
+        }
+      }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,13 +91,13 @@ class MemoryListViewController: UIViewController {
         bind()
     }
     
-
 }
 
 extension MemoryListViewController {
     
     private func setUI() {
         view.backgroundColor = .white
+        
         safeArea.addSubview(bottomView)
         bottomView.snp.makeConstraints {
             $0.bottom.leading.trailing.equalToSuperview()
@@ -144,6 +171,14 @@ extension MemoryListViewController {
             $0.height.equalTo(45)
         }
         
+        contentView.addSubview(pageViewController.view)
+        pageViewController.view.snp.makeConstraints {
+            $0.top.equalTo(separator.snp.bottom)
+            $0.height.equalTo(800)
+            $0.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        
     }
     
     private func bind() {
@@ -153,15 +188,13 @@ extension MemoryListViewController {
     
     private func bindInput() {
         
+        memorySegmentedControl.addTarget(self, action: #selector(changeValue), for: .valueChanged)
+        self.changeValue(control: self.memorySegmentedControl)
         
-        
-        
-        memorySegmentedControl.rx.controlEvent([.valueChanged])
-            .subscribe(onNext: { value in
-                print(value)
-            }).disposed(by: disposeBag)
-        
-        
+    }
+    
+    @objc private func changeValue(control: UISegmentedControl) {
+        self.currentPage = control.selectedSegmentIndex
     }
     
     private func bindOutput() {
@@ -169,3 +202,29 @@ extension MemoryListViewController {
     }
 }
 
+
+extension MemoryListViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController ) -> UIViewController? {
+        guard
+            let index = self.dataView.firstIndex(of: viewController),
+            index - 1 >= 0
+        else { return nil }
+        return self.dataView[index - 1]
+    }
+    
+    func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController ) -> UIViewController? {
+        guard
+            let index = self.dataView.firstIndex(of: viewController),
+            index + 1 < self.dataView.count
+        else { return nil }
+        return self.dataView[index + 1]
+    }
+    func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+        guard
+            let viewController = pageViewController.viewControllers?[0],
+            let index = self.dataView.firstIndex(of: viewController)
+        else { return }
+        self.currentPage = index
+        self.memorySegmentedControl.selectedSegmentIndex = index
+    }
+}

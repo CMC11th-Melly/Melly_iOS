@@ -37,6 +37,7 @@ class MemoryListCollectionViewCell: UICollectionViewCell {
     
     let titleView = UIView().then {
         $0.clipsToBounds = true
+        $0.backgroundColor = .gray
     }
     
     let titleLB = UILabel().then {
@@ -83,7 +84,30 @@ class MemoryListCollectionViewCell: UICollectionViewCell {
             $0.leading.equalToSuperview().offset(25)
         }
         
+        imgView.addSubview(imageCountLB)
+        imageCountLB.snp.makeConstraints {
+            $0.bottom.trailing.equalToSuperview().offset(2)
+            $0.width.height.equalTo(38)
+        }
         
+        addSubview(titleView)
+        titleView.snp.makeConstraints {
+            $0.top.equalTo(imgView.snp.bottom)
+            $0.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        titleView.addSubview(titleLB)
+        titleLB.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(20)
+            $0.top.equalToSuperview().offset(16)
+        }
+        
+        titleView.addSubview(dateLB)
+        dateLB.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-18)
+            $0.leading.greaterThanOrEqualTo(titleLB.snp.leading).offset(6)
+        }
         
     }
     

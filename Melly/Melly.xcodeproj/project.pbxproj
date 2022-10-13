@@ -52,6 +52,8 @@
 		BFDA0B3028F54190008FE376 /* PopUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDA0B2F28F54190008FE376 /* PopUpViewModel.swift */; };
 		BFDC1BF728D8094A005ADC6A /* SignUpThreeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDC1BF628D8094A005ADC6A /* SignUpThreeViewController.swift */; };
 		BFDC1BF928D8096D005ADC6A /* SignUpThreeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDC1BF828D8096D005ADC6A /* SignUpThreeViewModel.swift */; };
+		BFDDED5F28F7EAD5003AE5DA /* MemoryListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDDED5E28F7EAD5003AE5DA /* MemoryListViewModel.swift */; };
+		BFDDED6228F80665003AE5DA /* MemoryWriteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDDED6128F80665003AE5DA /* MemoryWriteViewController.swift */; };
 		BFDE616E28ED12A10099FF97 /* ResearchLoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE616D28ED12A10099FF97 /* ResearchLoadingViewController.swift */; };
 		BFDE617128ED13F70099FF97 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE617028ED13F70099FF97 /* SearchViewController.swift */; };
 		BFDE617328ED179F0099FF97 /* ResearchResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE617228ED179F0099FF97 /* ResearchResultViewController.swift */; };
@@ -112,6 +114,8 @@
 		BFDA0B2F28F54190008FE376 /* PopUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpViewModel.swift; sourceTree = "<group>"; };
 		BFDC1BF628D8094A005ADC6A /* SignUpThreeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpThreeViewController.swift; sourceTree = "<group>"; };
 		BFDC1BF828D8096D005ADC6A /* SignUpThreeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpThreeViewModel.swift; sourceTree = "<group>"; };
+		BFDDED5E28F7EAD5003AE5DA /* MemoryListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryListViewModel.swift; sourceTree = "<group>"; };
+		BFDDED6128F80665003AE5DA /* MemoryWriteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryWriteViewController.swift; sourceTree = "<group>"; };
 		BFDE616D28ED12A10099FF97 /* ResearchLoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResearchLoadingViewController.swift; sourceTree = "<group>"; };
 		BFDE617028ED13F70099FF97 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		BFDE617228ED179F0099FF97 /* ResearchResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResearchResultViewController.swift; sourceTree = "<group>"; };
@@ -265,6 +269,7 @@
 		BFC9367C28F6473F00A2C53F /* Memory */ = {
 			isa = PBXGroup;
 			children = (
+				BFDDED6028F8031B003AE5DA /* MemoryWrite */,
 				BFC9367F28F6A43200A2C53F /* MemoryList */,
 			);
 			path = Memory;
@@ -277,6 +282,7 @@
 				BFC9368028F6A44100A2C53F /* OurMemoryListViewController.swift */,
 				BFC9368228F6A46C00A2C53F /* OtherMemoryListViewController.swift */,
 				BFC9368428F6A57A00A2C53F /* MemoryListCollectionViewCell.swift */,
+				BFDDED5E28F7EAD5003AE5DA /* MemoryListViewModel.swift */,
 			);
 			path = MemoryList;
 			sourceTree = "<group>";
@@ -333,6 +339,14 @@
 				BFDA0B2B28F533E0008FE376 /* ScrapViewController.swift */,
 			);
 			path = Scrap;
+			sourceTree = "<group>";
+		};
+		BFDDED6028F8031B003AE5DA /* MemoryWrite */ = {
+			isa = PBXGroup;
+			children = (
+				BFDDED6128F80665003AE5DA /* MemoryWriteViewController.swift */,
+			);
+			path = MemoryWrite;
 			sourceTree = "<group>";
 		};
 		BFDE616F28ED13EA0099FF97 /* Search */ = {
@@ -555,8 +569,10 @@
 				BFDE617328ED179F0099FF97 /* ResearchResultViewController.swift in Sources */,
 				BF3F0E9C28DD70F500AED582 /* SignUpZeroViewModel.swift in Sources */,
 				BF075F8128E52BC500E581E7 /* Marker.swift in Sources */,
+				BFDDED5F28F7EAD5003AE5DA /* MemoryListViewModel.swift in Sources */,
 				BFDC1BF728D8094A005ADC6A /* SignUpThreeViewController.swift in Sources */,
 				BFF84EAC28C6D40B00892CB5 /* AppDelegate.swift in Sources */,
+				BFDDED6228F80665003AE5DA /* MemoryWriteViewController.swift in Sources */,
 				BF7E3CCA28D43F0E007C3236 /* DefaultLoginVIewModel.swift in Sources */,
 				BF81F96E28E1732A007E5D35 /* RecommandCollectionViewCell.swift in Sources */,
 				BF2814FF28EBC619004F6A31 /* ResearchLaunchViewController.swift in Sources */,

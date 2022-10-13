@@ -8,9 +8,13 @@
 import Foundation
 import UIKit
 import Then
+import RxSwift
+import RxCocoa
+
 
 class OtherMemoryListViewController: UIViewController {
     
+    let disposeBag = DisposeBag()
     let noDataView = UIView()
     
     let noDataImageView = UIImageView(image: UIImage(named: "no_memory"))
@@ -87,30 +91,30 @@ extension OtherMemoryListViewController {
             $0.edges.equalToSuperview()
         }
         
-        dataView.addSubview(dataLB)
-        dataLB.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(22)
-            $0.trailing.equalToSuperview().offset(-30)
-            
-        }
-        
-        dataView.addSubview(otherAlertImageView)
-        otherAlertImageView.snp.makeConstraints {
-            $0.top.equalTo(dataLB.snp.bottom).offset(23)
-            $0.leading.equalToSuperview().offset(30)
-        }
-        
-        dataView.addSubview(otherAlertLB)
-        otherAlertLB.snp.makeConstraints {
-            $0.top.equalTo(dataLB.snp.bottom).offset(23)
-            $0.leading.equalTo(otherAlertImageView.snp.trailing).offset(5)
-        }
-        
-        dataView.addSubview(dataCV)
-        dataCV.snp.makeConstraints {
-            $0.leading.trailing.bottom.equalToSuperview()
-            $0.top.equalTo(otherAlertImageView.snp.bottom).offset(19)
-        }
+//        dataView.addSubview(dataLB)
+//        dataLB.snp.makeConstraints {
+//            $0.top.equalToSuperview().offset(22)
+//            $0.trailing.equalToSuperview().offset(-30)
+//            
+//        }
+//        
+//        dataView.addSubview(otherAlertImageView)
+//        otherAlertImageView.snp.makeConstraints {
+//            $0.top.equalTo(dataLB.snp.bottom).offset(23)
+//            $0.leading.equalToSuperview().offset(30)
+//        }
+//        
+//        dataView.addSubview(otherAlertLB)
+//        otherAlertLB.snp.makeConstraints {
+//            $0.top.equalTo(dataLB.snp.bottom).offset(23)
+//            $0.leading.equalTo(otherAlertImageView.snp.trailing).offset(5)
+//        }
+//        
+//        dataView.addSubview(dataCV)
+//        dataCV.snp.makeConstraints {
+//            $0.leading.trailing.bottom.equalToSuperview()
+//            $0.top.equalTo(otherAlertImageView.snp.bottom).offset(19)
+//        }
         
     }
     
@@ -120,10 +124,33 @@ extension OtherMemoryListViewController {
     }
     
     private func bindInput() {
-        
+        dataCV.delegate = nil
+        dataCV.dataSource = nil
+        dataCV.rx.setDelegate(self).disposed(by: disposeBag)
+        dataCV.register(MemoryListCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
     }
     
     private func bindOutput() {
         
+    }
+}
+
+
+extension OtherMemoryListViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 28
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 28
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = self.view.frame.width - 60
+        return CGSize(width: width, height: 183)
     }
 }

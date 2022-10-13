@@ -8,8 +8,12 @@
 import Foundation
 import UIKit
 import Then
+import RxSwift
+import RxCocoa
 
 class OurMemoryListViewController: UIViewController {
+    
+    private let disposeBag = DisposeBag()
     
     let noDataView = UIView()
     
@@ -48,9 +52,7 @@ class OurMemoryListViewController: UIViewController {
         bind()
     }
     
-    
 }
-
 
 extension OurMemoryListViewController {
     
@@ -72,23 +74,24 @@ extension OurMemoryListViewController {
             $0.centerX.equalToSuperview()
         }
         
-        view.addSubview(dataView)
-        dataView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-        
-        dataView.addSubview(dataLB)
-        dataLB.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(22)
-            $0.trailing.equalToSuperview().offset(-30)
-            
-        }
-        
-        dataView.addSubview(dataCV)
-        dataCV.snp.makeConstraints {
-            $0.leading.trailing.bottom.equalToSuperview()
-            $0.top.equalTo(dataLB.snp.bottom).offset(23)
-        }
+//        view.addSubview(dataView)
+//        dataView.snp.makeConstraints {
+//            $0.edges.equalToSuperview()
+//        }
+//        
+//        dataView.addSubview(dataLB)
+//        dataLB.snp.makeConstraints {
+//            $0.top.equalToSuperview().offset(22)
+//            $0.trailing.equalToSuperview().offset(-30)
+//        }
+//        
+//        dataView.addSubview(dataCV)
+//        dataCV.snp.makeConstraints {
+//            $0.bottom.equalToSuperview()
+//            $0.top.equalTo(dataLB.snp.bottom).offset(23)
+//            $0.leading.equalToSuperview().offset(30)
+//            $0.trailing.equalToSuperview().offset(-30)
+//        }
         
     }
     
@@ -98,10 +101,39 @@ extension OurMemoryListViewController {
     }
     
     private func bindInput() {
+        dataCV.delegate = nil
+        dataCV.dataSource = nil
+        dataCV.rx.setDelegate(self).disposed(by: disposeBag)
+        dataCV.register(MemoryListCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        
+        
+        
         
     }
     
     private func bindOutput() {
         
     }
+    
 }
+
+extension OurMemoryListViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 28
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 28
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = self.view.frame.width - 60
+        return CGSize(width: width, height: 183)
+    }
+}
+
+
