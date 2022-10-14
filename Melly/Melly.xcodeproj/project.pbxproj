@@ -44,6 +44,7 @@
 		BFC9368328F6A46C00A2C53F /* OtherMemoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC9368228F6A46C00A2C53F /* OtherMemoryListViewController.swift */; };
 		BFC9368528F6A57A00A2C53F /* MemoryListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC9368428F6A57A00A2C53F /* MemoryListCollectionViewCell.swift */; };
 		BFD0F7A228EEB40C0053C5CC /* SearchLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD0F7A128EEB40C0053C5CC /* SearchLocation.swift */; };
+		BFD664BA28F93E890036EBF3 /* MemoryWriteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD664B928F93E890036EBF3 /* MemoryWriteViewModel.swift */; };
 		BFD6C56D28D723CD0092A6E5 /* SignUpOneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6C56C28D723CD0092A6E5 /* SignUpOneViewController.swift */; };
 		BFD6C56F28D724160092A6E5 /* SignUpOneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6C56E28D724160092A6E5 /* SignUpOneViewModel.swift */; };
 		BFD6C57428D733260092A6E5 /* SignUpTwoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6C57328D733260092A6E5 /* SignUpTwoViewModel.swift */; };
@@ -106,6 +107,7 @@
 		BFC9368228F6A46C00A2C53F /* OtherMemoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherMemoryListViewController.swift; sourceTree = "<group>"; };
 		BFC9368428F6A57A00A2C53F /* MemoryListCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryListCollectionViewCell.swift; sourceTree = "<group>"; };
 		BFD0F7A128EEB40C0053C5CC /* SearchLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchLocation.swift; sourceTree = "<group>"; };
+		BFD664B928F93E890036EBF3 /* MemoryWriteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryWriteViewModel.swift; sourceTree = "<group>"; };
 		BFD6C56C28D723CD0092A6E5 /* SignUpOneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpOneViewController.swift; sourceTree = "<group>"; };
 		BFD6C56E28D724160092A6E5 /* SignUpOneViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpOneViewModel.swift; sourceTree = "<group>"; };
 		BFD6C57328D733260092A6E5 /* SignUpTwoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpTwoViewModel.swift; sourceTree = "<group>"; };
@@ -345,6 +347,7 @@
 			isa = PBXGroup;
 			children = (
 				BFDDED6128F80665003AE5DA /* MemoryWriteViewController.swift */,
+				BFD664B928F93E890036EBF3 /* MemoryWriteViewModel.swift */,
 			);
 			path = MemoryWrite;
 			sourceTree = "<group>";
@@ -576,6 +579,7 @@
 				BF7E3CCA28D43F0E007C3236 /* DefaultLoginVIewModel.swift in Sources */,
 				BF81F96E28E1732A007E5D35 /* RecommandCollectionViewCell.swift in Sources */,
 				BF2814FF28EBC619004F6A31 /* ResearchLaunchViewController.swift in Sources */,
+				BFD664BA28F93E890036EBF3 /* MemoryWriteViewModel.swift in Sources */,
 				BF5AEB4628EF0C6400537ED5 /* SearchViewModel.swift in Sources */,
 				BF3121DA28E8185F003916A4 /* ITLocation.swift in Sources */,
 				BF34F87D28D19DE700EA1C16 /* CustomComponent.swift in Sources */,

@@ -16,6 +16,7 @@ class SearchViewModel {
     let input = Input()
     let output = Output()
     
+    let isSearch:Bool
     
     struct Input {
         let searchObserver = PublishRelay<String>()
@@ -29,12 +30,13 @@ class SearchViewModel {
         let searchValue = PublishRelay<[Search]>()
         let switchValue = PublishRelay<Bool>()
         let getPlaceValue = PublishRelay<Place>()
+        let goToMemoryValue = PublishRelay<Place>()
         let tfRightViewValue = PublishRelay<Bool>()
         let errorValue = PublishRelay<String>()
     }
     
-    init() {
-        
+    init(_ isSearch: Bool) {
+        self.isSearch = isSearch
         getRecentSearch()
             .subscribe(onNext: { value in
                 print(value)
@@ -68,7 +70,11 @@ class SearchViewModel {
             .subscribe({ event in
                 switch event {
                 case .next(let place):
-                    self.output.getPlaceValue.accept(place)
+                    if self.isSearch {
+                        self.output.getPlaceValue.accept(place)
+                    } else {
+                        self.output.goToMemoryValue.accept(place)
+                    }
                 case .error(let error):
                     if let mellyError = error as? MellyError {
                         if mellyError.msg == "" {
@@ -271,6 +277,8 @@ class SearchViewModel {
                         .responseData { response in
                             switch response.result {
                             case .success(let data):
+                                
+                                
                                 let decoder = JSONDecoder()
                                 if let json = try? decoder.decode(ResponseData.self, from: data) {
                                     
@@ -281,6 +289,9 @@ class SearchViewModel {
                                             if var place = try? decoder.decode(Place.self, from: data) {
                                                 
                                                 if place.placeId == -1 {
+                                                    place.placeName = search.title
+                                                    place.placeCategory = search.category
+                                                } else {
                                                     place.placeName = search.title
                                                     place.placeCategory = search.category
                                                 }

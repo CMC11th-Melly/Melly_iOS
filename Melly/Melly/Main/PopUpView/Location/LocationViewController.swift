@@ -153,6 +153,23 @@ extension LocationViewController {
             .map { self.place! }
             .bind(to: vm.input.bookmarkPopUpObserver)
             .disposed(by: disposeBag)
+        
+        showMemoryBT.rx.tap.subscribe(onNext: {
+            MemoryListViewModel.instance.place = self.place
+            let vc = MemoryListViewController()
+            vc.modalTransitionStyle = .crossDissolve
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
+        }).disposed(by: disposeBag)
+        
+        writeMemoryBT.rx.tap.subscribe(onNext: {
+            let vm = MemoryWriteViewModel(self.place!)
+            let vc = MemoryWriteViewController(vm: vm)
+            vc.modalTransitionStyle = .crossDissolve
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
+            
+        }).disposed(by: disposeBag)
     }
     
     func bindOutput() {

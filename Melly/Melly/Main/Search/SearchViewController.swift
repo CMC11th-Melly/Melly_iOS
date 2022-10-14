@@ -11,12 +11,13 @@ import RxSwift
 
 protocol GoPlaceDelegate:AnyObject {
     func showLocationPopupView(_ place: Place)
+    func goToAddMemoryView(_ place: Place)
 }
 
 class SearchViewController: UIViewController {
     
     private let disposeBag = DisposeBag()
-    private let vm = SearchViewModel()
+    private let vm:SearchViewModel
     
     weak var delegate:GoPlaceDelegate?
     
@@ -67,6 +68,14 @@ class SearchViewController: UIViewController {
         return collectionView
     }()
     
+    init(vm: SearchViewModel) {
+        self.vm = vm
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -217,6 +226,12 @@ extension SearchViewController {
             self.dismiss(animated: true)
             
         }).disposed(by: disposeBag)
+        
+        vm.output.goToMemoryValue.subscribe(onNext: { value in
+            self.delegate?.goToAddMemoryView(value)
+            self.dismiss(animated: true)
+        }).disposed(by: disposeBag)
+        
         
         vm.output.tfRightViewValue.asDriver(onErrorJustReturn: false)
             .drive(onNext: { value in

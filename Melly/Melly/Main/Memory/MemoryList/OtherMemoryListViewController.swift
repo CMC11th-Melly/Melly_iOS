@@ -91,6 +91,7 @@ extension OtherMemoryListViewController {
             $0.edges.equalToSuperview()
         }
         
+        
 //        dataView.addSubview(dataLB)
 //        dataLB.snp.makeConstraints {
 //            $0.top.equalToSuperview().offset(22)

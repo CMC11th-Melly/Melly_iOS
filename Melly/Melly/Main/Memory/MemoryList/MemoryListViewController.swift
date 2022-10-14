@@ -11,7 +11,9 @@ import RxSwift
 
 class MemoryListViewController: UIViewController {
     
-    let disposeBag = DisposeBag()
+    let vm = MemoryListViewModel.instance
+    
+    private let disposeBag = DisposeBag()
     
     let scrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = false
@@ -20,14 +22,14 @@ class MemoryListViewController: UIViewController {
     let contentView = UIView()
     let bottomView = UIView()
     
-    let locationTitleLB = UILabel().then {
-        $0.text = "성수동"
+    lazy var locationTitleLB = UILabel().then {
+        $0.text = vm.place?.placeName ?? "성수동"
         $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Bold", size: 20)
     }
     
-    let locationCategoryLB = UILabel().then {
-        $0.text = "거리"
+    lazy var locationCategoryLB = UILabel().then {
+        $0.text = vm.place?.placeCategory ?? "거리"
         $0.textColor = UIColor(red: 0.545, green: 0.584, blue: 0.631, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Medium", size: 14)
     }
@@ -174,7 +176,7 @@ extension MemoryListViewController {
         contentView.addSubview(pageViewController.view)
         pageViewController.view.snp.makeConstraints {
             $0.top.equalTo(separator.snp.bottom)
-            $0.height.equalTo(800)
+            $0.height.equalTo(pageViewController.view.bounds.height)
             $0.leading.trailing.bottom.equalToSuperview()
         }
         
@@ -190,6 +192,10 @@ extension MemoryListViewController {
         
         memorySegmentedControl.addTarget(self, action: #selector(changeValue), for: .valueChanged)
         self.changeValue(control: self.memorySegmentedControl)
+        
+        closeButton.rx.tap.subscribe(onNext: {
+            self.dismiss(animated: true)
+        }).disposed(by: disposeBag)
         
     }
     

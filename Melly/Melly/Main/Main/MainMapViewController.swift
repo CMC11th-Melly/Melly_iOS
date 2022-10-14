@@ -59,9 +59,12 @@ class MainMapViewController: UIViewController {
     }
     
     let goSearchBT = UIButton(type: .custom).then {
-        $0.setTitle("장소, 메모리 검색", for: .normal)
-        $0.titleLabel?.textColor = .red
-        $0.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 14)
+        let string = "장소, 메모리 검색"
+        let attributedString = NSMutableAttributedString(string: string)
+        let font = UIFont(name: "Pretendard-Medium", size: 16)!
+        attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Regular", size: 14)!, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1), range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
         $0.backgroundColor = .clear
     }
     
@@ -268,7 +271,8 @@ extension MainMapViewController {
             }).disposed(by: disposeBag)
         
         goSearchBT.rx.tap.subscribe(onNext: {
-            let vc = SearchViewController()
+            let vm = SearchViewModel(true)
+            let vc = SearchViewController(vm: vm)
             vc.delegate = self
             vc.modalTransitionStyle = .crossDissolve
             vc.modalPresentationStyle = .fullScreen
@@ -283,7 +287,11 @@ extension MainMapViewController {
                 self.locationFloatingPanel.removeFromParent()
             }
             self.mapView.locationOverlay.hidden = true
-            self.goSearchBT.setTitle("장소, 메모리 검색", for: .normal)
+            let string = "장소, 메모리 검색"
+            let attributedString = NSMutableAttributedString(string: string)
+            attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Regular", size: 14)!, range: NSRange(location: 0, length: string.count))
+            attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1), range: NSRange(location: 0, length: string.count))
+            self.goSearchBT.setAttributedTitle(attributedString, for: .normal)
             self.cancelSearchBT.isHidden = true
         }).disposed(by: disposeBag)
         
@@ -320,6 +328,15 @@ extension MainMapViewController {
             .bind(to: vm.input.filterGroupObserver)
             .disposed(by: disposeBag)
         
+        addGroupBT.rx.tap.subscribe(onNext: {
+            let vm = SearchViewModel(false)
+            let vc = SearchViewController(vm: vm)
+            vc.delegate = self
+            vc.modalTransitionStyle = .crossDissolve
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
+        }).disposed(by: disposeBag)
+        
     }
     
     func bindOutput() {
@@ -345,7 +362,12 @@ extension MainMapViewController {
                 case .error(let error):
                     print(error)
                 case .next(let place):
-                    self.goSearchBT.setTitle(place.placeName, for: .normal)
+                    
+                    let string = place.placeName
+                    let attributedString = NSMutableAttributedString(string: string)
+                    attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Regular", size: 14)!, range: NSRange(location: 0, length: string.count))
+                    attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1), range: NSRange(location: 0, length: string.count))
+                    self.goSearchBT.setAttributedTitle(attributedString, for: .normal)
                     self.cancelSearchBT.isHidden = false
                     self.locationVC.place = place
                     self.locationFloatingPanel.addPanel(toParent: self)
@@ -385,13 +407,28 @@ extension MainMapViewController {
 
 extension MainMapViewController: GoPlaceDelegate {
     
+    func goToAddMemoryView(_ place: Place) {
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            let vm = MemoryWriteViewModel(place)
+            let vc = MemoryWriteViewController(vm: vm)
+            vc.modalTransitionStyle = .crossDissolve
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
+        }
+    }
+    
     func showLocationPopupView(_ place: Place) {
         let location = NMGLatLng(lat: place.position.lat, lng: place.position.lng)
         let cameraUpdate = NMFCameraUpdate(scrollTo: location)
         mapView.locationOverlay.hidden = false
         mapView.locationOverlay.location = location
         mapView.moveCamera(cameraUpdate)
-        goSearchBT.setTitle(place.placeName, for: .normal)
+        let string = place.placeName
+        let attributedString = NSMutableAttributedString(string: string)
+        attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Regular", size: 14)!, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1), range: NSRange(location: 0, length: string.count))
+        self.goSearchBT.setAttributedTitle(attributedString, for: .normal)
         cancelSearchBT.isHidden = false
         locationVC.place = place
         locationFloatingPanel.addPanel(toParent: self)

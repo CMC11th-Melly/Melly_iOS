@@ -12,6 +12,10 @@ import Alamofire
 
 class MemoryListViewModel {
     
+    var place:Place?
+    
+    static let instance = MemoryListViewModel()
+    
     private let disposeBag = DisposeBag()
     
     let input = Input()

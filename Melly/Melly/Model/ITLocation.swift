@@ -43,3 +43,5 @@ struct Place:Codable {
     var placeName:String
     let recommendType:String
 }
+
+

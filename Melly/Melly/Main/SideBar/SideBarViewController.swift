@@ -40,21 +40,31 @@ class SideBarViewController: UIViewController {
     }
     
     let memoryBT = UIButton(type: .custom).then {
-        $0.setTitle("MY메모리", for: .normal)
-        $0.titleLabel?.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
-        $0.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 18)
+        
+        let string = "MY메모리"
+        let attributedString = NSMutableAttributedString(string: string)
+        let font = UIFont(name: "Pretendard-Medium", size: 16)!
+        attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Medium", size: 18)!, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1), range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
     }
     
     let groupBT = UIButton(type: .custom).then {
-        $0.setTitle("MY그룹", for: .normal)
-        $0.titleLabel?.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
-        $0.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 18)
+        let string = "MY그룹"
+        let attributedString = NSMutableAttributedString(string: string)
+        let font = UIFont(name: "Pretendard-Medium", size: 16)!
+        attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Medium", size: 18)!, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1), range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
     }
     
     let scrapBT = UIButton(type: .custom).then {
-        $0.setTitle("스크랩", for: .normal)
-        $0.titleLabel?.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
-        $0.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 18)
+        let string = "스크랩"
+        let attributedString = NSMutableAttributedString(string: string)
+        let font = UIFont(name: "Pretendard-Medium", size: 16)!
+        attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Medium", size: 18)!, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1), range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
     }
     
     
@@ -63,27 +73,40 @@ class SideBarViewController: UIViewController {
     }
     
     let noticeBT = UIButton(type: .custom).then {
-        $0.setTitle("공지사항", for: .normal)
-        $0.titleLabel?.textColor = UIColor(red: 0.49, green: 0.519, blue: 0.554, alpha: 1)
-        $0.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 16)
+        let string = "공지사항"
+        let attributedString = NSMutableAttributedString(string: string)
+        let font = UIFont(name: "Pretendard-Medium", size: 16)!
+        attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Medium", size: 16)!, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.49, green: 0.519, blue: 0.554, alpha: 1), range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+        
     }
     
     let settingBT = UIButton(type: .custom).then {
-        $0.setTitle("설정", for: .normal)
-        $0.titleLabel?.textColor = UIColor(red: 0.49, green: 0.519, blue: 0.554, alpha: 1)
-        $0.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 16)
+        let string = "설정"
+        let attributedString = NSMutableAttributedString(string: string)
+        let font = UIFont(name: "Pretendard-Medium", size: 16)!
+        attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Medium", size: 16)!, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.49, green: 0.519, blue: 0.554, alpha: 1), range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
     }
     
     let termsBT = UIButton(type: .custom).then {
-        $0.setTitle("이용약관 및 정책", for: .normal)
-        $0.titleLabel?.textColor = UIColor(red: 0.49, green: 0.519, blue: 0.554, alpha: 1)
-        $0.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 16)
+        let string = "이용약관 및 정책"
+        let attributedString = NSMutableAttributedString(string: string)
+        let font = UIFont(name: "Pretendard-Medium", size: 16)!
+        attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Medium", size: 16)!, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.49, green: 0.519, blue: 0.554, alpha: 1), range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
     }
     
     let logoutBT = UIButton(type: .custom).then {
-        $0.setTitle("로그아웃", for: .normal)
-        $0.titleLabel?.textColor = UIColor(red: 0.49, green: 0.519, blue: 0.554, alpha: 1)
-        $0.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 16)
+        let string = "로그아웃"
+        let attributedString = NSMutableAttributedString(string: string)
+        let font = UIFont(name: "Pretendard-Medium", size: 16)!
+        attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Medium", size: 16)!, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.49, green: 0.519, blue: 0.554, alpha: 1), range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
     }
     
     override func viewDidLoad() {

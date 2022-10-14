@@ -159,42 +159,54 @@ class AlertLabel: UIView {
 
 class DropMenuButton: UIButton {
     
-    let labelView = UILabel().then {
-        $0.text = ""
+    let textLB = UILabel().then {
         $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
-        $0.font = UIFont(name: "Pretendard-Regular", size: 16)
+        $0.font = UIFont(name: "Pretendard-Medium", size: 16)
+        $0.text = "메모리를 쌓은 그룹을 선택해보세요"
     }
-    
+
     let imgView = UIImageView(image: UIImage(named: "dropdown"))
-    
+
+
+
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.backgroundColor = .clear
         self.layer.cornerRadius = 12
-        self.layer.borderColor = CGColor(red: 226/255, green: 229/255, blue: 233/255, alpha: 1)
         self.layer.borderWidth = 1
-        
-        addSubview(labelView)
-        labelView.snp.makeConstraints {
+        self.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
+
+        addSubview(textLB)
+        textLB.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.leading.equalToSuperview().offset(22)
+            $0.leading.equalToSuperview().offset(17)
         }
-        
+
         addSubview(imgView)
         imgView.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.trailing.equalToSuperview().offset(-31)
+            $0.trailing.equalToSuperview().offset(-16)
+            $0.leading.greaterThanOrEqualTo(textLB.snp.trailing).offset(17)
         }
-        
+
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    convenience init(_ text: String) {
-        self.init()
-        labelView.text = text
-        
+
+
+    override var isSelected: Bool {
+        didSet {
+            if isSelected {
+                self.titleLabel?.textColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
+                self.backgroundColor = UIColor(red: 0.427, green: 0.459, blue: 0.506, alpha: 1)
+
+            } else {
+                self.titleLabel?.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+                self.backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
+            }
+        }
     }
     
 }
@@ -283,46 +295,6 @@ class MainTextField: UITextField {
         self.backgroundColor = .white
         self.layer.cornerRadius = 12
     }
-    
-}
-
-
-class GroupToggleButton: UIButton {
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.titleLabel?.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
-        self.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 14)
-        self.backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
-        self.layer.cornerRadius = 12
-        
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    convenience init(_ text: String) {
-        self.init()
-        self.setTitle(text, for: .normal)
-        self.setTitle(text, for: .selected)
-    }
-    
-    override var isSelected: Bool {
-        didSet {
-            if isSelected {
-                self.titleLabel?.textColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
-                self.backgroundColor = UIColor(red: 0.427, green: 0.459, blue: 0.506, alpha: 1)
-                
-            } else {
-                self.titleLabel?.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
-                self.backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
-            }
-        }
-    }
-    
-    
-    
     
 }
 
@@ -421,4 +393,43 @@ final class UnderlineSegmentedControl: UISegmentedControl {
             }
         )
     }
+}
+
+class GroupToggleButton: UIButton {
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.titleLabel?.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        self.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 14)
+        self.backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
+        self.layer.cornerRadius = 12
+        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    convenience init(_ text: String) {
+        self.init()
+        self.setTitle(text, for: .normal)
+        self.setTitle(text, for: .selected)
+    }
+    
+    override var isSelected: Bool {
+        didSet {
+            if isSelected {
+                self.titleLabel?.textColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
+                self.backgroundColor = UIColor(red: 0.427, green: 0.459, blue: 0.506, alpha: 1)
+                
+            } else {
+                self.titleLabel?.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+                self.backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
+            }
+        }
+    }
+    
+    
+    
+    
 }
