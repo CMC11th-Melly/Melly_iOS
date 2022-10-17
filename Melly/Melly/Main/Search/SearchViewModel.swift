@@ -23,6 +23,7 @@ class SearchViewModel {
         let clickSearchObserver = PublishRelay<Search>()
         let searchTextObserver = PublishRelay<String?>()
         let removeRecentObserver = PublishRelay<Search>()
+        let recentCVObserver = BehaviorRelay<Void>(value: ())
     }
     
     struct Output {
@@ -37,7 +38,9 @@ class SearchViewModel {
     
     init(_ isSearch: Bool) {
         self.isSearch = isSearch
-        getRecentSearch()
+        
+        input.recentCVObserver
+            .flatMap(getRecentSearch)
             .subscribe(onNext: { value in
                 print(value)
                 self.output.recentValue.accept(value)

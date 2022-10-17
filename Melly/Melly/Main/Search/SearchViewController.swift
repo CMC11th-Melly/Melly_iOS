@@ -49,7 +49,7 @@ class SearchViewController: UIViewController {
         $0.backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
     }
     
-    let recentCV: UICollectionView = {
+    lazy var recentCV: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.backgroundColor = .clear
@@ -134,7 +134,9 @@ extension SearchViewController {
         recentView.addSubview(recentCV)
         recentCV.snp.makeConstraints {
             $0.top.equalTo(separator.snp.bottom)
-            $0.trailing.leading.bottom.equalToSuperview()
+            $0.bottom.equalToSuperview()
+            $0.leading.equalToSuperview().offset(30)
+            $0.trailing.equalToSuperview().offset(-30)
         }
         
         
@@ -159,7 +161,7 @@ extension SearchViewController {
             .bind(to: recentCV.rx.items(cellIdentifier: "recent", cellType: SearchCell.self)) { row, element, cell in
                 cell.setData(element, self.vm)
             }.disposed(by: disposeBag)
-        
+    
         searchCV.dataSource = nil
         searchCV.delegate = nil
         searchCV.rx.setDelegate(self).disposed(by: disposeBag)

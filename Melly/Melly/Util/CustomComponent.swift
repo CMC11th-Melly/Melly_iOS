@@ -429,6 +429,60 @@ class GroupToggleButton: UIButton {
         }
     }
     
+}
+
+class DatePickerButton: UIButton {
+    
+    let textLB = UILabel().then {
+        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-Medium", size: 16)
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    convenience init(_ date: Date, isTime: Bool) {
+        self.init()
+        let dateFormatter = DateFormatter()
+        if isTime {
+            dateFormatter.locale = Locale(identifier: "ko_KO")
+            dateFormatter.dateFormat = "yyyy. M. d (E)"
+        } else {
+            dateFormatter.locale = Locale(identifier: "en-US")
+            dateFormatter.dateFormat = "hh:mm a"
+        }
+        textLB.text = dateFormatter.string(from: date)
+    }
+    
+   private func setUI() {
+        layer.cornerRadius = 12
+        layer.borderWidth = 1
+        layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
+        
+        addSubview(textLB)
+        textLB.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalToSuperview().offset(17)
+        }
+    }
+    
+    func changeDate(_ date: Date, isTime: Bool) {
+        let dateFormatter = DateFormatter()
+        if isTime {
+            dateFormatter.locale = Locale(identifier: "ko_KO")
+            dateFormatter.dateFormat = "yyyy. M. d (E)"
+        } else {
+            dateFormatter.locale = Locale(identifier: "en-US")
+            dateFormatter.dateFormat = "hh:mm a"
+        }
+        textLB.text = dateFormatter.string(from: date)
+    }
     
     
     

@@ -9,16 +9,20 @@ import UIKit
 import RxCocoa
 import RxSwift
 import Then
+import Photos
+import PhotosUI
+
 
 class MemoryWriteViewController: UIViewController {
     
-    //    let place:Place
+    
     private let disposeBag = DisposeBag()
     private let vm:MemoryWriteViewModel
     
-    let scrollView = UIScrollView().then {
+    lazy var scrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = false
         $0.showsHorizontalScrollIndicator = false
+        $0.delegate = self
     }
     
     let contentView = UIView()
@@ -52,7 +56,6 @@ class MemoryWriteViewController: UIViewController {
         imgView.snp.makeConstraints {
             $0.centerX.centerY.equalToSuperview()
         }
-        
     }
     
     let titleLB = UILabel().then {
@@ -88,10 +91,13 @@ class MemoryWriteViewController: UIViewController {
         $0.layer.borderWidth = 1
         $0.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
     }
+    let placeHolder = "이 메모리에서 느낀 내 기분은 어떤가요?"
     
     lazy var contentsTF = UITextView().then {
+        $0.text = placeHolder
         $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Medium", size: 16)
+        $0.delegate = self
     }
     
     let textCountLB = UILabel().then {
@@ -120,22 +126,8 @@ class MemoryWriteViewController: UIViewController {
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
     }
     
-    let dateBT = UIButton(type: .custom).then {
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy. M. d (E) a hh:mm"
-        dateFormatter.locale = Locale(identifier: "ko_KR")
-        let dateString = dateFormatter.string(from: Date())
-        let attributedString = NSMutableAttributedString(string: dateString)
-        let font = UIFont(name: "Pretendard-Medium", size: 16)!
-        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: dateString.count))
-        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1), range: NSRange(location: 0, length: dateString.count))
-        $0.setAttributedTitle(attributedString, for: .normal)
-    }
-    
-    let dateSeparator = UIView().then {
-        $0.backgroundColor = UIColor(red: 0.906, green: 0.93, blue: 0.954, alpha: 1)
-    }
+    let dateBT = DatePickerButton(Date(), isTime: true)
+    let timeBT = DatePickerButton(Date(), isTime: false)
     
     let starLB = UILabel().then {
         $0.text = "메모리 별점"
@@ -143,7 +135,29 @@ class MemoryWriteViewController: UIViewController {
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
     }
     
+    let oneStarBT = UIButton(type: .custom).then {
+        $0.setImage(UIImage(named: "memory_star"), for: .normal)
+    }
     
+    let twoStarBT = UIButton(type: .custom).then {
+        $0.setImage(UIImage(named: "memory_star"), for: .normal)
+    }
+    
+    let threeStarBT = UIButton(type: .custom).then {
+        $0.setImage(UIImage(named: "memory_star"), for: .normal)
+    }
+    
+    let fourStarBT = UIButton(type: .custom).then {
+        $0.setImage(UIImage(named: "memory_star"), for: .normal)
+    }
+    
+    let fiveStarBT = UIButton(type: .custom).then {
+        $0.setImage(UIImage(named: "memory_star"), for: .normal)
+    }
+    
+    lazy var stackView = UIStackView(arrangedSubviews: [oneStarBT, twoStarBT, threeStarBT, fourStarBT, fiveStarBT]).then {
+        $0.distribution = .fillEqually
+    }
     
     let keywordLB = UILabel().then {
         $0.text = "내 기분 키워드"
@@ -155,11 +169,17 @@ class MemoryWriteViewController: UIViewController {
         $0.text = "이 메모리에서 느낀 내 기분은 어떤가요?"
         $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Medium", size: 12)
+        
     }
     
     let keywordCV:UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
+        flowLayout.scrollDirection = UICollectionView.ScrollDirection.horizontal
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
+        collectionView.isScrollEnabled = true
+        collectionView.allowsMultipleSelection = true
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.showsHorizontalScrollIndicator = false
         return collectionView
     }()
     
@@ -179,9 +199,9 @@ class MemoryWriteViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
+        setSV()
         bind()
     }
-    
     
 }
 
@@ -324,34 +344,22 @@ extension MemoryWriteViewController {
         dateBT.snp.makeConstraints {
             $0.top.equalTo(dateLB.snp.bottom).offset(15)
             $0.leading.equalToSuperview().offset(30)
-            $0.height.equalTo(20)
+            $0.height.equalTo(58)
+            $0.width.equalTo((self.view.frame.width - 65) / 2)
         }
         
-        contentView.addSubview(dateSeparator)
-        dateSeparator.snp.makeConstraints {
-            $0.top.equalTo(dateBT.snp.bottom).offset(11)
-            $0.height.equalTo(1)
-            $0.leading.equalToSuperview().offset(30)
-            $0.trailing.equalToSuperview().offset(-30)
+        contentView.addSubview(timeBT)
+        timeBT.snp.makeConstraints {
+            $0.top.equalTo(dateLB.snp.bottom).offset(15)
+            $0.leading.equalTo(dateBT.snp.trailing).offset(5)
+            $0.height.equalTo(58)
+            $0.width.equalTo((self.view.frame.width - 65) / 2)
         }
         
         contentView.addSubview(starLB)
         starLB.snp.makeConstraints {
-            $0.top.equalTo(dateSeparator.snp.bottom).offset(30)
+            $0.top.equalTo(timeBT.snp.bottom).offset(30)
             $0.leading.equalToSuperview().offset(30)
-        }
-        
-        
-        var views:[UIView] = []
-        for _ in 0..<5 {
-            let button = UIButton(type: .custom).then {
-                $0.setImage(UIImage(named: "memory_star"), for: .normal)
-            }
-            views.append(button)
-        }
-        
-        let stackView = UIStackView(arrangedSubviews: views).then {
-            $0.distribution = .fillEqually
         }
         
         contentView.addSubview(stackView)
@@ -377,12 +385,13 @@ extension MemoryWriteViewController {
         contentView.addSubview(keywordCV)
         keywordCV.snp.makeConstraints {
             $0.top.equalTo(keywordDetailView.snp.bottom).offset(21)
-            $0.leading.equalToSuperview().offset(30)
-            $0.trailing.equalToSuperview().offset(-30)
-            $0.height.equalTo(150)
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
+            $0.height.equalTo(40)
             $0.bottom.equalToSuperview()
         }
         
+        keywordCV.layoutIfNeeded()
         
     }
     
@@ -403,14 +412,225 @@ extension MemoryWriteViewController {
                 cell.configure(name: element)
             }.disposed(by: disposeBag)
         
+        keywordCV.rx.itemSelected
+            .map { index in
+                let cell = self.keywordCV.cellForItem(at: index) as? KeyWordCell
+                let text = cell?.titleLabel.text ?? "all"
+                return text
+            }.bind(to: vm.input.keywordObserver)
+            .disposed(by: disposeBag)
+        
+        
+            
+        
+        imageButton.rx.tap.subscribe(onNext: {
+            let alert = UIAlertController(title: "프로필 사진 추가하기", message: nil, preferredStyle: .actionSheet)
+            
+            let pickerAction = UIAlertAction(title: "앨범에서 사진 선택", style: .default) { _ in
+                var config = PHPickerConfiguration(photoLibrary: .shared())
+                config.selectionLimit = 8
+                config.filter = PHPickerFilter.any(of: [.images])
+                let vc = PHPickerViewController(configuration: config)
+                vc.delegate = self
+                self.present(vc, animated: true)
+            }
+            
+            let cameraAction = UIAlertAction(title: "사진 촬영하기", style: .default) { _ in
+                let picker = UIImagePickerController()
+                picker.sourceType = .camera
+                picker.delegate = self
+                self.present(picker, animated: true)
+            }
+            
+            let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+            
+            alert.addAction(pickerAction)
+            alert.addAction(cameraAction)
+            alert.addAction(cancelAction)
+            self.present(alert, animated: true)
+            
+        }).disposed(by: disposeBag)
+        
+        
+        dateBT.rx.tap
+            .subscribe(onNext: {
+                let datePicker = UIDatePicker()
+                datePicker.datePickerMode = .date
+                datePicker.preferredDatePickerStyle = .wheels
+                datePicker.locale = Locale(identifier: "ko_KO")
+                
+                let dateAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+                dateAlert.view.addSubview(datePicker)
+                dateAlert.addAction(UIAlertAction(title: "선택 완료", style: .cancel, handler: { _ in
+                    let date = datePicker.date
+                    self.dateBT.changeDate(date, isTime: true)
+                }))
+                let height : NSLayoutConstraint = NSLayoutConstraint(item: dateAlert.view, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.1, constant: 300)
+                dateAlert.view.addConstraint(height)
+                
+                self.present(dateAlert, animated: true)
+            }).disposed(by: disposeBag)
+        
+        timeBT.rx.tap
+            .subscribe(onNext: {
+                let datePicker = UIDatePicker()
+                datePicker.datePickerMode = .time
+                datePicker.preferredDatePickerStyle = .wheels
+                datePicker.locale = Locale(identifier: "ko_KO")
+                
+                let dateAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+                dateAlert.view.addSubview(datePicker)
+                dateAlert.addAction(UIAlertAction(title: "선택 완료", style: .cancel, handler: { _ in
+                    let date = datePicker.date
+                    self.timeBT.changeDate(date, isTime: false)
+                }))
+                let height : NSLayoutConstraint = NSLayoutConstraint(item: dateAlert.view, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.1, constant: 300)
+                dateAlert.view.addConstraint(height)
+                
+                self.present(dateAlert, animated: true)
+            }).disposed(by: disposeBag)
+        
+        
+        oneStarBT.rx.tap
+            .map { 0 }
+            .bind(to: vm.input.starObserver)
+            .disposed(by: disposeBag)
+        
+        twoStarBT.rx.tap
+            .map { 1 }
+            .bind(to: vm.input.starObserver)
+            .disposed(by: disposeBag)
+        
+        threeStarBT.rx.tap
+            .map { 2 }
+            .bind(to: vm.input.starObserver)
+            .disposed(by: disposeBag)
+        
+        fourStarBT.rx.tap
+            .map { 3 }
+            .bind(to: vm.input.starObserver)
+            .disposed(by: disposeBag)
+        
+        fiveStarBT.rx.tap
+            .map { 4 }
+            .bind(to: vm.input.starObserver)
+            .disposed(by: disposeBag)
+        
+        
         
         cancelBT.rx.tap
             .subscribe(onNext: {
                 self.dismiss(animated: true)
             }).disposed(by: disposeBag)
+        
     }
     
     private func bindOutput() {
+        
+        vm.output.starValue.asDriver(onErrorJustReturn: [false, false, false, false, false])
+            .drive(onNext: { value in
+                
+                if value[0] {
+                    self.oneStarBT.setImage(UIImage(named: "memory_star_fill"), for: .normal)
+                } else {
+                    self.oneStarBT.setImage(UIImage(named: "memory_star"), for: .normal)
+                }
+                
+                if value[1] {
+                    self.twoStarBT.setImage(UIImage(named: "memory_star_fill"), for: .normal)
+                } else {
+                    self.twoStarBT.setImage(UIImage(named: "memory_star"), for: .normal)
+                }
+                
+                if value[2] {
+                    self.threeStarBT.setImage(UIImage(named: "memory_star_fill"), for: .normal)
+                } else {
+                    self.threeStarBT.setImage(UIImage(named: "memory_star"), for: .normal)
+                }
+                
+                if value[3] {
+                    self.fourStarBT.setImage(UIImage(named: "memory_star_fill"), for: .normal)
+                } else {
+                    self.fourStarBT.setImage(UIImage(named: "memory_star"), for: .normal)
+                }
+                
+                if value[4] {
+                    self.fiveStarBT.setImage(UIImage(named: "memory_star_fill"), for: .normal)
+                } else {
+                    self.fiveStarBT.setImage(UIImage(named: "memory_star"), for: .normal)
+                }
+                
+            }).disposed(by: disposeBag)
+        
+        vm.output.imagesValue.asDriver(onErrorJustReturn: [])
+            .drive(onNext: { value in
+                
+                if value.count == 0 {
+                    
+                    DispatchQueue.main.async {
+                        self.imageContentView.subviews.forEach { $0.removeFromSuperview() }
+                        self.imageContentView.addSubview(self.imageButton)
+                        self.imageButton.snp.makeConstraints {
+                            $0.top.equalToSuperview().offset(11)
+                            $0.leading.equalToSuperview().offset(4)
+                            $0.width.equalTo(330)
+                            $0.height.equalTo(170)
+                            $0.trailing.equalToSuperview()
+                        }
+                        self.viewDidLayoutSubviews()
+                    }
+                    
+                } else {
+                    DispatchQueue.main.async {
+                        self.imageContentView.subviews.forEach { $0.removeFromSuperview() }
+                        let imagesView:[UIImageView] = {
+                            var views:[UIImageView] = []
+                            for image in value {
+                                let imgView = UIImageView(image: image).then {
+                                    $0.layer.cornerRadius = 12
+                                    $0.clipsToBounds = true
+                                }
+                                views.append(imgView)
+                            }
+                            return views
+                        }()
+                        
+                        for i in 0..<value.count {
+                            self.imageContentView.addSubview(imagesView[i])
+                            if i == 0 {
+                                imagesView[i].snp.makeConstraints {
+                                    $0.top.equalToSuperview().offset(11)
+                                    $0.leading.equalToSuperview().offset(5)
+                                    $0.width.equalTo(330)
+                                    $0.height.equalTo(170)
+                                }
+                            } else {
+                                imagesView[i].snp.makeConstraints {
+                                    $0.top.equalToSuperview().offset(11)
+                                    $0.leading.equalTo(imagesView[i-1].snp.trailing).offset(5)
+                                    $0.width.equalTo(330)
+                                    $0.height.equalTo(170)
+                                }
+                            }
+                        }
+                        
+                        self.imageContentView.addSubview(self.imageButton)
+                        self.imageButton.snp.makeConstraints {
+                            $0.top.equalToSuperview().offset(11)
+                            $0.leading.equalTo(imagesView[imagesView.count-1].snp.trailing).offset(5)
+                            $0.trailing.equalToSuperview()
+                            $0.width.equalTo(330)
+                            $0.height.equalTo(170)
+                        }
+                        
+                        self.imageScrollView.contentSize = CGSize(width: 335 * (value.count + 1), height: 192)
+                        self.viewDidLayoutSubviews()
+                    }
+                }
+                
+            }).disposed(by: disposeBag)
+        
+        
         
     }
     
@@ -420,11 +640,7 @@ extension MemoryWriteViewController {
 extension MemoryWriteViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 17
+        return UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
@@ -435,6 +651,19 @@ extension MemoryWriteViewController: UICollectionViewDelegateFlowLayout {
         
         return KeyWordCell.fittingSize(availableHeight: 33, name: vm.keywordData[indexPath.item])
     }
+    
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+           guard let cell = collectionView.cellForItem(at: indexPath) as? KeyWordCell else {
+               return true
+           }
+           if cell.isSelected {
+               collectionView.deselectItem(at: indexPath, animated: true)
+               
+               return false
+           } else {
+               return true
+           }
+       }
     
 }
 
@@ -466,7 +695,6 @@ final class KeyWordCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        layer.cornerRadius = 22.0
     }
     
     private func setupView() {
@@ -483,6 +711,132 @@ final class KeyWordCell: UICollectionViewCell {
     
     func configure(name: String) {
         titleLabel.text = name
+    }
+    
+    override var isSelected: Bool {
+        didSet {
+            if isSelected {
+                backgroundColor = UIColor(red: 0.4, green: 0.435, blue: 0.486, alpha: 1)
+                titleLabel.textColor = UIColor(red: 0.975, green: 0.979, blue: 0.988, alpha: 1)
+            } else {
+                backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
+                titleLabel.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+            }
+        }
+    }
+    
+    
+}
+
+extension MemoryWriteViewController: PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true, completion: nil)
+        let group = DispatchGroup()
+        var images:[UIImage] = []
+        results.forEach { result in
+            group.enter()
+            result.itemProvider.loadObject(ofClass: UIImage.self) { reading, error in
+                
+                defer {
+                    group.leave()
+                }
+                
+                guard let image = reading as? UIImage, error == nil else {
+                    return
+                }
+                images.append(image)
+            }
+        }
+        
+        group.notify(queue: .main) {
+            self.vm.input.imagesObserver.accept(images)
+        }
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
+            return
+        }
+        
+        picker.dismiss(animated: true)
+        vm.input.imagesObserver.accept([image])
+        
+    }
+    
+}
+
+extension MemoryWriteViewController: UIScrollViewDelegate, UITextViewDelegate {
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        self.view.endEditing(true)
+    }
+    
+    func setSV() {
+        let singleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(myTapMethod))
+        
+        singleTapGestureRecognizer.numberOfTapsRequired = 1
+        
+        singleTapGestureRecognizer.isEnabled = true
+        
+        singleTapGestureRecognizer.cancelsTouchesInView = false
+        
+        scrollView.addGestureRecognizer(singleTapGestureRecognizer)
+        
+        NotificationCenter.default.addObserver(self,selector: #selector(self.keyboardDidShow(notification:)),
+                                               name: UIResponder.keyboardDidShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self,selector: #selector(self.keyboardDidHide(notification:)),
+                                               name: UIResponder.keyboardDidHideNotification, object: nil)
+    }
+    
+    @objc func myTapMethod(sender: UITapGestureRecognizer) {
+        self.view.endEditing(true)
+    }
+    
+    @objc func keyboardDidShow(notification: NSNotification) {
+        let info = notification.userInfo
+        let keyBoardSize = info![UIResponder.keyboardFrameEndUserInfoKey] as! CGRect
+        scrollView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyBoardSize.height, right: 0.0)
+        scrollView.scrollIndicatorInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyBoardSize.height, right: 0.0)
+    }
+    
+    @objc func keyboardDidHide(notification: NSNotification) {
+        
+        scrollView.contentInset = UIEdgeInsets.zero
+        scrollView.scrollIndicatorInsets = UIEdgeInsets.zero
+    }
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.text == placeHolder {
+            textView.text = nil
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            textView.text = placeHolder
+            updateCountLabel(characterCount: 0)
+        }
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        let inputString = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let oldString = textView.text, let newRange = Range(range, in: oldString) else { return true }
+        let newString = oldString.replacingCharacters(in: newRange, with: inputString).trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        let characterCount = newString.count
+        guard characterCount <= 700 else { return false }
+        updateCountLabel(characterCount: characterCount)
+        
+        return true
+    }
+    
+    private func updateCountLabel(characterCount: Int) {
+        textCountLB.text = "\(characterCount)자 | 최소 20자"
     }
     
 }
