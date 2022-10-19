@@ -12,16 +12,6 @@ struct ItLocation:Codable {
     let memoryInfo:[Memory]
 }
 
-struct Memory:Codable {
-    let memoryId: Int
-    let memoryImages:[String]
-    let title:String
-    let content:String
-    let groupName:String
-    let stars:Int
-    let keywords:[String]
-}
-
 struct PlaceInfo:Codable {
     
     let placeId:Int

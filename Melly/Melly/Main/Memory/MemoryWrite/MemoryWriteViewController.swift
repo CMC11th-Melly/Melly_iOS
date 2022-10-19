@@ -11,10 +11,9 @@ import RxSwift
 import Then
 import Photos
 import PhotosUI
-
+import DropDown
 
 class MemoryWriteViewController: UIViewController {
-    
     
     private let disposeBag = DisposeBag()
     private let vm:MemoryWriteViewModel
@@ -120,6 +119,11 @@ class MemoryWriteViewController: UIViewController {
     
     let groupPickerView = DropMenuButton()
     
+    lazy var groupDropDown = DropDown().then {
+        $0.anchorView = groupPickerView
+        $0.bottomOffset = CGPoint(x: 0, y: ($0.anchorView?.plainView.bounds.height)!)
+    }
+    
     let dateLB = UILabel().then {
         $0.text = "날짜"
         $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
@@ -183,6 +187,10 @@ class MemoryWriteViewController: UIViewController {
         return collectionView
     }()
     
+    let errorLable = AlertLabel().then {
+        $0.isHidden = true
+    }
+    
     let cancelBT = CustomButton(title: "취소")
     let writeBT = CustomButton(title: "메모리 저장")
     
@@ -236,6 +244,14 @@ extension MemoryWriteViewController {
         scrollView.snp.makeConstraints {
             $0.top.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(bottomView.snp.top)
+        }
+        
+        safeArea.addSubview(errorLable)
+        errorLable.snp.makeConstraints {
+            $0.bottom.equalTo(bottomView.snp.top).offset(-18)
+            $0.leading.equalToSuperview().offset(30)
+            $0.trailing.equalToSuperview().offset(-30)
+            $0.height.equalTo(56)
         }
         
         scrollView.addSubview(contentView)
@@ -420,9 +436,6 @@ extension MemoryWriteViewController {
             }.bind(to: vm.input.keywordObserver)
             .disposed(by: disposeBag)
         
-        
-            
-        
         imageButton.rx.tap.subscribe(onNext: {
             let alert = UIAlertController(title: "프로필 사진 추가하기", message: nil, preferredStyle: .actionSheet)
             
@@ -451,6 +464,20 @@ extension MemoryWriteViewController {
             
         }).disposed(by: disposeBag)
         
+        titleTF.rx.controlEvent([.editingDidEnd])
+            .map { self.titleTF.text ?? "" }
+            .bind(to: vm.input.titleObserver)
+            .disposed(by: disposeBag)
+        
+        contentsTF.rx.didEndEditing
+            .map { self.contentsTF.text ?? "" }
+            .bind(to: vm.input.contentObserver)
+            .disposed(by: disposeBag)
+        
+        groupDropDown.selectionAction = { [unowned self] (index: Int, item: String) in
+            self.groupPickerView.textLB.text = item
+            self.vm.input.groupObserver.accept(item)
+        }
         
         dateBT.rx.tap
             .subscribe(onNext: {
@@ -463,6 +490,7 @@ extension MemoryWriteViewController {
                 dateAlert.view.addSubview(datePicker)
                 dateAlert.addAction(UIAlertAction(title: "선택 완료", style: .cancel, handler: { _ in
                     let date = datePicker.date
+                    self.vm.input.dateObserver.accept(date)
                     self.dateBT.changeDate(date, isTime: true)
                 }))
                 let height : NSLayoutConstraint = NSLayoutConstraint(item: dateAlert.view, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.1, constant: 300)
@@ -482,6 +510,7 @@ extension MemoryWriteViewController {
                 dateAlert.view.addSubview(datePicker)
                 dateAlert.addAction(UIAlertAction(title: "선택 완료", style: .cancel, handler: { _ in
                     let date = datePicker.date
+                    self.vm.input.timeObserver.accept(date)
                     self.timeBT.changeDate(date, isTime: false)
                 }))
                 let height : NSLayoutConstraint = NSLayoutConstraint(item: dateAlert.view, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.1, constant: 300)
@@ -516,13 +545,19 @@ extension MemoryWriteViewController {
             .bind(to: vm.input.starObserver)
             .disposed(by: disposeBag)
         
+        groupPickerView.rx.tap
+            .subscribe(onNext: {
+                self.groupDropDown.show()
+            }).disposed(by: disposeBag)
         
+        writeBT.rx.tap
+            .bind(to: vm.input.writeObserver)
+            .disposed(by: disposeBag)
         
         cancelBT.rx.tap
             .subscribe(onNext: {
                 self.dismiss(animated: true)
             }).disposed(by: disposeBag)
-        
     }
     
     private func bindOutput() {
@@ -630,28 +665,52 @@ extension MemoryWriteViewController {
                 
             }).disposed(by: disposeBag)
         
+        vm.output.groupValue.asDriver(onErrorJustReturn: [])
+            .drive(onNext: { value in
+                self.groupDropDown.dataSource = value
+            }).disposed(by: disposeBag)
         
+        vm.output.errorValue.asDriver(onErrorJustReturn: "")
+            .drive(onNext: { value in
+                
+                self.errorLable.labelView.text = value
+                self.errorLable.isHidden = false
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    UIView.animate(withDuration: 1.5) {
+                        self.errorLable.isHidden = true
+                    }
+                }
+            }).disposed(by: disposeBag)
+        
+        vm.output.successValue.subscribe(onNext: {
+            self.dismiss(animated: true)
+        }).disposed(by: disposeBag)
         
     }
     
     
 }
 
+//MARK: - CollectionView delegate
 extension MemoryWriteViewController: UICollectionViewDelegateFlowLayout {
     
+    //collectionView자체 latout
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
     }
     
+    //행과 행사이의 간격 설정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 9
     }
     
+    //셀 사이즈 설정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
         return KeyWordCell.fittingSize(availableHeight: 33, name: vm.keywordData[indexPath.item])
     }
     
+    //2번 선택할 때 deselect 모드로 변경
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
            guard let cell = collectionView.cellForItem(at: indexPath) as? KeyWordCell else {
                return true
@@ -667,6 +726,129 @@ extension MemoryWriteViewController: UICollectionViewDelegateFlowLayout {
     
 }
 
+//MARK: - PHPicker, UIImagePicker delegate
+extension MemoryWriteViewController: PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    //imagePicker에서 이미지 선택 시
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true, completion: nil)
+        let group = DispatchGroup()
+        var images:[UIImage] = []
+        results.forEach { result in
+            group.enter()
+            result.itemProvider.loadObject(ofClass: UIImage.self) { reading, error in
+                
+                defer {
+                    group.leave()
+                }
+                guard let image = reading as? UIImage, error == nil else {
+                    return
+                }
+                images.append(image)
+            }
+        }
+        
+        group.notify(queue: .main) {
+            self.vm.input.imagesObserver.accept(images)
+        }
+    }
+    
+    //imagePicker 취소 시
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
+    }
+    
+    //카메라로 이미지 선택할 때
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
+            return
+        }
+        picker.dismiss(animated: true)
+        vm.input.imagesObserver.accept([image])
+        
+    }
+    
+}
+
+
+//MARK: - ScrollView, TextView Delegate
+extension MemoryWriteViewController: UIScrollViewDelegate, UITextViewDelegate {
+    
+    //scrollView에서 스크롤이 시작되어도 키보드가 있으면 사라지게 함
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        self.view.endEditing(true)
+    }
+    
+    //키보드 관련 이벤트를 scrollview에 설정
+    func setSV() {
+        let singleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(myTapMethod))
+        singleTapGestureRecognizer.numberOfTapsRequired = 1
+        singleTapGestureRecognizer.isEnabled = true
+        
+        singleTapGestureRecognizer.cancelsTouchesInView = false
+        
+        scrollView.addGestureRecognizer(singleTapGestureRecognizer)
+        
+        NotificationCenter.default.addObserver(self,selector: #selector(self.keyboardDidShow(notification:)),
+                                               name: UIResponder.keyboardDidShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self,selector: #selector(self.keyboardDidHide(notification:)),
+                                               name: UIResponder.keyboardDidHideNotification, object: nil)
+    }
+    
+    //키보드 이외에 다른 곳을 터치할 때 키보드 사라지게 하기
+    @objc func myTapMethod(sender: UITapGestureRecognizer) {
+        self.view.endEditing(true)
+    }
+    
+    //키보드가 나타날 때 scrollview의 inset 변경
+    @objc func keyboardDidShow(notification: NSNotification) {
+        let info = notification.userInfo
+        let keyBoardSize = info![UIResponder.keyboardFrameEndUserInfoKey] as! CGRect
+        scrollView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyBoardSize.height, right: 0.0)
+        scrollView.scrollIndicatorInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyBoardSize.height, right: 0.0)
+    }
+    
+    //키보드가 사라질때 scrollview의 inset 변경
+    @objc func keyboardDidHide(notification: NSNotification) {
+        scrollView.contentInset = UIEdgeInsets.zero
+        scrollView.scrollIndicatorInsets = UIEdgeInsets.zero
+    }
+    
+    //textView에 포커싱이 갈 때 호출
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.text == placeHolder {
+            textView.text = nil
+        }
+    }
+    
+    //textView에서 포커싱이 벗어날 때 호출
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            textView.text = placeHolder
+            updateCountLabel(characterCount: 0)
+        }
+    }
+    
+    //textView의 text가 바뀔 때 마다 호출
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        let inputString = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let oldString = textView.text, let newRange = Range(range, in: oldString) else { return true }
+        let newString = oldString.replacingCharacters(in: newRange, with: inputString).trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        let characterCount = newString.count
+        guard characterCount <= 700 else { return false }
+        updateCountLabel(characterCount: characterCount)
+        
+        return true
+    }
+    
+    
+    //textView의 글자수를 최신화
+    private func updateCountLabel(characterCount: Int) {
+        textCountLB.text = "\(characterCount)자 | 최소 20자"
+    }
+    
+}
 
 final class KeyWordCell: UICollectionViewCell {
     
@@ -697,6 +879,7 @@ final class KeyWordCell: UICollectionViewCell {
         super.layoutSubviews()
     }
     
+    
     private func setupView() {
         backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
         layer.cornerRadius = 12
@@ -724,119 +907,4 @@ final class KeyWordCell: UICollectionViewCell {
             }
         }
     }
-    
-    
-}
-
-extension MemoryWriteViewController: PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        picker.dismiss(animated: true, completion: nil)
-        let group = DispatchGroup()
-        var images:[UIImage] = []
-        results.forEach { result in
-            group.enter()
-            result.itemProvider.loadObject(ofClass: UIImage.self) { reading, error in
-                
-                defer {
-                    group.leave()
-                }
-                
-                guard let image = reading as? UIImage, error == nil else {
-                    return
-                }
-                images.append(image)
-            }
-        }
-        
-        group.notify(queue: .main) {
-            self.vm.input.imagesObserver.accept(images)
-        }
-    }
-    
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.dismiss(animated: true)
-    }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
-            return
-        }
-        
-        picker.dismiss(animated: true)
-        vm.input.imagesObserver.accept([image])
-        
-    }
-    
-}
-
-extension MemoryWriteViewController: UIScrollViewDelegate, UITextViewDelegate {
-    
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        self.view.endEditing(true)
-    }
-    
-    func setSV() {
-        let singleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(myTapMethod))
-        
-        singleTapGestureRecognizer.numberOfTapsRequired = 1
-        
-        singleTapGestureRecognizer.isEnabled = true
-        
-        singleTapGestureRecognizer.cancelsTouchesInView = false
-        
-        scrollView.addGestureRecognizer(singleTapGestureRecognizer)
-        
-        NotificationCenter.default.addObserver(self,selector: #selector(self.keyboardDidShow(notification:)),
-                                               name: UIResponder.keyboardDidShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self,selector: #selector(self.keyboardDidHide(notification:)),
-                                               name: UIResponder.keyboardDidHideNotification, object: nil)
-    }
-    
-    @objc func myTapMethod(sender: UITapGestureRecognizer) {
-        self.view.endEditing(true)
-    }
-    
-    @objc func keyboardDidShow(notification: NSNotification) {
-        let info = notification.userInfo
-        let keyBoardSize = info![UIResponder.keyboardFrameEndUserInfoKey] as! CGRect
-        scrollView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyBoardSize.height, right: 0.0)
-        scrollView.scrollIndicatorInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyBoardSize.height, right: 0.0)
-    }
-    
-    @objc func keyboardDidHide(notification: NSNotification) {
-        
-        scrollView.contentInset = UIEdgeInsets.zero
-        scrollView.scrollIndicatorInsets = UIEdgeInsets.zero
-    }
-    
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.text == placeHolder {
-            textView.text = nil
-        }
-    }
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            textView.text = placeHolder
-            updateCountLabel(characterCount: 0)
-        }
-    }
-    
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        let inputString = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard let oldString = textView.text, let newRange = Range(range, in: oldString) else { return true }
-        let newString = oldString.replacingCharacters(in: newRange, with: inputString).trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        let characterCount = newString.count
-        guard characterCount <= 700 else { return false }
-        updateCountLabel(characterCount: characterCount)
-        
-        return true
-    }
-    
-    private func updateCountLabel(characterCount: Int) {
-        textCountLB.text = "\(characterCount)자 | 최소 20자"
-    }
-    
 }

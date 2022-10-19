@@ -119,6 +119,7 @@ class SignUpThreeViewModel {
                 if let profileData = self.profileData {
                     multipartFormData.append(profileData, withName: "profileImage", fileName: "test.jpeg", mimeType: "image/jpeg")
                 }
+                
                 for (key, value) in parameters {
                     multipartFormData.append("\(value)".data(using: .utf8)!, withName: key)
                 }

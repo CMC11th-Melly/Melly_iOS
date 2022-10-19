@@ -15,12 +15,9 @@ class MemoryListViewController: UIViewController {
     
     private let disposeBag = DisposeBag()
     
-    let scrollView = UIScrollView().then {
-        $0.showsVerticalScrollIndicator = false
-        $0.showsHorizontalScrollIndicator = false
-    }
-    let contentView = UIView()
     let bottomView = UIView()
+    
+    let contentView = UIView()
     
     lazy var locationTitleLB = UILabel().then {
         $0.text = vm.place?.placeName ?? "성수동"
@@ -74,8 +71,6 @@ class MemoryListViewController: UIViewController {
     
     var currentPage: Int = 0 {
         didSet {
-          // from segmentedControl -> pageViewController 업데이트
-          print(oldValue, self.currentPage)
           let direction: UIPageViewController.NavigationDirection = oldValue <= self.currentPage ? .forward : .reverse
           self.pageViewController.setViewControllers(
             [dataView[self.currentPage]],
@@ -114,15 +109,10 @@ extension MemoryListViewController {
             $0.height.equalTo(56)
         }
         
-        safeArea.addSubview(scrollView)
-        scrollView.snp.makeConstraints {
+        safeArea.addSubview(contentView)
+        contentView.snp.makeConstraints {
             $0.top.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(bottomView.snp.top)
-        }
-        
-        scrollView.addSubview(contentView)
-        contentView.snp.makeConstraints {
-            $0.width.centerX.top.bottom.equalToSuperview()
         }
         
         contentView.addSubview(locationTitleLB)
@@ -176,7 +166,6 @@ extension MemoryListViewController {
         contentView.addSubview(pageViewController.view)
         pageViewController.view.snp.makeConstraints {
             $0.top.equalTo(separator.snp.bottom)
-            $0.height.equalTo(pageViewController.view.bounds.height)
             $0.leading.trailing.bottom.equalToSuperview()
         }
         
@@ -206,10 +195,13 @@ extension MemoryListViewController {
     private func bindOutput() {
         
     }
+    
 }
 
-
+//MARK: - PageViewController Delegate, DataSource
 extension MemoryListViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+    
+    //page가 바뀌기 직전에 호출
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController ) -> UIViewController? {
         guard
             let index = self.dataView.firstIndex(of: viewController),
@@ -218,6 +210,7 @@ extension MemoryListViewController: UIPageViewControllerDataSource, UIPageViewCo
         return self.dataView[index - 1]
     }
     
+    //page가 바뀐 후에 호출
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController ) -> UIViewController? {
         guard
             let index = self.dataView.firstIndex(of: viewController),
@@ -225,6 +218,8 @@ extension MemoryListViewController: UIPageViewControllerDataSource, UIPageViewCo
         else { return nil }
         return self.dataView[index + 1]
     }
+    
+    //page animation이 실행한 후에 실행
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         guard
             let viewController = pageViewController.viewControllers?[0],
@@ -233,4 +228,5 @@ extension MemoryListViewController: UIPageViewControllerDataSource, UIPageViewCo
         self.currentPage = index
         self.memorySegmentedControl.selectedSegmentIndex = index
     }
+    
 }
