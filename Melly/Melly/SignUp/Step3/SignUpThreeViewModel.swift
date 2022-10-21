@@ -84,19 +84,29 @@ class SignUpThreeViewModel {
                     }
                 case .next(let user):
                     User.loginedUser = user
+                    UserDefaults.standard.set(try? PropertyListEncoder().encode(user), forKey: "loginUser")
+                    UserDefaults.standard.set(user.jwtToken, forKey: "token")
+                    UserDefaults.standard.setValue("yes", forKey: "initialUser")
                     self.output.userValue.accept(nil)
                 }
             }).disposed(by: disposeBag)
         
     }
     
+    
+    /**
+    회원가입 함수
+     - Parameters: None
+     - Throws: MellyError
+     - Returns:User
+     */
     func signUp() -> Observable<User> {
         
         return Observable.create { observer in
             
             let header:HTTPHeaders = [
-                        "Content-Type": "multipart/form-data"
-                    ]
+                "Content-Type": "multipart/form-data"
+            ]
             
             let str = self.user.provider == LoginType.Default.rawValue ? "/auth/signup" : "/auth/social/signup"
             let realUrl = URL(string: "https://api.melly.kr\(str)")
@@ -113,7 +123,7 @@ class SignUpThreeViewModel {
             } else {
                 parameters["uid"] = self.user.uid
             }
-                        
+            
             AF.upload(multipartFormData: { multipartFormData in
                 
                 if let profileData = self.profileData {
@@ -125,26 +135,26 @@ class SignUpThreeViewModel {
                 }
                 
             }, to: url, method: .post, headers: header)
-                .responseData { response in
-                    switch response.result {
-                    case .success(let response):
-                        let decoder = JSONDecoder()
-                        if let json = try? decoder.decode(ResponseData.self, from: response) {
-                            if json.message == "로그인 완료" {
-                                if let dic = json.data?["user"] as? [String:Any] {
-                                    if let user = dictionaryToObject(objectType: User.self, dictionary: dic) {
-                                        observer.onNext(user)
-                                    }
+            .responseData { response in
+                switch response.result {
+                case .success(let response):
+                    let decoder = JSONDecoder()
+                    if let json = try? decoder.decode(ResponseData.self, from: response) {
+                        if json.message == "회원가입 완료" {
+                            if let dic = json.data?["user"] as? [String:Any] {
+                                if let user = dictionaryToObject(objectType: User.self, dictionary: dic) {
+                                    observer.onNext(user)
                                 }
-                            } else {
-                                let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                observer.onError(error)
                             }
+                        } else {
+                            let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
+                            observer.onError(error)
                         }
-                    case .failure(let error):
-                        observer.onError(error)
                     }
+                case .failure(let error):
+                    observer.onError(error)
                 }
+            }
             return Disposables.create()
         }
         

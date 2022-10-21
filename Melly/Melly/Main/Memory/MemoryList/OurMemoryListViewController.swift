@@ -17,8 +17,20 @@ class OurMemoryListViewController: UIViewController {
     
     let vm = MemoryListViewModel.instance
     var isLoading:Bool = false
-    var loadingView:CollectionReusableView?
+    var loadingView:FooterLoadingView?
     var memories:[Memory] = []
+    
+    var isNoData:Bool = false {
+        didSet {
+            if isNoData {
+                noDataView.isHidden = false
+                dataView.isHidden = true
+            } else {
+                noDataView.isHidden = true
+                dataView.isHidden = false
+            }
+        }
+    }
     
     let noDataView = UIView().then {
         $0.isHidden = true
@@ -54,11 +66,8 @@ class OurMemoryListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         bind()
         setUI()
-        
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -71,22 +80,23 @@ extension OurMemoryListViewController {
     
     private func setUI() {
         view.backgroundColor = .white
-        //        view.addSubview(noDataView)
-        //        noDataView.snp.makeConstraints {
-        //            $0.edges.equalToSuperview()
-        //        }
-        //
-        //        noDataView.addSubview(noDataImageView)
-        //        noDataImageView.snp.makeConstraints {
-        //            $0.top.equalToSuperview().offset(106)
-        //            $0.centerX.equalToSuperview()
-        //        }
-        //
-        //        noDataView.addSubview(noDataLB)
-        //        noDataLB.snp.makeConstraints {
-        //            $0.top.equalTo(noDataImageView.snp.bottom).offset(19)
-        //            $0.centerX.equalToSuperview()
-        //        }
+        
+        view.addSubview(noDataView)
+        noDataView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        noDataView.addSubview(noDataImageView)
+        noDataImageView.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(106)
+            $0.centerX.equalToSuperview()
+        }
+        
+        noDataView.addSubview(noDataLB)
+        noDataLB.snp.makeConstraints {
+            $0.top.equalTo(noDataImageView.snp.bottom).offset(19)
+            $0.centerX.equalToSuperview()
+        }
         
         safeArea.addSubview(dataView)
         dataView.snp.makeConstraints {
@@ -118,9 +128,7 @@ extension OurMemoryListViewController {
         dataCV.delegate = self
         dataCV.dataSource = self
         dataCV.register(MemoryListCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
-        let loadingReusableNib = UINib(nibName: "CollectionReusableView", bundle: nil)
-        dataCV.register(loadingReusableNib, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footerCell")
-        
+        dataCV.register(FooterLoadingView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: FooterLoadingView.identifier)
         
     }
     
@@ -132,8 +140,11 @@ extension OurMemoryListViewController {
                     self.memories += value
                     self.dataLB.text = "총 \(self.memories.count)개"
                     self.dataCV.reloadData()
+                    self.isLoading = false
+                    self.isNoData = value.isEmpty ? true : false
                 }
             }).disposed(by: disposeBag)
+        
         
     }
     
@@ -150,9 +161,8 @@ extension OurMemoryListViewController: UICollectionViewDelegate, UICollectionVie
     //collectionView cell 설정
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! MemoryListCollectionViewCell
-        cell.configure(memories[indexPath.row])
+        cell.memory = self.memories[indexPath.row]
         return cell
-        
     }
     
     //collectionView 자체의 레이아웃
@@ -174,19 +184,24 @@ extension OurMemoryListViewController: UICollectionViewDelegate, UICollectionVie
     
     //footer 인디케이터 사이즈 설정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        if isLoading /*|| 서버에서 모든 데이터를 가져왔을 경우*/ {
+        if isLoading || vm.ourMemory.isEnd {
             return CGSize.zero
         } else {
             return CGSize(width: dataCV.bounds.size.width, height: 55)
         }
     }
     
+    //셀 선택시 이동
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let memory = memories[indexPath.row]
+        self.vm.input.ourMemorySelect.accept(memory)
+    }
+    
     //footer(인디케이터) 배경색 등 상세 설정
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionFooter {
-            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "footerCell", for: indexPath) as! CollectionReusableView
+            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: FooterLoadingView.identifier, for: indexPath) as! FooterLoadingView
             loadingView = footerView
-            loadingView?.backgroundColor = .clear
             return footerView
         }
         return UICollectionReusableView()
@@ -209,14 +224,21 @@ extension OurMemoryListViewController: UICollectionViewDelegate, UICollectionVie
         if elementKind == UICollectionView.elementKindSectionFooter {
             self.loadingView?.activityIndicator.stopAnimating()
         }
-        
     }
     
-        func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    //cell이 보일 때 실행하는 메서드
+    //마지막 인덱스 일때 api실행
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        
+        if !vm.ourMemory.isEnd && !self.isLoading && self.memories.count-1 == indexPath.row {
             
+            self.isLoading = true
+            DispatchQueue.global().async {
+                sleep(1)
+                self.vm.input.ourMemoryRefresh.accept(())
+            }
         }
-    
-    
+    }
     
 }
 

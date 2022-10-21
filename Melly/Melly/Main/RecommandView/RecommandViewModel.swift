@@ -71,6 +71,12 @@ class RecommandViewModel {
         
     }
     
+    /**
+     요즘 뜨는 장소와 해당 장소에 메모리를 가져와줌
+     - Parameters:None
+     - Throws: MellyError
+     - Returns:[ItLocation]
+     */
     func getTrendsPlace() -> Observable<[ItLocation]> {
         
         return Observable.create { observer in
@@ -134,6 +140,12 @@ class RecommandViewModel {
         
     }
     
+    /**
+     사용자에게 추천하는 장소와 해당 장소에 메모리를 가져와줌
+     - Parameters:None
+     - Throws: MellyError
+     - Returns:[ItLocation]
+     */
     func getHotPlace() -> Observable<[ItLocation]> {
         
         return Observable.create { observer in
@@ -194,6 +206,13 @@ class RecommandViewModel {
         
     }
     
+    /**
+     추천하는 장소와 핫한 장소를 클릭하면 해당 장소 Model로 반환해줌
+     - Parameters:
+        -placeInfo: PlaceInfo
+     - Throws: MellyError
+     - Returns: Place
+     */
     func getPlace(_ placeInfo: PlaceInfo) -> Observable<Place> {
         
         return Observable.create { observer in

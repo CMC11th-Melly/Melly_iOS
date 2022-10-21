@@ -21,6 +21,9 @@ class SignUpZeroViewController: UIViewController {
         $0.showsHorizontalScrollIndicator = false
         $0.showsVerticalScrollIndicator = false
     }
+    
+    let contentView = UIView()
+    
     let layoutView3 = UIView()
     
     let backBT = BackButton()
@@ -171,7 +174,12 @@ extension SignUpZeroViewController {
             $0.height.equalTo(1)
         }
         
-        layoutView2.addSubview(subOneView)
+        layoutView2.addSubview(contentView)
+        contentView.snp.makeConstraints {
+            $0.width.centerX.top.bottom.equalToSuperview()
+        }
+        
+        contentView.addSubview(subOneView)
         subOneView.snp.makeConstraints {
             $0.top.equalToSuperview().offset(25)
             $0.leading.equalToSuperview().offset(30)
@@ -179,9 +187,9 @@ extension SignUpZeroViewController {
             $0.height.equalTo(34)
         }
         
-        layoutView2.addSubview(subOneTextView)
+        contentView.addSubview(subOneTextView)
         
-        layoutView2.addSubview(subTwoView)
+        contentView.addSubview(subTwoView)
         subTwoView.snp.makeConstraints {
             $0.top.equalTo(subOneView.snp.bottom).offset(16)
             $0.leading.equalToSuperview().offset(30)
@@ -189,9 +197,9 @@ extension SignUpZeroViewController {
             $0.height.equalTo(34)
         }
         
-        layoutView2.addSubview(subTwoTextView)
+        contentView.addSubview(subTwoTextView)
         
-        layoutView2.addSubview(subThreeView)
+        contentView.addSubview(subThreeView)
         subThreeView.snp.makeConstraints {
             $0.top.equalTo(subTwoView.snp.bottom).offset(25)
             $0.leading.equalToSuperview().offset(30)
@@ -199,12 +207,13 @@ extension SignUpZeroViewController {
             $0.height.equalTo(34)
         }
         
-        layoutView2.addSubview(subThreeTextView)
+        contentView.addSubview(subThreeTextView)
         subThreeTextView.snp.makeConstraints {
             $0.top.equalTo(subThreeView.snp.bottom).offset(25)
             $0.leading.equalToSuperview().offset(30)
             $0.trailing.equalTo(safeArea.snp.trailing).offset(-30)
             $0.height.equalTo(122)
+            $0.bottom.equalToSuperview()
         }
         
         
@@ -217,7 +226,6 @@ extension SignUpZeroViewController {
             $0.height.equalTo(56)
         }
         
-        layoutView2.updateContentSize()
         
         
     }
@@ -342,12 +350,13 @@ extension SignUpZeroViewController {
                 } else {
                     self.subThreeView.subOneSlideBT.setImage(UIImage(named: "open_terms"), for: .normal)
                     
-                    UIView.animate(withDuration: 0.5) {
+                    UIView.animate(withDuration: 2, delay: 0, usingSpringWithDamping: 0.2, initialSpringVelocity: 0.2, options: .curveEaseIn) {
                         self.subThreeTextView.snp.remakeConstraints {
                             $0.top.equalTo(self.subThreeView.snp.bottom).offset(16)
                             $0.leading.equalToSuperview().offset(30)
                             $0.trailing.equalTo(self.safeArea.snp.trailing).offset(-30)
                             $0.height.equalTo(122)
+                            $0.bottom.equalToSuperview()
                         }
         
                     }
@@ -370,11 +379,9 @@ extension SignUpZeroViewController {
                 if value {
                     self.allBT.setImage(UIImage(named: "all_select"), for: .normal)
                     self.nextBT.isEnabled = true
-                    self.nextBT.backgroundColor = .orange
                 } else {
                     self.allBT.setImage(UIImage(named: "all_notSelect"), for: .normal)
                     self.nextBT.isEnabled = false
-                    self.nextBT.backgroundColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1)
                 }
             }).disposed(by: disposeBag)
         
@@ -409,13 +416,13 @@ extension SignUpZeroViewController {
                     let vc = SignUpOneViewController(vm: vm)
                     vc.modalTransitionStyle = .crossDissolve
                     vc.modalPresentationStyle = .fullScreen
-                    self.present(vc, animated: true)
+                    self.navigationController?.pushViewController(vc, animated: true)
                 } else {
                     let vm = SignUpTwoViewModel(self.vm.user)
                     let vc = SignUpTwoViewController(vm: vm)
                     vc.modalTransitionStyle = .crossDissolve
                     vc.modalPresentationStyle = .fullScreen
-                    self.present(vc, animated: true)
+                    self.navigationController?.pushViewController(vc, animated: true)
                 }
             }).disposed(by: disposeBag)
         

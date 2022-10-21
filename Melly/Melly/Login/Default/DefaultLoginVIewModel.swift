@@ -68,6 +68,8 @@ class DefaultLoginViewModel {
                 switch event {
                 case .next(let user):
                     User.loginedUser = user
+                    UserDefaults.standard.set(try? PropertyListEncoder().encode(user), forKey: "loginUser")
+                    UserDefaults.standard.set(user.jwtToken, forKey: "token")
                     self.output.loginResponse.accept(nil)
                 case .error(let error):
                     if var mellyError = error as? MellyError {
@@ -85,6 +87,12 @@ class DefaultLoginViewModel {
         
     }
     
+    /**
+     로그인 메서드
+     - Parameters:None
+     - Throws: MellyError
+     - Returns:User
+     */
     func login() -> Observable<User> {
         
         return Observable.create { observer in

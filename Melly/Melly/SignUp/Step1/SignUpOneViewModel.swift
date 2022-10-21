@@ -71,9 +71,15 @@ class SignUpOneViewModel {
             self.output.userValue.accept(self.user)
         }).disposed(by: disposeBag)
         
-        
     }
     
+    /**
+     중복 이메일인지 체크하는 함수
+     - Parameters:
+            -email: String
+     - Throws: None
+     - Returns:Enum<EmailValid>
+     */
     func checkID(_ email: String) -> Observable<EmailValid> {
         
         return Observable.create { observer in

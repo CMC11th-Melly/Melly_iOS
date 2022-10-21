@@ -12,6 +12,14 @@ import Foundation
 
 class MemoryListCollectionViewCell: UICollectionViewCell {
     
+    var memory:Memory? {
+        didSet {
+            if let memory = memory {
+                configure(memory)
+            }
+        }
+    }
+    
     let imgView = UIImageView().then {
         $0.clipsToBounds = true
         $0.backgroundColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1)
@@ -23,7 +31,6 @@ class MemoryListCollectionViewCell: UICollectionViewCell {
         $0.font = UIFont(name: "Pretendard-Bold", size: 14)
         $0.layer.cornerRadius = 12
         $0.backgroundColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 0.4)
-        let inset = UIEdgeInsets(top: 6, left: 16, bottom: 6, right: 16)
         
     }
     
@@ -98,7 +105,7 @@ class MemoryListCollectionViewCell: UICollectionViewCell {
         
     }
     
-    func configure(_ memory: Memory) {
+    private func configure(_ memory: Memory) {
         if memory.memoryImages.count != 0 {
             let url = URL(string: memory.memoryImages[0])!
             imgView.kf.setImage(with: url)
@@ -111,7 +118,13 @@ class MemoryListCollectionViewCell: UICollectionViewCell {
         dateFormatter.dateFormat = "MM월 dd일"
         dateLB.text = dateFormatter.string(from: date)
         titleLB.text = memory.title
-        groupTitleLB.text = memory.groupName
+        
+        if let groupName = memory.groupName {
+            groupTitleLB.text = groupName
+        } else {
+            groupTitleLB.isHidden = true
+        }
+        
         
     }
     

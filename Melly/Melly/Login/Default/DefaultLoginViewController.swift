@@ -80,7 +80,7 @@ class DefaultLoginViewController: UIViewController {
 
 extension DefaultLoginViewController {
     
-    func setUI() {
+    private func setUI() {
         self.view.backgroundColor = .white
         
         safeArea.addSubview(layoutView2)
@@ -171,17 +171,14 @@ extension DefaultLoginViewController {
             $0.trailing.equalToSuperview().offset(-30)
             $0.height.equalTo(56)
         }
-        
-        
-        
     }
     
-    func bind() {
+    private func bind() {
         bindInput()
         bindOutput()
     }
     
-    func bindInput() {
+    private func bindInput() {
         backBT.rx.tap
             .subscribe(onNext: {
                 self.dismiss(animated: true, completion: nil)
@@ -202,16 +199,21 @@ extension DefaultLoginViewController {
             .disposed(by: disposeBag)
     }
     
-    func bindOutput() {
+    private func bindOutput() {
         
         vm.output.emailValid.asDriver(onErrorJustReturn: false).drive(onNext: { valid in
             
             if valid {
                 self.alertView.isHidden = true
                 self.alertView.labelView.text = ""
+                self.emailTf.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
+                self.emailTf.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+                
             } else {
                 self.alertView.isHidden = false
                 self.alertView.labelView.text = "아이디를 정확히 입력해주세요."
+                self.emailTf.layer.borderColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1).cgColor
+                self.emailTf.textColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1)
             }
             
         }).disposed(by: disposeBag)
@@ -222,9 +224,13 @@ extension DefaultLoginViewController {
                 if valid {
                     self.alertView.isHidden = true
                     self.alertView.labelView.text = ""
+                    self.pwTf.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
+                    self.pwTf.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
                 } else {
                     self.alertView.isHidden = false
-                    self.alertView.labelView.text = "비밀번호를 정확히 입력해주세요."
+                    self.alertView.labelView.text = "비밀번호는 8자리 이상입니다."
+                    self.pwTf.layer.borderColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1).cgColor
+                    self.pwTf.textColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1)
                 }
                 
             }).disposed(by: disposeBag)
@@ -235,10 +241,8 @@ extension DefaultLoginViewController {
             .drive(onNext: { valid in
                 if valid {
                     self.loginBT.isEnabled = true
-                    self.loginBT.backgroundColor = .orange
                 } else {
                     self.loginBT.isEnabled = false
-                    self.loginBT.backgroundColor = .gray
                 }
             }).disposed(by: disposeBag)
         
@@ -250,11 +254,7 @@ extension DefaultLoginViewController {
                     self.alertView.isHidden = false
                     self.alertView.labelView.text = error.localizedDescription
                 } else {
-                    print(User.loginedUser)
-                    let vc = ContainerViewController()
-                    vc.modalTransitionStyle = .crossDissolve
-                    vc.modalPresentationStyle = .fullScreen
-                    self.present(vc, animated: true)
+                    self.dismiss(animated: true)
                 }
                 
             }).disposed(by: disposeBag)

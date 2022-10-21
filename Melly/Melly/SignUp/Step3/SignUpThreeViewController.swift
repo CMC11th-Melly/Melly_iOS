@@ -259,7 +259,7 @@ extension SignUpThreeViewController {
         
         backBT.rx.tap
             .subscribe(onNext: {
-                self.dismiss(animated: true)
+                self.navigationController?.popViewController(animated: true)
             }).disposed(by: disposeBag)
         
         
@@ -327,10 +327,7 @@ extension SignUpThreeViewController {
                     //MARK: 에러처리
                     print(value)
                 } else {
-                    let vc = ContainerViewController()
-                    vc.modalTransitionStyle = .crossDissolve
-                    vc.modalPresentationStyle = .fullScreen
-                    self.present(vc, animated: true)
+                    self.dismiss(animated: true)
                 }
                 
             }).disposed(by: disposeBag)

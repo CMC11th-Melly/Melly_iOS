@@ -9,9 +9,14 @@ import Foundation
 import UIKit
 import Then
 import Kingfisher
+import RxSwift
+import RxCocoa
 
 class SideBarViewController: UIViewController {
     
+    private let disposeBag = DisposeBag()
+    
+    let vm = ContainerViewModel.instance
     let contentView = UIView()
     
     let profileImage = UIImageView(image: UIImage(named: "profile")).then {
@@ -112,10 +117,12 @@ class SideBarViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
+        bind()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         setData()
+        vm.input.volumeObserver.accept(())
     }
     
     override func viewDidLayoutSubviews() {
@@ -127,7 +134,7 @@ class SideBarViewController: UIViewController {
 }
 
 extension SideBarViewController {
-    func setUI() {
+    private func setUI() {
         view.backgroundColor = .white
         view.addSubview(contentView)
         
@@ -215,7 +222,7 @@ extension SideBarViewController {
         }
     }
     
-    func setData() {
+    private func setData() {
         if let user = User.loginedUser {
             userNameLb.text = user.nickname
             if let image = user.profileImage {
@@ -225,4 +232,80 @@ extension SideBarViewController {
             
         }
     }
+    
+    private func bind() {
+        bindInput()
+        bindOutput()
+    }
+    
+    private func bindOutput() {
+        
+        vm.output.volumeValue.asDriver(onErrorJustReturn: "")
+            .drive(onNext: { value in
+                self.userSizeLB.text = "\(value) / 3GB"
+            }).disposed(by: disposeBag)
+        
+        
+    }
+    
+    private func bindInput() {
+        
+        myPageBT.rx.tap.subscribe(onNext: {
+            
+            let vc = MyPageViewController()
+            vc.modalTransitionStyle = .crossDissolve
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
+            
+        }).disposed(by: disposeBag)
+        
+        memoryBT.rx.tap.subscribe(onNext: {
+            
+        }).disposed(by: disposeBag)
+        
+        groupBT.rx.tap.subscribe(onNext: {
+            
+        }).disposed(by: disposeBag)
+        
+        scrapBT.rx.tap.subscribe(onNext: {
+            
+        }).disposed(by: disposeBag)
+        
+        noticeBT.rx.tap.subscribe(onNext: {
+            if let url = URL(string: "https://minjuling.notion.site/1aae3484826f4e64a831e623a6a905d6") {
+                UIApplication.shared.open(url)
+            }
+        }).disposed(by: disposeBag)
+        
+        settingBT.rx.tap.subscribe(onNext: {
+            
+        }).disposed(by: disposeBag)
+        
+        termsBT.rx.tap.subscribe(onNext: {
+            if let url = URL(string: "https://minjuling.notion.site/ff86bf42bbec40c4ac8dc8432c24f0c5") {
+                UIApplication.shared.open(url)
+            }
+        }).disposed(by: disposeBag)
+        
+        logoutBT.rx.tap.subscribe(onNext: {
+            
+            let alert = UIAlertController(title: "로그아웃", message: "로그아웃 하시겠습니까?", preferredStyle: .alert)
+            
+            let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+            let confirmAction = UIAlertAction(title: "확인", style: .default) { _ in
+                self.vm.input.logoutObserver.accept(())
+            }
+            
+            alert.addAction(cancelAction)
+            alert.addAction(confirmAction)
+            self.present(alert, animated: true)
+            
+        }).disposed(by: disposeBag)
+        
+    }
+    
+    
+    
+    
+    
 }

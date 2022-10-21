@@ -126,7 +126,7 @@ extension SignUpTwoViewController {
     func bindInput() {
         backBT.rx.tap
             .subscribe(onNext: {
-                self.dismiss(animated: true, completion: nil)
+                self.navigationController?.popViewController(animated: true)
             }).disposed(by: disposeBag)
 
         nameTf.rx.controlEvent([.editingDidEnd])
@@ -149,11 +149,13 @@ extension SignUpTwoViewController {
             case .correct:
                 self.alertView.isHidden = true
                 self.nextBT.isEnabled = true
-                self.nextBT.backgroundColor = .orange
+                self.nameTf.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
+                self.nameTf.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
             default:
                 self.alertView.isHidden = false
                 self.nextBT.isEnabled = false
-                self.nextBT.backgroundColor = .gray
+                self.nameTf.layer.borderColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1).cgColor
+                self.nameTf.textColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1)
             }
 
         }).disposed(by: disposeBag)
@@ -164,7 +166,7 @@ extension SignUpTwoViewController {
                 let vc = SignUpThreeViewController(vm: vm)
                 vc.modalPresentationStyle = .fullScreen
                 vc.modalTransitionStyle = .crossDissolve
-                self.present(vc, animated: true)
+                self.navigationController?.pushViewController(vc, animated: true)
             }).disposed(by: disposeBag)
 
     }

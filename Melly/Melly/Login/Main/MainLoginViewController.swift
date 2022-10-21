@@ -26,10 +26,10 @@ class MainLoginViewController: UIViewController {
     let contentView = UIView()
     
     let welcomeLabel = UILabel().then {
-        let text = "어서오세요,\n소중한 메모리를 담아보세요!"
+        let text = "어서오세요, MELLY에\n소중한 메모리를 담아보세요!"
         let attrString = NSMutableAttributedString(string: text)
         let font = UIFont(name: "Pretendard-Bold", size: 26)!
-        let color = UIColor(red: 0.098, green: 0.122, blue: 0.157, alpha: 1)
+        let color = UIColor(red: 0.059, green: 0.053, blue: 0.363, alpha: 1)
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 5
         attrString.addAttribute(.foregroundColor, value: color, range: NSRange(location: 0, length: text.count))
@@ -42,8 +42,30 @@ class MainLoginViewController: UIViewController {
     
     let logoImageView = UIImageView(image: UIImage(systemName: "bubble.left.and.bubble.right.fill"))
     
-    let loginBT = CustomButton(title: "로그인")
-    let signUpBT = CustomButton(title: "회원가입")
+    let loginBT = UIButton(type: .custom).then {
+        $0.backgroundColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
+        $0.layer.cornerRadius = 12
+        $0.setImage(UIImage(named: "login_lock"), for: .normal)
+        $0.setTitle("이메일로 로그인", for: .normal)
+        $0.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+        $0.imageEdgeInsets = UIEdgeInsets(top: 0, left: -9, bottom: 0, right: 0)
+        $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -9)
+        
+    }
+    
+    let signUpBT = UIButton(type: .custom).then {
+        $0.backgroundColor = .white
+        let string = "이메일로 가입"
+        let attributedString = NSMutableAttributedString(string: string)
+        let font = UIFont(name: "Pretendard-Medium", size: 16)!
+        attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-SemiBold", size: 16)!, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1), range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+        $0.layer.cornerRadius = 12
+        $0.layer.borderWidth = 1
+        $0.layer.borderColor = UIColor(red: 0.274, green: 0.173, blue: 0.9, alpha: 1).cgColor
+        
+    }
     
     let googleLoginBt = UIButton(type: .custom).then {
         $0.setImage(UIImage(named: "googleLogo"), for: .normal)
@@ -67,12 +89,42 @@ class MainLoginViewController: UIViewController {
         bind()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        if let _ = User.loginedUser {
+            if let initialUser = UserDefaults.standard.string(forKey: "initialUser") {
+                if initialUser == "yes" {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        let vc = ResearchLaunchViewController()
+                        let nav = UINavigationController(rootViewController: vc)
+                        nav.modalTransitionStyle = .crossDissolve
+                        nav.modalPresentationStyle = .fullScreen
+                        self.present(vc, animated: true)
+                    }
+                } else {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        let vc = ContainerViewController()
+                        vc.modalTransitionStyle = .crossDissolve
+                        vc.modalPresentationStyle = .fullScreen
+                        self.present(vc, animated: true)
+                    }
+                }
+            } else {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    let vc = ContainerViewController()
+                    vc.modalTransitionStyle = .crossDissolve
+                    vc.modalPresentationStyle = .fullScreen
+                    self.present(vc, animated: true)
+                }
+            }
+        }
+    }
+    
 }
 
 extension MainLoginViewController {
     
-    func setUI() {
-        view.backgroundColor = .white
+    private func setUI() {
+        view.backgroundColor = UIColor(red: 0.961, green: 0.961, blue: 0.961, alpha: 1)
         
         safeArea.addSubview(scrollView)
         scrollView.snp.makeConstraints {
@@ -129,12 +181,12 @@ extension MainLoginViewController {
         
     }
     
-    func bind() {
+    private func bind() {
         bindInput()
         bindOutput()
     }
     
-    func bindInput() {
+    private func bindInput() {
         googleLoginBt.rx.tap
             .map { self }
             .bind(to: vm.input.googleLoginObserver)
@@ -167,23 +219,27 @@ extension MainLoginViewController {
             .subscribe(onNext: {
                 let vm = SignUpZeroViewModel(User())
                 let vc = SignUpZeroViewController(vm: vm)
-                vc.modalTransitionStyle = .crossDissolve
-                vc.modalPresentationStyle = .fullScreen
-                self.present(vc, animated: true)
+                let nav = UINavigationController(rootViewController: vc)
+                nav.isNavigationBarHidden = true
+                nav.modalTransitionStyle = .crossDissolve
+                nav.modalPresentationStyle = .fullScreen
+                self.present(nav, animated: true)
             }).disposed(by: disposeBag)
         
     }
     
-    func bindOutput() {
+    private func bindOutput() {
         vm.output.outputData.asDriver(onErrorJustReturn: (true, User()))
             .drive(onNext: { value in
                 
                 if value.0 {
-                    let vm = SignUpZeroViewModel(value.1)
+                    let vm = SignUpZeroViewModel(User())
                     let vc = SignUpZeroViewController(vm: vm)
-                    vc.modalTransitionStyle = .crossDissolve
-                    vc.modalPresentationStyle = .fullScreen
-                    self.present(vc, animated: true)
+                    let nav = UINavigationController(rootViewController: vc)
+                    nav.isNavigationBarHidden = true
+                    nav.modalTransitionStyle = .crossDissolve
+                    nav.modalPresentationStyle = .fullScreen
+                    self.present(nav, animated: true)
                 } else {
                     User.loginedUser = value.1
                     let vc = ContainerViewController()
@@ -196,6 +252,8 @@ extension MainLoginViewController {
         vm.output.errorData.asDriver(onErrorJustReturn: MellyError(code: 999, msg: "관리자에게 문의하세요."))
             .drive(onNext: { value in
                 let alert = UIAlertController(title: "에러", message: value.msg, preferredStyle: .alert)
+                let cancelAction = UIAlertAction(title: "확인", style: .cancel)
+                alert.addAction(cancelAction)
                 self.present(alert, animated: true)
             }).disposed(by: disposeBag)
     }
@@ -203,28 +261,31 @@ extension MainLoginViewController {
     
 }
 
+//MARK: - 네이버 로그인 Delegate
 extension MainLoginViewController: NaverThirdPartyLoginConnectionDelegate {
     
+    //토큰 유효성 검사뒤 viewModel로 보내줌
     private func getNaverInfo() {
-        
         guard let isValidAccessToken = naverLoginInstance?.isValidAccessTokenExpireTimeNow() else { return }
         if !isValidAccessToken { return }
         guard let accessToken = naverLoginInstance?.accessToken else { return }
         vm.input.naverAppleLoginObserver.accept((accessToken, LoginType.naver))
-        
     }
+    
     
     func oauth20ConnectionDidFinishRequestACTokenWithAuthCode() {
         self.getNaverInfo()
     }
     
     func oauth20ConnectionDidFinishRequestACTokenWithRefreshToken() {
-        print("tap")
+        
     }
+    
     
     func oauth20ConnectionDidFinishDeleteToken() {
         naverLoginInstance?.requestDeleteToken()
     }
+    
     
     func oauth20Connection(_ oauthConnection: NaverThirdPartyLoginConnection!, didFailWithError error: Error!) {
         print("[Error] : ", error.localizedDescription)
@@ -232,8 +293,10 @@ extension MainLoginViewController: NaverThirdPartyLoginConnectionDelegate {
 }
 
 
+//MARK: - 애플 로그인 Delegate
 extension MainLoginViewController: ASAuthorizationControllerDelegate {
     
+    //애플로그인 실행
     func appleLogin() {
         let request = ASAuthorizationAppleIDProvider().createRequest()
         request.requestedScopes = [.fullName, .email]
@@ -243,6 +306,7 @@ extension MainLoginViewController: ASAuthorizationControllerDelegate {
         controller.performRequests()
     }
     
+    //토큰을 정상적으로 발급받으면 viewmodel로 이동
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         if let credential = authorization.credential as? ASAuthorizationAppleIDCredential {
             if let token = String(data: credential.identityToken ?? Data(), encoding: .utf8) {

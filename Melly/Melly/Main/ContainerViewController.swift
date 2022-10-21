@@ -6,11 +6,14 @@
 //
 
 import UIKit
+import RxCocoa
+import RxSwift
 
 class ContainerViewController: UIViewController {
 
    
-    
+    private let disposeBag = DisposeBag()
+    let vm = ContainerViewModel.instance
     private var menuState:MenuState = .closed
     
     let sideBarVC = SideBarViewController()
@@ -20,15 +23,15 @@ class ContainerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
+        bind()
     }
     
 }
 
 extension ContainerViewController {
     
-    func setUI() {
+    private func setUI() {
         view.backgroundColor = .white
-        
         
         addChild(sideBarVC)
         view.addSubview(sideBarVC.view)
@@ -44,10 +47,34 @@ extension ContainerViewController {
         
     }
     
+    private func bind() {
+        
+        vm.output.errorValue.asDriver(onErrorJustReturn: "")
+            .drive(onNext: { value in
+                let alert = UIAlertController(title: "에러", message: value, preferredStyle: .alert)
+                let cancelAction = UIAlertAction(title: "확인", style: .cancel)
+                alert.addAction(cancelAction)
+                self.present(alert, animated: true)
+            }).disposed(by: disposeBag)
+        
+        vm.output.logoutValue
+            .subscribe(onNext: {
+                self.dismiss(animated: true)
+            }).disposed(by: disposeBag)
+        
+    }
+    
 }
 
+//MARK: - Home Custom Delegate
 extension ContainerViewController: HomeViewControllerDelegate {
     
+    /**
+     sidebar를 열고 닫는 함수
+     - Parameters:None
+     - Throws: None
+     - Returns:None
+     */
     func didTapMenuButton() {
         switch menuState {
         case .closed:

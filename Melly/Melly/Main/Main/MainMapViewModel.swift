@@ -35,7 +35,6 @@ class MainMapViewModel {
     
     init() {
         
-        
         input.initMarkerObserver
             .flatMap(createMarker)
             .subscribe({ event in
@@ -103,6 +102,13 @@ class MainMapViewModel {
     }
     
     
+    /**
+     유저가 저장한 메모리들을 장소별로 분류하여 마커로 보여주는 함수
+     - Parameters
+        - filter : GroupFilter(그룹별로 필터 설정)
+     - Throws: MellyError
+     - Returns:[Marker]
+     */
     func createMarker(_ filter: GroupFilter) -> Observable<[Marker]> {
         
         return Observable.create { observer in
@@ -158,6 +164,13 @@ class MainMapViewModel {
         }
     }
     
+    /**
+     마커에 저장된 place 기본키를 이용해 장소 데이터를 가져옴
+     - Parameters
+        - placeID : Int(해당 장소의 id)
+     - Throws: MellyError
+     - Returns:Place
+     */
     func clickMarker(_ placeId: Int) -> Observable<Place> {
         
         return Observable.create { observer in
@@ -176,8 +189,6 @@ class MainMapViewModel {
                         case .success(let data):
                             let decoder = JSONDecoder()
                             
-                            
-                            
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
                                 
                                 if json.message == "메모리 제목으로 장소 검색" {
@@ -188,7 +199,6 @@ class MainMapViewModel {
                                     
                                             observer.onNext(place)
                                         }
-                                        
                                     }
                                 } else {
                                     let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)

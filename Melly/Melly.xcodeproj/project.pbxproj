@@ -12,6 +12,7 @@
 		BF075F8128E52BC500E581E7 /* Marker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF075F8028E52BC500E581E7 /* Marker.swift */; };
 		BF075F8428E52D6B00E581E7 /* MainMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF075F8328E52D6B00E581E7 /* MainMapViewModel.swift */; };
 		BF0A11C928CDCDEB00B06DE1 /* SideBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0A11C828CDCDEB00B06DE1 /* SideBarViewController.swift */; };
+		BF2525BB2900E24E00F4E177 /* FooterLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2525BA2900E24E00F4E177 /* FooterLoadingView.swift */; };
 		BF2814FF28EBC619004F6A31 /* ResearchLaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2814FE28EBC619004F6A31 /* ResearchLaunchViewController.swift */; };
 		BF28150128EBE54A004F6A31 /* ResearchMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF28150028EBE54A004F6A31 /* ResearchMainViewController.swift */; };
 		BF28150328EBF7E7004F6A31 /* ResearchMainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF28150228EBF7E7004F6A31 /* ResearchMainViewModel.swift */; };
@@ -41,8 +42,6 @@
 		BFA3399628C8349B00C1CD4C /* UIKitExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399528C8349B00C1CD4C /* UIKitExtension.swift */; };
 		BFA3399828C836F300C1CD4C /* MainLoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399728C836F300C1CD4C /* MainLoginViewModel.swift */; };
 		BFBEB9E628FFD3E60074E6B7 /* Memory.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBEB9E528FFD3E60074E6B7 /* Memory.swift */; };
-		BFBEB9E928FFF9AF0074E6B7 /* FooterCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBEB9E728FFF9AF0074E6B7 /* FooterCollectionReusableView.swift */; };
-		BFBEB9EA28FFF9AF0074E6B7 /* FooterCollectionReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFBEB9E828FFF9AF0074E6B7 /* FooterCollectionReusableView.xib */; };
 		BFC9367E28F6475600A2C53F /* MemoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC9367D28F6475600A2C53F /* MemoryListViewController.swift */; };
 		BFC9368128F6A44100A2C53F /* OurMemoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC9368028F6A44100A2C53F /* OurMemoryListViewController.swift */; };
 		BFC9368328F6A46C00A2C53F /* OtherMemoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC9368228F6A46C00A2C53F /* OtherMemoryListViewController.swift */; };
@@ -68,6 +67,8 @@
 		BFF84EB028C6D40B00892CB5 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAF28C6D40B00892CB5 /* SplashViewController.swift */; };
 		BFF84EB528C6D40D00892CB5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFF84EB428C6D40D00892CB5 /* Assets.xcassets */; };
 		BFF84EB828C6D40D00892CB5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFF84EB628C6D40D00892CB5 /* LaunchScreen.storyboard */; };
+		BFFD000129025D7100AACD16 /* ContainerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFD000029025D7100AACD16 /* ContainerViewModel.swift */; };
+		BFFDFFFF2902314100AACD16 /* MyPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFDFFFE2902314100AACD16 /* MyPageViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -78,6 +79,7 @@
 		BF075F8028E52BC500E581E7 /* Marker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Marker.swift; sourceTree = "<group>"; };
 		BF075F8328E52D6B00E581E7 /* MainMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMapViewModel.swift; sourceTree = "<group>"; };
 		BF0A11C828CDCDEB00B06DE1 /* SideBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarViewController.swift; sourceTree = "<group>"; };
+		BF2525BA2900E24E00F4E177 /* FooterLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterLoadingView.swift; sourceTree = "<group>"; };
 		BF2814FE28EBC619004F6A31 /* ResearchLaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResearchLaunchViewController.swift; sourceTree = "<group>"; };
 		BF28150028EBE54A004F6A31 /* ResearchMainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResearchMainViewController.swift; sourceTree = "<group>"; };
 		BF28150228EBF7E7004F6A31 /* ResearchMainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResearchMainViewModel.swift; sourceTree = "<group>"; };
@@ -108,8 +110,6 @@
 		BFA3399728C836F300C1CD4C /* MainLoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainLoginViewModel.swift; sourceTree = "<group>"; };
 		BFBDC76828C9A98400DA6330 /* Melly.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Melly.entitlements; sourceTree = "<group>"; };
 		BFBEB9E528FFD3E60074E6B7 /* Memory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Memory.swift; sourceTree = "<group>"; };
-		BFBEB9E728FFF9AF0074E6B7 /* FooterCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterCollectionReusableView.swift; sourceTree = "<group>"; };
-		BFBEB9E828FFF9AF0074E6B7 /* FooterCollectionReusableView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FooterCollectionReusableView.xib; sourceTree = "<group>"; };
 		BFC9367D28F6475600A2C53F /* MemoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryListViewController.swift; sourceTree = "<group>"; };
 		BFC9368028F6A44100A2C53F /* OurMemoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OurMemoryListViewController.swift; sourceTree = "<group>"; };
 		BFC9368228F6A46C00A2C53F /* OtherMemoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherMemoryListViewController.swift; sourceTree = "<group>"; };
@@ -137,6 +137,8 @@
 		BFF84EB428C6D40D00892CB5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BFF84EB728C6D40D00892CB5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BFF84EB928C6D40D00892CB5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BFFD000029025D7100AACD16 /* ContainerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerViewModel.swift; sourceTree = "<group>"; };
+		BFFDFFFE2902314100AACD16 /* MyPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,6 +181,7 @@
 				BFFCF2BC28E3FFAC0011701D /* SideBar */,
 				BF81F96C28E1627F007E5D35 /* RecommandView */,
 				BF5A7F4628D05926000A1B08 /* ContainerViewController.swift */,
+				BFFD000029025D7100AACD16 /* ContainerViewModel.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -295,8 +298,7 @@
 				BFC9368228F6A46C00A2C53F /* OtherMemoryListViewController.swift */,
 				BFC9368428F6A57A00A2C53F /* MemoryListCollectionViewCell.swift */,
 				BFDDED5E28F7EAD5003AE5DA /* MemoryListViewModel.swift */,
-				BFBEB9E728FFF9AF0074E6B7 /* FooterCollectionReusableView.swift */,
-				BFBEB9E828FFF9AF0074E6B7 /* FooterCollectionReusableView.xib */,
+				BF2525BA2900E24E00F4E177 /* FooterLoadingView.swift */,
 			);
 			path = MemoryList;
 			sourceTree = "<group>";
@@ -426,9 +428,18 @@
 		BFFCF2BC28E3FFAC0011701D /* SideBar */ = {
 			isa = PBXGroup;
 			children = (
+				BFFDFFFD2902307100AACD16 /* MyPage */,
 				BF0A11C828CDCDEB00B06DE1 /* SideBarViewController.swift */,
 			);
 			path = SideBar;
+			sourceTree = "<group>";
+		};
+		BFFDFFFD2902307100AACD16 /* MyPage */ = {
+			isa = PBXGroup;
+			children = (
+				BFFDFFFE2902314100AACD16 /* MyPageViewController.swift */,
+			);
+			path = MyPage;
 			sourceTree = "<group>";
 		};
 		D1B2ED6D40475CC2E290BCA9 /* Frameworks */ = {
@@ -503,7 +514,6 @@
 				BF63C38C28DBED2E00A37CF3 /* Pretendard-Regular.otf in Resources */,
 				BF63C38D28DBED2E00A37CF3 /* Pretendard-SemiBold.otf in Resources */,
 				BF63C38B28DBED2E00A37CF3 /* Pretendard-Medium.otf in Resources */,
-				BFBEB9EA28FFF9AF0074E6B7 /* FooterCollectionReusableView.xib in Resources */,
 				BF63C38A28DBED2E00A37CF3 /* Pretendard-Bold.otf in Resources */,
 				BFA3398F28C82A4E00C1CD4C /* GoogleService-Info.plist in Resources */,
 				BFF84EB528C6D40D00892CB5 /* Assets.xcassets in Resources */,
@@ -561,7 +571,6 @@
 			files = (
 				BF8F9AD728D064D700EAA49E /* RecommandViewController.swift in Sources */,
 				BF3121DC28E81C83003916A4 /* RecommandViewModel.swift in Sources */,
-				BFBEB9E928FFF9AF0074E6B7 /* FooterCollectionReusableView.swift in Sources */,
 				BFC9367E28F6475600A2C53F /* MemoryListViewController.swift in Sources */,
 				BF03B8F128FE465400CBAE97 /* Group.swift in Sources */,
 				BF638A8E28DAA96D0031233F /* ResponseData.swift in Sources */,
@@ -572,6 +581,7 @@
 				BF28150328EBF7E7004F6A31 /* ResearchMainViewModel.swift in Sources */,
 				BFD0F7A228EEB40C0053C5CC /* SearchLocation.swift in Sources */,
 				BFDE617628ED59DB0099FF97 /* LocationViewController.swift in Sources */,
+				BFFDFFFF2902314100AACD16 /* MyPageViewController.swift in Sources */,
 				BFF84EB028C6D40B00892CB5 /* SplashViewController.swift in Sources */,
 				BFDA0B3028F54190008FE376 /* PopUpViewModel.swift in Sources */,
 				BF638A9228DAD6050031233F /* FoundationExtension.swift in Sources */,
@@ -594,6 +604,7 @@
 				BFDDED6228F80665003AE5DA /* MemoryWriteViewController.swift in Sources */,
 				BF7E3CCA28D43F0E007C3236 /* DefaultLoginVIewModel.swift in Sources */,
 				BF81F96E28E1732A007E5D35 /* RecommandCollectionViewCell.swift in Sources */,
+				BF2525BB2900E24E00F4E177 /* FooterLoadingView.swift in Sources */,
 				BF2814FF28EBC619004F6A31 /* ResearchLaunchViewController.swift in Sources */,
 				BFD664BA28F93E890036EBF3 /* MemoryWriteViewModel.swift in Sources */,
 				BF5AEB4628EF0C6400537ED5 /* SearchViewModel.swift in Sources */,
@@ -605,6 +616,7 @@
 				BF0A11C928CDCDEB00B06DE1 /* SideBarViewController.swift in Sources */,
 				BF5A7F4728D05926000A1B08 /* ContainerViewController.swift in Sources */,
 				BFDE617128ED13F70099FF97 /* SearchViewController.swift in Sources */,
+				BFFD000129025D7100AACD16 /* ContainerViewModel.swift in Sources */,
 				BFC9368128F6A44100A2C53F /* OurMemoryListViewController.swift in Sources */,
 				BF34F88128D1A60400EA1C16 /* DefaultLoginViewController.swift in Sources */,
 				BFF84EAE28C6D40B00892CB5 /* SceneDelegate.swift in Sources */,
@@ -756,11 +768,16 @@
 				DEVELOPMENT_TEAM = GX47BK9CV6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Melly/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "카메라 권한 허용을 요청합니다.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "사용자의 위치를 받습니다.";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "사용자의 위치를 받습니다.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "사용자의 위치를 받습니다.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "사진 파일 접근 권한 허용을 요청합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -791,11 +808,16 @@
 				DEVELOPMENT_TEAM = GX47BK9CV6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Melly/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "카메라 권한 허용을 요청합니다.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "사용자의 위치를 받습니다.";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "사용자의 위치를 받습니다.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "사용자의 위치를 받습니다.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "사진 파일 접근 권한 허용을 요청합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (

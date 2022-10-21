@@ -18,12 +18,17 @@ import NMapsMap
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
-        FirebaseApp.configure()
-        KakaoSDK.initSDK(appKey: "4b564f25ca3c49eb0e187ce3b612f51d")
-        let instance = NaverThirdPartyLoginConnection.getSharedInstance()
         
+        //파이어베이스 연결(fcm, google 로그인)
+        FirebaseApp.configure()
+        
+        //카카오 로그인 연결
+        KakaoSDK.initSDK(appKey: "4b564f25ca3c49eb0e187ce3b612f51d")
+        
+        //네이버 로그인 연결
+        let instance = NaverThirdPartyLoginConnection.getSharedInstance()
         instance?.isInAppOauthEnable = true
         instance?.isNaverAppOauthEnable = true
         instance?.serviceUrlScheme = "naverlogin"
@@ -31,6 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         instance?.consumerSecret = "SabQEJMs1l"
         instance?.appName = "Melly"
         
+        //네이버 맵 연결
         NMFAuthManager.shared().clientId = "4f8brsaqzw"
         
         return true
@@ -52,11 +58,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
         
+        //카카오 딥링크 연결
         if AuthApi.isKakaoTalkLoginUrl(url) {
             return AuthController.rx.handleOpenUrl(url: url)
         }
         
+        //네이버 딥링크 연결
         let naverInstance = NaverThirdPartyLoginConnection.getSharedInstance().application(app, open: url, options: options)
+        //구글 딥링크 연결
         let googleInstance = GIDSignIn.sharedInstance.handle(url)
         return googleInstance || naverInstance
     }

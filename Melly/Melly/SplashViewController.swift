@@ -6,9 +6,14 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
+import Alamofire
 
 class SplashViewController: UIViewController {
-
+    
+    private let disposeBag = DisposeBag()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -16,19 +21,21 @@ class SplashViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
+        if let data = UserDefaults.standard.value(forKey: "loginUser") as? Data,
+           let token = UserDefaults.standard.string(forKey: "token"){
+            if var user = try? PropertyListDecoder().decode(User.self, from: data) {
+                user.jwtToken = token
+                User.loginedUser = user
+            }
+        }
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            
-//            let place = Place(placeId: 1, position: Position(lat: 1, lng: 1), myMemoryCount: 0, otherMemoryCount: 0, placeCategory: "거리", isScraped: true, placeName: "성수동", recommendType: "가족")
-//            let vm = MemoryWriteViewModel(place)
-//
-//            let vc = MemoryWriteViewController(vm: vm)
-            let vc = OurMemoryListViewController()
+            let vc = MainLoginViewController()
             vc.modalTransitionStyle = .crossDissolve
             vc.modalPresentationStyle = .fullScreen
             self.present(vc, animated: true)
         }
     }
-
-
+    
 }
 

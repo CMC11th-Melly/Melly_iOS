@@ -90,7 +90,7 @@ class RecommandViewController: UIViewController {
 
 extension RecommandViewController {
     
-    func setUI() {
+   private func setUI() {
         
         if let user = User.loginedUser {
             recomandLabel.text = "\(user.nickname)에게 추천하는 메모리 장소"
@@ -155,10 +155,10 @@ extension RecommandViewController {
             $0.bottom.equalToSuperview()
         }
         
-        //mainSV.updateContentSize()
+        
     }
     
-    func setCV() {
+   private func setCV() {
         recommandCV.dataSource = nil
         recommandCV.delegate = nil
         recommandCV.rx.setDelegate(self).disposed(by: disposeBag)
@@ -180,31 +180,44 @@ extension RecommandViewController {
             }.disposed(by: disposeBag)
     }
     
-    func bind() {
+   private func bind() {
         
         vm.output.goToPlace
             .subscribe(onNext: { value in
                 self.delegate?.showLocationPopupView(value)
             }).disposed(by: disposeBag)
+       
+       vm.output.errorValue.asDriver(onErrorJustReturn: "")
+           .drive(onNext: { value in
+               let alert = UIAlertController(title: "에러", message: value, preferredStyle: .alert)
+               let cancelAction = UIAlertAction(title: "확인", style: .cancel)
+               alert.addAction(cancelAction)
+               self.present(alert, animated: true)
+           }).disposed(by: disposeBag)
     }
-    
     
 }
 
+
+//MARK: - UICollectionView Delegate
 extension RecommandViewController: UICollectionViewDelegateFlowLayout {
     
+    //collectionView 자체의 레이아웃
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 33, left: 0, bottom: 0, right: 0)
     }
     
+    //열과 열사이의 간격 설정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 40
     }
     
+    //행과 행사이의 간격 설정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 40
     }
     
+    //셀의 크기 설정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = self.view.frame.width - 60
         return CGSize(width: width, height: 342)

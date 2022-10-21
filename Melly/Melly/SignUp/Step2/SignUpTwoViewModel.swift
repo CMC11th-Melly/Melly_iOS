@@ -45,12 +45,27 @@ class SignUpTwoViewModel {
         
     }
     
+    /**
+    닉네임에 특수문자가 포함되어 있는지 확인
+     - Parameters:
+            -name: String
+     - Throws: None
+     - Returns:Bool
+     */
     func isValidName(_ name: String) -> Bool {
         let nickRegEx = "[가-힣A-Za-z0-9]{2,}"
         let pred = NSPredicate(format:"SELF MATCHES %@", nickRegEx)
         return pred.evaluate(with: name)
     }
     
+    
+    /**
+     중복 닉네임인지 체크하는 함수
+     - Parameters:
+            -name: String
+     - Throws: None
+     - Returns:Enum<EmailValid>
+     */
     func checkName(_ name: String) -> Observable<EmailValid> {
         
         return Observable.create { observer in

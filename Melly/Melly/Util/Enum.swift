@@ -7,7 +7,8 @@
 
 import Foundation
 
-public struct MellyError: Error {
+
+struct MellyError: Error {
     var code: Int
     var msg: String
 }

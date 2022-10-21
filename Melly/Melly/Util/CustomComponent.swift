@@ -13,17 +13,41 @@ import RxCocoa
 
 class CustomButton: UIButton {
     
+    var title:String = ""
+    
+    override var isEnabled: Bool {
+        didSet {
+            if isEnabled {
+                let attributedString = NSMutableAttributedString(string: title)
+                attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-SemiBold", size: 16)!, range: NSRange(location: 0, length: title.count))
+                attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.975, green: 0.979, blue: 0.988, alpha: 1), range: NSRange(location: 0, length: title.count))
+                self.setAttributedTitle(attributedString, for: .normal)
+                self.backgroundColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
+            } else {
+                let attributedString = NSMutableAttributedString(string: title)
+                attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-SemiBold", size: 16)!, range: NSRange(location: 0, length: title.count))
+                attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1), range: NSRange(location: 0, length: title.count))
+                self.setAttributedTitle(attributedString, for: .normal)
+                self.backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
+            }
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
     
     convenience init(title: String) {
         self.init()
-        self.setTitle(title, for: .normal)
+        self.title = title
+        let attributedString = NSMutableAttributedString(string: title)
+        attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-SemiBold", size: 16)!, range: NSRange(location: 0, length: title.count))
+        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1), range: NSRange(location: 0, length: title.count))
+        self.setAttributedTitle(attributedString, for: .normal)
+        self.backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
+        
         self.layer.cornerRadius = 12
-        self.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 16)
-        self.titleLabel?.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
-        self.backgroundColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1)
+        
     }
     
     required init?(coder: NSCoder) {
@@ -34,13 +58,24 @@ class CustomButton: UIButton {
 
 class CustomTextField: UITextField {
     
-    enum CurrentPasswordInputStatus {
-        case invalidPassword
-        case validPassword
+    override var isSecureTextEntry: Bool {
+        didSet {
+            if isSecureTextEntry {
+                rightButton.setImage(UIImage(named: "open_eye"), for: .normal)
+            } else {
+                rightButton.setImage(UIImage(named: "close_eye"), for: .normal)
+            }
+        }
     }
     
+    let rightButton = UIButton(type: .custom).then {
+        $0.contentMode = .scaleAspectFit
+        $0.setImage(UIImage(named: "open_eye"), for: .normal)
+    }
+    
+    
     private let disposeBag = DisposeBag()
-    private var currentPasswordInputStatus: CurrentPasswordInputStatus = .invalidPassword
+    
     let textResetEvent = PublishSubject<Void>()
     
     override init(frame: CGRect) {
@@ -48,9 +83,12 @@ class CustomTextField: UITextField {
         setupViews()
     }
     
+    
+    
     convenience init(title: String, isSecure: Bool = false) {
         self.init()
         self.placeholder = title
+        
         if isSecure {
             self.isSecureTextEntry = true
             let wrapedView = UIView()
@@ -58,9 +96,7 @@ class CustomTextField: UITextField {
                 $0.height.equalTo(self.frame.height)
                 $0.width.equalTo(45)
             }
-            let rightButton = UIButton()
-            rightButton.contentMode = .scaleAspectFit
-            rightButton.setImage(UIImage(named: "open_eye"), for: .normal)
+            
             wrapedView.addSubview(rightButton)
             rightButton.snp.makeConstraints {
                 $0.leading.equalToSuperview()
@@ -69,10 +105,10 @@ class CustomTextField: UITextField {
             rightView = wrapedView
             rightViewMode = .always
             
-            rightButton.rx.tap.asDriver { _ in .never() }
-                .drive(onNext: { [weak self] in
-                    self?.updateCurrentStatus(rightButton)
-                }).disposed(by: disposeBag)
+            
+            rightButton.rx.tap.subscribe(onNext: {
+                self.isSecureTextEntry.toggle()
+            }).disposed(by: disposeBag)
             
         }
     }
@@ -81,27 +117,30 @@ class CustomTextField: UITextField {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func updateCurrentStatus(_ bt: UIButton) {
-        isSecureTextEntry.toggle()
-        if isSecureTextEntry {
-            bt.setImage(UIImage(named: "open_eye"), for: .normal)
-        } else {
-            bt.setImage(UIImage(named: "close_eye"), for: .normal)
-        }
-    }
-    
     private func setupViews() {
-        self.font = UIFont(name: "Pretendard-Regular", size: 14)
+        self.delegate = self
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 21, height: self.frame.height))
         self.leftView = paddingView
         self.leftViewMode = .always
-        self.backgroundColor = .gray
+        self.backgroundColor = .clear
         self.layer.cornerRadius = 12
+        self.layer.borderWidth = 1
+        self.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
+        self.font = UIFont(name: "Pretendard-Regular", size: 16)
+        self.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
     }
     
 }
 
-
+extension CustomTextField: UITextFieldDelegate {
+    
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        textField.layer.borderColor = UIColor(red: 0.274, green: 0.173, blue: 0.9, alpha: 1).cgColor
+        textField.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+        return true
+    }
+    
+}
 
 class BackButton: UIButton {
     
@@ -125,13 +164,13 @@ class AlertLabel: UIView {
     let imageView = UIImageView(image: UIImage(named: "alert"))
     let labelView = UILabel().then {
         $0.text = ""
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.textColor = UIColor(red: 0.975, green: 0.979, blue: 0.988, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Regular", size: 16)
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .gray
+        self.backgroundColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 0.7)
         self.layer.cornerRadius = 12
         
         self.addSubview(imageView)
@@ -166,8 +205,6 @@ class DropMenuButton: UIButton {
     }
 
     let imgView = UIImageView(image: UIImage(named: "dropdown"))
-
-
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -430,6 +467,7 @@ class GroupToggleButton: UIButton {
     }
     
 }
+
 
 class DatePickerButton: UIButton {
     

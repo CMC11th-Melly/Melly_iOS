@@ -185,7 +185,7 @@ extension SignUpOneViewController: UIScrollViewDelegate {
     func bindInput() {
         backBT.rx.tap
             .subscribe(onNext: {
-                self.dismiss(animated: true, completion: nil)
+                self.navigationController?.popViewController(animated: true)
             }).disposed(by: disposeBag)
         
         emailTf.rx.controlEvent([.editingDidEnd])
@@ -215,8 +215,12 @@ extension SignUpOneViewController: UIScrollViewDelegate {
             switch valid {
             case .correct:
                 self.alertView.isHidden = true
+                self.emailTf.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
+                self.emailTf.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
             default:
                 self.alertView.isHidden = false
+                self.emailTf.layer.borderColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1).cgColor
+                self.emailTf.textColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1)
             }
             
         }).disposed(by: disposeBag)
@@ -227,9 +231,13 @@ extension SignUpOneViewController: UIScrollViewDelegate {
                 if valid {
                     self.alertView.isHidden = true
                     self.alertView.labelView.text = ""
+                    self.pwTf.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
+                    self.pwTf.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
                 } else {
                     self.alertView.isHidden = false
                     self.alertView.labelView.text = "비밀번호는 8자리 이상이여야합니다."
+                    self.pwTf.layer.borderColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1).cgColor
+                    self.pwTf.textColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1)
                 }
                 
             }).disposed(by: disposeBag)
@@ -239,9 +247,13 @@ extension SignUpOneViewController: UIScrollViewDelegate {
                 if valid {
                     self.alertView.isHidden = true
                     self.alertView.labelView.text = ""
+                    self.pwCheckTf.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
+                    self.pwCheckTf.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
                 } else {
                     self.alertView.isHidden = false
                     self.alertView.labelView.text = "비밀번호가 일치하지 않습니다."
+                    self.pwCheckTf.layer.borderColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1).cgColor
+                    self.pwCheckTf.textColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1)
                 }
             }).disposed(by: disposeBag)
         
@@ -250,10 +262,8 @@ extension SignUpOneViewController: UIScrollViewDelegate {
             .drive(onNext: { valid in
                 if valid {
                     self.nextBT.isEnabled = true
-                    self.nextBT.backgroundColor = .orange
                 } else {
                     self.nextBT.isEnabled = false
-                    self.nextBT.backgroundColor = .gray
                 }
             }).disposed(by: disposeBag)
         
@@ -263,7 +273,7 @@ extension SignUpOneViewController: UIScrollViewDelegate {
                 let vc = SignUpTwoViewController(vm: vm)
                 vc.modalTransitionStyle = .crossDissolve
                 vc.modalPresentationStyle = .fullScreen
-                self.present(vc, animated: true)
+                self.navigationController?.pushViewController(vc, animated: true)
             }).disposed(by: disposeBag)
         
     }

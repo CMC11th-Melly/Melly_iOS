@@ -10,6 +10,7 @@ import UIKit
 
 extension UIViewController {
     
+    //safeArea 영역의 view를 생성
     var safeArea:UIView {
         get {
             guard let safeArea = self.view.viewWithTag(Int(INT_MAX)) else {
@@ -68,6 +69,7 @@ extension UIImage {
 
 extension UISegmentedControl {
     
+    //기존에 있던 보더라인 삭제
     func removeBorder() {
         let background = UIImage()
         self.setBackgroundImage(background, for: .normal, barMetrics: .default)
@@ -81,7 +83,7 @@ extension UISegmentedControl {
         self.setTitleTextAttributes([NSAttributedString.Key.font: UIFont(name: "Pretendard-Medium", size: 16)!], for: .normal)
     }
     
-    //tap hightLight when select
+    //클릭시 하이라이트 표현
     func highlightSelectedSegment() {
         removeBorder()
         let lineWidth:CGFloat = self.bounds.size.width / CGFloat(self.numberOfSegments)
@@ -97,7 +99,7 @@ extension UISegmentedControl {
         
     }
     
-    //set the position of bottom underline
+    //세그먼트 바텀 라인에 밑줄 만들기
     func underlinePosition() {
         
         guard let underLine = self.viewWithTag(1) else { return }

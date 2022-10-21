@@ -118,22 +118,18 @@ class MainMapViewController: UIViewController {
         setCV()
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
-    }
-    
 }
 
 extension MainMapViewController {
     
-    func setMap() {
+   private func setMap() {
         locationManager = CLLocationManager()
         locationManager.delegate = self
         self.locationManager.requestWhenInUseAuthorization()
         
     }
     
-    func setUI() {
+   private func setUI() {
         navigationController?.isNavigationBarHidden = true
         view.backgroundColor = .white
         
@@ -233,7 +229,7 @@ extension MainMapViewController {
         
     }
     
-    func setCV() {
+   private func setCV() {
         filterCV.dataSource = nil
         filterCV.delegate = nil
         filterCV.rx.setDelegate(self).disposed(by: disposeBag)
@@ -258,12 +254,12 @@ extension MainMapViewController {
         
     }
     
-    func bind() {
+    private func bind() {
         bindInput()
         bindOutput()
     }
     
-    func bindInput() {
+    private func bindInput() {
         
         sideBarBT.rx.tap
             .subscribe(onNext: {
@@ -339,7 +335,7 @@ extension MainMapViewController {
         
     }
     
-    func bindOutput() {
+    private func bindOutput() {
         
         vm.output.markerValue.asDriver(onErrorJustReturn: [])
             .drive(onNext: { markers in
@@ -405,8 +401,16 @@ extension MainMapViewController {
     
 }
 
+//MARK: - PopUp Delegate
 extension MainMapViewController: GoPlaceDelegate {
     
+    /**
+    해당 Place에 메모리 쓰기 뷰를 띄워준다.
+     - Parameters:
+        - place : Place
+     - Throws: None
+     - Returns:None
+     */
     func goToAddMemoryView(_ place: Place) {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
@@ -418,6 +422,13 @@ extension MainMapViewController: GoPlaceDelegate {
         }
     }
     
+    /**
+    해당 Place에 대한 간략한 정보가 있는 popup 뷰를 띄워준다.
+     - Parameters:
+        - place : Place
+     - Throws: None
+     - Returns:None
+     */
     func showLocationPopupView(_ place: Place) {
         let location = NMGLatLng(lat: place.position.lat, lng: place.position.lng)
         let cameraUpdate = NMFCameraUpdate(scrollTo: location)
@@ -436,8 +447,10 @@ extension MainMapViewController: GoPlaceDelegate {
     
 }
 
+//MARK: - 위치 권한 Delegate
 extension MainMapViewController: CLLocationManagerDelegate {
     
+    //권한 변경시 내 위치 아이콘 설정 변경
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         switch status {
         case .restricted, .denied:
@@ -454,13 +467,15 @@ extension MainMapViewController: CLLocationManagerDelegate {
     
 }
 
-
+//MARK: - CollectionView Delegate
 extension MainMapViewController: UICollectionViewDelegateFlowLayout {
     
+    //collectionView 자체 레이아웃
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
     
+    //collectionView 중복 선택시 deseleted 모드로 전환
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
            guard let cell = collectionView.cellForItem(at: indexPath) as? FilterCell else {
                return true
@@ -474,10 +489,12 @@ extension MainMapViewController: UICollectionViewDelegateFlowLayout {
            }
        }
     
+    //행과 행사이의 간격
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 16
     }
     
+    //collectionView Cell의 크기 설정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = (self.view.frame.width - 108) / 4
         return CGSize(width: width, height: 30)
@@ -486,7 +503,7 @@ extension MainMapViewController: UICollectionViewDelegateFlowLayout {
     
 }
 
-
+//MARK: - Recommand Pop Up View Layout
 class CustomFloatingPanelLayout: FloatingPanelLayout{
     var position: FloatingPanelPosition = .bottom
     var initialState: FloatingPanelState = .tip
@@ -501,6 +518,7 @@ class CustomFloatingPanelLayout: FloatingPanelLayout{
     }
 }
 
+//MARK: - Place Pop Up View Layout
 class LocationFloatingPanelLayout: FloatingPanelLayout{
     var position: FloatingPanelPosition = .bottom
     var initialState: FloatingPanelState = .tip
@@ -513,6 +531,7 @@ class LocationFloatingPanelLayout: FloatingPanelLayout{
     }
 }
 
+//MARK: - Scrap Pop Up View Layout
 class ScrapFloatingPanelLayout: FloatingPanelLayout{
     var position: FloatingPanelPosition = .bottom
     var initialState: FloatingPanelState = .full
@@ -527,6 +546,7 @@ class ScrapFloatingPanelLayout: FloatingPanelLayout{
 }
 
 
+//MARK: - Filter Cell
 class FilterCell: UICollectionViewCell {
     
     let titleLb = UILabel().then {
