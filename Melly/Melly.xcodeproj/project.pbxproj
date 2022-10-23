@@ -33,6 +33,9 @@
 		BF63C38B28DBED2E00A37CF3 /* Pretendard-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = BF63C38728DBED2E00A37CF3 /* Pretendard-Medium.otf */; };
 		BF63C38C28DBED2E00A37CF3 /* Pretendard-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = BF63C38828DBED2E00A37CF3 /* Pretendard-Regular.otf */; };
 		BF63C38D28DBED2E00A37CF3 /* Pretendard-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = BF63C38928DBED2E00A37CF3 /* Pretendard-SemiBold.otf */; };
+		BF72FC6529051DE10076AEF8 /* MemoryDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF72FC6429051DE10076AEF8 /* MemoryDetailViewController.swift */; };
+		BF72FC68290527570076AEF8 /* MyMemoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF72FC67290527570076AEF8 /* MyMemoryViewController.swift */; };
+		BF72FC6A29052F790076AEF8 /* MyMemoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF72FC6929052F790076AEF8 /* MyMemoryViewModel.swift */; };
 		BF7CAAFF28DE04B60076CD1A /* AgreeNTermsText.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7CAAFE28DE04B60076CD1A /* AgreeNTermsText.swift */; };
 		BF7E3CCA28D43F0E007C3236 /* DefaultLoginVIewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7E3CC928D43F0E007C3236 /* DefaultLoginVIewModel.swift */; };
 		BF81F96E28E1732A007E5D35 /* RecommandCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81F96D28E1732A007E5D35 /* RecommandCollectionViewCell.swift */; };
@@ -100,6 +103,9 @@
 		BF63C38728DBED2E00A37CF3 /* Pretendard-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.otf"; sourceTree = "<group>"; };
 		BF63C38828DBED2E00A37CF3 /* Pretendard-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.otf"; sourceTree = "<group>"; };
 		BF63C38928DBED2E00A37CF3 /* Pretendard-SemiBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-SemiBold.otf"; sourceTree = "<group>"; };
+		BF72FC6429051DE10076AEF8 /* MemoryDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryDetailViewController.swift; sourceTree = "<group>"; };
+		BF72FC67290527570076AEF8 /* MyMemoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMemoryViewController.swift; sourceTree = "<group>"; };
+		BF72FC6929052F790076AEF8 /* MyMemoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMemoryViewModel.swift; sourceTree = "<group>"; };
 		BF7CAAFE28DE04B60076CD1A /* AgreeNTermsText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgreeNTermsText.swift; sourceTree = "<group>"; };
 		BF7E3CC928D43F0E007C3236 /* DefaultLoginVIewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLoginVIewModel.swift; sourceTree = "<group>"; };
 		BF81F96D28E1732A007E5D35 /* RecommandCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommandCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -250,6 +256,23 @@
 			path = Font;
 			sourceTree = "<group>";
 		};
+		BF72FC6329051DC30076AEF8 /* MemoryDetail */ = {
+			isa = PBXGroup;
+			children = (
+				BF72FC6429051DE10076AEF8 /* MemoryDetailViewController.swift */,
+			);
+			path = MemoryDetail;
+			sourceTree = "<group>";
+		};
+		BF72FC66290521960076AEF8 /* MyMemory */ = {
+			isa = PBXGroup;
+			children = (
+				BF72FC67290527570076AEF8 /* MyMemoryViewController.swift */,
+				BF72FC6929052F790076AEF8 /* MyMemoryViewModel.swift */,
+			);
+			path = MyMemory;
+			sourceTree = "<group>";
+		};
 		BF81F96C28E1627F007E5D35 /* RecommandView */ = {
 			isa = PBXGroup;
 			children = (
@@ -284,6 +307,7 @@
 		BFC9367C28F6473F00A2C53F /* Memory */ = {
 			isa = PBXGroup;
 			children = (
+				BF72FC6329051DC30076AEF8 /* MemoryDetail */,
 				BFDDED6028F8031B003AE5DA /* MemoryWrite */,
 				BFC9367F28F6A43200A2C53F /* MemoryList */,
 			);
@@ -428,6 +452,7 @@
 		BFFCF2BC28E3FFAC0011701D /* SideBar */ = {
 			isa = PBXGroup;
 			children = (
+				BF72FC66290521960076AEF8 /* MyMemory */,
 				BFFDFFFD2902307100AACD16 /* MyPage */,
 				BF0A11C828CDCDEB00B06DE1 /* SideBarViewController.swift */,
 			);
@@ -569,10 +594,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF72FC6529051DE10076AEF8 /* MemoryDetailViewController.swift in Sources */,
 				BF8F9AD728D064D700EAA49E /* RecommandViewController.swift in Sources */,
 				BF3121DC28E81C83003916A4 /* RecommandViewModel.swift in Sources */,
 				BFC9367E28F6475600A2C53F /* MemoryListViewController.swift in Sources */,
 				BF03B8F128FE465400CBAE97 /* Group.swift in Sources */,
+				BF72FC68290527570076AEF8 /* MyMemoryViewController.swift in Sources */,
 				BF638A8E28DAA96D0031233F /* ResponseData.swift in Sources */,
 				BFC9368328F6A46C00A2C53F /* OtherMemoryListViewController.swift in Sources */,
 				BFD6C57628D7373F0092A6E5 /* SignUpTwoViewController.swift in Sources */,
@@ -588,6 +615,7 @@
 				BFD6C57428D733260092A6E5 /* SignUpTwoViewModel.swift in Sources */,
 				BF638A9528DADFD10031233F /* Enum.swift in Sources */,
 				BFA3399828C836F300C1CD4C /* MainLoginViewModel.swift in Sources */,
+				BF72FC6A29052F790076AEF8 /* MyMemoryViewModel.swift in Sources */,
 				BF28150128EBE54A004F6A31 /* ResearchMainViewController.swift in Sources */,
 				BFDC1BF928D8096D005ADC6A /* SignUpThreeViewModel.swift in Sources */,
 				BFDA0B2C28F533E0008FE376 /* ScrapViewController.swift in Sources */,
