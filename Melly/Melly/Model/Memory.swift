@@ -9,7 +9,7 @@ import Foundation
 
 struct Memory:Codable {
     let memoryId: Int
-    let memoryImages:[String]
+    let memoryImages:[Image]
     let title:String
     let content:String
     let groupName:String?
@@ -17,6 +17,13 @@ struct Memory:Codable {
     let visitedDate:String
     let stars:Int
     let keyword:String
+    let placeId:Int
+    let placeName:String
+}
+
+struct Image:Codable {
+    let id:Int
+    let memoryImage:String
 }
 
 struct MemoryData:Codable {

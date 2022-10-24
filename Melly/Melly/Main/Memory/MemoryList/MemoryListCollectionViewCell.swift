@@ -107,7 +107,7 @@ class MemoryListCollectionViewCell: UICollectionViewCell {
     
     private func configure(_ memory: Memory) {
         if memory.memoryImages.count != 0 {
-            let url = URL(string: memory.memoryImages[0])!
+            let url = URL(string: memory.memoryImages[0].memoryImage)!
             imgView.kf.setImage(with: url)
             imageCountLB.text = "\(memory.memoryImages.count)"
         }

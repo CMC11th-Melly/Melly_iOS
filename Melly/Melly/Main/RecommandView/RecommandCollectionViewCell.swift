@@ -182,7 +182,7 @@ class RecommandCollectionViewCell: UICollectionViewCell {
         locationCategoryLB.text = itLocation.placeInfo.placeCategory
         locationLB.text = itLocation.placeInfo.placeName
         
-        let url = URL(string: itLocation.memoryInfo[0].memoryImages[0])!
+        let url = URL(string: itLocation.memoryInfo[0].memoryImages[0].memoryImage)!
         bubbleImageView.kf.setImage(with: url)
         bubbleTitleLB.text = itLocation.memoryInfo[0].title
         bubbleContentLB.text = itLocation.memoryInfo[0].content
