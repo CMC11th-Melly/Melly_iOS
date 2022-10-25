@@ -71,5 +71,40 @@ extension String {
             return String(format: "%.2f", size) + measure
         }
     }
+    
+    static func getGenderValue(_ value: String) -> String {
+        
+        if value == "MALE" {
+            return "남성"
+        } else if value == "FEMALE" {
+            return "여성"
+        } else {
+            return ""
+        }
+        
+    }
+    
+    static func getAgeValue(_ value: String) -> String {
+        
+        switch value {
+        case "ONE":
+            return "10대"
+        case "TWO":
+            return "20대"
+        case "THREE":
+            return "30대"
+        case "FOUR":
+            return "40대"
+        case "FIVE":
+            return "50대"
+        case "SIX":
+            return "60대"
+        case "SEVEN":
+            return "70대 이상"
+        default:
+            return ""
+        }
+        
+    }
 }
 

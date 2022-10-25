@@ -8,10 +8,12 @@
 import UIKit
 import RxCocoa
 import RxSwift
+import Kingfisher
 
 class MyProfileViewController: UIViewController {
 
     private let disposeBag = DisposeBag()
+    let vm = MyPageViewModel.instance
     let backBT = BackButton()
     let titleLB = UILabel().then {
         $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
@@ -27,7 +29,11 @@ class MyProfileViewController: UIViewController {
         $0.setAttributedTitle(attributedString, for: .normal)
     }
     
-    let profileImgView = UIImageView()
+    let profileImgView = UIImageView().then {
+        $0.clipsToBounds = true
+        $0.layer.cornerRadius = 22
+        $0.image = UIImage(named: "profile")
+    }
     
     let separator = UIView().then {
         $0.backgroundColor = UIColor(red: 0.975, green: 0.979, blue: 0.988, alpha: 1)
@@ -72,6 +78,11 @@ class MyProfileViewController: UIViewController {
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
     }
     
+    let alertLabel = AlertLabel().then {
+        $0.isHidden = true
+        $0.labelView.text = "프로필 수정 완료"
+    }
+    
     
     
     override func viewDidLoad() {
@@ -81,6 +92,9 @@ class MyProfileViewController: UIViewController {
         bind()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        setData()
+    }
 
     
 
@@ -89,6 +103,8 @@ class MyProfileViewController: UIViewController {
 extension MyProfileViewController {
     
     private func setUI() {
+        view.backgroundColor = .white
+        
         safeArea.addSubview(backBT)
         backBT.snp.makeConstraints {
             $0.top.equalToSuperview().offset(11)
@@ -163,6 +179,15 @@ extension MyProfileViewController {
             $0.leading.equalTo(ageLB.snp.trailing).offset(19)
         }
         
+        view.addSubview(alertLabel)
+        alertLabel.snp.makeConstraints {
+            $0.bottom.equalToSuperview().offset(-45)
+            $0.leading.equalToSuperview().offset(30)
+            $0.trailing.equalToSuperview().offset(-30)
+            $0.height.equalTo(56)
+        }
+        
+        
         
     }
     
@@ -181,7 +206,32 @@ extension MyProfileViewController {
                 self.present(vc, animated: true)
             }).disposed(by: disposeBag)
         
+        vm.output.successValue.asDriver(onErrorJustReturn: ())
+            .drive(onNext: {
+                self.alertLabel.isHidden = false
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    UIView.animate(withDuration: 1.5) {
+                        self.alertLabel.isHidden = true
+                    }
+                }
+            }).disposed(by: disposeBag)
+        
     }
     
+    private func setData() {
+        if let user = User.loginedUser {
+            
+            if let image = user.profileImage {
+                let url = URL(string: image)!
+                profileImgView.kf.setImage(with: url)
+            }
+            
+            nameValueLB.text = user.nickname
+            genderValueLB.text = String.getGenderValue(user.gender)
+            ageValueLB.text = String.getAgeValue(user.ageGroup)
+            
+        }
+    }
     
 }

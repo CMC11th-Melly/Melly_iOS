@@ -7,9 +7,11 @@
 
 import Foundation
 
-struct User: Codable, Identifiable {
+struct User: Codable, Identifiable, Equatable {
     
     static var loginedUser:User?
+    
+    
     
     enum Codingkeys: String, CodingKey {
         case uid
