@@ -26,6 +26,7 @@ class MyPageViewModel {
     
     
     struct Input {
+        let volumeObserver = PublishRelay<Void>()
         let profileImgObserver = PublishRelay<UIImage?>()
         let genderObserver = PublishRelay<String>()
         let ageObserver = PublishRelay<String>()
@@ -36,6 +37,7 @@ class MyPageViewModel {
         let imageValue = PublishRelay<UIImage?>()
         let errorValue = PublishRelay<String>()
         let successValue = PublishRelay<Void>()
+        let volumeValue = PublishRelay<Int>()
     }
     
     init() {
@@ -90,6 +92,24 @@ class MyPageViewModel {
                 }
             }).disposed(by: disposeBag)
         
+        input.volumeObserver
+            .flatMap(getUserVolume)
+            .subscribe({event in
+                switch event {
+                case .next(let value):
+                    self.output.volumeValue.accept(value)
+                case .error(let error):
+                    if let mellyError = error as? MellyError {
+                        if mellyError.msg == "" {
+                            self.output.errorValue.accept(error.localizedDescription)
+                        } else {
+                            self.output.errorValue.accept(mellyError.msg)
+                        }
+                    }
+                case .completed:
+                    break
+                }
+            }).disposed(by: disposeBag)
         
     }
     
@@ -157,6 +177,63 @@ class MyPageViewModel {
                     
                 }
                 
+                
+            }
+            
+            return Disposables.create()
+        }
+        
+    }
+    
+    /**
+     유저의 데이터 용량을 가져오는 함수
+     - Parameters:None
+     - Throws: MellyError
+     - Returns:Int(현재 사용량 바이트 단위)
+     */
+    func getUserVolume() -> Observable<Int> {
+        
+        return Observable.create { observer in
+            
+            if let user = User.loginedUser {
+                
+                let header:HTTPHeaders = [
+                    "Connection":"keep-alive",
+                    "Content-Type":"application/json",
+                    "Authorization" : "Bearer \(user.jwtToken)"
+                    ]
+                
+                AF.request("https://api.melly.kr/api/user/volume", method: .get, headers: header)
+                    .responseData { response in
+                        switch response.result {
+                        case .success(let data):
+                            
+                            let decoder = JSONDecoder()
+                            if let json = try? decoder.decode(ResponseData.self, from: data) {
+                            
+                                if json.message == "유저가 저장한 사진 총 용량" {
+                                    
+                                    if let volume = json.data?["volume"] as? Int {
+                                        observer.onNext(volume)
+                                    }
+                                   
+                                } else {
+                                    let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
+                                    observer.onError(error)
+                                }
+                                
+                            } else {
+                                let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
+                                observer.onError(error)
+                            }
+                            
+                            
+                        case .failure(let error):
+                            observer.onError(error)
+                        }
+                    }
+                
+            } else {
                 
             }
             

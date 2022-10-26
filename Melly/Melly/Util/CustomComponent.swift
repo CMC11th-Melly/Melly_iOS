@@ -10,6 +10,7 @@ import UIKit
 import Then
 import RxSwift
 import RxCocoa
+import Kingfisher
 
 class CustomButton: UIButton {
     
@@ -522,6 +523,175 @@ class DatePickerButton: UIButton {
         textLB.text = dateFormatter.string(from: date)
     }
     
+    
+    
+}
+
+
+class DynamicHeightCollectionView: UICollectionView {
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        if !__CGSizeEqualToSize(bounds.size, self.intrinsicContentSize) {
+            self.invalidateIntrinsicContentSize()
+        }
+    }
+    
+    override var intrinsicContentSize: CGSize {
+        return contentSize
+    }
+}
+
+class CommentView: UIView {
+    
+    var comment:Comment
+    
+    lazy var profileImageView = UIImageView(image: UIImage(named: "profile")).then {
+        $0.clipsToBounds = true
+        $0.layer.cornerRadius = 7.2
+        if let image = comment.profileImage {
+            let url = URL(string: image)!
+            $0.kf.setImage(with: url)
+        }
+        
+    }
+    
+    lazy var nameLB = UILabel().then {
+        $0.textColor = UIColor(red: 0.4, green: 0.435, blue: 0.486, alpha: 1)
+        $0.text = comment.nickname
+        $0.font = UIFont(name: "Pretendard-SemiBold", size: 14)
+    }
+    
+    let editBT = UIButton(type: .custom).then {
+        $0.setImage(UIImage(named: "memory_dot"), for: .normal)
+    }
+    
+    lazy var commentLB = UILabel().then {
+        $0.textColor = UIColor(red: 0.472, green: 0.503, blue: 0.55, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-Medium", size: 13)
+        $0.text = comment.content
+        $0.numberOfLines = 0
+    }
+    
+    lazy var dateLb = UILabel().then {
+        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMddHHmm"
+        let date = dateFormatter.date(from: comment.createdDate) ?? Date()
+        $0.text = date.timeAgoDisplay()
+        $0.font = UIFont(name: "Pretendard-Regular", size: 12)
+    }
+    
+    let stOne = UIView().then {
+        $0.backgroundColor = UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
+    }
+    
+    lazy var likeBT = UIButton(type: .custom).then {
+        let imgView = UIImageView(image: UIImage(named: "memory_heart"))
+        let textLB = UILabel().then {
+            $0.text = comment.likeCount == 0 ? "좋아요" : "좋아요 \(comment.likeCount)개"
+            $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+            $0.font = UIFont(name: "Pretendard-Regular", size: 12)
+        }
+        $0.addSubview(imgView)
+        
+        imgView.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(4)
+            $0.centerY.equalToSuperview()
+        }
+        
+        textLB.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.leading.equalTo(imgView.snp.trailing).offset(3)
+            $0.trailing.equalToSuperview().offset(-4)
+        }
+        
+    }
+    
+    
+    let stTwo = UIView().then {
+        $0.backgroundColor = UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
+    }
+    
+    let reCommentBT = UIButton(type: .custom).then {
+        let string = "답글달기"
+        let attributedString = NSMutableAttributedString(string: string)
+        let font =  UIFont(name: "Pretendard-Regular", size: 12)!
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1), range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+    }
+    
+    
+    init(frame: CGRect, comment: Comment) {
+        self.comment = comment
+        super.init(frame: frame)
+        setUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setUI() {
+        addSubview(profileImageView)
+        profileImageView.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(11)
+            $0.leading.equalToSuperview().offset(11)
+        }
+        
+        addSubview(nameLB)
+        nameLB.snp.makeConstraints {
+            $0.leading.equalTo(profileImageView.snp.trailing).offset(15)
+            $0.top.equalToSuperview().offset(10)
+        }
+        
+        addSubview(editBT)
+        editBT.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(13)
+            $0.trailing.equalToSuperview().offset(-10)
+        }
+        
+        addSubview(commentLB)
+        commentLB.snp.makeConstraints {
+            $0.top.equalTo(nameLB.snp.bottom).offset(3)
+            $0.leading.equalTo(profileImageView.snp.trailing).offset(15)
+        }
+        
+        addSubview(dateLb)
+        dateLb.snp.makeConstraints {
+            $0.top.equalTo(commentLB.snp.bottom).offset(6)
+            $0.leading.equalTo(profileImageView.snp.trailing).offset(15)
+        }
+        
+        addSubview(stOne)
+        stOne.snp.makeConstraints {
+            $0.top.equalTo(commentLB.snp.bottom).offset(10)
+            $0.leading.equalTo(dateLb.snp.trailing).offset(8)
+            $0.width.equalTo(1)
+            $0.height.equalTo(12)
+        }
+        
+        addSubview(likeBT)
+        likeBT.snp.makeConstraints {
+            $0.top.equalTo(commentLB.snp.bottom).offset(6)
+            $0.leading.equalTo(stOne.snp.trailing).offset(4)
+        }
+        
+        addSubview(stTwo)
+        stTwo.snp.makeConstraints {
+            $0.top.equalTo(commentLB.snp.bottom).offset(10)
+            $0.leading.equalTo(likeBT.snp.trailing).offset(3.5)
+            $0.width.equalTo(1)
+            $0.height.equalTo(12)
+        }
+        
+        addSubview(reCommentBT)
+        reCommentBT.snp.makeConstraints {
+            $0.top.equalTo(commentLB.snp.bottom).offset(6)
+            $0.leading.equalTo(stTwo.snp.trailing).offset(8)
+        }
+        
+    }
     
     
 }

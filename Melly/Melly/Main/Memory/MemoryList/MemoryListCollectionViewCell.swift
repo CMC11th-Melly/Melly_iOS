@@ -113,7 +113,7 @@ class MemoryListCollectionViewCell: UICollectionViewCell {
         }
         
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyyMMdd"
+        dateFormatter.dateFormat = "yyyyMMddHHmm"
         let date = dateFormatter.date(from: memory.visitedDate)!
         dateFormatter.dateFormat = "MM월 dd일"
         dateLB.text = dateFormatter.string(from: date)

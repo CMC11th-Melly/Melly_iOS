@@ -40,15 +40,15 @@ class MemoryListViewModel {
     
     struct Input {
         let ourMemoryRefresh = PublishRelay<Void>()
-        let ourMemorySelect = PublishRelay<Memory>()
+        let memorySelect = PublishRelay<Memory>()
         let otherMemoryRefresh = PublishRelay<Void>()
-        let otherMemorySelect = PublishRelay<Memory>()
     }
     
     struct Output {
         let ourMemoryValue = PublishRelay<[Memory]>()
         let otherMemoryValue = PublishRelay<[Memory]>()
         let errorValue = PublishRelay<String>()
+        let selectMemoryValue = PublishRelay<Memory>()
     }
     
     init() {
@@ -91,7 +91,9 @@ class MemoryListViewModel {
                 }
             }).disposed(by: disposeBag)
         
-        
+        input.memorySelect.subscribe(onNext: { value in
+            self.output.selectMemoryValue.accept(value)
+        }).disposed(by: disposeBag)
         
     }
     
@@ -127,7 +129,7 @@ class MemoryListViewModel {
                             
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                
+                                print(json)
                                 if json.message == "내가 작성한 메모리 전체 조회" {
                                     
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data! as Any) {

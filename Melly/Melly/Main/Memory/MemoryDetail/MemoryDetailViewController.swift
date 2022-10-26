@@ -129,9 +129,35 @@ class MemoryDetailViewController: UIViewController {
         $0.numberOfLines = 0
     }
     
+    let keywordCV:UICollectionView = {
+        let flowLayout = UICollectionViewFlowLayout()
+        flowLayout.scrollDirection = UICollectionView.ScrollDirection.horizontal
+        let collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: flowLayout)
+        collectionView.isScrollEnabled = true
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.showsHorizontalScrollIndicator = false
+        return collectionView
+    }()
+    
     let separatorFour = UIView().then {
         $0.backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
     }
+    
+    let commentCountLB = UILabel().then {
+        $0.text = "총 0개의 댓글"
+        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-Regular", size: 12)
+    }
+    
+    let commentCV:DynamicHeightCollectionView = {
+        let flowLayout = UICollectionViewFlowLayout()
+        let collectionView = DynamicHeightCollectionView(frame: CGRect.zero, collectionViewLayout: flowLayout)
+        collectionView.isScrollEnabled = true
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.showsHorizontalScrollIndicator = false
+        return collectionView
+    }()
+    
     
     init(vm: MemoryDetailViewModel) {
         self.vm = vm
@@ -154,7 +180,7 @@ class MemoryDetailViewController: UIViewController {
 extension MemoryDetailViewController {
     
     private func setUI() {
-        
+        view.backgroundColor = .white
         safeArea.backgroundColor = .clear
         view.addSubview(scrollView)
         scrollView.snp.makeConstraints {
@@ -262,7 +288,19 @@ extension MemoryDetailViewController {
             $0.trailing.equalToSuperview().offset(-30)
         }
         
+        contentView.addSubview(keywordCV)
+        keywordCV.snp.makeConstraints {
+            $0.top.equalTo(contentLB.snp.bottom).offset(39)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(40)
+        }
         
+        contentView.addSubview(separatorFour)
+        separatorFour.snp.makeConstraints {
+            $0.top.equalTo(keywordCV.snp.bottom).offset(33)
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(12)
+        }
         
         
     }
@@ -274,6 +312,13 @@ extension MemoryDetailViewController {
     
     private func bindInput() {
         
+        backBT.rx.tap.subscribe(onNext: {
+            self.dismiss(animated: true)
+        }).disposed(by: disposeBag)
+        
+        
+        
+        
     }
     
     private func bindOutput() {
@@ -282,19 +327,41 @@ extension MemoryDetailViewController {
     
 }
 
+//MARK: - CollectionView delegate
+extension MemoryDetailViewController: UICollectionViewDelegateFlowLayout {
+    
+    //collectionView자체 latout
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
+    }
+    
+    //행과 행사이의 간격 설정
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 15
+    }
+    
+    //셀 사이즈 설정
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return KeyWordCell.fittingSize(availableHeight: 33, name: vm.memory.keyword[indexPath.item])
+    }
+}
+
 
 extension MemoryDetailViewController: UIScrollViewDelegate {
     
     private func addContentScrollView() {
-        
-        for i in 0..<vm.memory.memoryImages.count {
-            let imageView = UIImageView()
-            let xPos = imagePageView.frame.width * CGFloat(i)
-            imageView.frame = CGRect(x: xPos, y: 0, width: imagePageView.bounds.width, height: imagePageView.bounds.height)
-            let url = URL(string: vm.memory.memoryImages[0].memoryImage)!
-            imageView.kf.setImage(with: url)
-            imagePageView.addSubview(imageView)
-            imagePageView.contentSize.width = imageView.frame.width * CGFloat(i + 1)
+        DispatchQueue.main.async {
+            for i in 0..<self.vm.memory.memoryImages.count {
+                let imageView = UIImageView()
+                let xPos = self.view.frame.width * CGFloat(i)
+                imageView.frame = CGRect(x: xPos, y: 0, width: self.imagePageView.bounds.width, height: self.imagePageView.bounds.height)
+                let url = URL(string: self.vm.memory.memoryImages[i].memoryImage)!
+                
+                imageView.kf.setImage(with: url)
+                self.imagePageView.addSubview(imageView)
+                self.imagePageView.contentSize.width = imageView.frame.width * CGFloat(i + 1)
+            }
+            self.viewDidLayoutSubviews()
         }
         
     }
@@ -303,7 +370,5 @@ extension MemoryDetailViewController: UIScrollViewDelegate {
         let value = imagePageView.contentOffset.x/imagePageView.frame.size.width
         imageCountLB.text = "\(Int(round(value)))/\(vm.memory.memoryImages.count)"
     }
-    
-    
     
 }

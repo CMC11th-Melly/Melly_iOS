@@ -42,13 +42,13 @@ extension String {
     
     
     /**
-    용량을 단위별로 바꿔주는 함수
+     용량을 단위별로 바꿔주는 함수
      - Parameters:
-            -fileSize: Int
+     -fileSize: Int
      - Throws: None
      - Returns:String(ex: 10GB)
      */
-   static func formatSize(fileSize: Int) -> String{
+    static func formatSize(fileSize: Int) -> String{
         var measure = "bytes"
         var size = Double(fileSize)
         
@@ -108,3 +108,44 @@ extension String {
     }
 }
 
+
+extension Date {
+    func timeAgoDisplay() -> String {
+        let secondsAgo = Int(Date().timeIntervalSince(self))
+        
+        let minute = 60
+        let hour = 60 * minute
+        let day = 24 * hour
+        let week = 7 * day
+        let month = 4 * week
+        let year = 12 * month
+        
+        let quotient: Int
+        let unit: String
+        if secondsAgo < minute {
+            quotient = secondsAgo
+            unit = "초"
+        } else if secondsAgo < hour {
+            quotient = secondsAgo / minute
+            unit = "뷴"
+        } else if secondsAgo < day {
+            quotient = secondsAgo / hour
+            unit = "시간"
+        } else if secondsAgo < week {
+            quotient = secondsAgo / day
+            unit = "일"
+        } else if secondsAgo < month {
+            quotient = secondsAgo / week
+            unit = "주"
+        } else if secondsAgo < year{
+            quotient = secondsAgo / month
+            unit = "달"
+        } else {
+            quotient = secondsAgo / year
+            unit = "년"
+        }
+        
+        return "\(quotient)\(unit) ago"
+        
+    }
+}

@@ -211,7 +211,7 @@ extension OtherMemoryListViewController: UICollectionViewDelegate, UICollectionV
     //셀 선택시 이동
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let memory = memories[indexPath.row]
-        self.vm.input.otherMemorySelect.accept(memory)
+        self.vm.input.memorySelect.accept(memory)
     }
     
     

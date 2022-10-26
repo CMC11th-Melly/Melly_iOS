@@ -70,6 +70,9 @@
 		BFDE617128ED13F70099FF97 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE617028ED13F70099FF97 /* SearchViewController.swift */; };
 		BFDE617328ED179F0099FF97 /* ResearchResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE617228ED179F0099FF97 /* ResearchResultViewController.swift */; };
 		BFDE617628ED59DB0099FF97 /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE617528ED59DB0099FF97 /* LocationViewController.swift */; };
+		BFF661042908C6F9003E998B /* CommentHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF661032908C6F9003E998B /* CommentHeaderView.swift */; };
+		BFF6610829091FC4003E998B /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF6610729091FC4003E998B /* Comment.swift */; };
+		BFF6610A290920EC003E998B /* CommentFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF66109290920EC003E998B /* CommentFooterView.swift */; };
 		BFF84EAC28C6D40B00892CB5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAB28C6D40B00892CB5 /* AppDelegate.swift */; };
 		BFF84EAE28C6D40B00892CB5 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAD28C6D40B00892CB5 /* SceneDelegate.swift */; };
 		BFF84EB028C6D40B00892CB5 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF84EAF28C6D40B00892CB5 /* SplashViewController.swift */; };
@@ -146,6 +149,9 @@
 		BFDE617028ED13F70099FF97 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		BFDE617228ED179F0099FF97 /* ResearchResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResearchResultViewController.swift; sourceTree = "<group>"; };
 		BFDE617528ED59DB0099FF97 /* LocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
+		BFF661032908C6F9003E998B /* CommentHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentHeaderView.swift; sourceTree = "<group>"; };
+		BFF6610729091FC4003E998B /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
+		BFF66109290920EC003E998B /* CommentFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentFooterView.swift; sourceTree = "<group>"; };
 		BFF84EA828C6D40B00892CB5 /* Melly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Melly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFF84EAB28C6D40B00892CB5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFF84EAD28C6D40B00892CB5 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -190,7 +196,7 @@
 		BF0A11C728CDCDA600B06DE1 /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				BFC9AFA92907B81600BA2043 /* Commend */,
+				BFC9AFA92907B81600BA2043 /* Comment */,
 				BFC9367C28F6473F00A2C53F /* Memory */,
 				BFDE617428ED576F0099FF97 /* PopUpView */,
 				BFDE616F28ED13EA0099FF97 /* Search */,
@@ -225,6 +231,7 @@
 				BFD0F7A128EEB40C0053C5CC /* SearchLocation.swift */,
 				BF03B8F028FE465400CBAE97 /* Group.swift */,
 				BFBEB9E528FFD3E60074E6B7 /* Memory.swift */,
+				BFF6610729091FC4003E998B /* Comment.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -339,12 +346,14 @@
 			path = MemoryList;
 			sourceTree = "<group>";
 		};
-		BFC9AFA92907B81600BA2043 /* Commend */ = {
+		BFC9AFA92907B81600BA2043 /* Comment */ = {
 			isa = PBXGroup;
 			children = (
+				BFF661032908C6F9003E998B /* CommentHeaderView.swift */,
 				BFC9AFAA2907B8C700BA2043 /* CommentCell.swift */,
+				BFF66109290920EC003E998B /* CommentFooterView.swift */,
 			);
-			path = Commend;
+			path = Comment;
 			sourceTree = "<group>";
 		};
 		BFD6C56B28D723520092A6E5 /* SignUp */ = {
@@ -642,6 +651,8 @@
 				BFA3399828C836F300C1CD4C /* MainLoginViewModel.swift in Sources */,
 				BF72FC6A29052F790076AEF8 /* MyMemoryViewModel.swift in Sources */,
 				BF72FC6E290541150076AEF8 /* ProfileEditViewController.swift in Sources */,
+				BFF6610A290920EC003E998B /* CommentFooterView.swift in Sources */,
+				BFF661042908C6F9003E998B /* CommentHeaderView.swift in Sources */,
 				BF28150128EBE54A004F6A31 /* ResearchMainViewController.swift in Sources */,
 				BFDC1BF928D8096D005ADC6A /* SignUpThreeViewModel.swift in Sources */,
 				BFDA0B2C28F533E0008FE376 /* ScrapViewController.swift in Sources */,
@@ -675,6 +686,7 @@
 				BFFD000129025D7100AACD16 /* ContainerViewModel.swift in Sources */,
 				BFC9368128F6A44100A2C53F /* OurMemoryListViewController.swift in Sources */,
 				BF34F88128D1A60400EA1C16 /* DefaultLoginViewController.swift in Sources */,
+				BFF6610829091FC4003E998B /* Comment.swift in Sources */,
 				BFF84EAE28C6D40B00892CB5 /* SceneDelegate.swift in Sources */,
 				BF3F0E9A28DD701900AED582 /* SignUpZeroViewController.swift in Sources */,
 				BF7CAAFF28DE04B60076CD1A /* AgreeNTermsText.swift in Sources */,

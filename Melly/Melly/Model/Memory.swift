@@ -16,13 +16,13 @@ struct Memory:Codable {
     let groupType:String?
     let visitedDate:String
     let stars:Int
-    let keyword:String
+    let keyword:[String]
     let placeId:Int
     let placeName:String
 }
 
 struct Image:Codable {
-    let id:Int
+    let imageId:Int
     let memoryImage:String
 }
 

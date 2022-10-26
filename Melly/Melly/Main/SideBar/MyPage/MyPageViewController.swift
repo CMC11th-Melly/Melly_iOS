@@ -16,6 +16,7 @@ import PhotosUI
 class MyPageViewController:UIViewController {
     
     private let disposeBag = DisposeBag()
+    let vm = MyPageViewModel.instance
     
     let backBT = BackButton()
     
@@ -50,15 +51,53 @@ class MyPageViewController:UIViewController {
     }
     
     let storeLB = UILabel().then {
+        $0.text = "저장 용량"
         $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 18)
     }
+    
+    let storeView = UIView().then {
+        $0.backgroundColor = UIColor(red: 0.975, green: 0.979, blue: 0.988, alpha: 1)
+        $0.layer.cornerRadius = 12
+    }
+    
+    let storeText = UILabel().then {
+        let string = "0.01mb / 10mb"
+        let attributedString = NSMutableAttributedString(string: string)
+        let font =  UIFont(name: "Pretendard-SemiBold", size: 16)!
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1), range: NSRange(location: 0, length: string.count))
+        $0.attributedText = attributedString
+    }
+    
+    let progressView = UIProgressView().then {
+        $0.trackTintColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1)
+        $0.progressTintColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.layer.cornerRadius = 12
+        $0.progress = 0.1
+    }
+    
+    let couponLB = UILabel().then {
+        $0.text = "무료 이용권 사용 중"
+        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-Medium", size: 12)
+    }
+    
+    let separator = UIView().then {
+        $0.backgroundColor = UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
+    }
+    
+    let currentStoreLB = UILabel().then {
+        $0.text = "남은 용량 9.09mb"
+        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-Medium", size: 12)
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
         bind()
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -117,6 +156,54 @@ extension MyPageViewController {
             $0.height.equalTo(17)
         }
         
+        safeArea.addSubview(storeLB)
+        storeLB.snp.makeConstraints {
+            $0.top.equalTo(oneSt.snp.bottom).offset(30)
+            $0.leading.equalToSuperview().offset(30)
+        }
+        
+        safeArea.addSubview(storeView)
+        storeView.snp.makeConstraints {
+            $0.top.equalTo(storeLB.snp.bottom).offset(24)
+            $0.leading.equalToSuperview().offset(30)
+            $0.trailing.equalToSuperview().offset(-30)
+            $0.height.equalTo(100)
+        }
+        
+        storeView.addSubview(storeText)
+        storeText.snp.makeConstraints{
+            $0.top.equalToSuperview().offset(12)
+            $0.leading.equalToSuperview().offset(18)
+        }
+        
+        storeView.addSubview(progressView)
+        progressView.snp.makeConstraints {
+            $0.top.equalTo(storeText.snp.bottom).offset(6)
+            $0.leading.equalToSuperview().offset(18)
+            $0.trailing.equalToSuperview().offset(-18)
+            $0.height.equalTo(8)
+        }
+        
+        storeView.addSubview(couponLB)
+        couponLB.snp.makeConstraints {
+            $0.top.equalTo(progressView.snp.bottom).offset(14)
+            $0.leading.equalToSuperview().offset(18)
+        }
+        
+        storeView.addSubview(separator)
+        separator.snp.makeConstraints{
+            $0.top.equalTo(progressView.snp.bottom).offset(17)
+            $0.leading.equalTo(couponLB.snp.trailing).offset(8)
+            $0.width.equalTo(1)
+            $0.height.equalTo(12)
+        }
+        
+        storeView.addSubview(currentStoreLB)
+        currentStoreLB.snp.makeConstraints {
+            $0.top.equalTo(progressView.snp.bottom).offset(14)
+            $0.leading.equalTo(separator.snp.trailing).offset(8)
+        }
+        
         
     }
     
@@ -135,6 +222,23 @@ extension MyPageViewController {
             
         }).disposed(by: disposeBag)
         
+        vm.output.volumeValue.asDriver(onErrorJustReturn: 0)
+            .drive(onNext: { value in
+                DispatchQueue.main.async {
+                    let volume = Float(value) / Float(1.0737e+9 * 3)
+                    self.progressView.setProgress(volume, animated: true)
+                    
+                    let currentSize = "\(String.formatSize(fileSize: value)) / 3GB"
+                    let attributedString = NSMutableAttributedString(string: currentSize)
+                    let font =  UIFont(name: "Pretendard-SemiBold", size: 16)!
+                    attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: currentSize.count))
+                    attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1), range: NSRange(location: 0, length: currentSize.count))
+                    self.storeText.attributedText = attributedString
+                    
+                    let lastSize = String.formatSize(fileSize: Int(1.0737e+9 * 3) - value)
+                    self.currentStoreLB.text = "남은 용량 \(lastSize)"
+                }
+            }).disposed(by: disposeBag)
         
     }
     
@@ -152,6 +256,8 @@ extension MyPageViewController {
                 imageView.kf.setImage(with: url)
                 
             }
+            
+            vm.input.volumeObserver.accept(())
             
         }
         

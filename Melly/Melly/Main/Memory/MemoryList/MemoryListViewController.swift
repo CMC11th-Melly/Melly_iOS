@@ -193,7 +193,14 @@ extension MemoryListViewController {
     }
     
     private func bindOutput() {
-        
+        vm.output.selectMemoryValue.subscribe(onNext: { value in
+            let vm = MemoryDetailViewModel(value)
+            let vc = MemoryDetailViewController(vm: vm)
+            vc.modalTransitionStyle = .crossDissolve
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
+            
+        }).disposed(by: disposeBag)
     }
     
 }

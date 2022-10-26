@@ -173,7 +173,6 @@ extension OurMemoryListViewController: UICollectionViewDelegate, UICollectionVie
     //열과 열 사이의 간격 설정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 28
-        
     }
     
     //셀 사이즈 설정
@@ -194,7 +193,7 @@ extension OurMemoryListViewController: UICollectionViewDelegate, UICollectionVie
     //셀 선택시 이동
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let memory = memories[indexPath.row]
-        self.vm.input.ourMemorySelect.accept(memory)
+        self.vm.input.memorySelect.accept(memory)
     }
     
     //footer(인디케이터) 배경색 등 상세 설정
