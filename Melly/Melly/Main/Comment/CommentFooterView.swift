@@ -10,6 +10,8 @@ import Then
 
 class CommentFooterView: UICollectionReusableView {
     
+    static let identifier = "CommentFooter"
+    
     let titleView = UILabel().then {
         $0.textColor = UIColor(red: 0.588, green: 0.623, blue: 0.663, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Medium", size: 14)

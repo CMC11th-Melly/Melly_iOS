@@ -145,7 +145,7 @@ extension Date {
             unit = "년"
         }
         
-        return "\(quotient)\(unit) ago"
+        return "\(quotient)\(unit) 전"
         
     }
 }

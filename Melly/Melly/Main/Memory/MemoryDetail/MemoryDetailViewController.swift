@@ -15,13 +15,19 @@ class MemoryDetailViewController: UIViewController {
     
     private let disposeBag = DisposeBag()
     let vm:MemoryDetailViewModel
+    var commentFooterView:CommentFooterView?
+    var commentHeaderView:CommentHeaderView?
+    
     
     lazy var imagePageView = UIScrollView().then {
         $0.delegate = self
         $0.isScrollEnabled = true
         $0.isPagingEnabled = true
     }
-    let scrollView = UIScrollView()
+    let scrollView = UIScrollView().then {
+        $0.showsVerticalScrollIndicator = false
+        $0.showsHorizontalScrollIndicator = false
+    }
     let contentView = UIView()
     
     let backBT = UIButton(type: .custom).then {
@@ -158,10 +164,14 @@ class MemoryDetailViewController: UIViewController {
         return collectionView
     }()
     
+    let bottomView = UIView()
+    
+    let commentTF = CommentTextField(title: "댓글을 입력해주세요.")
     
     init(vm: MemoryDetailViewModel) {
         self.vm = vm
         super.init(nibName: nil, bundle: nil)
+        addContentScrollView()
     }
     
     required init?(coder: NSCoder) {
@@ -171,8 +181,12 @@ class MemoryDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
+        setCV()
         bind()
-        addContentScrollView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        vm.input.refreshComment.accept(())
     }
     
 }
@@ -299,11 +313,61 @@ extension MemoryDetailViewController {
         separatorFour.snp.makeConstraints {
             $0.top.equalTo(keywordCV.snp.bottom).offset(33)
             $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalTo(12)
+            $0.height.equalTo(12)
+        }
+        
+        contentView.addSubview(commentCountLB)
+        commentCountLB.snp.makeConstraints {
+            $0.top.equalTo(separatorFour.snp.bottom).offset(30)
+            $0.leading.equalToSuperview().offset(30)
+        }
+        
+        contentView.addSubview(commentCV)
+        commentCV.snp.makeConstraints {
+            $0.top.equalTo(commentCountLB.snp.bottom).offset(20)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(500)
+            
+        }
+        
+        contentView.addSubview(bottomView)
+        bottomView.snp.makeConstraints {
+            $0.top.equalTo(commentCV.snp.bottom)
+            $0.height.equalTo(95)
+            $0.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        bottomView.addSubview(commentTF)
+        commentTF.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalToSuperview().offset(30)
+            $0.trailing.equalToSuperview().offset(-30)
+            $0.height.equalTo(54)
         }
         
         
+        
     }
+    
+    private func setCV() {
+        
+        keywordCV.dataSource = nil
+        keywordCV.delegate = nil
+        keywordCV.rx.setDelegate(self).disposed(by: disposeBag)
+        keywordCV.register(KeyWordCell.self, forCellWithReuseIdentifier: "keyword")
+        vm.keywordData
+            .bind(to: keywordCV.rx.items(cellIdentifier: "keyword", cellType: KeyWordCell.self)) { row, element, cell in
+                cell.configure(name: element)
+            }.disposed(by: disposeBag)
+        
+        commentCV.delegate = self
+        commentCV.dataSource = self
+        commentCV.register(CommentCell.self, forCellWithReuseIdentifier: "comment")
+        commentCV.register(CommentFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: CommentFooterView.identifier)
+        commentCV.register(CommentHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CommentHeaderView.identifier)
+        
+    }
+    
     
     private func bind() {
         bindInput()
@@ -317,33 +381,138 @@ extension MemoryDetailViewController {
         }).disposed(by: disposeBag)
         
         
-        
-        
     }
     
     private func bindOutput() {
+        
+        vm.output.commentCountValue.subscribe(onNext: { value in
+            self.commentCountLB.text = "총 \(value)개의 댓글"
+        }).disposed(by: disposeBag)
+        
+        vm.output.completeRefresh.asDriver(onErrorJustReturn: ())
+            .drive(onNext: {
+                self.commentCV.reloadData()
+            }).disposed(by: disposeBag)
         
     }
     
 }
 
 //MARK: - CollectionView delegate
-extension MemoryDetailViewController: UICollectionViewDelegateFlowLayout {
+extension MemoryDetailViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     
-    //collectionView자체 latout
+    //collectionview cell의 개수
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return vm.comment.count
+    }
+    
+    //collectionView cell 설정
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "comment", for: indexPath) as! CommentCell
+        cell.comment = vm.comment[indexPath.row]
+        cell.vm = vm
+        return cell
+    }
+    
+    //collectionView 자체의 레이아웃
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
+        
+        if collectionView == keywordCV {
+            return UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
+        } else {
+            return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        }
     }
     
     //행과 행사이의 간격 설정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 15
+        if collectionView == keywordCV {
+            return 9
+        } else {
+            return 0
+        }
+        
+    }
+    
+    //열과 열 사이의 간격 설정
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        if collectionView == commentCV {
+            return 20
+        } else {
+           return 20
+        }
+       
     }
     
     //셀 사이즈 설정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return KeyWordCell.fittingSize(availableHeight: 33, name: vm.memory.keyword[indexPath.item])
+        
+        if collectionView == keywordCV {
+            return KeyWordCell.fittingSize(availableHeight: 33, name: vm.memory.keyword[indexPath.item])
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "comment", for: indexPath) as! CommentCell
+            cell.comment = vm.comment[indexPath.row]
+            cell.vm = vm
+            
+            return CGSize(width: view.frame.width, height: cell.getSize())
+        }
+        
     }
+    
+    //footer 인디케이터 사이즈 설정
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+        
+        if collectionView == commentCV {
+            if vm.isRecommented {
+                return CGSize(width: commentCV.bounds.size.width, height: 40)
+            } else {
+                return CGSize.zero
+            }
+        } else {
+            return CGSize.zero
+        }
+        
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        
+        if collectionView == commentCV {
+            
+            if vm.comment.isEmpty {
+                return CGSize(width: commentCV.bounds.size.width, height: 22)
+            } else {
+                return CGSize.zero
+            }
+            
+        } else {
+            return CGSize.zero
+        }
+        
+        
+    }
+    
+    
+    //footer(인디케이터) 배경색 등 상세 설정
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        
+        if collectionView == commentCV {
+            if kind == UICollectionView.elementKindSectionFooter {
+                let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: CommentFooterView.identifier, for: indexPath) as! CommentFooterView
+                commentFooterView = footerView
+                return footerView
+            } else if kind == UICollectionView.elementKindSectionHeader {
+                let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: CommentHeaderView.identifier, for: indexPath) as! CommentHeaderView
+                commentHeaderView = headerView
+                return headerView
+            }
+        }
+        
+        return UICollectionReusableView()
+    }
+    
+    
 }
 
 
