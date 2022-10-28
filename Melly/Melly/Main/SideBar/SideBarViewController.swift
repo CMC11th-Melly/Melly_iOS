@@ -87,6 +87,16 @@ class SideBarViewController: UIViewController {
         
     }
     
+    let pushBT = UIButton(type: .custom).then {
+        let string = "알림"
+        let attributedString = NSMutableAttributedString(string: string)
+        let font = UIFont(name: "Pretendard-Medium", size: 16)!
+        attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Medium", size: 16)!, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.49, green: 0.519, blue: 0.554, alpha: 1), range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+        
+    }
+    
     let settingBT = UIButton(type: .custom).then {
         let string = "설정"
         let attributedString = NSMutableAttributedString(string: string)
@@ -203,9 +213,15 @@ extension SideBarViewController {
             $0.leading.equalToSuperview().offset(30)
         }
         
+        contentView.addSubview(pushBT)
+        pushBT.snp.makeConstraints {
+            $0.top.equalTo(noticeBT.snp.bottom).offset(27)
+            $0.leading.equalToSuperview().offset(30)
+        }
+        
         contentView.addSubview(settingBT)
         settingBT.snp.makeConstraints {
-            $0.top.equalTo(noticeBT.snp.bottom).offset(27)
+            $0.top.equalTo(pushBT.snp.bottom).offset(27)
             $0.leading.equalToSuperview().offset(30)
         }
         
@@ -264,7 +280,10 @@ extension SideBarViewController {
         }).disposed(by: disposeBag)
         
         groupBT.rx.tap.subscribe(onNext: {
-            
+            let vc = GroupViewController()
+            vc.modalTransitionStyle = .crossDissolve
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
         }).disposed(by: disposeBag)
         
         scrapBT.rx.tap.subscribe(onNext: {
@@ -277,8 +296,18 @@ extension SideBarViewController {
             }
         }).disposed(by: disposeBag)
         
+        pushBT.rx.tap.subscribe(onNext: {
+            let vc = NoticeViewController()
+            vc.modalTransitionStyle = .crossDissolve
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
+        }).disposed(by: disposeBag)
+        
         settingBT.rx.tap.subscribe(onNext: {
-            
+            let vc = SettingViewController()
+            vc.modalTransitionStyle = .crossDissolve
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
         }).disposed(by: disposeBag)
         
         termsBT.rx.tap.subscribe(onNext: {

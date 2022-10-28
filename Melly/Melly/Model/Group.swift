@@ -7,22 +7,25 @@
 
 import Foundation
 
-struct Group: Codable {
-    let groupID: Int
-    let groupIcon: String?
-    let groupName, groupType: String
+struct Group:Codable {
+    
+    let groupId, groupIcon: Int
+    let groupName: String
+    let users: [UserInfo]
+    let groupType: String
     let invitationLink: String
-    let createdDate: String
-    let userInfo: [UserInfo]
-
-    enum CodingKeys: String, CodingKey {
-        case groupID = "groupId"
-        case groupIcon, groupName, groupType, invitationLink, createdDate, userInfo
-    }
+    
+    
 }
 
 struct UserInfo: Codable {
-    let uid: String
+    let userID: Int
     let profileImage: String
     let nickname: String
+    let isLoginUser: Bool
+    
+    enum CodingKeys: String, CodingKey {
+        case userID = "userId"
+        case profileImage, nickname, isLoginUser
+    }
 }

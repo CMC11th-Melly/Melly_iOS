@@ -219,7 +219,7 @@ class MemoryWriteViewModel {
                                             
                                             for group in groups {
                                                 result.append(group.groupName)
-                                                self.groupData[group.groupName] = group.groupID
+                                                self.groupData[group.groupName] = group.groupId
                                             }
                                             observer.onNext(result)
                                         }
