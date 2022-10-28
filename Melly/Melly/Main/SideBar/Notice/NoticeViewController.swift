@@ -79,6 +79,11 @@ extension NoticeViewController {
 //            }.bind(to: vm.input.ageObserver)
 //            .disposed(by: disposeBag)
         
+        backBT.rx.tap
+            .subscribe(onNext: {
+                self.dismiss(animated: true)
+            }).disposed(by: disposeBag)
+        
         vm.output.noticeData
             .bind(to: noticeCV.rx.items(cellIdentifier: "cell", cellType: NoticeCell.self)) { row, element, cell in
                 

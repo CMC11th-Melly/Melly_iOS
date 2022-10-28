@@ -44,6 +44,8 @@
 		BF7CAAFF28DE04B60076CD1A /* AgreeNTermsText.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7CAAFE28DE04B60076CD1A /* AgreeNTermsText.swift */; };
 		BF7E3CCA28D43F0E007C3236 /* DefaultLoginVIewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7E3CC928D43F0E007C3236 /* DefaultLoginVIewModel.swift */; };
 		BF81F96E28E1732A007E5D35 /* RecommandCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81F96D28E1732A007E5D35 /* RecommandCollectionViewCell.swift */; };
+		BF852E41290C319400122299 /* MyScrapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF852E40290C319400122299 /* MyScrapViewController.swift */; };
+		BF852E43290C338E00122299 /* MyScrapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF852E42290C338E00122299 /* MyScrapViewModel.swift */; };
 		BF8F9AD728D064D700EAA49E /* RecommandViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F9AD628D064D700EAA49E /* RecommandViewController.swift */; };
 		BF957BCF290B65D80056E99D /* GroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF957BCE290B65D80056E99D /* GroupViewController.swift */; };
 		BF957BD1290B6D8B0056E99D /* GroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF957BD0290B6D8B0056E99D /* GroupViewModel.swift */; };
@@ -130,6 +132,8 @@
 		BF7CAAFE28DE04B60076CD1A /* AgreeNTermsText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgreeNTermsText.swift; sourceTree = "<group>"; };
 		BF7E3CC928D43F0E007C3236 /* DefaultLoginVIewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLoginVIewModel.swift; sourceTree = "<group>"; };
 		BF81F96D28E1732A007E5D35 /* RecommandCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommandCollectionViewCell.swift; sourceTree = "<group>"; };
+		BF852E40290C319400122299 /* MyScrapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScrapViewController.swift; sourceTree = "<group>"; };
+		BF852E42290C338E00122299 /* MyScrapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScrapViewModel.swift; sourceTree = "<group>"; };
 		BF8F9AD628D064D700EAA49E /* RecommandViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommandViewController.swift; sourceTree = "<group>"; };
 		BF957BCE290B65D80056E99D /* GroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupViewController.swift; sourceTree = "<group>"; };
 		BF957BD0290B6D8B0056E99D /* GroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupViewModel.swift; sourceTree = "<group>"; };
@@ -335,6 +339,15 @@
 			path = RecommandView;
 			sourceTree = "<group>";
 		};
+		BF852E3F290C316800122299 /* Scrap */ = {
+			isa = PBXGroup;
+			children = (
+				BF852E40290C319400122299 /* MyScrapViewController.swift */,
+				BF852E42290C338E00122299 /* MyScrapViewModel.swift */,
+			);
+			path = Scrap;
+			sourceTree = "<group>";
+		};
 		BF957BCD290B653F0056E99D /* Group */ = {
 			isa = PBXGroup;
 			children = (
@@ -526,6 +539,7 @@
 		BFFCF2BC28E3FFAC0011701D /* SideBar */ = {
 			isa = PBXGroup;
 			children = (
+				BF852E3F290C316800122299 /* Scrap */,
 				BF957BCD290B653F0056E99D /* Group */,
 				BF6DB82A290AD663009B735F /* Notice */,
 				BF6DB827290ACCC7009B735F /* Setting */,
@@ -705,6 +719,7 @@
 				BF72FC6A29052F790076AEF8 /* MyMemoryViewModel.swift in Sources */,
 				BF72FC6E290541150076AEF8 /* ProfileEditViewController.swift in Sources */,
 				BFF6610A290920EC003E998B /* CommentFooterView.swift in Sources */,
+				BF852E43290C338E00122299 /* MyScrapViewModel.swift in Sources */,
 				BFF661042908C6F9003E998B /* CommentHeaderView.swift in Sources */,
 				BF28150128EBE54A004F6A31 /* ResearchMainViewController.swift in Sources */,
 				BFDC1BF928D8096D005ADC6A /* SignUpThreeViewModel.swift in Sources */,
@@ -712,6 +727,7 @@
 				BF5A7F4528D0591A000A1B08 /* MainMapViewController.swift in Sources */,
 				BF957BD3290B74490056E99D /* GroupAddViewController.swift in Sources */,
 				BFC9368528F6A57A00A2C53F /* MemoryListCollectionViewCell.swift in Sources */,
+				BF852E41290C319400122299 /* MyScrapViewController.swift in Sources */,
 				BF075F8428E52D6B00E581E7 /* MainMapViewModel.swift in Sources */,
 				BFBEB9E628FFD3E60074E6B7 /* Memory.swift in Sources */,
 				BFDE617328ED179F0099FF97 /* ResearchResultViewController.swift in Sources */,

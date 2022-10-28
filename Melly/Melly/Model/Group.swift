@@ -20,7 +20,7 @@ struct Group:Codable {
 
 struct UserInfo: Codable {
     let userID: Int
-    let profileImage: String
+    let profileImage: String?
     let nickname: String
     let isLoginUser: Bool
     

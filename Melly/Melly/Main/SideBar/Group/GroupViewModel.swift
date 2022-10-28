@@ -19,15 +19,20 @@ class GroupViewModel {
     let input = Input()
     let output = Output()
     
-    
+    var group:Group?
     
     struct Input {
         let getGroupObserver = PublishRelay<Void>()
+        let selectedGroup = PublishRelay<Group>()
+        let getGroupDetailObserver = PublishRelay<Group>()
     }
     
     struct Output {
         let groupValue = PublishRelay<[Group]>()
         let errorValue = PublishRelay<String>()
+        let groupMemberValue = PublishRelay<[UserInfo]>()
+        let groupDetailValue = PublishRelay<Group>()
+        let goToDetailView = PublishRelay<Void>()
     }
     
     init() {
@@ -49,6 +54,16 @@ class GroupViewModel {
                     break
                 }
             }).disposed(by: disposeBag)
+        
+        input.getGroupDetailObserver.subscribe(onNext: { value in
+            self.output.groupMemberValue.accept(value.users)
+            self.output.groupDetailValue.accept(value)
+        }).disposed(by: disposeBag)
+        
+        input.selectedGroup.subscribe(onNext: { value in
+            self.group = value
+            self.output.goToDetailView.accept(())
+        }).disposed(by: disposeBag)
         
     }
     

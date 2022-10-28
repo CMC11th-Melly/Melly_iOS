@@ -74,4 +74,19 @@ enum GroupFilter: String {
         }
     }
     
+    static func getGroupValue(_ text: String) -> String {
+        switch text {
+        case "FAMILY":
+            return "가족"
+        case "COMPANY":
+            return "동료"
+        case "COUPLE":
+            return "연인"
+        case "FRIEND":
+            return "친구"
+        default:
+            return "모두"
+        }
+    }
+    
 }

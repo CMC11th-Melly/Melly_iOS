@@ -287,7 +287,10 @@ extension SideBarViewController {
         }).disposed(by: disposeBag)
         
         scrapBT.rx.tap.subscribe(onNext: {
-            
+            let vc = MyScrapViewController()
+            vc.modalTransitionStyle = .crossDissolve
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
         }).disposed(by: disposeBag)
         
         noticeBT.rx.tap.subscribe(onNext: {

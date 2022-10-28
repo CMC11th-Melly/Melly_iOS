@@ -169,9 +169,15 @@ extension GroupViewController {
         dataCV.rx.setDelegate(self).disposed(by: disposeBag)
         dataCV.register(GroupCell.self, forCellWithReuseIdentifier: "cell")
        
+        backBT.rx.tap
+            .subscribe(onNext: {
+                self.dismiss(animated: true)
+            }).disposed(by: disposeBag)
+        
         addBT.rx.tap
             .subscribe(onNext: {
-                let vc = GroupAddViewController()
+                let vm = GroupEditViewModel()
+                let vc = GroupAddViewController(vm: vm)
                 vc.modalTransitionStyle = .crossDissolve
                 vc.modalPresentationStyle = .fullScreen
                 self.present(vc, animated: true)
@@ -179,11 +185,20 @@ extension GroupViewController {
         
         noDataAddBT.rx.tap
             .subscribe(onNext: {
-                let vc = GroupAddViewController()
+                let vm = GroupEditViewModel()
+                let vc = GroupAddViewController(vm: vm)
                 vc.modalTransitionStyle = .crossDissolve
                 vc.modalPresentationStyle = .fullScreen
                 self.present(vc, animated: true)
             }).disposed(by: disposeBag)
+        
+        dataCV.rx.itemSelected
+            .map ({ index in
+                let cell = self.dataCV.cellForItem(at: index) as? GroupCell
+                return cell!.group!
+            }).bind(to: vm.input.selectedGroup)
+            .disposed(by: disposeBag)
+        
         
     }
     
@@ -203,6 +218,14 @@ extension GroupViewController {
             .bind(to: dataCV.rx.items(cellIdentifier: "cell", cellType: GroupCell.self)) { row, element, cell in
                 cell.group = element
             }.disposed(by: disposeBag)
+        
+        vm.output.goToDetailView
+            .subscribe(onNext: {
+                let vc = GroupDetailViewController()
+                vc.modalTransitionStyle = .crossDissolve
+                vc.modalPresentationStyle = .fullScreen
+                self.present(vc, animated: true)
+            }).disposed(by: disposeBag)
         
     }
     

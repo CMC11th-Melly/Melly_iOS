@@ -13,7 +13,7 @@ class GroupAddViewController: UIViewController {
     
     private let disposeBag = DisposeBag()
     
-    let vm = GroupEditViewModel()
+    let vm:GroupEditViewModel
     
     let backBT = BackButton()
     let titleLB = UILabel().then {
@@ -67,6 +67,14 @@ class GroupAddViewController: UIViewController {
     let cancelBT = CustomButton(title: "취소")
     let saveBT = CustomButton(title: "그룹 저장")
     
+    init(vm: GroupEditViewModel) {
+        self.vm = vm
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     
     override func viewDidLoad() {
@@ -192,6 +200,28 @@ extension GroupAddViewController {
             .bind(to: vm.input.addGroupObserver)
             .disposed(by: disposeBag)
         
+        cancelBT.rx.tap
+            .subscribe(onNext: {
+                
+                if self.cancelBT.title == "그룹 삭제" {
+                    
+                    let alert = UIAlertController(title: "정말 삭제하시겠어요?", message: "그룹을 삭제하면 멤버도 없어집니다!", preferredStyle: .alert)
+                    let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+                    let okAction = UIAlertAction(title: "확인", style: .default) { _ in
+                        self.vm.input.removeObserver.accept(())
+                    }
+                    
+                    alert.addAction(cancelAction)
+                    alert.addAction(okAction)
+                    self.present(alert, animated: true)
+                    
+                    
+                } else {
+                    self.dismiss(animated: true)
+                }
+                
+            }).disposed(by: disposeBag)
+        
         backBT.rx.tap
             .subscribe(onNext: {
                 self.dismiss(animated: true)
@@ -254,6 +284,11 @@ extension GroupAddViewController {
                 cell.id = element
             }.disposed(by: disposeBag)
         
+        vm.output.editMode.subscribe(onNext: {value in
+            self.titleLB.text = "그룹편집"
+            self.nameTF.text = value.groupName
+            self.cancelBT.title = "그룹 삭제"
+        }).disposed(by: disposeBag)
         
         
     }
