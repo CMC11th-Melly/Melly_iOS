@@ -22,6 +22,8 @@ class SignUpOneViewController: UIViewController {
     }
     let contentView = UIView()
     
+    let headerView = UIView()
+    
     let backBT = BackButton()
     
     let loginLabel = UILabel().then {
@@ -31,25 +33,43 @@ class SignUpOneViewController: UIViewController {
     }
     
     let emailLabel = UILabel().then {
-        $0.text = "이메일 *"
-        $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        let string = "이메일 *"
+        let attributedString = NSMutableAttributedString(string: string)
+        let font = UIFont(name: "Pretendard-SemiBold", size: 16)!
+        let defaultColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        let redColor = UIColor(red: 240/255, green: 66/255, blue: 82/255, alpha: 1)
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: defaultColor, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: redColor, range: (string as NSString).range(of: "*"))
+        $0.attributedText = attributedString
     }
     
     let emailTf = CustomTextField(title: "이메일 주소를 입력해주세요.")
     
     let pwLabel = UILabel().then {
-        $0.text = "비밀번호 *"
-        $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        let string = "비밀번호 *"
+        let attributedString = NSMutableAttributedString(string: string)
+        let font = UIFont(name: "Pretendard-SemiBold", size: 16)!
+        let defaultColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        let redColor = UIColor(red: 240/255, green: 66/255, blue: 82/255, alpha: 1)
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: defaultColor, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: redColor, range: (string as NSString).range(of: "*"))
+        $0.attributedText = attributedString
     }
     
     let pwTf = CustomTextField(title: "비밀번호를 입력해주세요.", isSecure: true)
     
     let pwCheckLabel = UILabel().then {
-        $0.text = "비밀번호 확인 *"
-        $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        let string = "비밀번호 확인 *"
+        let attributedString = NSMutableAttributedString(string: string)
+        let font = UIFont(name: "Pretendard-SemiBold", size: 16)!
+        let defaultColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        let redColor = UIColor(red: 240/255, green: 66/255, blue: 82/255, alpha: 1)
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: defaultColor, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: redColor, range: (string as NSString).range(of: "*"))
+        $0.attributedText = attributedString
     }
     
     let pwCheckTf = CustomTextField(title: "비밀번호를 입력해주세요.", isSecure: true)
@@ -57,6 +77,8 @@ class SignUpOneViewController: UIViewController {
     let alertView = AlertLabel().then {
         $0.isHidden = true
     }
+    
+    let bottomView = UIView()
     
     let nextBT = CustomButton(title: "다음").then {
         $0.isEnabled = false
@@ -88,10 +110,41 @@ extension SignUpOneViewController: UIScrollViewDelegate {
     
     func setUI() {
         self.view.backgroundColor = .white
+        
+        safeArea.addSubview(headerView)
+        headerView.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+            $0.height.equalTo(52)
+        }
+        
+        headerView.addSubview(backBT)
+        backBT.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(11)
+            $0.leading.equalToSuperview().offset(27)
+        }
+        
+        safeArea.addSubview(bottomView)
+        bottomView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(self.view.snp.bottom)
+            $0.height.equalTo(105)
+        }
+        
+        bottomView.addSubview(nextBT)
+        nextBT.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(9)
+            $0.leading.equalToSuperview().offset(30)
+            $0.trailing.equalToSuperview().offset(-30)
+            $0.height.equalTo(56)
+        }
+        
+        
         scrollView.delegate = self
         safeArea.addSubview(scrollView)
         scrollView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.leading.trailing.equalToSuperview()
+            $0.top.equalTo(headerView.snp.bottom)
+            $0.bottom.equalTo(bottomView.snp.top)
         }
         
         scrollView.addSubview(contentView)
@@ -99,17 +152,9 @@ extension SignUpOneViewController: UIScrollViewDelegate {
             $0.width.centerX.top.bottom.equalToSuperview()
         }
         
-        contentView.addSubview(backBT)
-        backBT.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(15)
-            $0.leading.equalToSuperview().offset(30)
-            $0.width.equalTo(22)
-            $0.height.equalTo(20)
-        }
-        
         contentView.addSubview(loginLabel)
         loginLabel.snp.makeConstraints {
-            $0.top.equalTo(backBT.snp.bottom).offset(56)
+            $0.top.equalToSuperview().offset(39)
             $0.leading.equalToSuperview().offset(30)
         }
         
@@ -153,25 +198,19 @@ extension SignUpOneViewController: UIScrollViewDelegate {
             $0.leading.equalToSuperview().offset(30)
             $0.trailing.equalToSuperview().offset(-30)
             $0.height.equalTo(56)
-        }
-        
-        
-        contentView.addSubview(alertView)
-        alertView.snp.makeConstraints {
-            $0.top.equalTo(pwCheckTf.snp.bottom).offset(129)
-            $0.leading.equalToSuperview().offset(30)
-            $0.trailing.equalToSuperview().offset(-30)
-            $0.height.equalTo(56)
-        }
-        
-        contentView.addSubview(nextBT)
-        nextBT.snp.makeConstraints {
-            $0.top.equalTo(alertView.snp.bottom).offset(8)
-            $0.leading.equalToSuperview().offset(30)
-            $0.trailing.equalToSuperview().offset(-30)
-            $0.height.equalTo(56)
             $0.bottom.equalToSuperview()
         }
+        
+        
+        safeArea.addSubview(alertView)
+        alertView.snp.makeConstraints {
+            $0.bottom.equalTo(bottomView.snp.top).offset(-10)
+            $0.leading.equalToSuperview().offset(30)
+            $0.trailing.equalToSuperview().offset(-30)
+            $0.height.equalTo(56)
+        }
+        
+        
         
         
         
@@ -314,7 +353,7 @@ extension SignUpOneViewController: UIScrollViewDelegate {
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-            self.view.endEditing(true)
+        self.view.endEditing(true)
     }
     
 }

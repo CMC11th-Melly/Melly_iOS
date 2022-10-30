@@ -15,8 +15,11 @@ class SignUpTwoViewController: UIViewController {
     private var disposeBag = DisposeBag()
     var vm:SignUpTwoViewModel
 
-    let layoutView1 = UIView()
-    let layoutView2 = UIView()
+    let headerView = UIView()
+    
+    let bodyView = UIView()
+    
+    let bottomView = UIView()
 
     let backBT = BackButton()
 
@@ -65,33 +68,49 @@ extension SignUpTwoViewController {
     func setUI() {
         self.view.backgroundColor = .white
 
-        safeArea.addSubview(layoutView2)
-        safeArea.addSubview(layoutView1)
-        layoutView2.snp.makeConstraints {
-            $0.leading.bottom.trailing.equalToSuperview()
-            $0.height.equalTo(130)
+        safeArea.addSubview(headerView)
+        headerView.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+            $0.height.equalTo(52)
         }
-        layoutView1.snp.makeConstraints {
-            $0.leading.top.trailing.equalToSuperview()
-            $0.bottom.equalTo(layoutView2.snp.top)
-        }
-
-        layoutView1.addSubview(backBT)
+        
+        headerView.addSubview(backBT)
         backBT.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(15)
+            $0.top.equalToSuperview().offset(11)
+            $0.leading.equalToSuperview().offset(27)
+        }
+        
+        safeArea.addSubview(bottomView)
+        bottomView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(self.view.snp.bottom)
+            $0.height.equalTo(105)
+        }
+        
+        bottomView.addSubview(nextBT)
+        nextBT.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(9)
             $0.leading.equalToSuperview().offset(30)
-            $0.width.equalTo(22)
-            $0.height.equalTo(20)
+            $0.trailing.equalToSuperview().offset(-30)
+            $0.height.equalTo(56)
+        }
+        
+        safeArea.addSubview(bodyView)
+        bodyView.snp.makeConstraints {
+            $0.top.equalTo(headerView.snp.bottom)
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(bottomView.snp.top)
         }
 
-        layoutView1.addSubview(signUpLabel)
+
+        bodyView.addSubview(signUpLabel)
         signUpLabel.snp.makeConstraints {
-            $0.top.equalTo(backBT.snp.bottom).offset(56)
+            $0.top.equalToSuperview().offset(21)
             $0.leading.equalToSuperview().offset(30)
         }
 
 
-        layoutView1.addSubview(nameTf)
+        bodyView.addSubview(nameTf)
         nameTf.snp.makeConstraints {
             $0.top.equalTo(signUpLabel.snp.bottom).offset(62)
             $0.leading.equalToSuperview().offset(30)
@@ -99,17 +118,9 @@ extension SignUpTwoViewController {
             $0.height.equalTo(56)
         }
 
-        layoutView2.addSubview(alertView)
+        safeArea.addSubview(alertView)
         alertView.snp.makeConstraints {
-            $0.top.equalToSuperview()
-            $0.leading.equalToSuperview().offset(30)
-            $0.trailing.equalToSuperview().offset(-30)
-            $0.height.equalTo(56)
-        }
-
-        layoutView2.addSubview(nextBT)
-        nextBT.snp.makeConstraints {
-            $0.top.equalTo(alertView.snp.bottom).offset(8)
+            $0.bottom.equalTo(bottomView.snp.top).offset(-10)
             $0.leading.equalToSuperview().offset(30)
             $0.trailing.equalToSuperview().offset(-30)
             $0.height.equalTo(56)

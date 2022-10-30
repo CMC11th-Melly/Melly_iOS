@@ -194,6 +194,11 @@ extension DefaultLoginViewController {
             .bind(to: vm.input.pwObserver)
             .disposed(by: disposeBag)
         
+        pwTf.rightButton.rx.tap
+            .subscribe(onNext: {
+                self.pwTf.isSecureTextEntry.toggle()
+            }).disposed(by: disposeBag)
+        
         loginBT.rx.tap
             .bind(to: vm.input.loginObserver)
             .disposed(by: disposeBag)

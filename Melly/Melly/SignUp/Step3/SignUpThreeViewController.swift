@@ -20,10 +20,13 @@ class SignUpThreeViewController: UIViewController {
     let vm:SignUpThreeViewModel
     private var disposeBag = DisposeBag()
     
-    let layoutView1 = UIView()
-    let layoutView2 = UIScrollView()
+    let headerView = UIView()
+    let bodyView = UIScrollView().then {
+        $0.showsVerticalScrollIndicator = false
+        $0.showsHorizontalScrollIndicator = false
+    }
     let contentView = UIView()
-    let layoutView3 = UIView()
+    let bottomView = UIView()
     
     let backBT = BackButton()
     
@@ -80,27 +83,26 @@ class SignUpThreeViewController: UIViewController {
         return collectionView
     }()
     
+    let recommendView = UIImageView(image: UIImage(named: "step3_label"))
     
     let recomandLabel = UILabel().then {
         $0.text = "성별을 입력하면 장소 추천을 받을 수 있어요"
-        $0.font = UIFont.systemFont(ofSize: 14)
-        $0.textColor = .black
-        $0.layer.cornerRadius = 10
-        $0.backgroundColor = .gray
-        $0.textAlignment = .center
+        $0.textColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-Medium", size: 16)
     }
     
-    let skipButton = UIButton(type: .custom).then {
-        let title = "나중에 할게요"
+    let skipBT = CustomButton(title: "다음에 하기").then {
+        $0.backgroundColor = UIColor(red: 0.941, green: 0.945, blue: 0.984, alpha: 1)
+        let title = "다음에 하기"
         let attributedString = NSMutableAttributedString(string: title)
-        let font = UIFont(name: "Pretendard-SemiBold", size: 16)!
-        attributedString.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: NSRange(location: 0, length: title.count))
-        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: title.count))
-        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1), range: NSRange(location: 0, length: title.count))
+        attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-SemiBold", size: 16)!, range: NSRange(location: 0, length: title.count))
+        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.173, green: 0.092, blue: 0.671, alpha: 1), range: NSRange(location: 0, length: title.count))
         $0.setAttributedTitle(attributedString, for: .normal)
     }
     
-    let nextBT = CustomButton(title: "완료")
+    let nextBT = CustomButton(title: "완료").then {
+        $0.isEnabled = true
+    }
     
     init(vm: SignUpThreeViewModel) {
         self.vm = vm
@@ -124,7 +126,7 @@ class SignUpThreeViewController: UIViewController {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             UIView.animate(withDuration: 1.5) {
-                self.recomandLabel.alpha = 0
+                self.recommendView.alpha = 0
             }
         }
     }
@@ -136,50 +138,65 @@ extension SignUpThreeViewController {
     func setUI() {
         self.view.backgroundColor = .white
         
-        safeArea.addSubview(layoutView3)
-        safeArea.addSubview(layoutView2)
-        safeArea.addSubview(layoutView1)
-        
-        layoutView3.snp.makeConstraints {
-            $0.leading.bottom.trailing.equalToSuperview()
-            $0.height.equalTo(190)
+        safeArea.addSubview(headerView)
+        headerView.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+            $0.height.equalTo(56)
         }
         
-        layoutView1.snp.makeConstraints {
-            $0.leading.top.trailing.equalToSuperview()
-            $0.height.equalTo(145)
-        }
-        
-        layoutView2.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview()
-            $0.top.equalTo(layoutView1.snp.bottom)
-            $0.bottom.equalTo(layoutView3.snp.top)
-        }
-        
-        
-        layoutView1.addSubview(backBT)
+        headerView.addSubview(backBT)
         backBT.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(15)
-            $0.leading.equalToSuperview().offset(30)
-            $0.width.equalTo(22)
-            $0.height.equalTo(20)
+            $0.top.equalToSuperview().offset(11)
+            $0.leading.equalToSuperview().offset(27)
+            $0.height.width.equalTo(28)
         }
         
-        signUpLabel.text = "\(vm.user.nickname)님의\n프로필을 완성해볼까요?"
-        layoutView1.addSubview(signUpLabel)
-        signUpLabel.snp.makeConstraints {
-            $0.top.equalTo(backBT.snp.bottom).offset(37)
-            $0.leading.equalToSuperview().offset(30)
+        view.addSubview(bottomView)
+        bottomView.snp.makeConstraints {
+            $0.bottom.leading.trailing.equalToSuperview()
+            $0.height.equalTo(105)
         }
         
-        layoutView2.addSubview(contentView)
+        bottomView.addSubview(skipBT)
+        skipBT.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(9)
+            $0.leading.equalToSuperview().offset(30)
+            $0.height.equalTo(56)
+            $0.width.equalTo((self.view.frame.width-70)/2)
+        }
+        
+        bottomView.addSubview(nextBT)
+        nextBT.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(9)
+            $0.height.equalTo(56)
+            $0.width.equalTo((self.view.frame.width-70)/2)
+            $0.trailing.equalToSuperview().offset(-30)
+           
+        }
+        
+        safeArea.addSubview(bodyView)
+        
+        bodyView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
+            $0.top.equalTo(headerView.snp.bottom)
+            $0.bottom.equalTo(bottomView.snp.top)
+        }
+        
+        bodyView.addSubview(contentView)
         contentView.snp.makeConstraints {
             $0.width.centerX.top.bottom.equalToSuperview()
         }
         
+        signUpLabel.text = "\(vm.user.nickname)님의\n프로필을 완성해볼까요?"
+        contentView.addSubview(signUpLabel)
+        signUpLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(21)
+            $0.leading.equalToSuperview().offset(30)
+        }
+        
         contentView.addSubview(profileLb)
         profileLb.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(28)
+            $0.top.equalTo(signUpLabel.snp.bottom).offset(28)
             $0.leading.equalToSuperview().offset(30)
         }
         
@@ -225,28 +242,22 @@ extension SignUpThreeViewController {
             $0.bottom.equalToSuperview()
         }
         
-        
-        layoutView3.addSubview(recomandLabel)
-        recomandLabel.snp.makeConstraints {
-            $0.top.equalToSuperview()
+        safeArea.addSubview(recommendView)
+        recommendView.snp.makeConstraints {
+            $0.bottom.equalTo(bottomView.snp.top).offset(-9)
             $0.leading.equalToSuperview().offset(56)
             $0.trailing.equalToSuperview().offset(-56)
-            $0.height.equalTo(39)
+            $0.height.equalTo(46)
         }
         
-        layoutView3.addSubview(skipButton)
-        skipButton.snp.makeConstraints {
-            $0.top.equalTo(recomandLabel.snp.bottom).offset(27)
-            $0.centerX.equalToSuperview()
+        recommendView.addSubview(recomandLabel)
+        recomandLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(9)
+            $0.leading.equalToSuperview().offset(25)
+            $0.trailing.equalToSuperview().offset(-25)
         }
         
-        layoutView3.addSubview(nextBT)
-        nextBT.snp.makeConstraints {
-            $0.top.equalTo(skipButton.snp.bottom).offset(36)
-            $0.leading.equalToSuperview().offset(30)
-            $0.trailing.equalToSuperview().offset(-30)
-            $0.height.equalTo(56)
-        }
+        
         
     }
     
@@ -299,6 +310,10 @@ extension SignUpThreeViewController {
             }).disposed(by: disposeBag)
         
         nextBT.rx.tap
+            .bind(to: vm.input.signUpObserver)
+            .disposed(by: disposeBag)
+        
+        skipBT.rx.tap
             .bind(to: vm.input.signUpObserver)
             .disposed(by: disposeBag)
         
@@ -464,8 +479,8 @@ class SignUpCell: UICollectionViewCell {
     override var isSelected: Bool {
         didSet {
             if isSelected {
-                textLB.textColor = UIColor(red: 0.098, green: 0.122, blue: 0.157, alpha: 1)
-                backgroundColor = UIColor(red: 0.965, green: 0.969, blue: 0.973, alpha: 1)
+                textLB.textColor = UIColor(red: 0.116, green: 0.052, blue: 0.521, alpha: 1)
+                backgroundColor = UIColor(red: 0.941, green: 0.945, blue: 0.984, alpha: 1)
                 
             } else {
                 textLB.textColor = UIColor(red: 0.545, green: 0.584, blue: 0.631, alpha: 1)

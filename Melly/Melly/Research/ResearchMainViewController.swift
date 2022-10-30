@@ -13,6 +13,7 @@ class ResearchMainViewController: UIViewController {
     let vm = ResearchMainViewModel.instance
     let disposeBag = DisposeBag()
     
+    let headerView = UIView()
     let backButton = BackButton()
     
     let researchView = UIScrollView().then {
@@ -22,17 +23,13 @@ class ResearchMainViewController: UIViewController {
         $0.alwaysBounceVertical = false
         $0.isScrollEnabled = false
         $0.bounces = false
-        $0.backgroundColor = UIColor(red: 0.961, green: 0.961, blue: 0.961, alpha: 1)
-    }
-    
-    let stepLB = UILabel().then {
-        $0.text = "01/03"
-        $0.textColor = UIColor(red: 0.427, green: 0.459, blue: 0.506, alpha: 1)
-        $0.font = UIFont(name: "Pretendard-Bold", size: 15)
+        $0.backgroundColor = .clear
     }
     
     let childView:[UIView] = [ResearchOneView(), ResearchTwoView(), ResearchThreeView()]
     
+    
+    let bottomView = UIView()
     let nextBT = CustomButton(title: "다음으로").then {
         $0.isEnabled = false
     }
@@ -50,33 +47,39 @@ class ResearchMainViewController: UIViewController {
 extension ResearchMainViewController {
     
     private func setUI() {
-        view.backgroundColor = UIColor(red: 0.961, green: 0.961, blue: 0.961, alpha: 1)
+        view.backgroundColor = UIColor(red: 0.975, green: 0.979, blue: 0.988, alpha: 1)
         
-        safeArea.addSubview(backButton)
+        safeArea.addSubview(headerView)
+        headerView.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+            $0.height.equalTo(52)
+        }
+        
+        headerView.addSubview(backButton)
         backButton.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(22)
-            $0.leading.equalToSuperview().offset(30)
+            $0.top.equalToSuperview().offset(11)
+            $0.leading.equalToSuperview().offset(27)
         }
         
-        safeArea.addSubview(stepLB)
-        stepLB.snp.makeConstraints {
-            $0.top.equalTo(backButton.snp.bottom).offset(16)
-            $0.centerX.equalToSuperview()
+        view.addSubview(bottomView)
+        bottomView.snp.makeConstraints {
+            $0.bottom.leading.trailing.equalToSuperview()
+            $0.height.equalTo(105)
         }
         
-        safeArea.addSubview(nextBT)
+        bottomView.addSubview(nextBT)
         nextBT.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(9)
             $0.leading.equalToSuperview().offset(30)
             $0.trailing.equalToSuperview().offset(-30)
             $0.height.equalTo(56)
-            $0.bottom.equalToSuperview().offset(-10)
         }
         
         safeArea.addSubview(researchView)
         researchView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
-            $0.top.equalTo(stepLB.snp.bottom)
-            $0.bottom.equalTo(nextBT.snp.top)
+            $0.top.equalTo(headerView.snp.bottom)
+            $0.bottom.equalTo(bottomView.snp.top)
         }
     }
     
@@ -103,16 +106,15 @@ extension ResearchMainViewController {
                 if value == 0 {
                     self.dismiss(animated: true)
                 } else if value == 4 {
-                    let vc = ResearchLaunchViewController()
+                    let vc = ResearchLoadingViewController()
                     vc.modalTransitionStyle = .crossDissolve
                     vc.modalPresentationStyle = .fullScreen
-                    self.present(vc, animated: true)
+                    self.navigationController?.pushViewController(vc, animated: true)
                 } else {
                     let value = value - 1
                     let contentOffset = CGPoint(x: Int(self.view.frame.width) * value, y: 0)
                     self.researchView.setContentOffset(contentOffset, animated: true)
                     self.nextBT.isEnabled = false
-                    self.nextBT.backgroundColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1)
                 }
                 
             }).disposed(by: disposeBag)
@@ -121,10 +123,8 @@ extension ResearchMainViewController {
             .drive(onNext: { value in
                 if value {
                     self.nextBT.isEnabled = true
-                    self.nextBT.backgroundColor = .orange
                 } else {
                     self.nextBT.isEnabled = false
-                    self.nextBT.backgroundColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1)
                 }
             }).disposed(by: disposeBag)
         
@@ -132,10 +132,10 @@ extension ResearchMainViewController {
     
     private func addContentScrollView() {
         researchView.frame = UIScreen.main.bounds
-        researchView.contentSize = CGSize(width: UIScreen.main.bounds.width * CGFloat(childView.count), height: 525)
+        researchView.contentSize = CGSize(width: UIScreen.main.bounds.width * CGFloat(childView.count), height:  UIScreen.main.bounds.height)
             for i in 0..<childView.count {
                 let xPos = self.view.frame.width * CGFloat(i)
-                childView[i].frame = CGRect(x: xPos, y: 0, width: researchView.bounds.width, height: 525)
+                childView[i].frame = CGRect(x: xPos, y: 0, width: researchView.bounds.width, height: UIScreen.main.bounds.height)
                 researchView.addSubview(childView[i])
                 researchView.contentSize.width = childView[i].frame.width * CGFloat(i + 1)
             }
@@ -151,11 +151,22 @@ class ResearchOneView: UIView, UICollectionViewDelegateFlowLayout {
     let disposeBag = DisposeBag()
     let vm = ResearchMainViewModel.instance
     
+    let stepLB = UILabel().then {
+        let string = "01/03"
+        let attributedString = NSMutableAttributedString(string: string)
+        let defaultFont = UIFont(name: "Pretendard-Regular", size: 15)!
+        let boldFont =  UIFont(name: "Pretendard-Bold", size: 15)!
+        let defaultColor =  UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
+        attributedString.addAttribute(.font, value: defaultFont, range: (string as NSString).range(of: "/03"))
+        attributedString.addAttribute(.font, value: boldFont, range: (string as NSString).range(of: "01"))
+        attributedString.addAttribute(.foregroundColor, value: defaultColor, range: NSRange(location: 0, length: string.count))
+        $0.attributedText = attributedString
+    }
     
     let titleLb = UILabel().then {
-        $0.textColor = UIColor(red: 0.098, green: 0.122, blue: 0.157, alpha: 1)
+        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-SemiBold", size: 22)
         $0.text = "요즘 관심있는 핫한 장소는 어딘가요?"
-        $0.font = UIFont(name: "Pretendard-Bold", size: 22)
     }
     
     let researchCV: UICollectionView = {
@@ -163,7 +174,7 @@ class ResearchOneView: UIView, UICollectionViewDelegateFlowLayout {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.backgroundColor = .white
         collectionView.isScrollEnabled = false
-        collectionView.backgroundColor = UIColor(red: 0.961, green: 0.961, blue: 0.961, alpha: 1)
+        collectionView.backgroundColor = UIColor(red: 0.975, green: 0.979, blue: 0.988, alpha: 1)
         return collectionView
     }()
     
@@ -178,16 +189,24 @@ class ResearchOneView: UIView, UICollectionViewDelegateFlowLayout {
     }
     
     func setUI() {
-        backgroundColor = UIColor(red: 0.961, green: 0.961, blue: 0.961, alpha: 1)
+        backgroundColor = UIColor(red: 0.975, green: 0.979, blue: 0.988, alpha: 1)
+        
+        addSubview(stepLB)
+        stepLB.snp.makeConstraints {
+            $0.top.centerX.equalToSuperview()
+            $0.height.equalTo(22)
+        }
+        
         addSubview(titleLb)
         titleLb.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(17)
-            $0.leading.equalToSuperview().offset(40)
+            $0.top.equalTo(stepLB.snp.bottom).offset(17)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(31)
         }
         
         addSubview(researchCV)
         researchCV.snp.makeConstraints {
-            $0.top.equalTo(titleLb.snp.bottom).offset(17)
+            $0.top.equalTo(titleLb.snp.bottom).offset(52)
             $0.leading.equalToSuperview().offset(30)
             $0.trailing.equalToSuperview().offset(-30)
             $0.bottom.equalToSuperview()
@@ -251,16 +270,28 @@ class ResearchTwoView: UIView, UICollectionViewDelegateFlowLayout {
     let disposeBag = DisposeBag()
     let vm = ResearchMainViewModel.instance
     
+    let stepLB = UILabel().then {
+        let string = "02/03"
+        let attributedString = NSMutableAttributedString(string: string)
+        let defaultFont = UIFont(name: "Pretendard-Regular", size: 15)!
+        let boldFont =  UIFont(name: "Pretendard-Bold", size: 15)!
+        let defaultColor =  UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
+        attributedString.addAttribute(.font, value: boldFont, range: (string as NSString).range(of: "02"))
+        attributedString.addAttribute(.font, value: defaultFont, range: (string as NSString).range(of: "/03"))
+        attributedString.addAttribute(.foregroundColor, value: defaultColor, range: NSRange(location: 0, length: string.count))
+        $0.attributedText = attributedString
+    }
+    
     let titleLb = UILabel().then {
-        $0.textColor = UIColor(red: 0.098, green: 0.122, blue: 0.157, alpha: 1)
+        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-SemiBold", size: 22)
         $0.text = "요즘 관심있는 활동는 무엇인가요?"
-        $0.font = UIFont(name: "Pretendard-Bold", size: 22)
     }
     
     let researchCV: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
-        collectionView.backgroundColor =  UIColor(red: 0.961, green: 0.961, blue: 0.961, alpha: 1)
+        collectionView.backgroundColor =  UIColor(red: 0.975, green: 0.979, blue: 0.988, alpha: 1)
         collectionView.isScrollEnabled = false
         return collectionView
     }()
@@ -276,16 +307,24 @@ class ResearchTwoView: UIView, UICollectionViewDelegateFlowLayout {
     }
     
     func setUI() {
-        backgroundColor = UIColor(red: 0.961, green: 0.961, blue: 0.961, alpha: 1)
+        backgroundColor = UIColor(red: 0.975, green: 0.979, blue: 0.988, alpha: 1)
+        
+        addSubview(stepLB)
+        stepLB.snp.makeConstraints {
+            $0.top.centerX.equalToSuperview()
+            $0.height.equalTo(22)
+        }
+        
         addSubview(titleLb)
         titleLb.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(17)
-            $0.leading.equalToSuperview().offset(40)
+            $0.top.equalTo(stepLB.snp.bottom).offset(17)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(31)
         }
         
         addSubview(researchCV)
         researchCV.snp.makeConstraints {
-            $0.top.equalTo(titleLb.snp.bottom).offset(17)
+            $0.top.equalTo(titleLb.snp.bottom).offset(52)
             $0.leading.equalToSuperview().offset(30)
             $0.trailing.equalToSuperview().offset(-30)
             $0.bottom.equalToSuperview()
@@ -348,16 +387,28 @@ class ResearchThreeView: UIView, UICollectionViewDelegateFlowLayout {
     let vm = ResearchMainViewModel.instance
     
     
+    let stepLB = UILabel().then {
+        let string = "03/03"
+        let attributedString = NSMutableAttributedString(string: string)
+        let defaultFont = UIFont(name: "Pretendard-Regular", size: 15)!
+        let boldFont =  UIFont(name: "Pretendard-Bold", size: 15)!
+        let defaultColor =  UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
+        attributedString.addAttribute(.font, value: boldFont, range: (string as NSString).range(of: "03"))
+        attributedString.addAttribute(.font, value: defaultFont, range: (string as NSString).range(of: "/03"))
+        attributedString.addAttribute(.foregroundColor, value: defaultColor, range: NSRange(location: 0, length: string.count))
+        $0.attributedText = attributedString
+    }
+    
     let titleLb = UILabel().then {
-        $0.textColor = UIColor(red: 0.098, green: 0.122, blue: 0.157, alpha: 1)
+        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-SemiBold", size: 22)
         $0.text = "요즘 누구와 시간을 자주 보내시나요?"
-        $0.font = UIFont(name: "Pretendard-Bold", size: 22)
     }
     
     let researchCV: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
-        collectionView.backgroundColor = UIColor(red: 0.961, green: 0.961, blue: 0.961, alpha: 1)
+        collectionView.backgroundColor = UIColor(red: 0.975, green: 0.979, blue: 0.988, alpha: 1)
         collectionView.isScrollEnabled = false
         return collectionView
     }()
@@ -373,16 +424,24 @@ class ResearchThreeView: UIView, UICollectionViewDelegateFlowLayout {
     }
     
     func setUI() {
-        backgroundColor = UIColor(red: 0.961, green: 0.961, blue: 0.961, alpha: 1)
+        backgroundColor = UIColor(red: 0.975, green: 0.979, blue: 0.988, alpha: 1)
+        
+        addSubview(stepLB)
+        stepLB.snp.makeConstraints {
+            $0.top.centerX.equalToSuperview()
+            $0.height.equalTo(22)
+        }
+        
         addSubview(titleLb)
         titleLb.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(17)
-            $0.leading.equalToSuperview().offset(40)
+            $0.top.equalTo(stepLB.snp.bottom).offset(17)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(31)
         }
         
         addSubview(researchCV)
         researchCV.snp.makeConstraints {
-            $0.top.equalTo(titleLb.snp.bottom).offset(17)
+            $0.top.equalTo(titleLb.snp.bottom).offset(52)
             $0.leading.equalToSuperview().offset(30)
             $0.trailing.equalToSuperview().offset(-30)
             $0.bottom.equalToSuperview()
@@ -449,7 +508,7 @@ class ResearchViewCell: UICollectionViewCell {
     
     
     let titleLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 14)
     }
     
@@ -470,14 +529,14 @@ class ResearchViewCell: UICollectionViewCell {
         
         addSubview(logoImageView)
         logoImageView.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(17)
+            $0.top.equalToSuperview().offset(15)
             $0.centerX.equalToSuperview()
-            $0.height.width.equalTo(29.47)
+            $0.height.width.equalTo(34)
         }
         
         addSubview(titleLB)
         titleLB.snp.makeConstraints {
-            $0.top.equalTo(logoImageView.snp.bottom).offset(7.27)
+            $0.top.equalTo(logoImageView.snp.bottom).offset(5)
             $0.centerX.equalToSuperview()
         }
         
@@ -486,9 +545,11 @@ class ResearchViewCell: UICollectionViewCell {
     override var isSelected: Bool {
         didSet {
             if isSelected {
-                backgroundColor = .orange
+                backgroundColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
+                titleLB.textColor = .white
             } else {
                 backgroundColor = .white
+                titleLB.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
             }
         }
     }

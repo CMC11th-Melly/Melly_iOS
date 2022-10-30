@@ -64,6 +64,9 @@ class MainLoginViewController: UIViewController {
         $0.layer.cornerRadius = 12
         $0.layer.borderWidth = 1
         $0.layer.borderColor = UIColor(red: 0.274, green: 0.173, blue: 0.9, alpha: 1).cgColor
+        $0.setImage(UIImage(named: "signup_login"), for: .normal)
+        $0.imageEdgeInsets = UIEdgeInsets(top: 0, left: -6, bottom: 0, right: 0)
+        $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -6)
         
     }
     
@@ -93,12 +96,13 @@ class MainLoginViewController: UIViewController {
         if let _ = User.loginedUser {
             if let initialUser = UserDefaults.standard.string(forKey: "initialUser") {
                 if initialUser == "yes" {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                         let vc = ResearchLaunchViewController()
                         let nav = UINavigationController(rootViewController: vc)
                         nav.modalTransitionStyle = .crossDissolve
                         nav.modalPresentationStyle = .fullScreen
-                        self.present(vc, animated: true)
+                        nav.isNavigationBarHidden = true
+                        self.present(nav, animated: true)
                     }
                 } else {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {

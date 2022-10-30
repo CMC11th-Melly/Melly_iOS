@@ -56,6 +56,7 @@
 		BFA3399328C832E500C1CD4C /* MainLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399228C832E500C1CD4C /* MainLoginViewController.swift */; };
 		BFA3399628C8349B00C1CD4C /* UIKitExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399528C8349B00C1CD4C /* UIKitExtension.swift */; };
 		BFA3399828C836F300C1CD4C /* MainLoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399728C836F300C1CD4C /* MainLoginViewModel.swift */; };
+		BFABEF04290CFE2000D14115 /* Scrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFABEF03290CFE2000D14115 /* Scrap.swift */; };
 		BFB5015029065F21000621DC /* MemoryDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB5014F29065F21000621DC /* MemoryDetailViewModel.swift */; };
 		BFBEB9E628FFD3E60074E6B7 /* Memory.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBEB9E528FFD3E60074E6B7 /* Memory.swift */; };
 		BFC9367E28F6475600A2C53F /* MemoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC9367D28F6475600A2C53F /* MemoryListViewController.swift */; };
@@ -144,6 +145,7 @@
 		BFA3399228C832E500C1CD4C /* MainLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainLoginViewController.swift; sourceTree = "<group>"; };
 		BFA3399528C8349B00C1CD4C /* UIKitExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitExtension.swift; sourceTree = "<group>"; };
 		BFA3399728C836F300C1CD4C /* MainLoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainLoginViewModel.swift; sourceTree = "<group>"; };
+		BFABEF03290CFE2000D14115 /* Scrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scrap.swift; sourceTree = "<group>"; };
 		BFB5014F29065F21000621DC /* MemoryDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryDetailViewModel.swift; sourceTree = "<group>"; };
 		BFBDC76828C9A98400DA6330 /* Melly.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Melly.entitlements; sourceTree = "<group>"; };
 		BFBEB9E528FFD3E60074E6B7 /* Memory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Memory.swift; sourceTree = "<group>"; };
@@ -252,6 +254,7 @@
 				BF03B8F028FE465400CBAE97 /* Group.swift */,
 				BFBEB9E528FFD3E60074E6B7 /* Memory.swift */,
 				BFF6610729091FC4003E998B /* Comment.swift */,
+				BFABEF03290CFE2000D14115 /* Scrap.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -739,6 +742,7 @@
 				BFF84EAC28C6D40B00892CB5 /* AppDelegate.swift in Sources */,
 				BFDDED6228F80665003AE5DA /* MemoryWriteViewController.swift in Sources */,
 				BF7E3CCA28D43F0E007C3236 /* DefaultLoginVIewModel.swift in Sources */,
+				BFABEF04290CFE2000D14115 /* Scrap.swift in Sources */,
 				BF81F96E28E1732A007E5D35 /* RecommandCollectionViewCell.swift in Sources */,
 				BF2525BB2900E24E00F4E177 /* FooterLoadingView.swift in Sources */,
 				BF2814FF28EBC619004F6A31 /* ResearchLaunchViewController.swift in Sources */,

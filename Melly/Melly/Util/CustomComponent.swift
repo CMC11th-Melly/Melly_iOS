@@ -70,14 +70,8 @@ class CustomTextField: UITextField {
     }
     
     let rightButton = UIButton(type: .custom).then {
-        $0.contentMode = .scaleAspectFit
         $0.setImage(UIImage(named: "open_eye"), for: .normal)
     }
-    
-    
-    private let disposeBag = DisposeBag()
-    
-    let textResetEvent = PublishSubject<Void>()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -94,7 +88,7 @@ class CustomTextField: UITextField {
             self.isSecureTextEntry = true
             let wrapedView = UIView()
             wrapedView.snp.makeConstraints {
-                $0.height.equalTo(self.frame.height)
+                $0.height.equalTo(56)
                 $0.width.equalTo(45)
             }
             
@@ -103,13 +97,8 @@ class CustomTextField: UITextField {
                 $0.leading.equalToSuperview()
                 $0.centerY.equalToSuperview()
             }
-            rightView = wrapedView
-            rightViewMode = .always
-            
-            
-            rightButton.rx.tap.subscribe(onNext: {
-                self.isSecureTextEntry.toggle()
-            }).disposed(by: disposeBag)
+            self.rightView = wrapedView
+            self.rightViewMode = .always
             
         }
     }
@@ -120,7 +109,11 @@ class CustomTextField: UITextField {
     
     private func setupViews() {
         self.delegate = self
-        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 21, height: self.frame.height))
+        let paddingView = UIView()
+        paddingView.snp.makeConstraints {
+            $0.width.equalTo(21)
+            $0.height.equalTo(56)
+        }
         self.leftView = paddingView
         self.leftViewMode = .always
         self.backgroundColor = .clear
@@ -139,6 +132,11 @@ extension CustomTextField: UITextFieldDelegate {
         textField.layer.borderColor = UIColor(red: 0.274, green: 0.173, blue: 0.9, alpha: 1).cgColor
         textField.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         return true
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        textField.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
+        textField.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
     }
     
 }

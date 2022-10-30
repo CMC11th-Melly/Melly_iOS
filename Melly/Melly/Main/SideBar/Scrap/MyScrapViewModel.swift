@@ -24,16 +24,32 @@ class MyScrapViewModel {
     }
     
     struct Output {
-        
+        let scrapValue = PublishRelay<[ScrapCount]>()
+        let errorValue = PublishRelay<String>()
     }
     
     init() {
         input.scrapObserver
             .flatMap(createMarker)
             .subscribe({ event in
-                
+                switch event {
+                case .next(let counts):
+                    self.output.scrapValue.accept(counts)
+                case .error(let error):
+                    if let mellyError = error as? MellyError {
+                        if mellyError.msg == "" {
+                            self.output.errorValue.accept(error.localizedDescription)
+                        } else {
+                            self.output.errorValue.accept(mellyError.msg)
+                        }
+                    }
+                case .completed:
+                    break
+                    
+                }
             }).disposed(by: disposeBag)
     }
+    
     
     
     /**
@@ -42,7 +58,7 @@ class MyScrapViewModel {
      - Throws: MellyError
      - Returns:[Marker]
      */
-    func createMarker() -> Observable<[Marker]> {
+    func createMarker() -> Observable<[ScrapCount]> {
         
         return Observable.create { observer in
             
@@ -55,18 +71,24 @@ class MyScrapViewModel {
                     "Authorization" : "Bearer \(user.jwtToken)"
                     ]
                 
-                AF.request("https://api.melly.kr/api/user/place/scrap", method: .get, headers: header)
+                AF.request("https://api.melly.kr/api/user/place/scrap/count", method: .get, headers: header)
                     .responseData { response in
                         switch response.result {
                         case .success(let data):
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                print(json)
-                                if json.message == "유저가 메모리 작성한 장소 조회" {
+                                
+                                if json.message == "스크랩 타입 별 스크랩 개수 조회" {
                                     
-                                    if let data = try? JSONSerialization.data(withJSONObject: json.data?["place"] as Any) {
+                                    if let data = try? JSONSerialization.data(withJSONObject: json.data?["scrapCount"] as Any) {
                                         
-                                        
+                                        if let scrap = try? decoder.decode([ScrapCount].self, from: data) {
+                                    
+                                            observer.onNext(scrap)
+                                        } else {
+                                            let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
+                                            observer.onError(error)
+                                        }
                                         
                                     } else {
                                         observer.onNext([])

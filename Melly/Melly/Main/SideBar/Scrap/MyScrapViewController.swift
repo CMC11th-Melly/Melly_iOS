@@ -90,6 +90,8 @@ extension MyScrapViewController {
         dataCV.rx.setDelegate(self).disposed(by: disposeBag)
         dataCV.register(ScrapCell.self, forCellWithReuseIdentifier: "cell")
         
+        
+        
         backBT.rx.tap
             .subscribe(onNext: {
                 self.dismiss(animated: true)
@@ -98,6 +100,12 @@ extension MyScrapViewController {
     }
     
     private func bindOutput() {
+        
+        vm.output.scrapValue
+            .bind(to: dataCV.rx.items(cellIdentifier: "cell", cellType: ScrapCell.self)) { row, element, cell in
+                cell.scrapCount = element
+            }.disposed(by: disposeBag)
+        
         
     }
     
@@ -126,9 +134,13 @@ extension MyScrapViewController: UICollectionViewDelegateFlowLayout {
 
 final class ScrapCell: UICollectionViewCell {
     
+    var scrapCount:ScrapCount? {
+        didSet {
+            setData()
+        }
+    }
     
     let imageView = UIImageView(image: UIImage(named: "profile"))
-    
     
     let groupNameLB = UILabel().then {
         $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
@@ -136,7 +148,7 @@ final class ScrapCell: UICollectionViewCell {
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 18)
     }
     
-    let memberLB = UILabel().then {
+    let scrapCountLB = UILabel().then {
         $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 14)
     }
@@ -169,8 +181,8 @@ final class ScrapCell: UICollectionViewCell {
             $0.height.equalTo(22)
         }
         
-        addSubview(memberLB)
-        memberLB.snp.makeConstraints {
+        addSubview(scrapCountLB)
+        scrapCountLB.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.height.equalTo(17)
             $0.trailing.equalToSuperview().offset(-30)
@@ -179,7 +191,31 @@ final class ScrapCell: UICollectionViewCell {
         
     }
     
+    private func setData() {
+        
+        if let scrapCount = scrapCount {
+            
+            switch scrapCount.scrapType {
+            case "FAMILY":
+                groupNameLB.text = "가족이랑 가고 싶은 곳"
+            case "COMPANY":
+                groupNameLB.text = "동료랑 가고 싶은 곳"
+            case "COUPLE":
+                groupNameLB.text = "연인이랑 가고 싶은 곳"
+            case "FRIEND":
+                groupNameLB.text = "친구랑 가고 싶은 곳"
+            default:
+                break
+            }
+            
+            scrapCountLB.text = "총 \(scrapCount.scrapCount)개"
+            
+        }
+        
+    }
+    
     
     
     
 }
+

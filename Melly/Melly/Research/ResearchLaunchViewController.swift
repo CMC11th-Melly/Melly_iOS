@@ -11,7 +11,6 @@ import RxCocoa
 
 class ResearchLaunchViewController: UIViewController {
 
-    let backButton = BackButton()
     let disposeBag = DisposeBag()
     
     let titleLB = UILabel().then {
@@ -30,7 +29,11 @@ class ResearchLaunchViewController: UIViewController {
     
     let logoImageView = UIImageView(image: UIImage(systemName: "bubble.left.and.bubble.right.fill"))
     
-    let nextBT = CustomButton(title: "다음으로")
+    let bottomView = UIView()
+    
+    let nextBT = CustomButton(title: "다음으로").then {
+        $0.isEnabled = true
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,15 +45,9 @@ class ResearchLaunchViewController: UIViewController {
         
         view.backgroundColor = .white
         
-        safeArea.addSubview(backButton)
-        backButton.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(22)
-            $0.leading.equalToSuperview().offset(30)
-        }
-        
         safeArea.addSubview(titleLB)
         titleLB.snp.makeConstraints {
-            $0.top.equalTo(backButton.snp.bottom).offset(52)
+            $0.top.equalToSuperview().offset(88)
             $0.centerX.equalToSuperview()
         }
         
@@ -62,19 +59,24 @@ class ResearchLaunchViewController: UIViewController {
         
         safeArea.addSubview(logoImageView)
         logoImageView.snp.makeConstraints {
-            $0.top.equalTo(subLB.snp.bottom).offset(92)
-            $0.centerX.equalToSuperview()
-            $0.width.equalTo(248)
-            $0.height.equalTo(163)
+            $0.top.equalTo(subLB.snp.bottom).offset(16)
+            $0.leading.equalToSuperview().offset(30)
+            $0.trailing.equalToSuperview().offset(-31)
+            $0.height.equalTo(350)
         }
         
-        safeArea.addSubview(nextBT)
+        view.addSubview(bottomView)
+        bottomView.snp.makeConstraints {
+            $0.bottom.leading.trailing.equalToSuperview()
+            $0.height.equalTo(105)
+        }
+        
+        bottomView.addSubview(nextBT)
         nextBT.snp.makeConstraints {
-            
+            $0.top.equalToSuperview().offset(9)
             $0.leading.equalToSuperview().offset(30)
             $0.trailing.equalToSuperview().offset(-30)
             $0.height.equalTo(56)
-            $0.bottom.equalToSuperview().offset(-10)
         }
         
     }
@@ -85,7 +87,7 @@ class ResearchLaunchViewController: UIViewController {
                 let vc = ResearchMainViewController()
                 vc.modalTransitionStyle = .crossDissolve
                 vc.modalPresentationStyle = .fullScreen
-                self.present(vc, animated: true)
+                self.navigationController?.pushViewController(vc, animated: true)
             }).disposed(by: disposeBag)
         
         

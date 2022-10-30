@@ -41,7 +41,7 @@ class ResearchResultViewController: UIViewController {
     let locationSubLb = ResearchComponent("성수의 분위기 좋은 ‘성수다락' 추천해요", "Emoji")
     
     let skipButton = UIButton(type: .custom).then {
-        let title = "나중에 할게요"
+        let title = "다시하기"
         let attributedString = NSMutableAttributedString(string: title)
         let font = UIFont(name: "Pretendard-SemiBold", size: 16)!
         attributedString.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: NSRange(location: 0, length: title.count))
@@ -49,6 +49,8 @@ class ResearchResultViewController: UIViewController {
         attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1), range: NSRange(location: 0, length: title.count))
         $0.setAttributedTitle(attributedString, for: .normal)
     }
+    
+    let bottomView = UIView()
     
     let nextBT = CustomButton(title: "추천 장소에서 메모리 쌓으러가기")
     
@@ -65,9 +67,25 @@ extension ResearchResultViewController {
     
     func setUI() {
         
+        view.addSubview(bottomView)
+        bottomView.snp.makeConstraints {
+            $0.bottom.leading.trailing.equalToSuperview()
+            $0.height.equalTo(105)
+        }
+        
+        bottomView.addSubview(nextBT)
+        nextBT.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(9)
+            $0.leading.equalToSuperview().offset(30)
+            $0.trailing.equalToSuperview().offset(-30)
+            $0.height.equalTo(56)
+        }
+        
+        
         safeArea.addSubview(scrollView)
         scrollView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(bottomView.snp.top)
         }
         
         scrollView.addSubview(contentsView)
@@ -123,14 +141,7 @@ extension ResearchResultViewController {
         skipButton.snp.makeConstraints {
             $0.top.equalTo(locationSubLb.snp.bottom).offset(24)
             $0.centerX.equalToSuperview()
-        }
-        
-        contentsView.addSubview(nextBT)
-        nextBT.snp.makeConstraints {
-            $0.top.equalTo(skipButton.snp.bottom).offset(36)
-            $0.leading.equalToSuperview().offset(30)
-            $0.trailing.equalToSuperview().offset(-30)
-            $0.height.equalTo(56)
+            $0.bottom.equalToSuperview().offset(-11)
         }
         
         
