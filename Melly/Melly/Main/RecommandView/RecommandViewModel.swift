@@ -20,6 +20,9 @@ class RecommandViewModel {
     
     struct Input {
         let placeObserver = PublishRelay<PlaceInfo>()
+        let viewAppearObserver = PublishRelay<Void>()
+        let bookmarkAddObserver = PublishRelay<PlaceInfo>()
+        let bookmarkRemoveObserver = PublishRelay<PlaceInfo>()
     }
     
     struct Output {
@@ -27,16 +30,59 @@ class RecommandViewModel {
         let trendsLocationObserver = PublishRelay<[ItLocation]>()
         let goToPlace = PublishRelay<Place>()
         let errorValue = PublishRelay<String>()
+        let goToMemory = PublishRelay<Memory>()
     }
     
     init() {
         
-        Observable.combineLatest(getHotPlace(), getTrendsPlace())
+        input.viewAppearObserver
+            .subscribe(onNext: {
+                Observable.combineLatest(self.getHotPlace(), self.getTrendsPlace())
+                    .subscribe({ event in
+                        switch event {
+                        case .next((let hot, let trends)):
+                            self.output.hotLocationObserver.accept(hot)
+                            self.output.trendsLocationObserver.accept(trends)
+                        case .error(let error):
+                            if let mellyError = error as? MellyError {
+                                if mellyError.msg == "" {
+                                    self.output.errorValue.accept(error.localizedDescription)
+                                } else {
+                                    self.output.errorValue.accept(mellyError.msg)
+                                }
+                            }
+                        case .completed:
+                            break
+                        }
+                    }).disposed(by: self.disposeBag)
+            }).disposed(by: disposeBag)
+        
+        input.bookmarkAddObserver
+            .flatMap(getPlace)
             .subscribe({ event in
                 switch event {
-                case .next((let hot, let trends)):
-                    self.output.hotLocationObserver.accept(hot)
-                    self.output.trendsLocationObserver.accept(trends)
+                case .next(let place):
+                    PopUpViewModel.instance.output.goToBookmarkView.accept(place)
+                case .error(let error):
+                    if let mellyError = error as? MellyError {
+                        if mellyError.msg == "" {
+                            self.output.errorValue.accept(error.localizedDescription)
+                        } else {
+                            self.output.errorValue.accept(mellyError.msg)
+                        }
+                    }
+                case .completed:
+                    break
+                }
+            }).disposed(by: disposeBag)
+        
+        input.bookmarkRemoveObserver
+            .flatMap(getPlace)
+            .flatMap(removeBookmark)
+            .subscribe({ event in
+                switch event {
+                case .next(_):
+                    print("북마크 삭제")
                 case .error(let error):
                     if let mellyError = error as? MellyError {
                         if mellyError.msg == "" {
@@ -264,7 +310,61 @@ class RecommandViewModel {
         
     }
     
-    
+    /**
+     북마크 제거 함수
+     - Parameters:
+        -place: Place
+     - Throws: MellyError
+     - Returns: None
+     */
+    func removeBookmark(_ place: Place) -> Observable<Void> {
+        return Observable.create { observer in
+            
+            if let user = User.loginedUser {
+                
+                if place.isScraped {
+                    
+                    let parameters:Parameters = [
+                        "lat": place.position.lat,
+                        "lng": place.position.lng
+                    ]
+                    
+                    let header:HTTPHeaders = [
+                        "Connection":"keep-alive",
+                        "Content-Type":"application/json",
+                        "Authorization" : "Bearer \(user.jwtToken)"
+                    ]
+                    
+                    AF.request("https://api.melly.kr/api/place/scrap", method: .delete, parameters: parameters, encoding: JSONEncoding.default, headers: header)
+                        .responseData { response in
+                            switch response.result {
+                            case .success(let data):
+                                let decoder = JSONDecoder()
+                                if let json = try? decoder.decode(ResponseData.self, from: data) {
+                                    print(json)
+                                    if json.message == "스크랩 삭제 완료" {
+                                        
+                                        observer.onNext(())
+                                        
+                                    } else {
+                                        let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
+                                        observer.onError(error)
+                                    }
+                                    
+                                } else {
+                                    let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
+                                    observer.onError(error)
+                                }
+                            case .failure(let error):
+                                observer.onError(error)
+                            }
+                        }
+                }
+            }
+            
+            return Disposables.create()
+        }
+    }
     
     
 }

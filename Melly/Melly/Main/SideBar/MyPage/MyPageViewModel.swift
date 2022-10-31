@@ -160,10 +160,7 @@ class MyPageViewModel {
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: response) {
                                 if json.message == "프로필 수정 완료" {
-                                    User.loginedUser?.profileImage = self.user.profileImage
-                                    User.loginedUser?.ageGroup = self.user.ageGroup
-                                    User.loginedUser?.gender = self.user.gender
-                                    User.loginedUser?.nickname = self.user.nickname
+                                    User.loginedUser = self.user
                                     observer.onNext(())
                                 } else {
                                     let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)

@@ -8,7 +8,7 @@
 import Foundation
 
 struct ItLocation:Codable {
-    let placeInfo:PlaceInfo
+    var placeInfo:PlaceInfo
     let memoryInfo:[Memory]
 }
 

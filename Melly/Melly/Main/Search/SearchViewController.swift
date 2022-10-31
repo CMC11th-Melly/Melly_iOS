@@ -12,6 +12,7 @@ import RxSwift
 protocol GoPlaceDelegate:AnyObject {
     func showLocationPopupView(_ place: Place)
     func goToAddMemoryView(_ place: Place)
+    func goToMemoryView(_ memory: Memory)
 }
 
 class SearchViewController: UIViewController {

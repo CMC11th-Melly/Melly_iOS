@@ -14,13 +14,13 @@ class ResearchLaunchViewController: UIViewController {
     let disposeBag = DisposeBag()
     
     let titleLB = UILabel().then {
-        $0.text = "안녕하세요, 소피아님!"
+        $0.text = "안녕하세요, \(User.loginedUser!.nickname)님!"
         $0.textColor = UIColor(red: 0.098, green: 0.122, blue: 0.157, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Bold", size: 26)
     }
     
-    let subLB = UILabel().then {
-        $0.text = "소피아님의 소중한 메모리 작성을 위해\n간단히 몇가지 물어볼게 있어요!"
+    lazy var subLB = UILabel().then {
+        $0.text = "\(User.loginedUser!.nickname)님의 소중한 메모리 작성을 위해\n간단히 몇가지 물어볼게 있어요!"
         $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Medium", size: 16)
         $0.numberOfLines = 2
@@ -43,7 +43,7 @@ class ResearchLaunchViewController: UIViewController {
     
     func setUI() {
         
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(red: 0.975, green: 0.979, blue: 0.988, alpha: 1)
         
         safeArea.addSubview(titleLB)
         titleLB.snp.makeConstraints {

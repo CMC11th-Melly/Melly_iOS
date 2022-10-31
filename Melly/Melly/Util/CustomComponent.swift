@@ -336,11 +336,11 @@ class MainTextField: UITextField {
 
 class ResearchComponent: UIView {
     
-    let imageView = UIImageView()
+    let imageView = UIImageView(image: UIImage(named: "research_check"))
     
     let label = UILabel().then {
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
-        $0.font = UIFont(name: "Pretendard-SemiBold", size: 15)
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-Medium", size: 15)
     }
     
     
@@ -353,27 +353,26 @@ class ResearchComponent: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    convenience init(_ text: String, _ image: String) {
+    convenience init(_ text: String) {
         self.init()
-        imageView.image = UIImage(named: image)
         label.text = text
     }
     
     private func setUI() {
-        backgroundColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1)
+        backgroundColor = .white
         layer.cornerRadius = 12
         
         addSubview(imageView)
         imageView.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.leading.equalToSuperview().offset(25)
-            $0.width.height.equalTo(26)
+            $0.leading.equalToSuperview().offset(20)
+            $0.width.height.equalTo(24)
         }
         
         addSubview(label)
         label.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.leading.equalTo(imageView.snp.trailing).offset(15)
+            $0.leading.equalTo(imageView.snp.trailing).offset(12)
         }
     }
     
@@ -780,6 +779,105 @@ extension CommentTextField: UITextFieldDelegate {
         textField.layer.borderColor = UIColor(red: 0.274, green: 0.173, blue: 0.9, alpha: 1).cgColor
         textField.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         return true
+    }
+    
+}
+
+
+class RightAlert: UIView {
+    
+    let imageView = UIImageView(image: UIImage(named: "ok"))
+    let labelView = UILabel().then {
+        $0.textColor = UIColor(red: 0.975, green: 0.979, blue: 0.988, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.backgroundColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 0.7)
+        self.layer.cornerRadius = 12
+        
+        self.addSubview(imageView)
+        imageView.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalToSuperview().offset(23)
+            $0.width.height.equalTo(24)
+        }
+        
+        self.addSubview(labelView)
+        labelView.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalTo(imageView.snp.trailing).offset(15)
+            $0.trailing.equalToSuperview().offset(-24)
+        }
+    }
+    
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+}
+
+class CategoryPicker: UIButton {
+    
+    var mode:Bool = false {
+        didSet {
+            if mode {
+                textLabel.textColor = .white
+                backgroundColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
+                imgView.image = UIImage(named: "memory_x")
+            } else {
+                textLabel.textColor = UIColor(red: 0.472, green: 0.503, blue: 0.55, alpha: 1)
+                backgroundColor = .white
+                imgView.image = UIImage(named: "memory_filter")
+            }
+        }
+    }
+    
+    let textLabel = UILabel().then {
+        $0.textColor = UIColor(red: 0.472, green: 0.503, blue: 0.55, alpha: 1)
+        $0.text = "카테고리"
+        $0.font = UIFont(name: "Pretendard-Medium", size: 14)
+    }
+    
+    let imgView = UIImageView(image: UIImage(named: "memory_filter"))
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    convenience init(title: String) {
+        self.init()
+        textLabel.text = title
+    }
+    
+    
+    private func setUI() {
+        backgroundColor = .white
+        layer.cornerRadius = 8
+        layer.borderWidth = 1.2
+        layer.borderColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1).cgColor
+        
+        addSubview(textLabel)
+        textLabel.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalToSuperview().offset(10)
+        }
+        
+        addSubview(imgView)
+        imgView.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalTo(textLabel.snp.trailing).offset(2)
+            $0.trailing.equalToSuperview().offset(-10)
+        }
+        
     }
     
 }

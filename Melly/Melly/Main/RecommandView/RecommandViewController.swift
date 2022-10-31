@@ -25,19 +25,21 @@ class RecommandViewController: UIViewController {
     
     let contentView = UIView()
     
-    let recomandLabel = UILabel().then {
-        let text = "소피아에게 추천하는 메모리 장소"
+    lazy var recomandLabel = UILabel().then {
+        let text = "\(User.loginedUser!.nickname)에게 추천하는 메모리 장소"
         let attributedString = NSMutableAttributedString(string: text)
         let font = UIFont(name: "Pretendard-Medium", size: 20)!
-        let color = UIColor(red: 0.098, green: 0.122, blue: 0.157, alpha: 1)
+        let highlightFont = UIFont(name: "Pretendard-Bold", size: 20)!
+        let color = UIColor(red: 0.102, green: 0.118, blue: 0.153, alpha: 1)
         attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: text.count))
         attributedString.addAttribute(.foregroundColor, value: color, range: NSRange(location: 0, length: text.count))
+        attributedString.addAttribute(.font, value: highlightFont, range: (text as NSString).range(of: "메모리 장소"))
         $0.attributedText = attributedString
     }
     
     let recommandSubLabel = UILabel().then {
         $0.text = "비슷한 연령대가 이 장소에서 메모리를 많이 작성했어요"
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.textColor = UIColor(red: 0.472, green: 0.503, blue: 0.55, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Medium", size: 14)
     }
     
@@ -46,6 +48,9 @@ class RecommandViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.backgroundColor = .white
         collectionView.isScrollEnabled = false
+        collectionView.isUserInteractionEnabled = true
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.showsHorizontalScrollIndicator = false
         return collectionView
     }()
     
@@ -57,15 +62,17 @@ class RecommandViewController: UIViewController {
         let text = "요즘 핫한 메모리 장소"
         let attributedString = NSMutableAttributedString(string: text)
         let font = UIFont(name: "Pretendard-Medium", size: 20)!
-        let color = UIColor(red: 0.098, green: 0.122, blue: 0.157, alpha: 1)
+        let highlightFont = UIFont(name: "Pretendard-Bold", size: 20)!
+        let color = UIColor(red: 0.102, green: 0.118, blue: 0.153, alpha: 1)
         attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: text.count))
         attributedString.addAttribute(.foregroundColor, value: color, range: NSRange(location: 0, length: text.count))
+        attributedString.addAttribute(.font, value: highlightFont, range: (text as NSString).range(of: "메모리 장소"))
         $0.attributedText = attributedString
     }
     
     let hotSubLabel = UILabel().then {
         $0.text = "동시간대 가장 많이 메모리가 작성되고 있는 장소예요"
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.textColor = UIColor(red: 0.472, green: 0.503, blue: 0.55, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Medium", size: 14)
     }
     
@@ -74,6 +81,9 @@ class RecommandViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.backgroundColor = .white
         collectionView.isScrollEnabled = false
+        collectionView.isUserInteractionEnabled = true
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.showsHorizontalScrollIndicator = false
         return collectionView
     }()
     
@@ -83,7 +93,10 @@ class RecommandViewController: UIViewController {
         setCV()
         setUI()
         bind()
-        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        vm.input.viewAppearObserver.accept(())
     }
     
 }
@@ -91,11 +104,6 @@ class RecommandViewController: UIViewController {
 extension RecommandViewController {
     
    private func setUI() {
-        
-        if let user = User.loginedUser {
-            recomandLabel.text = "\(user.nickname)에게 추천하는 메모리 장소"
-        }
-        
         view.backgroundColor = .white
         
         safeArea.addSubview(mainSV)
@@ -122,8 +130,8 @@ extension RecommandViewController {
         
         contentView.addSubview(recommandCV)
         recommandCV.snp.makeConstraints {
-            $0.top.equalTo(recommandSubLabel.snp.bottom)
-            $0.leading.trailing.equalTo(safeArea)
+            $0.top.equalTo(recommandSubLabel.snp.bottom).offset(34)
+            $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(1134)
         }
         
@@ -149,8 +157,8 @@ extension RecommandViewController {
         
         contentView.addSubview(hotLocationCV)
         hotLocationCV.snp.makeConstraints {
-            $0.top.equalTo(hotSubLabel.snp.bottom)
-            $0.leading.trailing.equalTo(safeArea)
+            $0.top.equalTo(hotSubLabel.snp.bottom).offset(34)
+            $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(1139)
             $0.bottom.equalToSuperview()
         }
@@ -166,7 +174,7 @@ extension RecommandViewController {
         
         vm.output.trendsLocationObserver
             .bind(to: recommandCV.rx.items(cellIdentifier: "recommand", cellType: RecommandCollectionViewCell.self)) { row, element, cell in
-                cell.setData(element)
+                cell.itLocation = element
             }.disposed(by: disposeBag)
         
         hotLocationCV.dataSource = nil
@@ -176,7 +184,7 @@ extension RecommandViewController {
         
         vm.output.hotLocationObserver
             .bind(to: hotLocationCV.rx.items(cellIdentifier: "hot", cellType: RecommandCollectionViewCell.self)) { row, element, cell in
-                cell.setData(element)
+                cell.itLocation = element
             }.disposed(by: disposeBag)
     }
     
@@ -187,6 +195,8 @@ extension RecommandViewController {
                 self.delegate?.showLocationPopupView(value)
             }).disposed(by: disposeBag)
        
+       
+       
        vm.output.errorValue.asDriver(onErrorJustReturn: "")
            .drive(onNext: { value in
                let alert = UIAlertController(title: "에러", message: value, preferredStyle: .alert)
@@ -194,6 +204,15 @@ extension RecommandViewController {
                alert.addAction(cancelAction)
                self.present(alert, animated: true)
            }).disposed(by: disposeBag)
+       
+       PopUpViewModel.instance.output.completeBookmark.subscribe(onNext: {
+           self.vm.input.viewAppearObserver.accept(())
+       }).disposed(by: disposeBag)
+       
+       vm.output.goToMemory.subscribe(onNext: { memory in
+           self.delegate?.goToMemoryView(memory)
+       }).disposed(by: disposeBag)
+       
     }
     
 }
@@ -204,7 +223,7 @@ extension RecommandViewController: UICollectionViewDelegateFlowLayout {
     
     //collectionView 자체의 레이아웃
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 33, left: 0, bottom: 0, right: 0)
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
     
     //열과 열사이의 간격 설정
@@ -219,8 +238,7 @@ extension RecommandViewController: UICollectionViewDelegateFlowLayout {
     
     //셀의 크기 설정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = self.view.frame.width - 60
-        return CGSize(width: width, height: 342)
+        return CGSize(width: self.view.frame.width, height: 342)
     }
     
 }

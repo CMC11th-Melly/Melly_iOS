@@ -91,8 +91,7 @@ class PopUpViewModel {
                     
                     let parameters:Parameters = [
                         "lat": place.position.lat,
-                        "lng": place.position.lng,
-                        "scrapType": self.scrap!
+                        "lng": place.position.lng
                     ]
                     
                     let header:HTTPHeaders = [
@@ -144,7 +143,9 @@ class PopUpViewModel {
                 let parameters:Parameters = [
                     "lat": place.position.lat,
                     "lng": place.position.lng,
-                    "scrapType": self.scrap!
+                    "scrapType": self.scrap!,
+                    "placeName": place.placeName,
+                    "placeCategory": place.placeCategory
                 ]
                 
                 let header:HTTPHeaders = [
@@ -159,6 +160,7 @@ class PopUpViewModel {
                         case .success(let data):
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
+                                print(json)
                                 if json.message == "스크랩 완료" {
                                     
                                     observer.onNext(())

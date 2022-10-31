@@ -22,7 +22,7 @@ class MyProfileViewController: UIViewController {
     }
     
     let editBT = UIButton(type: .custom).then {
-        let string = "편집"
+        let string = "수정"
         let attributedString = NSMutableAttributedString(string: string)
         attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-SemiBold", size: 18)!, range: NSRange(location: 0, length: string.count))
         attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1), range: NSRange(location: 0, length: string.count))
@@ -78,8 +78,8 @@ class MyProfileViewController: UIViewController {
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
     }
     
-    let alertLabel = AlertLabel().then {
-        $0.isHidden = true
+    let alertLabel = RightAlert().then {
+        $0.alpha = 0
         $0.labelView.text = "프로필 수정 완료"
     }
     
@@ -115,12 +115,14 @@ extension MyProfileViewController {
         titleLB.snp.makeConstraints {
             $0.top.equalToSuperview().offset(13)
             $0.leading.equalTo(backBT.snp.trailing).offset(12)
+            $0.height.equalTo(24)
         }
         
         safeArea.addSubview(editBT)
         editBT.snp.makeConstraints {
             $0.top.equalToSuperview().offset(11)
             $0.trailing.equalToSuperview().offset(-30)
+            $0.height.equalTo(29)
         }
         
         safeArea.addSubview(profileImgView)
@@ -208,11 +210,11 @@ extension MyProfileViewController {
         
         vm.output.successValue.asDriver(onErrorJustReturn: ())
             .drive(onNext: {
-                self.alertLabel.isHidden = false
+                self.alertLabel.alpha = 1
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     UIView.animate(withDuration: 1.5) {
-                        self.alertLabel.isHidden = true
+                        self.alertLabel.alpha = 0
                     }
                 }
             }).disposed(by: disposeBag)

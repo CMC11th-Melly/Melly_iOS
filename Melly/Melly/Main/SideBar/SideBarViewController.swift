@@ -25,7 +25,7 @@ class SideBarViewController: UIViewController {
     }
     
     let userNameLb = UILabel().then {
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 26)
         $0.text = "소피아"
     }
@@ -35,7 +35,7 @@ class SideBarViewController: UIViewController {
     }
     
     let userSizeLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.545, green: 0.584, blue: 0.631, alpha: 1)
+        $0.textColor = UIColor(red: 0.4, green: 0.435, blue: 0.486, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Bold", size: 12.6)
         $0.text = "0.01mb / 10mb"
     }
@@ -48,7 +48,6 @@ class SideBarViewController: UIViewController {
         
         let string = "MY메모리"
         let attributedString = NSMutableAttributedString(string: string)
-        let font = UIFont(name: "Pretendard-Medium", size: 16)!
         attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Medium", size: 18)!, range: NSRange(location: 0, length: string.count))
         attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1), range: NSRange(location: 0, length: string.count))
         $0.setAttributedTitle(attributedString, for: .normal)
@@ -57,7 +56,6 @@ class SideBarViewController: UIViewController {
     let groupBT = UIButton(type: .custom).then {
         let string = "MY그룹"
         let attributedString = NSMutableAttributedString(string: string)
-        let font = UIFont(name: "Pretendard-Medium", size: 16)!
         attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Medium", size: 18)!, range: NSRange(location: 0, length: string.count))
         attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1), range: NSRange(location: 0, length: string.count))
         $0.setAttributedTitle(attributedString, for: .normal)
@@ -66,7 +64,6 @@ class SideBarViewController: UIViewController {
     let scrapBT = UIButton(type: .custom).then {
         let string = "스크랩"
         let attributedString = NSMutableAttributedString(string: string)
-        let font = UIFont(name: "Pretendard-Medium", size: 16)!
         attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Medium", size: 18)!, range: NSRange(location: 0, length: string.count))
         attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1), range: NSRange(location: 0, length: string.count))
         $0.setAttributedTitle(attributedString, for: .normal)
@@ -80,9 +77,8 @@ class SideBarViewController: UIViewController {
     let noticeBT = UIButton(type: .custom).then {
         let string = "공지사항"
         let attributedString = NSMutableAttributedString(string: string)
-        let font = UIFont(name: "Pretendard-Medium", size: 16)!
         attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Medium", size: 16)!, range: NSRange(location: 0, length: string.count))
-        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.49, green: 0.519, blue: 0.554, alpha: 1), range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value:  UIColor(red: 0.4, green: 0.435, blue: 0.486, alpha: 1), range: NSRange(location: 0, length: string.count))
         $0.setAttributedTitle(attributedString, for: .normal)
         
     }
@@ -90,9 +86,8 @@ class SideBarViewController: UIViewController {
     let pushBT = UIButton(type: .custom).then {
         let string = "알림"
         let attributedString = NSMutableAttributedString(string: string)
-        let font = UIFont(name: "Pretendard-Medium", size: 16)!
         attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Medium", size: 16)!, range: NSRange(location: 0, length: string.count))
-        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.49, green: 0.519, blue: 0.554, alpha: 1), range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value:  UIColor(red: 0.4, green: 0.435, blue: 0.486, alpha: 1), range: NSRange(location: 0, length: string.count))
         $0.setAttributedTitle(attributedString, for: .normal)
         
     }
@@ -100,27 +95,24 @@ class SideBarViewController: UIViewController {
     let settingBT = UIButton(type: .custom).then {
         let string = "설정"
         let attributedString = NSMutableAttributedString(string: string)
-        let font = UIFont(name: "Pretendard-Medium", size: 16)!
         attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Medium", size: 16)!, range: NSRange(location: 0, length: string.count))
-        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.49, green: 0.519, blue: 0.554, alpha: 1), range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value:  UIColor(red: 0.4, green: 0.435, blue: 0.486, alpha: 1), range: NSRange(location: 0, length: string.count))
         $0.setAttributedTitle(attributedString, for: .normal)
     }
     
     let termsBT = UIButton(type: .custom).then {
         let string = "이용약관 및 정책"
         let attributedString = NSMutableAttributedString(string: string)
-        let font = UIFont(name: "Pretendard-Medium", size: 16)!
         attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Medium", size: 16)!, range: NSRange(location: 0, length: string.count))
-        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.49, green: 0.519, blue: 0.554, alpha: 1), range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value:  UIColor(red: 0.4, green: 0.435, blue: 0.486, alpha: 1), range: NSRange(location: 0, length: string.count))
         $0.setAttributedTitle(attributedString, for: .normal)
     }
     
     let logoutBT = UIButton(type: .custom).then {
         let string = "로그아웃"
         let attributedString = NSMutableAttributedString(string: string)
-        let font = UIFont(name: "Pretendard-Medium", size: 16)!
         attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Medium", size: 16)!, range: NSRange(location: 0, length: string.count))
-        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.49, green: 0.519, blue: 0.554, alpha: 1), range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value:  UIColor(red: 0.4, green: 0.435, blue: 0.486, alpha: 1), range: NSRange(location: 0, length: string.count))
         $0.setAttributedTitle(attributedString, for: .normal)
     }
     
@@ -150,7 +142,7 @@ extension SideBarViewController {
         
         contentView.addSubview(profileImage)
         profileImage.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(76)
+            $0.top.equalToSuperview().offset(46)
             $0.leading.equalToSuperview().offset(30)
             $0.width.height.equalTo(50)
         }
@@ -158,19 +150,21 @@ extension SideBarViewController {
         contentView.addSubview(userNameLb)
         userNameLb.snp.makeConstraints {
             $0.leading.equalTo(profileImage.snp.trailing).offset(15)
-            $0.top.equalToSuperview().offset(71)
+            $0.height.equalTo(38)
+            $0.top.equalToSuperview().offset(41)
         }
         
         contentView.addSubview(myPageBT)
         myPageBT.snp.makeConstraints {
             $0.leading.equalTo(userNameLb.snp.trailing).offset(2)
-            $0.top.equalToSuperview().offset(78)
+            $0.top.equalToSuperview().offset(48)
         }
         
         contentView.addSubview(userSizeLB)
         userSizeLB.snp.makeConstraints {
             $0.top.equalTo(userNameLb.snp.bottom)
             $0.leading.equalTo(profileImage.snp.trailing).offset(15)
+            $0.height.equalTo(18)
         }
         
         contentView.addSubview(separatorOne)
@@ -185,18 +179,21 @@ extension SideBarViewController {
         memoryBT.snp.makeConstraints {
             $0.top.equalTo(separatorOne.snp.bottom).offset(44)
             $0.leading.equalToSuperview().offset(30)
+            $0.height.equalTo(22)
         }
         
         contentView.addSubview(groupBT)
         groupBT.snp.makeConstraints {
             $0.top.equalTo(memoryBT.snp.bottom).offset(44)
             $0.leading.equalToSuperview().offset(30)
+            $0.height.equalTo(22)
         }
         
         contentView.addSubview(scrapBT)
         scrapBT.snp.makeConstraints {
             $0.top.equalTo(groupBT.snp.bottom).offset(44)
             $0.leading.equalToSuperview().offset(30)
+            $0.height.equalTo(22)
         }
         
         contentView.addSubview(separatorTwo)
@@ -211,30 +208,35 @@ extension SideBarViewController {
         noticeBT.snp.makeConstraints {
             $0.top.equalTo(separatorTwo.snp.bottom).offset(36.5)
             $0.leading.equalToSuperview().offset(30)
+            $0.height.equalTo(19)
         }
         
         contentView.addSubview(pushBT)
         pushBT.snp.makeConstraints {
             $0.top.equalTo(noticeBT.snp.bottom).offset(27)
             $0.leading.equalToSuperview().offset(30)
+            $0.height.equalTo(19)
         }
         
         contentView.addSubview(settingBT)
         settingBT.snp.makeConstraints {
             $0.top.equalTo(pushBT.snp.bottom).offset(27)
             $0.leading.equalToSuperview().offset(30)
+            $0.height.equalTo(19)
         }
         
         contentView.addSubview(termsBT)
         termsBT.snp.makeConstraints {
             $0.top.equalTo(settingBT.snp.bottom).offset(27)
             $0.leading.equalToSuperview().offset(30)
+            $0.height.equalTo(19)
         }
         
         contentView.addSubview(logoutBT)
         logoutBT.snp.makeConstraints {
             $0.top.equalTo(termsBT.snp.bottom).offset(27)
             $0.leading.equalToSuperview().offset(30)
+            $0.height.equalTo(19)
         }
     }
     
@@ -276,7 +278,10 @@ extension SideBarViewController {
         }).disposed(by: disposeBag)
         
         memoryBT.rx.tap.subscribe(onNext: {
-            
+            let vc = MyMemoryViewController()
+            vc.modalTransitionStyle = .crossDissolve
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
         }).disposed(by: disposeBag)
         
         groupBT.rx.tap.subscribe(onNext: {

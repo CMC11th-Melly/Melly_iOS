@@ -8,11 +8,14 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import FloatingPanel
 
 class MyMemoryViewController: UIViewController {
 
-    private let vm = MyMemoryViewModel()
+    private let vm = MyMemoryViewModel.instance
     private let disposeBag = DisposeBag()
+    
+    let headerView = UIView()
     
     let backBT = BackButton()
     let titleLB = UILabel().then {
@@ -25,19 +28,11 @@ class MyMemoryViewController: UIViewController {
         $0.setImage(UIImage(named: "memory_search"), for: .normal)
     }
     
-    let editBT = UIButton(type: .custom).then {
-        let string = "편집"
-        let attributedString = NSMutableAttributedString(string: string)
-        let font = UIFont(name: "Pretendard-Medium", size: 16)!
-        attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-SemiBold", size: 18)!, range: NSRange(location: 0, length: string.count))
-        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1), range: NSRange(location: 0, length: string.count))
-        $0.setAttributedTitle(attributedString, for: .normal)
-        
-    }
     
     var isLoading:Bool = false
     var loadingView:FooterLoadingView?
     var memories:[Memory] = []
+    let filterPanel = FloatingPanelController()
     
     var isNoData:Bool = false {
         didSet {
@@ -67,6 +62,9 @@ class MyMemoryViewController: UIViewController {
     
     let dataView = UIView()
     
+    let groupFilter = CategoryPicker(title: "카테고리")
+    let sortFilter = CategoryPicker(title: "최신 순")
+    
     let dataCV:UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
@@ -82,49 +80,76 @@ class MyMemoryViewController: UIViewController {
         bind()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        vm.input.ourMemoryRefresh.accept(())
+    }
+    
 
 }
 
 extension MyMemoryViewController {
     
     private func setUI() {
-        safeArea.addSubview(backBT)
-        backBT.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(11)
-            $0.leading.equalToSuperview().offset(30)
+        
+        view.backgroundColor = .white
+        
+        safeArea.addSubview(headerView)
+        headerView.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+            $0.height.equalTo(52)
         }
         
-        safeArea.addSubview(titleLB)
+        headerView.addSubview(backBT)
+        backBT.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(11)
+            $0.leading.equalToSuperview().offset(27)
+            $0.width.height.equalTo(28)
+        }
+        
+        headerView.addSubview(titleLB)
         titleLB.snp.makeConstraints {
             $0.top.equalToSuperview().offset(13)
             $0.leading.equalTo(backBT.snp.trailing).offset(12)
+            $0.height.equalTo(24)
         }
         
-        safeArea.addSubview(searchBT)
+        headerView.addSubview(searchBT)
         searchBT.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(14)
-            $0.trailing.equalToSuperview().offset(-30)
+            $0.top.equalToSuperview().offset(11)
+            $0.trailing.equalToSuperview().offset(-27)
+            $0.width.height.equalTo(28)
         }
         
         safeArea.addSubview(dataView)
         dataView.snp.makeConstraints {
-            $0.top.equalTo(searchBT.snp.bottom)
+            $0.top.equalTo(headerView.snp.bottom)
             $0.leading.trailing.bottom.equalToSuperview()
         }
         
-        dataView.addSubview(editBT)
-        editBT.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(41)
-            $0.trailing.equalToSuperview().offset(-30)
+        dataView.addSubview(groupFilter)
+        groupFilter.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(25)
+            $0.leading.equalToSuperview().offset(30)
+            $0.height.equalTo(30)
+        }
+        
+        dataView.addSubview(sortFilter)
+        sortFilter.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(25)
+            $0.leading.equalTo(groupFilter.snp.trailing).offset(12)
+            $0.height.equalTo(30)
         }
         
         dataView.addSubview(dataCV)
         dataCV.snp.makeConstraints {
-            $0.top.equalTo(editBT.snp.bottom).offset(22)
+            $0.top.equalTo(sortFilter.snp.bottom).offset(22)
             $0.leading.equalToSuperview().offset(30)
             $0.trailing.equalToSuperview().offset(-30)
             $0.bottom.equalToSuperview()
         }
+        
+        filterPanel.layout = MyMemoryPanelLayout()
+        filterPanel.isRemovalInteractionEnabled = true
         
     }
     
@@ -138,10 +163,94 @@ extension MyMemoryViewController {
         dataCV.dataSource = self
         dataCV.register(MemoryListCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         dataCV.register(FooterLoadingView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: FooterLoadingView.identifier)
+        
+        sortFilter.rx.tap
+            .subscribe(onNext: {
+                
+                if self.sortFilter.mode {
+                    self.vm.input.sortObserver.accept("visitedDate,desc")
+                } else {
+                    let vc = MyMemoryFilterViewController()
+                    self.filterPanel.set(contentViewController: vc)
+                    self.filterPanel.addPanel(toParent: self)
+                }
+            }).disposed(by: disposeBag)
+        
+        groupFilter.rx.tap
+            .subscribe(onNext: {
+                
+                if self.groupFilter.mode {
+                    self.vm.input.groupFilterObserver.accept(.all)
+                } else {
+                    let vc = MyMemoryGroupFilterViewController()
+                    self.filterPanel.set(contentViewController: vc)
+                    self.filterPanel.addPanel(toParent: self)
+                }
+            }).disposed(by: disposeBag)
+        
     }
     
     private func bindOutput() {
+        vm.output.ourMemoryValue.asDriver(onErrorJustReturn: [])
+            .drive(onNext: { value in
+                DispatchQueue.main.async {
+                    self.memories += value
+                    self.dataCV.reloadData()
+                    self.isLoading = false
+                    self.isNoData = value.isEmpty ? true : false
+                }
+            }).disposed(by: disposeBag)
         
+        vm.output.sortValue.asDriver(onErrorJustReturn: "")
+            .drive(onNext: { value in
+                if value == "visitedDate,asc" {
+                    self.sortFilter.textLabel.text = "오래된 순"
+                    self.sortFilter.mode = true
+                } else if value == "stars,desc" {
+                    self.sortFilter.textLabel.text = "별점이 높은 순"
+                    self.sortFilter.mode = true
+                } else if value == "stars,asc" {
+                    self.sortFilter.textLabel.text = "별점이 낮은 순"
+                    self.sortFilter.mode = true
+                } else {
+                    self.sortFilter.textLabel.text = "최신 순"
+                    self.sortFilter.mode = false
+                }
+                
+                self.view.layoutIfNeeded()
+                self.memories = []
+                self.vm.input.ourMemoryRefresh.accept(())
+                self.filterPanel.view.removeFromSuperview()
+                self.filterPanel.removeFromParent()
+            }).disposed(by: disposeBag)
+        
+        vm.output.groupFilterValue.asDriver(onErrorJustReturn: .all)
+            .drive(onNext: { value in
+                
+                switch value {
+                case .company:
+                    self.groupFilter.textLabel.text = "동료만"
+                    self.groupFilter.mode = true
+                case .friend:
+                    self.groupFilter.textLabel.text = "친구만"
+                    self.groupFilter.mode = true
+                case .couple:
+                    self.groupFilter.textLabel.text = "연인만"
+                    self.groupFilter.mode = true
+                case .family:
+                    self.groupFilter.textLabel.text = "가족만"
+                    self.groupFilter.mode = true
+                default :
+                    self.groupFilter.textLabel.text = "카테고리"
+                    self.groupFilter.mode = false
+                }
+                
+                self.view.layoutIfNeeded()
+                self.memories = []
+                self.vm.input.ourMemoryRefresh.accept(())
+                self.filterPanel.view.removeFromSuperview()
+                self.filterPanel.removeFromParent()
+            }).disposed(by: disposeBag)
     }
     
 }
@@ -234,6 +343,265 @@ extension MyMemoryViewController: UICollectionViewDelegate, UICollectionViewData
                 self.vm.input.ourMemoryRefresh.accept(())
             }
         }
+    }
+    
+}
+
+
+
+//MARK: - Recommand Pop Up View Layout
+class MyMemoryPanelLayout: FloatingPanelLayout{
+    var position: FloatingPanelPosition = .bottom
+    var initialState: FloatingPanelState = .tip
+    
+    
+    var anchors: [FloatingPanelState: FloatingPanelLayoutAnchoring] {
+        return [
+            .tip: FloatingPanelLayoutAnchor(absoluteInset: 301, edge: .bottom, referenceGuide: .superview)
+        ]
+    }
+}
+
+class MyMemoryFilterViewController: UIViewController {
+    
+    let contentView = UIView()
+    let vm = MyMemoryViewModel.instance
+    private let disposeBag = DisposeBag()
+    
+    lazy var lastestBT = UIButton(type: .custom).then {
+        let string = "최신 순"
+        let attributedString = NSMutableAttributedString(string: string)
+        
+        let font = vm.ourMemory.sort == "visitedDate,desc" ? UIFont(name: "Pretendard-SemiBold", size: 20)! : UIFont(name: "Pretendard-Medium", size: 20)!
+        let color = vm.ourMemory.sort == "visitedDate,desc" ?  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1) : UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value:  color, range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+    }
+    
+    lazy var oldestBT = UIButton(type: .custom).then {
+        let string = "오래된 순"
+        let attributedString = NSMutableAttributedString(string: string)
+        
+        let font = vm.ourMemory.sort == "visitedDate,asc" ? UIFont(name: "Pretendard-SemiBold", size: 20)! : UIFont(name: "Pretendard-Medium", size: 20)!
+        let color = vm.ourMemory.sort == "visitedDate,asc" ?  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1) : UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: color, range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+    }
+    
+    lazy var starsHighBT = UIButton(type: .custom).then {
+        let string = "별점이 높은 순"
+        let attributedString = NSMutableAttributedString(string: string)
+        
+        let font = vm.ourMemory.sort == "stars,desc" ? UIFont(name: "Pretendard-SemiBold", size: 20)! : UIFont(name: "Pretendard-Medium", size: 20)!
+        let color = vm.ourMemory.sort == "stars,desc" ?  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1) : UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value:  color, range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+    }
+    
+    lazy var starsLowBT = UIButton(type: .custom).then {
+        let string = "별점이 낮은 순"
+        let attributedString = NSMutableAttributedString(string: string)
+        let font = vm.ourMemory.sort == "stars,asc" ? UIFont(name: "Pretendard-SemiBold", size: 20)! : UIFont(name: "Pretendard-Medium", size: 20)!
+        let color = vm.ourMemory.sort == "stars,asc" ?  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1) : UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: color, range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+    }
+    
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setUI()
+        bind()
+    }
+    
+    private func setUI() {
+        
+        view.backgroundColor = .white
+        
+        view.addSubview(contentView)
+        contentView.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+            $0.height.equalTo(301)
+        }
+        
+        contentView.addSubview(lastestBT)
+        lastestBT.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(41)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(24)
+        }
+        
+        contentView.addSubview(oldestBT)
+        oldestBT.snp.makeConstraints {
+            $0.top.equalTo(lastestBT.snp.bottom).offset(32)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(24)
+        }
+        
+        contentView.addSubview(starsHighBT)
+        starsHighBT.snp.makeConstraints {
+            $0.top.equalTo(oldestBT.snp.bottom).offset(32)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(24)
+        }
+        
+        contentView.addSubview(starsLowBT)
+        starsLowBT.snp.makeConstraints {
+            $0.top.equalTo(starsHighBT.snp.bottom).offset(32)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(24)
+        }
+        
+    }
+    
+    private func bind() {
+        
+        lastestBT.rx.tap
+            .map { "visitedDate,desc" }
+            .bind(to: vm.input.sortObserver)
+            .disposed(by: disposeBag)
+        
+        oldestBT.rx.tap
+            .map { "visitedDate,asc" }
+            .bind(to: vm.input.sortObserver)
+            .disposed(by: disposeBag)
+        
+        starsHighBT.rx.tap
+            .map { "stars,desc" }
+            .bind(to: vm.input.sortObserver)
+            .disposed(by: disposeBag)
+        
+        starsLowBT.rx.tap
+            .map { "stars,asc" }
+            .bind(to: vm.input.sortObserver)
+            .disposed(by: disposeBag)
+    }
+    
+}
+
+class MyMemoryGroupFilterViewController: UIViewController {
+    
+    let contentView = UIView()
+    let vm = MyMemoryViewModel.instance
+    private let disposeBag = DisposeBag()
+    
+    lazy var familyBT = UIButton(type: .custom).then {
+        let string = "가족만"
+        let attributedString = NSMutableAttributedString(string: string)
+        
+        let font = vm.ourMemory.groupType == .family ? UIFont(name: "Pretendard-SemiBold", size: 20)! : UIFont(name: "Pretendard-Medium", size: 20)!
+        let color = vm.ourMemory.groupType == .family ?  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1) : UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value:  color, range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+    }
+    
+    lazy var coupleBT = UIButton(type: .custom).then {
+        let string = "연인만"
+        let attributedString = NSMutableAttributedString(string: string)
+        
+        let font = vm.ourMemory.groupType == .couple ? UIFont(name: "Pretendard-SemiBold", size: 20)! : UIFont(name: "Pretendard-Medium", size: 20)!
+        let color = vm.ourMemory.groupType == .couple ?  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1) : UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: color, range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+    }
+    
+    lazy var friendBT = UIButton(type: .custom).then {
+        let string = "친구만"
+        let attributedString = NSMutableAttributedString(string: string)
+        
+        let font = vm.ourMemory.groupType == .friend ? UIFont(name: "Pretendard-SemiBold", size: 20)! : UIFont(name: "Pretendard-Medium", size: 20)!
+        let color = vm.ourMemory.groupType == .friend ?  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1) : UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value:  color, range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+    }
+    
+    lazy var companyBT = UIButton(type: .custom).then {
+        let string = "동료만"
+        let attributedString = NSMutableAttributedString(string: string)
+        let font = vm.ourMemory.groupType == .company  ? UIFont(name: "Pretendard-SemiBold", size: 20)! : UIFont(name: "Pretendard-Medium", size: 20)!
+        let color = vm.ourMemory.groupType == .company ?  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1) : UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: color, range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+    }
+    
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setUI()
+        bind()
+    }
+    
+    private func setUI() {
+        
+        view.backgroundColor = .white
+        
+        view.addSubview(contentView)
+        contentView.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+            $0.height.equalTo(301)
+        }
+        
+        contentView.addSubview(familyBT)
+        familyBT.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(41)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(24)
+        }
+        
+        contentView.addSubview(coupleBT)
+        coupleBT.snp.makeConstraints {
+            $0.top.equalTo(familyBT.snp.bottom).offset(32)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(24)
+        }
+        
+        contentView.addSubview(friendBT)
+        friendBT.snp.makeConstraints {
+            $0.top.equalTo(coupleBT.snp.bottom).offset(32)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(24)
+        }
+        
+        contentView.addSubview(companyBT)
+        companyBT.snp.makeConstraints {
+            $0.top.equalTo(friendBT.snp.bottom).offset(32)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(24)
+        }
+        
+    }
+    
+    private func bind() {
+        
+        familyBT.rx.tap
+            .map { GroupFilter.family }
+            .bind(to: vm.input.groupFilterObserver)
+            .disposed(by: disposeBag)
+        
+        coupleBT.rx.tap
+            .map { GroupFilter.couple }
+            .bind(to: vm.input.groupFilterObserver)
+            .disposed(by: disposeBag)
+        
+        friendBT.rx.tap
+            .map { GroupFilter.friend }
+            .bind(to: vm.input.groupFilterObserver)
+            .disposed(by: disposeBag)
+        
+        companyBT.rx.tap
+            .map { GroupFilter.company }
+            .bind(to: vm.input.groupFilterObserver)
+            .disposed(by: disposeBag)
     }
     
 }

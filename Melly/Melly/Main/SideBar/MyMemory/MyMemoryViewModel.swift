@@ -14,15 +14,16 @@ class MyMemoryViewModel {
     
     private let disposeBag = DisposeBag()
     
+    static let instance = MyMemoryViewModel()
+    
     var ourMemory = OurMemory()
     let input = Input()
     let output = Output()
     
     struct OurMemory {
-        var lastId:Int = -1
+        var page:Int = 0
         var isEnd:Bool = false
-        var visitedDate:String = ""
-        var keyword:String = ""
+        var sort:String = "visitedDate,desc"
         var groupType:GroupFilter = .all
     }
     
@@ -30,11 +31,15 @@ class MyMemoryViewModel {
     struct Input {
         let ourMemoryRefresh = PublishRelay<Void>()
         let ourMemorySelect = PublishRelay<Memory>()
+        let sortObserver = PublishRelay<String>()
+        let groupFilterObserver = PublishRelay<GroupFilter>()
     }
     
     struct Output {
         let ourMemoryValue = PublishRelay<[Memory]>()
         let errorValue = PublishRelay<String>()
+        let sortValue = PublishRelay<String>()
+        let groupFilterValue = PublishRelay<GroupFilter>()
     }
     
     init() {
@@ -56,6 +61,26 @@ class MyMemoryViewModel {
                 case .completed:
                     break
                 }
+            }).disposed(by: disposeBag)
+        
+        input.sortObserver
+            .subscribe(onNext: { value in
+                
+                self.ourMemory.sort = value
+                self.ourMemory.page = 0
+                self.ourMemory.isEnd = false
+                self.output.sortValue.accept(value)
+                
+            }).disposed(by: disposeBag)
+        
+        input.groupFilterObserver
+            .subscribe(onNext: { value in
+                
+                self.ourMemory.groupType = value
+                self.ourMemory.page = 0
+                self.ourMemory.isEnd = false
+                self.output.groupFilterValue.accept(value)
+                
             }).disposed(by: disposeBag)
         
         
@@ -81,9 +106,8 @@ class MyMemoryViewModel {
                 let url = "https://api.melly.kr/api/user/memory"
                 
                 let parameters:Parameters = ["size": 10,
-                                             "lastId": self.ourMemory.lastId,
-                                             "keyword": self.ourMemory.keyword,
-                                             "visitedDate": self.ourMemory.visitedDate,
+                                             "page": self.ourMemory.page,
+                                             "sort": self.ourMemory.sort,
                                              "groupType": self.ourMemory.groupType.rawValue]
                 AF.request(url, method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: header)
                     .responseData { response in
@@ -92,16 +116,17 @@ class MyMemoryViewModel {
                             
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
+                               
                                 
-                                if json.message == "내가 작성한 메모리 전체 조회" {
+                                if json.message == "유저가 작성한 메모리 조회" {
                                     
-                                    if let data = try? JSONSerialization.data(withJSONObject: json.data! as Any) {
+                                    if let data = try? JSONSerialization.data(withJSONObject: json.data?["memoryInfo"] as Any) {
                                         
-                                        if let result = try? decoder.decode(MemoryData.self, from: data) {
-                                            if !result.memoryList.content.isEmpty {
-                                                self.ourMemory.lastId = result.memoryList.content[result.memoryList.content.count - 1].memoryId
-                                                self.ourMemory.isEnd = result.memoryList.last
-                                                observer.onNext(result.memoryList.content)
+                                        if let result = try? decoder.decode(MemoryList.self, from: data) {
+                                            if !result.content.isEmpty {
+                                                self.ourMemory.page += 1
+                                                self.ourMemory.isEnd = result.last
+                                                observer.onNext(result.content)
                                             }
                                         } else {
                                             observer.onNext([])

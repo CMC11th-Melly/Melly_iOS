@@ -17,7 +17,10 @@ class ProfileEditViewController: UIViewController {
     let vm = MyPageViewModel.instance
     let backBT = BackButton()
     
-    let scrollView = UIScrollView()
+    let scrollView = UIScrollView().then {
+        $0.showsHorizontalScrollIndicator = false
+        $0.showsVerticalScrollIndicator = false
+    }
     let contentView = UIView()
     let bottomView = UIView()
     
@@ -76,8 +79,19 @@ class ProfileEditViewController: UIViewController {
         return collectionView
     }()
     
-    let cancelBT = CustomButton(title: "취소")
-    let writeBT = CustomButton(title: "완료")
+    let cancelBT = CustomButton(title: "취소").then {
+        $0.isEnabled = true
+        $0.backgroundColor = UIColor(red: 0.941, green: 0.945, blue: 0.984, alpha: 1)
+        let title = "취소"
+        let attributedString = NSMutableAttributedString(string: title)
+        attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-SemiBold", size: 16)!, range: NSRange(location: 0, length: title.count))
+        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.173, green: 0.092, blue: 0.671, alpha: 1), range: NSRange(location: 0, length: title.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+    }
+    
+    let writeBT = CustomButton(title: "완료").then {
+        $0.isEnabled = true
+    }
     
     
     
@@ -203,10 +217,8 @@ extension ProfileEditViewController {
     }
     
     private func bind() {
-        
         bindInput()
         bindOutput()
-        
     }
     
     private func bindInput() {
@@ -269,6 +281,8 @@ extension ProfileEditViewController {
                 if let user = User.loginedUser {
                     if String.getGenderValue(user.gender) == element {
                         cell.isSelected = true
+                        cell.setData()
+                        
                     }
                 }
                 
@@ -300,6 +314,8 @@ extension ProfileEditViewController {
                 if let user = User.loginedUser {
                     if String.getAgeValue(user.ageGroup) == element {
                         cell.isSelected = true
+                        cell.setData()
+                        
                     }
                 }
             }.disposed(by: disposeBag)

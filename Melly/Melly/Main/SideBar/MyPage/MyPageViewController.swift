@@ -21,24 +21,23 @@ class MyPageViewController:UIViewController {
     let backBT = BackButton()
     
     let titleLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+        $0.textColor = UIColor(red: 0.102, green: 0.118, blue: 0.153, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 20)
         $0.text = "마이페이지"
     }
     
-    let imageView = UIImageView().then {
-        $0.backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
+    let imageView = UIImageView(image: UIImage(named: "profile")).then {
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 12
     }
     
     let nicknameLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 26)
     }
     
     let emailLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.545, green: 0.584, blue: 0.631, alpha: 1)
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Medium", size: 12.6)
     }
     
@@ -52,7 +51,7 @@ class MyPageViewController:UIViewController {
     
     let storeLB = UILabel().then {
         $0.text = "저장 용량"
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 18)
     }
     
@@ -72,7 +71,7 @@ class MyPageViewController:UIViewController {
     
     let progressView = UIProgressView().then {
         $0.trackTintColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1)
-        $0.progressTintColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.progressTintColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
         $0.layer.cornerRadius = 12
         $0.progress = 0.1
     }
@@ -232,7 +231,8 @@ extension MyPageViewController {
                     let attributedString = NSMutableAttributedString(string: currentSize)
                     let font =  UIFont(name: "Pretendard-SemiBold", size: 16)!
                     attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: currentSize.count))
-                    attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1), range: NSRange(location: 0, length: currentSize.count))
+                    attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1), range: NSRange(location: 0, length: currentSize.count))
+                    attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1), range: (currentSize as NSString).range(of: "\(String.formatSize(fileSize: value))"))
                     self.storeText.attributedText = attributedString
                     
                     let lastSize = String.formatSize(fileSize: Int(1.0737e+9 * 3) - value)

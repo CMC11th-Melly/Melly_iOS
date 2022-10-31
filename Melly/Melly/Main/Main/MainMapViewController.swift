@@ -61,7 +61,6 @@ class MainMapViewController: UIViewController {
     let goSearchBT = UIButton(type: .custom).then {
         let string = "장소, 메모리 검색"
         let attributedString = NSMutableAttributedString(string: string)
-        let font = UIFont(name: "Pretendard-Medium", size: 16)!
         attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Regular", size: 14)!, range: NSRange(location: 0, length: string.count))
         attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1), range: NSRange(location: 0, length: string.count))
         $0.setAttributedTitle(attributedString, for: .normal)
@@ -75,7 +74,7 @@ class MainMapViewController: UIViewController {
     
     
     let addGroupView = UIView().then {
-        $0.backgroundColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+        $0.backgroundColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
         $0.layer.cornerRadius = 25
     }
     
@@ -140,7 +139,8 @@ extension MainMapViewController {
         }
         safeArea.addSubview(mapView)
         mapView.snp.makeConstraints {
-            $0.top.leading.trailing.equalToSuperview()
+            $0.top.equalTo(view)
+            $0.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(layoutView.snp.top)
         }
         
@@ -405,6 +405,23 @@ extension MainMapViewController {
 extension MainMapViewController: GoPlaceDelegate {
     
     /**
+    해당 메모리에 대한 상세정보를 가져온다.
+     - Parameters:
+        - memory : Memory
+     - Throws: None
+     - Returns:None
+     */
+    func goToMemoryView(_ memory: Memory) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            let vm = MemoryDetailViewModel(memory)
+            let vc = MemoryDetailViewController(vm: vm)
+            vc.modalTransitionStyle = .crossDissolve
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
+        }
+    }
+    
+    /**
     해당 Place에 메모리 쓰기 뷰를 띄워준다.
      - Parameters:
         - place : Place
@@ -550,14 +567,18 @@ class ScrapFloatingPanelLayout: FloatingPanelLayout{
 class FilterCell: UICollectionViewCell {
     
     let titleLb = UILabel().then {
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Medium", size: 14)
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
-        self.layer.cornerRadius = 12
+        self.backgroundColor = .white
+        self.layer.cornerRadius = 10
+        self.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.12).cgColor
+        self.layer.shadowOpacity = 1
+        self.layer.shadowRadius = 6
+        self.layer.shadowOffset = CGSize(width: 1, height: 1)
         addSubview(titleLb)
         titleLb.snp.makeConstraints {
             $0.centerX.centerY.equalToSuperview()
@@ -571,12 +592,12 @@ class FilterCell: UICollectionViewCell {
     override var isSelected: Bool {
         didSet {
             if isSelected {
-                self.titleLb.textColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
-                self.backgroundColor = UIColor(red: 0.427, green: 0.459, blue: 0.506, alpha: 1)
+                self.titleLb.textColor = .white
+                self.backgroundColor = UIColor(red: 0.173, green: 0.092, blue: 0.671, alpha: 1)
                 
             } else {
-                self.titleLb.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
-                self.backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
+                self.titleLb.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+                self.backgroundColor = .white
             }
         }
     }

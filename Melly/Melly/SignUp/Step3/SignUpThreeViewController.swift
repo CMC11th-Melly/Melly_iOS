@@ -476,6 +476,11 @@ class SignUpCell: UICollectionViewCell {
         }
     }
     
+    func setData() {
+        textLB.textColor = UIColor(red: 0.116, green: 0.052, blue: 0.521, alpha: 1)
+        backgroundColor = UIColor(red: 0.941, green: 0.945, blue: 0.984, alpha: 1)
+    }
+    
     override var isSelected: Bool {
         didSet {
             if isSelected {

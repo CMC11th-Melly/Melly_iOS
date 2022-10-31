@@ -104,7 +104,7 @@ extension ResearchMainViewController {
             .drive(onNext: { value in
                 
                 if value == 0 {
-                    self.dismiss(animated: true)
+                    self.navigationController?.popViewController(animated: true)
                 } else if value == 4 {
                     let vc = ResearchLoadingViewController()
                     vc.modalTransitionStyle = .crossDissolve

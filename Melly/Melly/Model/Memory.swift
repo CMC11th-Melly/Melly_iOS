@@ -12,8 +12,8 @@ struct Memory:Codable {
     let memoryImages:[Image]
     let title:String
     let content:String
-    let groupName:String?
-    let groupType:String?
+    let groupName:String
+    let groupType:String
     let visitedDate:String
     let stars:Int
     let keyword:[String]
