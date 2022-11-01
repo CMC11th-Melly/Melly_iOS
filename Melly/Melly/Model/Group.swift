@@ -11,10 +11,9 @@ struct Group:Codable {
     
     let groupId, groupIcon: Int
     let groupName: String
-    let users: [UserInfo]
+    var users: [UserInfo] = []
     let groupType: String
-    let invitationLink: String
-    
+    let invitationLink: String?
     
 }
 

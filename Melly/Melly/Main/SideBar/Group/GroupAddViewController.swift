@@ -13,27 +13,37 @@ class GroupAddViewController: UIViewController {
     
     private let disposeBag = DisposeBag()
     
-    let vm:GroupEditViewModel
+    let vm = GroupViewModel.instance
     
     let backBT = BackButton()
-    let titleLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+    
+    lazy var titleLB = UILabel().then {
+        $0.textColor = UIColor(red: 0.102, green: 0.118, blue: 0.153, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 20)
-        $0.text = "새로운 그룹 추가"
+        
+        if let _ = vm.group {
+            $0.text = "그룹 편집"
+        } else {
+            $0.text = "새로운 그룹 추가"
+        }
     }
     
     let headerView = UIView()
     
     let groupNameLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
-        $0.text = "그룹명"
+        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+        $0.text = "그룹명"
     }
     
-    let nameTF = CustomTextField(title: "그룹명을 입력해주세요.")
+    lazy var nameTF = CustomTextField(title: "그룹명을 입력해주세요.").then {
+        if let _ = vm.group {
+            $0.text = vm.group?.groupName
+        }
+    }
     
     let groupCategoryLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.text = "그룹 카테고리"
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
     }
@@ -47,7 +57,7 @@ class GroupAddViewController: UIViewController {
     }()
     
     let groupIconLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.text = "아이콘 선택"
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
     }
@@ -64,16 +74,16 @@ class GroupAddViewController: UIViewController {
     
     let bottomView = UIView()
     
-    let cancelBT = CustomButton(title: "취소")
-    let saveBT = CustomButton(title: "그룹 저장")
-    
-    init(vm: GroupEditViewModel) {
-        self.vm = vm
-        super.init(nibName: nil, bundle: nil)
+    lazy var cancelBT = DefaultButton("취소", false).then {
+        if let _ = vm.group {
+            $0.titleLB.text = "그룹 삭제"
+        }
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    lazy var saveBT = DefaultButton("그룹 저장", true).then {
+        if let _ = vm.group {
+            $0.titleLB.text = "그룹 편집"
+        }
     }
     
     
@@ -84,8 +94,9 @@ class GroupAddViewController: UIViewController {
         
     }
     
-    
-    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
     
 }
 
@@ -197,13 +208,19 @@ extension GroupAddViewController {
     private func bindInput() {
         
         saveBT.rx.tap
-            .bind(to: vm.input.addGroupObserver)
+            .subscribe(onNext: {
+                if self.saveBT.titleLB.text == "그룹 저장" {
+                    self.vm.input.addGroupObserver.accept(())
+                } else {
+                    self.vm.input.editGroupObserver.accept(())
+                }
+            })
             .disposed(by: disposeBag)
         
         cancelBT.rx.tap
             .subscribe(onNext: {
                 
-                if self.cancelBT.title == "그룹 삭제" {
+                if self.cancelBT.titleLB.text == "그룹 삭제" {
                     
                     let alert = UIAlertController(title: "정말 삭제하시겠어요?", message: "그룹을 삭제하면 멤버도 없어집니다!", preferredStyle: .alert)
                     let cancelAction = UIAlertAction(title: "취소", style: .cancel)
@@ -215,16 +232,15 @@ extension GroupAddViewController {
                     alert.addAction(okAction)
                     self.present(alert, animated: true)
                     
-                    
                 } else {
-                    self.dismiss(animated: true)
+                    self.navigationController?.popViewController(animated: true)
                 }
                 
             }).disposed(by: disposeBag)
         
         backBT.rx.tap
             .subscribe(onNext: {
-                self.dismiss(animated: true)
+                self.navigationController?.popViewController(animated: true)
             }).disposed(by: disposeBag)
         
         nameTF.rx.controlEvent([.editingDidEnd])
@@ -240,7 +256,6 @@ extension GroupAddViewController {
             .map { index in
                 let cell = self.categoryCV.cellForItem(at: index) as? GroupCategoryCell
                 let text = cell?.categoryLB.text ?? ""
-                
                 switch text {
                 case "가족":
                     return GroupFilter.family.rawValue
@@ -251,7 +266,7 @@ extension GroupAddViewController {
                 case "친구":
                     return GroupFilter.friend.rawValue
                 default:
-                    return ""
+                    return "ALL"
                 }
             }.bind(to: vm.input.groupCategoryObserver)
             .disposed(by: disposeBag)
@@ -277,6 +292,7 @@ extension GroupAddViewController {
         vm.groupCategoryData
             .bind(to: categoryCV.rx.items(cellIdentifier: "category", cellType: GroupCategoryCell.self)) { row, element, cell in
                 cell.categoryLB.text = element
+                
             }.disposed(by: disposeBag)
         
         vm.groupIconData
@@ -284,14 +300,31 @@ extension GroupAddViewController {
                 cell.id = element
             }.disposed(by: disposeBag)
         
-        vm.output.editMode.subscribe(onNext: {value in
-            self.titleLB.text = "그룹편집"
-            self.nameTF.text = value.groupName
-            self.cancelBT.title = "그룹 삭제"
-        }).disposed(by: disposeBag)
+        vm.output.errorValue.asDriver(onErrorJustReturn: "")
+            .drive(onNext: { value in
+                
+                let alert = UIAlertController(title: "에러", message: value, preferredStyle: .alert)
+                let alertAction = UIAlertAction(title: "확인", style: .cancel)
+                alert.addAction(alertAction)
+                self.present(alert, animated: true)
+                
+            }).disposed(by: disposeBag)
         
+        vm.output.groupAddComplete
+            .subscribe(onNext: { value in
+                let vc = GroupAddCompleteViewController(value)
+                vc.modalTransitionStyle = .coverVertical
+                vc.modalPresentationStyle = .fullScreen
+                self.navigationController?.pushViewController(vc, animated: true)
+            }).disposed(by: disposeBag)
+        
+        vm.output.removeValue
+            .subscribe(onNext: {
+                self.navigationController?.popToRootViewController(animated: true)
+            }).disposed(by: disposeBag)
         
     }
+    
     
     
 }
@@ -366,17 +399,17 @@ final class GroupCategoryCell: UICollectionViewCell {
     override var isSelected: Bool {
         didSet {
             if isSelected {
-                categoryLB.textColor = UIColor(red: 0.975, green: 0.979, blue: 0.988, alpha: 1)
-                backgroundColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
+                categoryLB.textColor = .white
+                backgroundColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
             } else {
-                categoryLB.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
-                backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
+                categoryLB.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
+                backgroundColor = .white
             }
         }
     }
     
     let categoryLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Medium", size: 14)
     }
     
@@ -391,8 +424,11 @@ final class GroupCategoryCell: UICollectionViewCell {
     }
     
     private func setupView() {
-        backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
+        backgroundColor = .white
         layer.cornerRadius = 10
+        layer.borderWidth = 1
+        layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
+        
         
         addSubview(categoryLB)
         categoryLB.snp.makeConstraints {
@@ -408,8 +444,26 @@ final class GroupCategoryCell: UICollectionViewCell {
 final class GroupIconCell: UICollectionViewCell {
     
     
-    let imageView = UIImageView(image: UIImage(named: "profile"))
-    var id:Int = 0
+    let imageView = UIImageView(image: UIImage(named: "profile")).then {
+        $0.clipsToBounds = true
+    }
+    
+    var id:Int = 1 {
+        didSet {
+            imageView.image = UIImage(named: "group_icon_\(id)")
+        }
+    }
+    
+    override var isSelected: Bool {
+        didSet {
+           if isSelected {
+                layer.borderWidth = 3.4
+            } else {
+                layer.borderWidth = 0
+            }
+        }
+    }
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -422,6 +476,9 @@ final class GroupIconCell: UICollectionViewCell {
     }
     
     private func setupView() {
+        layer.cornerRadius = 46.67
+        layer.borderWidth = 0
+        layer.borderColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1).cgColor
         addSubview(imageView)
         imageView.snp.makeConstraints {
             $0.edges.equalToSuperview()

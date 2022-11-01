@@ -81,6 +81,7 @@
 		BFDE617128ED13F70099FF97 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE617028ED13F70099FF97 /* SearchViewController.swift */; };
 		BFDE617328ED179F0099FF97 /* ResearchResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE617228ED179F0099FF97 /* ResearchResultViewController.swift */; };
 		BFDE617628ED59DB0099FF97 /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE617528ED59DB0099FF97 /* LocationViewController.swift */; };
+		BFECADA02910EE9500BB7C04 /* GroupAddCompleteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFECAD9F2910EE9500BB7C04 /* GroupAddCompleteViewController.swift */; };
 		BFF661042908C6F9003E998B /* CommentHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF661032908C6F9003E998B /* CommentHeaderView.swift */; };
 		BFF6610829091FC4003E998B /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF6610729091FC4003E998B /* Comment.swift */; };
 		BFF6610A290920EC003E998B /* CommentFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF66109290920EC003E998B /* CommentFooterView.swift */; };
@@ -171,6 +172,7 @@
 		BFDE617028ED13F70099FF97 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		BFDE617228ED179F0099FF97 /* ResearchResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResearchResultViewController.swift; sourceTree = "<group>"; };
 		BFDE617528ED59DB0099FF97 /* LocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
+		BFECAD9F2910EE9500BB7C04 /* GroupAddCompleteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupAddCompleteViewController.swift; sourceTree = "<group>"; };
 		BFF661032908C6F9003E998B /* CommentHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentHeaderView.swift; sourceTree = "<group>"; };
 		BFF6610729091FC4003E998B /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		BFF66109290920EC003E998B /* CommentFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentFooterView.swift; sourceTree = "<group>"; };
@@ -359,6 +361,7 @@
 				BF957BD2290B74490056E99D /* GroupAddViewController.swift */,
 				BF957BD4290BBA730056E99D /* GroupEditViewModel.swift */,
 				BF957BD6290BCF920056E99D /* GroupDetailViewController.swift */,
+				BFECAD9F2910EE9500BB7C04 /* GroupAddCompleteViewController.swift */,
 			);
 			path = Group;
 			sourceTree = "<group>";
@@ -752,6 +755,7 @@
 				BF34F87D28D19DE700EA1C16 /* CustomComponent.swift in Sources */,
 				BF72FC6C29053B3F0076AEF8 /* MyProfileViewController.swift in Sources */,
 				BFA3399628C8349B00C1CD4C /* UIKitExtension.swift in Sources */,
+				BFECADA02910EE9500BB7C04 /* GroupAddCompleteViewController.swift in Sources */,
 				BFDE616E28ED12A10099FF97 /* ResearchLoadingViewController.swift in Sources */,
 				BFD6C56D28D723CD0092A6E5 /* SignUpOneViewController.swift in Sources */,
 				BF0A11C928CDCDEB00B06DE1 /* SideBarViewController.swift in Sources */,

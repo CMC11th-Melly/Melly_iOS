@@ -286,9 +286,11 @@ extension SideBarViewController {
         
         groupBT.rx.tap.subscribe(onNext: {
             let vc = GroupViewController()
-            vc.modalTransitionStyle = .crossDissolve
-            vc.modalPresentationStyle = .fullScreen
-            self.present(vc, animated: true)
+            let nav = UINavigationController(rootViewController: vc)
+            nav.modalTransitionStyle = .crossDissolve
+            nav.modalPresentationStyle = .fullScreen
+            nav.isNavigationBarHidden = true
+            self.present(nav, animated: true)
         }).disposed(by: disposeBag)
         
         scrapBT.rx.tap.subscribe(onNext: {

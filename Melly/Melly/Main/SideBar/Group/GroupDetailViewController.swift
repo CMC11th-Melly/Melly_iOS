@@ -14,7 +14,6 @@ class GroupDetailViewController: UIViewController {
     
     private let disposeBag = DisposeBag()
     
-    
     let vm = GroupViewModel.instance
     
     let headerView = UIView()
@@ -31,12 +30,16 @@ class GroupDetailViewController: UIViewController {
     let bodyView = UIView()
     
     let groupLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.text = "그룹명"
-        $0.font = UIFont(name: "Pretendard-SemiBold", size: 14)
+        $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
     }
     
-    let groupImageView = UIImageView(image: UIImage(named: "profile"))
+    lazy var groupImageView = UIImageView().then {
+        if let group = vm.group {
+            $0.image = UIImage(named: "group_icon_\(group.groupIcon)")
+        }
+    }
     
     lazy var groupNameLB = UILabel().then {
         $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
@@ -49,9 +52,9 @@ class GroupDetailViewController: UIViewController {
     }
     
     let memberLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.text = "멤버"
-        $0.font = UIFont(name: "Pretendard-SemiBold", size: 14)
+        $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
     }
     
     let memberAddBT = UIButton(type: .custom).then {
@@ -79,22 +82,27 @@ class GroupDetailViewController: UIViewController {
     }
     
     let categoryLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.text = "카테고리"
-        $0.font = UIFont(name: "Pretendard-SemiBold", size: 14)
+        $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
     }
     
     lazy var categoryNameLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
+        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.text = vm.group?.groupType
         $0.font = UIFont(name: "Pretendard-Medium", size: 14)
-        $0.backgroundColor = UIColor(red: 0.975, green: 0.979, blue: 0.988, alpha: 1)
+        $0.backgroundColor = UIColor(red: 0.941, green: 0.945, blue: 0.984, alpha: 1)
         $0.layer.cornerRadius = 10
+        $0.textAlignment = .center
+        $0.clipsToBounds = true
     }
     
     
     let bottomView = UIView()
-    let saveBT = CustomButton(title: "이 그룹이 쓴 메모리 보기")
+    
+    let saveBT = CustomButton(title: "이 그룹이 쓴 메모리 보기").then {
+        $0.isEnabled = true
+    }
     
     
     override func viewDidLoad() {
@@ -105,9 +113,9 @@ class GroupDetailViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         if let group = vm.group {
-            vm.input.getGroupDetailObserver.accept(group)
-        } else {
-            self.dismiss(animated: true)
+            groupImageView.image = UIImage(named: "group_icon_\(group.groupIcon)")
+            groupNameLB.text = group.groupName
+            categoryNameLB.text = group.groupType
         }
     }
     
@@ -248,16 +256,18 @@ extension GroupDetailViewController {
         
         backBT.rx.tap
             .subscribe(onNext: {
-                self.dismiss(animated: true)
+                self.navigationController?.popViewController(animated: true)
             }).disposed(by: disposeBag)
         
         editBT.rx.tap
-            .subscribe(onNext: {
-                let vm = GroupEditViewModel(group: self.vm.group)
-                let vc = GroupAddViewController(vm: vm)
+            .subscribe(onNext: { [self] in
+                vm.groupIcon = vm.group!.groupIcon
+                vm.groupName = vm.group!.groupName
+                vm.groupType = vm.group!.groupType
+                let vc = GroupAddViewController()
                 vc.modalTransitionStyle = .crossDissolve
                 vc.modalPresentationStyle = .fullScreen
-                self.present(vc, animated: true)
+                self.navigationController?.pushViewController(vc, animated: true)
             }).disposed(by: disposeBag)
         
     }
@@ -313,10 +323,11 @@ final class MemberCell: UICollectionViewCell {
     }
     
     let nameLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.4, green: 0.435, blue: 0.486, alpha: 1)
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-SemiBold", size: 12)
         $0.text = "소피아"
         $0.lineBreakMode = .byTruncatingMiddle
-        $0.font = UIFont(name: "Pretendard-SemiBold", size: 12)
+        $0.textAlignment = .center
     }
     
     override init(frame: CGRect) {
@@ -333,14 +344,15 @@ final class MemberCell: UICollectionViewCell {
         
         addSubview(profileImageView)
         profileImageView.snp.makeConstraints {
-            $0.top.leading.trailing.equalToSuperview()
+            $0.top.equalToSuperview()
+            $0.centerX.equalToSuperview()
             $0.height.width.equalTo(50)
         }
         
         addSubview(nameLB)
         nameLB.snp.makeConstraints {
             $0.top.equalTo(profileImageView.snp.bottom).offset(8)
-            $0.centerX.equalToSuperview()
+            $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(26)
             $0.width.equalTo(57)
         }

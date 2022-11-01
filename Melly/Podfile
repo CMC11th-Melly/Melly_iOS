@@ -33,4 +33,5 @@ pod 'DropDown'
 pod 'Firebase/Auth'
 pod 'Firebase/Core'
 pod 'FirebaseAnalytics'
+pod 'Firebase/Messaging'
 end

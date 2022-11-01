@@ -164,6 +164,11 @@ extension MyMemoryViewController {
         dataCV.register(MemoryListCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         dataCV.register(FooterLoadingView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: FooterLoadingView.identifier)
         
+        backBT.rx.tap
+            .subscribe(onNext: {
+                self.dismiss(animated: true)
+            }).disposed(by: disposeBag)
+        
         sortFilter.rx.tap
             .subscribe(onNext: {
                 

@@ -881,3 +881,46 @@ class CategoryPicker: UIButton {
     }
     
 }
+
+
+class DefaultButton:UIButton {
+    
+    let titleLB = UILabel().then {
+        $0.textColor = UIColor(red: 0.173, green: 0.092, blue: 0.671, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    convenience init(_ title: String, _ mode: Bool) {
+        self.init()
+        
+        
+        
+        self.titleLB.text = title
+        self.layer.cornerRadius = 12
+        
+        addSubview(titleLB)
+        titleLB.snp.makeConstraints {
+            $0.centerY.centerX.equalToSuperview()
+        }
+        
+        if mode {
+            titleLB.textColor = .white
+            backgroundColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
+        } else {
+            titleLB.textColor = UIColor(red: 0.173, green: 0.092, blue: 0.671, alpha: 1)
+            backgroundColor = UIColor(red: 0.941, green: 0.945, blue: 0.984, alpha: 1)
+        }
+        
+        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+}

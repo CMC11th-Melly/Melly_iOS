@@ -14,6 +14,8 @@ import KakaoSDKAuth
 import KakaoSDKCommon
 import NaverThirdPartyLogin
 import NMapsMap
+import UserNotifications
+import FirebaseMessaging
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -38,6 +40,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         //네이버 맵 연결
         NMFAuthManager.shared().clientId = "4f8brsaqzw"
+        
+        UNUserNotificationCenter.current().delegate = self
+        Messaging.messaging().delegate = self
+        
+        let authOptions:UNAuthorizationOptions = [.badge, .sound, .alert]
+        UNUserNotificationCenter
+            .current()
+            .requestAuthorization(options: authOptions) { _, _ in }
+        application.registerForRemoteNotifications()
         
         return true
     }
@@ -73,3 +84,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.badge, .sound, .banner])
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        completionHandler()
+    }
+    
+    
+}
+
+
+extension AppDelegate: MessagingDelegate {
+    
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        if let fcmToken = fcmToken {
+            UserDefaults.standard.set(fcmToken, forKey: "fcmToken")
+        }
+    }
+    
+    
+    
+}

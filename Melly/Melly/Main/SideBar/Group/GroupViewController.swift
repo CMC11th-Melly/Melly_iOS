@@ -33,15 +33,14 @@ class GroupViewController: UIViewController {
     }
     
     let headerView = UIView()
-    
     let noDataView = UIView()
-    
+    let noDataFrame = UIView()
     let cancelImg = UIImageView(image: UIImage(named: "group_cancel"))
     
     let noDataLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.4, green: 0.435, blue: 0.486, alpha: 1)
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
         $0.text = "내가 만든 그룹이 없습니다."
-        $0.font = UIFont(name: "Pretendard-Medium", size: 22)
+        $0.font = UIFont(name: "Pretendard-Medium", size: 20)
     }
     
     let noDataAddBT = UIButton(type: .custom).then {
@@ -49,9 +48,9 @@ class GroupViewController: UIViewController {
         let attributedString = NSMutableAttributedString(string: string)
         let font = UIFont(name: "Pretendard-SemiBold", size: 16)!
         attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
-        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1), range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: UIColor.white, range: NSRange(location: 0, length: string.count))
         $0.setAttributedTitle(attributedString, for: .normal)
-        $0.backgroundColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+        $0.backgroundColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
         $0.layer.cornerRadius = 12
     }
     
@@ -67,7 +66,10 @@ class GroupViewController: UIViewController {
         return collectionView
     }()
     
-    
+    let rightAlert = RightAlert().then {
+        $0.labelView.text = "그룹 삭제 완료"
+        $0.alpha = 0
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -78,6 +80,10 @@ class GroupViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         vm.input.getGroupObserver.accept(())
+        vm.group = nil
+        vm.groupName = ""
+        vm.groupType = ""
+        vm.groupIcon = -1
     }
 
 }
@@ -120,22 +126,30 @@ extension GroupViewController {
             $0.leading.trailing.bottom.equalToSuperview()
         }
         
-        noDataView.addSubview(cancelImg)
+        noDataView.addSubview(noDataFrame)
+        noDataFrame.snp.makeConstraints {
+            $0.centerX.centerY.equalToSuperview()
+            $0.width.equalTo(205)
+            $0.height.equalTo(190)
+        }
+        
+        noDataFrame.addSubview(cancelImg)
         cancelImg.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(226)
+            $0.top.equalToSuperview()
+            $0.width.height.equalTo(46)
             $0.centerX.equalToSuperview()
         }
         
         noDataView.addSubview(noDataLB)
         noDataLB.snp.makeConstraints {
-            $0.top.equalTo(cancelImg.snp.bottom).offset(20)
+            $0.top.equalTo(cancelImg.snp.bottom).offset(16)
             $0.centerX.equalToSuperview()
-            $0.height.equalTo(33)
+            $0.height.equalTo(30)
         }
         
         noDataView.addSubview(noDataAddBT)
         noDataAddBT.snp.makeConstraints {
-            $0.top.equalTo(noDataLB.snp.bottom).offset(43)
+            $0.top.equalTo(noDataLB.snp.bottom).offset(42)
             $0.centerX.equalToSuperview()
             $0.width.equalTo(160)
             $0.height.equalTo(56)
@@ -155,6 +169,14 @@ extension GroupViewController {
             $0.trailing.equalToSuperview().offset(-30)
         }
         
+        safeArea.addSubview(rightAlert)
+        rightAlert.snp.makeConstraints {
+            $0.bottom.equalToSuperview().offset(-10)
+            $0.leading.equalToSuperview().offset(30)
+            $0.trailing.equalToSuperview().offset(-30)
+            $0.height.equalTo(56)
+        }
+        
     }
     
     private func bind() {
@@ -169,33 +191,32 @@ extension GroupViewController {
         dataCV.rx.setDelegate(self).disposed(by: disposeBag)
         dataCV.register(GroupCell.self, forCellWithReuseIdentifier: "cell")
        
-        backBT.rx.tap
-            .subscribe(onNext: {
+        backBT.rx.tap.asSignal()
+            .emit(onNext: {
                 self.dismiss(animated: true)
             }).disposed(by: disposeBag)
         
-        addBT.rx.tap
-            .subscribe(onNext: {
-                let vm = GroupEditViewModel()
-                let vc = GroupAddViewController(vm: vm)
+        addBT.rx.tap.asSignal()
+            .emit(onNext: {
+                
+                let vc = GroupAddViewController()
                 vc.modalTransitionStyle = .crossDissolve
                 vc.modalPresentationStyle = .fullScreen
-                self.present(vc, animated: true)
+                self.navigationController?.pushViewController(vc, animated: true)
             }).disposed(by: disposeBag)
         
         noDataAddBT.rx.tap
             .subscribe(onNext: {
-                let vm = GroupEditViewModel()
-                let vc = GroupAddViewController(vm: vm)
+                let vc = GroupAddViewController()
                 vc.modalTransitionStyle = .crossDissolve
                 vc.modalPresentationStyle = .fullScreen
-                self.present(vc, animated: true)
+                self.navigationController?.pushViewController(vc, animated: true)
             }).disposed(by: disposeBag)
         
         dataCV.rx.itemSelected
             .map ({ index in
-                let cell = self.dataCV.cellForItem(at: index) as? GroupCell
-                return cell!.group!
+                let cell = self.dataCV.cellForItem(at: index) as! GroupCell
+                return cell.group!
             }).bind(to: vm.input.selectedGroup)
             .disposed(by: disposeBag)
         
@@ -224,8 +245,19 @@ extension GroupViewController {
                 let vc = GroupDetailViewController()
                 vc.modalTransitionStyle = .crossDissolve
                 vc.modalPresentationStyle = .fullScreen
-                self.present(vc, animated: true)
+                self.navigationController?.pushViewController(vc, animated: true)
             }).disposed(by: disposeBag)
+        
+        vm.output.removeValue
+            .subscribe(onNext: {
+                self.rightAlert.alpha = 1
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    UIView.animate(withDuration: 1.5) {
+                        self.rightAlert.alpha = 0
+                    }
+                }
+            }).disposed(by: disposeBag)
+        
         
     }
     
@@ -263,12 +295,11 @@ final class GroupCell: UICollectionViewCell {
         }
     }
     
-    let imageView = UIImageView(image: UIImage(named: "profile"))
+    let imageView = UIImageView(image: UIImage(named: "group_icon_1"))
     
     
     let groupNameLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
-        
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 18)
     }
     
@@ -288,8 +319,10 @@ final class GroupCell: UICollectionViewCell {
     }
     
     private func setupView() {
-        backgroundColor = UIColor(red: 0.975, green: 0.979, blue: 0.988, alpha: 1)
+        backgroundColor = .white
         layer.cornerRadius = 12
+        layer.borderWidth = 1.2
+        layer.borderColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1).cgColor
         
         addSubview(imageView)
         imageView.snp.makeConstraints {
@@ -309,7 +342,8 @@ final class GroupCell: UICollectionViewCell {
         memberLB.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.height.equalTo(17)
-            $0.trailing.equalToSuperview().offset(-30)
+            $0.trailing.equalToSuperview().offset(-21)
+            $0.leading.greaterThanOrEqualTo(groupNameLB.snp.trailing).offset(12)
         }
         
         
@@ -318,11 +352,11 @@ final class GroupCell: UICollectionViewCell {
     private func setData() {
         
         if let group = group {
-            
-            groupNameLB.text = group.groupName
-            
-            memberLB.text = "멤버 \(group.users.count)명"
-            
+            DispatchQueue.main.async {
+                self.groupNameLB.text = group.groupName
+                self.imageView.image = UIImage(named: "group_icon_\(group.groupIcon)")
+                self.memberLB.text = "멤버 \(group.users.count)명"
+            }
         }
         
     }

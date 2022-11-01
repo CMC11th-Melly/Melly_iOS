@@ -17,7 +17,7 @@ class GroupEditViewModel {
     let url:String
     var groupName:String = ""
     var groupType:String = ""
-    var groupIcon:Int = 0
+    var groupIcon:Int = -1
     let method:HTTPMethod
     
     let input = Input()
@@ -56,11 +56,6 @@ class GroupEditViewModel {
             self.method = .post
         }
         
-        input.addGroupObserver
-            .flatMap(addNEditGroup)
-            .subscribe({ event in
-                
-            }).disposed(by: disposeBag)
         
         input.groupNameObserver.subscribe(onNext: { value in
             self.groupName = value
@@ -79,71 +74,7 @@ class GroupEditViewModel {
     
     
     
-    /**
-     그룹 추가 및 편집할 떄 사용하는 함수
-     - Parameters : None
-     - Throws: MellyError
-     - Returns:None
-     */
-    func addNEditGroup() -> Observable<Void> {
-        
-        return Observable.create { observer in
-            
-            if self.groupName == "" {
-                let error = MellyError(code: 0, msg: "그룹명을 입력해주세요.")
-                observer.onError(error)
-            }
-            
-            
-            
-            if let user = User.loginedUser {
-                
-                let parameters:Parameters = ["groupName": self.groupName,
-                                             "groupType": self.groupType,
-                                             "groupIcon": self.groupIcon]
-                
-                let header:HTTPHeaders = [
-                    "Connection":"keep-alive",
-                    "Content-Type":"application/json",
-                    "Authorization" : "Bearer \(user.jwtToken)"
-                ]
-                
-                AF.request(self.url, method: self.method, parameters: parameters, encoding: URLEncoding.queryString, headers: header)
-                    .responseData { response in
-                        switch response.result {
-                        case .success(let data):
-                            let decoder = JSONDecoder()
-                            if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                
-                                print(json)
-                                
-                                if json.message == "유저가 메모리 작성한 장소 조회" {
-                                    
-                                    if let data = try? JSONSerialization.data(withJSONObject: json.data?["place"] as Any) {
-                                        
-                                        
-                                        
-                                    }
-                                    
-                                } else {
-                                    let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                    observer.onError(error)
-                                }
-                                
-                            } else {
-                                let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
-                                observer.onError(error)
-                            }
-                        case .failure(let error):
-                            observer.onError(error)
-                        }
-                    }
-                
-            }
-            
-            return Disposables.create()
-        }
-    }
+    
     
     
     /**
