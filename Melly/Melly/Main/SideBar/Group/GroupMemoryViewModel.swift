@@ -1,50 +1,50 @@
 //
-//  MyMemoryViewModel.swift
+//  GroupEditViewModel.swift
 //  Melly
 //
-//  Created by Jun on 2022/10/23.
+//  Created by Jun on 2022/10/28.
 //
 
 import Foundation
-import RxCocoa
-import RxSwift
 import Alamofire
+import RxSwift
+import RxCocoa
 
-
-
-class MyMemoryViewModel {
+class GroupMemoryViewModel {
     
     private let disposeBag = DisposeBag()
-    
     var ourMemory = OurMemory()
     let input = Input()
     let output = Output()
     
-    let url = "https://api.melly.kr/api/user/memory"
+    let url:String
+    var group:Group
     
     struct OurMemory {
         var page:Int = 0
         var isEnd:Bool = false
         var sort:String = "visitedDate,desc"
-        var groupType:GroupFilter = .all
+        var userId:Int = -1
     }
-    
     
     struct Input {
         let ourMemoryRefresh = PublishRelay<Void>()
         let ourMemorySelect = PublishRelay<Memory>()
         let sortObserver = PublishRelay<String>()
-        let groupFilterObserver = PublishRelay<GroupFilter>()
+        let userFilterObserver = PublishRelay<UserInfo?>()
     }
     
     struct Output {
         let ourMemoryValue = PublishRelay<[Memory]>()
         let errorValue = PublishRelay<String>()
         let sortValue = PublishRelay<String>()
-        let groupFilterValue = PublishRelay<GroupFilter>()
+        let userFilterValue = PublishRelay<UserInfo?>()
     }
+   
     
-    init() {
+    init(group:Group) {
+        self.group = group
+        self.url = "https://api.melly.kr/api/user/group/\(group.groupId)/memory"
         
         input.ourMemoryRefresh
             .flatMap(getOurPlace)
@@ -75,18 +75,22 @@ class MyMemoryViewModel {
                 
             }).disposed(by: disposeBag)
         
-        input.groupFilterObserver
+        input.userFilterObserver
             .subscribe(onNext: { value in
                 
-                self.ourMemory.groupType = value
+                if let value = value {
+                    self.ourMemory.userId = value.userID
+                } else {
+                    self.ourMemory.userId = -1
+                }
+                
                 self.ourMemory.page = 0
                 self.ourMemory.isEnd = false
-                self.output.groupFilterValue.accept(value)
+                self.output.userFilterValue.accept(value)
                 
             }).disposed(by: disposeBag)
         
     }
-    
     
     /**
      해당 장소에 있는 내 메모리를 보여주는 api 실행
@@ -106,7 +110,8 @@ class MyMemoryViewModel {
                 let parameters:Parameters = ["size": 10,
                                              "page": self.ourMemory.page,
                                              "sort": self.ourMemory.sort,
-                                             "groupType": self.ourMemory.groupType.rawValue]
+                                             "userId": self.ourMemory.userId]
+                
                 
                 AF.request(self.url, method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: header)
                     .responseData { response in
@@ -116,9 +121,9 @@ class MyMemoryViewModel {
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
                                
-                                if json.message == "유저가 작성한 메모리 조회"{
-                                    
-                                    if let data = try? JSONSerialization.data(withJSONObject: json.data?["memoryInfo"] as Any) {
+                                if json.message == "유저가 속해있는 그룹의 메모리 조회" {
+                                    print(json)
+                                    if let data = try? JSONSerialization.data(withJSONObject: json.data as Any) {
                                         
                                         if let result = try? decoder.decode(MemoryList.self, from: data) {
                                             if !result.content.isEmpty {
@@ -148,5 +153,10 @@ class MyMemoryViewModel {
         }
         
     }
+    
+    
+    
+    
+    
     
 }

@@ -22,7 +22,7 @@ class MemoryListViewController: UIViewController {
     lazy var locationTitleLB = UILabel().then {
         $0.text = vm.place?.placeName ?? "성수동"
         $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
-        $0.font = UIFont(name: "Pretendard-Bold", size: 20)
+        $0.font = UIFont(name: "Pretendard-Bold", size: 18)
     }
     
     lazy var locationCategoryLB = UILabel().then {
@@ -31,8 +31,9 @@ class MemoryListViewController: UIViewController {
         $0.font = UIFont(name: "Pretendard-Medium", size: 14)
     }
     
-    let bmButton = UIButton(type: .custom).then {
-        $0.setImage(UIImage(named: "bookmark"), for: .normal)
+    lazy var bmButton = UIImageView().then {
+        let image = UIImage(named: vm.place!.isScraped ? "bookmark_fill" : "bookmark_empty")
+        $0.image = image
     }
     
     let closeButton = UIButton(type: .custom).then {

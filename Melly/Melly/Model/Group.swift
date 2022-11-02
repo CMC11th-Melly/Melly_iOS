@@ -9,10 +9,11 @@ import Foundation
 
 struct Group:Codable {
     
-    let groupId, groupIcon: Int
-    let groupName: String
-    var users: [UserInfo] = []
-    let groupType: String
+    let groupId:Int
+    var groupIcon: Int
+    var groupName: String
+    var users: [UserInfo]
+    var groupType: String
     let invitationLink: String?
     
 }

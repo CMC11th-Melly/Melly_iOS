@@ -50,7 +50,7 @@ class GroupAddCompleteViewController: UIViewController {
         let string = "다음에 공유하기"
         let attributedString = NSMutableAttributedString(string: string)
         attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Medium", size: 16)!, range: NSRange(location: 0, length: string.count))
-        attributedString.addAttribute(.foregroundColor, value:  UIFont(name: "Pretendard-SemiBold", size: 16)!, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value:   UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1), range: NSRange(location: 0, length: string.count))
         $0.setAttributedTitle(attributedString, for: .normal)
     }
     
@@ -60,7 +60,7 @@ class GroupAddCompleteViewController: UIViewController {
     }
     
     
-    init(_ group: Group) {
+    init(group: Group) {
         self.group = group
         super.init(nibName: nil, bundle: nil)
     }
@@ -75,7 +75,6 @@ class GroupAddCompleteViewController: UIViewController {
         bind()
         
     }
-    
 
     
 }
@@ -145,6 +144,7 @@ extension GroupAddCompleteViewController {
             $0.top.equalTo(copyBT.snp.bottom).offset(38)
             $0.centerX.equalToSuperview()
             $0.height.equalTo(19)
+            $0.bottom.equalToSuperview()
         }
         
         safeArea.addSubview(rightLabel)

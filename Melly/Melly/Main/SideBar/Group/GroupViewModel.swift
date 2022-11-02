@@ -47,6 +47,7 @@ class GroupViewModel {
         let groupAddComplete = PublishRelay<Group>()
         let goToDetailView = PublishRelay<Void>()
         let removeValue = PublishRelay<Void>()
+        let editValue = PublishRelay<Void>()
     }
     
     let groupCategoryData = Observable<[String]>.just(["가족", "동료", "연인", "친구"])
@@ -96,25 +97,22 @@ class GroupViewModel {
         }).disposed(by: disposeBag)
         
         input.addGroupObserver
-            .subscribe(onNext: {
-                self.addGroup()
-                    .subscribe({ event in
-                        switch event {
-                        case .next(let group):
-                            self.output.groupAddComplete.accept(group)
-                        case .error(let error):
-                            if let mellyError = error as? MellyError {
-                                if mellyError.msg == "" {
-                                    self.output.errorValue.accept(error.localizedDescription)
-                                } else {
-                                    self.output.errorValue.accept(mellyError.msg)
-                                }
-                            }
-                        case .completed:
-                            break
+            .flatMap(addGroup)
+            .subscribe({ event in
+                switch event {
+                case .next(let group):
+                    self.output.groupAddComplete.accept(group)
+                case .error(let error):
+                    if let mellyError = error as? MellyError {
+                        if mellyError.msg == "" {
+                            self.output.errorValue.accept(error.localizedDescription)
+                        } else {
+                            self.output.errorValue.accept(mellyError.msg)
                         }
-                    }).disposed(by: self.disposeBag)
-                
+                    }
+                case .completed:
+                    break
+                }
                 
             }).disposed(by: disposeBag)
         
@@ -143,27 +141,22 @@ class GroupViewModel {
             }).disposed(by: disposeBag)
         
         input.editGroupObserver
-            .subscribe(onNext: {
-                
-                self.editGroup()
-                    .subscribe({ event in
-                        switch event {
-                        case .error(let error):
-                            if let mellyError = error as? MellyError {
-                                if mellyError.msg == "" {
-                                    self.output.errorValue.accept(error.localizedDescription)
-                                } else {
-                                    self.output.errorValue.accept(mellyError.msg)
-                                }
-                            }
-                        case .next(()):
-                            self.group = nil
-                            self.output.removeValue.accept(())
-                        case .completed:
-                            break
+            .flatMap(editGroup)
+            .subscribe({ event in
+                switch event {
+                case .error(let error):
+                    if let mellyError = error as? MellyError {
+                        if mellyError.msg == "" {
+                            self.output.errorValue.accept(error.localizedDescription)
+                        } else {
+                            self.output.errorValue.accept(mellyError.msg)
                         }
-                    }).disposed(by: self.disposeBag)
-                
+                    }
+                case .next(()):
+                    self.output.editValue.accept(())
+                case .completed:
+                    break
+                }
             }).disposed(by: disposeBag)
         
     }
@@ -198,7 +191,7 @@ class GroupViewModel {
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data?["groupInfo"] as Any) {
                                         
                                         if let groups = try? decoder.decode([Group].self, from: data) {
-                                    
+                                            
                                             observer.onNext(groups)
                                         }
                                     }
@@ -262,7 +255,6 @@ class GroupViewModel {
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data?["data"] as Any) {
                                         
                                         if let group = try? decoder.decode(Group.self, from: data) {
-                                    
                                             observer.onNext(group)
                                         }
                                     }
@@ -286,7 +278,6 @@ class GroupViewModel {
                 observer.onError(error)
             }
             
-            observer.onCompleted()
             
             return Disposables.create()
         }
@@ -329,12 +320,13 @@ class GroupViewModel {
                         switch response.result {
                         case .success(let data):
                             
-                            
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
                                 
                                 if json.message == "그룹 수정 완료" {
-                                    
+                                    self.group?.groupType = self.groupType
+                                    self.group?.groupName = self.groupName
+                                    self.group?.groupIcon = self.groupIcon
                                     observer.onNext(())
                                     
                                 } else {
@@ -356,7 +348,6 @@ class GroupViewModel {
                 observer.onError(error)
             }
             
-            observer.onCompleted()
             
             return Disposables.create()
         }

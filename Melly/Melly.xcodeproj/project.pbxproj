@@ -50,7 +50,7 @@
 		BF957BCF290B65D80056E99D /* GroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF957BCE290B65D80056E99D /* GroupViewController.swift */; };
 		BF957BD1290B6D8B0056E99D /* GroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF957BD0290B6D8B0056E99D /* GroupViewModel.swift */; };
 		BF957BD3290B74490056E99D /* GroupAddViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF957BD2290B74490056E99D /* GroupAddViewController.swift */; };
-		BF957BD5290BBA730056E99D /* GroupEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF957BD4290BBA730056E99D /* GroupEditViewModel.swift */; };
+		BF957BD5290BBA730056E99D /* GroupMemoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF957BD4290BBA730056E99D /* GroupMemoryViewModel.swift */; };
 		BF957BD7290BCF920056E99D /* GroupDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF957BD6290BCF920056E99D /* GroupDetailViewController.swift */; };
 		BFA3398F28C82A4E00C1CD4C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFA3398E28C82A4E00C1CD4C /* GoogleService-Info.plist */; };
 		BFA3399328C832E500C1CD4C /* MainLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA3399228C832E500C1CD4C /* MainLoginViewController.swift */; };
@@ -71,6 +71,7 @@
 		BFD6C56F28D724160092A6E5 /* SignUpOneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6C56E28D724160092A6E5 /* SignUpOneViewModel.swift */; };
 		BFD6C57428D733260092A6E5 /* SignUpTwoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6C57328D733260092A6E5 /* SignUpTwoViewModel.swift */; };
 		BFD6C57628D7373F0092A6E5 /* SignUpTwoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6C57528D7373F0092A6E5 /* SignUpTwoViewController.swift */; };
+		BFD9083129121D5B00917381 /* GroupMemoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD9083029121D5B00917381 /* GroupMemoryViewController.swift */; };
 		BFDA0B2C28F533E0008FE376 /* ScrapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDA0B2B28F533E0008FE376 /* ScrapViewController.swift */; };
 		BFDA0B3028F54190008FE376 /* PopUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDA0B2F28F54190008FE376 /* PopUpViewModel.swift */; };
 		BFDC1BF728D8094A005ADC6A /* SignUpThreeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDC1BF628D8094A005ADC6A /* SignUpThreeViewController.swift */; };
@@ -140,7 +141,7 @@
 		BF957BCE290B65D80056E99D /* GroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupViewController.swift; sourceTree = "<group>"; };
 		BF957BD0290B6D8B0056E99D /* GroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupViewModel.swift; sourceTree = "<group>"; };
 		BF957BD2290B74490056E99D /* GroupAddViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupAddViewController.swift; sourceTree = "<group>"; };
-		BF957BD4290BBA730056E99D /* GroupEditViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupEditViewModel.swift; sourceTree = "<group>"; };
+		BF957BD4290BBA730056E99D /* GroupMemoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupMemoryViewModel.swift; sourceTree = "<group>"; };
 		BF957BD6290BCF920056E99D /* GroupDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupDetailViewController.swift; sourceTree = "<group>"; };
 		BFA3398E28C82A4E00C1CD4C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BFA3399228C832E500C1CD4C /* MainLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainLoginViewController.swift; sourceTree = "<group>"; };
@@ -162,6 +163,7 @@
 		BFD6C56E28D724160092A6E5 /* SignUpOneViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpOneViewModel.swift; sourceTree = "<group>"; };
 		BFD6C57328D733260092A6E5 /* SignUpTwoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpTwoViewModel.swift; sourceTree = "<group>"; };
 		BFD6C57528D7373F0092A6E5 /* SignUpTwoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpTwoViewController.swift; sourceTree = "<group>"; };
+		BFD9083029121D5B00917381 /* GroupMemoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupMemoryViewController.swift; sourceTree = "<group>"; };
 		BFDA0B2B28F533E0008FE376 /* ScrapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrapViewController.swift; sourceTree = "<group>"; };
 		BFDA0B2F28F54190008FE376 /* PopUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpViewModel.swift; sourceTree = "<group>"; };
 		BFDC1BF628D8094A005ADC6A /* SignUpThreeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpThreeViewController.swift; sourceTree = "<group>"; };
@@ -359,9 +361,10 @@
 				BF957BCE290B65D80056E99D /* GroupViewController.swift */,
 				BF957BD0290B6D8B0056E99D /* GroupViewModel.swift */,
 				BF957BD2290B74490056E99D /* GroupAddViewController.swift */,
-				BF957BD4290BBA730056E99D /* GroupEditViewModel.swift */,
 				BF957BD6290BCF920056E99D /* GroupDetailViewController.swift */,
 				BFECAD9F2910EE9500BB7C04 /* GroupAddCompleteViewController.swift */,
+				BFD9083029121D5B00917381 /* GroupMemoryViewController.swift */,
+				BF957BD4290BBA730056E99D /* GroupMemoryViewModel.swift */,
 			);
 			path = Group;
 			sourceTree = "<group>";
@@ -704,7 +707,7 @@
 				BF03B8F128FE465400CBAE97 /* Group.swift in Sources */,
 				BF72FC68290527570076AEF8 /* MyMemoryViewController.swift in Sources */,
 				BF638A8E28DAA96D0031233F /* ResponseData.swift in Sources */,
-				BF957BD5290BBA730056E99D /* GroupEditViewModel.swift in Sources */,
+				BF957BD5290BBA730056E99D /* GroupMemoryViewModel.swift in Sources */,
 				BFC9368328F6A46C00A2C53F /* OtherMemoryListViewController.swift in Sources */,
 				BFD6C57628D7373F0092A6E5 /* SignUpTwoViewController.swift in Sources */,
 				BFA3399328C832E500C1CD4C /* MainLoginViewController.swift in Sources */,
@@ -767,6 +770,7 @@
 				BF957BD1290B6D8B0056E99D /* GroupViewModel.swift in Sources */,
 				BFF6610829091FC4003E998B /* Comment.swift in Sources */,
 				BFF84EAE28C6D40B00892CB5 /* SceneDelegate.swift in Sources */,
+				BFD9083129121D5B00917381 /* GroupMemoryViewController.swift in Sources */,
 				BF957BD7290BCF920056E99D /* GroupDetailViewController.swift in Sources */,
 				BF3F0E9A28DD701900AED582 /* SignUpZeroViewController.swift in Sources */,
 				BF7CAAFF28DE04B60076CD1A /* AgreeNTermsText.swift in Sources */,

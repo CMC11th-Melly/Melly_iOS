@@ -20,7 +20,7 @@ class MyScrapViewController: UIViewController {
     let backBT = BackButton()
     
     let titleLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+        $0.textColor = UIColor(red: 0.102, green: 0.118, blue: 0.153, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 20)
         $0.text = "스크랩"
     }
@@ -143,14 +143,13 @@ final class ScrapCell: UICollectionViewCell {
     let imageView = UIImageView(image: UIImage(named: "profile"))
     
     let groupNameLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
-        
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 18)
     }
     
     let scrapCountLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
-        $0.font = UIFont(name: "Pretendard-SemiBold", size: 14)
+        $0.textColor = UIColor(red: 0.472, green: 0.503, blue: 0.55, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-Medium", size: 14)
     }
     
     override init(frame: CGRect) {
@@ -164,8 +163,10 @@ final class ScrapCell: UICollectionViewCell {
     }
     
     private func setupView() {
-        backgroundColor = UIColor(red: 0.975, green: 0.979, blue: 0.988, alpha: 1)
+        backgroundColor = .white
         layer.cornerRadius = 12
+        layer.borderWidth = 1.2
+        layer.borderColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1).cgColor
         
         addSubview(imageView)
         imageView.snp.makeConstraints {
@@ -198,12 +199,16 @@ final class ScrapCell: UICollectionViewCell {
             switch scrapCount.scrapType {
             case "FAMILY":
                 groupNameLB.text = "가족이랑 가고 싶은 곳"
+                imageView.image = UIImage(named: "group_icon_1")
             case "COMPANY":
                 groupNameLB.text = "동료랑 가고 싶은 곳"
+                imageView.image = UIImage(named: "group_icon_6")
             case "COUPLE":
                 groupNameLB.text = "연인이랑 가고 싶은 곳"
+                imageView.image = UIImage(named: "group_icon_8")
             case "FRIEND":
                 groupNameLB.text = "친구랑 가고 싶은 곳"
+                imageView.image = UIImage(named: "group_icon_4")
             default:
                 break
             }

@@ -387,7 +387,7 @@ final class UnderlineSegmentedControl: UISegmentedControl {
         let yPosition = self.bounds.size.height - 1.0
         let frame = CGRect(x: xPosition, y: yPosition, width: width, height: height)
         let view = UIView(frame: frame)
-        view.backgroundColor = UIColor(red: 0.427, green: 0.459, blue: 0.506, alpha: 1)
+        view.backgroundColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
         self.addSubview(view)
         return view
     }()
@@ -412,9 +412,9 @@ final class UnderlineSegmentedControl: UISegmentedControl {
         
         self.setDividerImage(image, forLeftSegmentState: .selected, rightSegmentState: .normal, barMetrics: .default)
         self.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)], for: .normal)
-        self.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor(red: 0.427, green: 0.459, blue: 0.506, alpha: 1)], for: .selected)
-        self.setTitleTextAttributes([NSAttributedString.Key.font: UIFont(name: "Pretendard-Bold", size: 16)!], for: .selected)
-        self.setTitleTextAttributes([NSAttributedString.Key.font: UIFont(name: "Pretendard-Medium", size: 16)!], for: .normal)
+        self.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)], for: .selected)
+        self.setTitleTextAttributes([NSAttributedString.Key.font: UIFont(name: "Pretendard-Medium", size: 18)!], for: .selected)
+        self.setTitleTextAttributes([NSAttributedString.Key.font: UIFont(name: "Pretendard-Medium", size: 18)!], for: .normal)
     }
     
     override func layoutSubviews() {

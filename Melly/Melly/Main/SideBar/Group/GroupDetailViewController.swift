@@ -87,9 +87,8 @@ class GroupDetailViewController: UIViewController {
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
     }
     
-    lazy var categoryNameLB = UILabel().then {
+    let categoryNameLB = UILabel().then {
         $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
-        $0.text = vm.group?.groupType
         $0.font = UIFont(name: "Pretendard-Medium", size: 14)
         $0.backgroundColor = UIColor(red: 0.941, green: 0.945, blue: 0.984, alpha: 1)
         $0.layer.cornerRadius = 10
@@ -104,6 +103,11 @@ class GroupDetailViewController: UIViewController {
         $0.isEnabled = true
     }
     
+    let rightLabel = RightAlert().then {
+        $0.labelView.text = "메모리 수정 완료"
+        $0.alpha = 0
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -115,7 +119,7 @@ class GroupDetailViewController: UIViewController {
         if let group = vm.group {
             groupImageView.image = UIImage(named: "group_icon_\(group.groupIcon)")
             groupNameLB.text = group.groupName
-            categoryNameLB.text = group.groupType
+            categoryNameLB.text = GroupFilter.getGroupValue(group.groupType)
         }
     }
     
@@ -240,6 +244,13 @@ extension GroupDetailViewController {
             $0.width.equalTo(55)
         }
         
+        safeArea.addSubview(rightLabel)
+        rightLabel.snp.makeConstraints {
+            $0.bottom.equalTo(bottomView.snp.top).offset(-10)
+            $0.leading.equalToSuperview().offset(30)
+            $0.trailing.equalToSuperview().offset(-30)
+            $0.height.equalTo(56)
+        }
         
     }
     
@@ -270,6 +281,15 @@ extension GroupDetailViewController {
                 self.navigationController?.pushViewController(vc, animated: true)
             }).disposed(by: disposeBag)
         
+        saveBT.rx.tap
+            .subscribe(onNext: {
+                let vm = GroupMemoryViewModel(group: self.vm.group!)
+                let vc = GroupMemoryViewController(vm)
+                vc.modalTransitionStyle = .crossDissolve
+                vc.modalPresentationStyle = .fullScreen
+                self.navigationController?.pushViewController(vc, animated: true)
+            }).disposed(by: disposeBag)
+        
     }
     
     private func bindOutput() {
@@ -286,6 +306,16 @@ extension GroupDetailViewController {
             .bind(to: memberCV.rx.items(cellIdentifier: "cell", cellType: MemberCell.self)) { row, element, cell in
                 cell.configure(userInfo: element)
             }.disposed(by: disposeBag)
+        
+        vm.output.editValue
+            .subscribe(onNext: {
+                self.rightLabel.alpha = 1
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    UIView.animate(withDuration: 1.5) {
+                        self.rightLabel.alpha = 0
+                    }
+                }
+            }).disposed(by: disposeBag)
         
     }
     

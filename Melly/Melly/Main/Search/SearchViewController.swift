@@ -42,15 +42,25 @@ class SearchViewController: UIViewController {
     
     let recentLB = UILabel().then {
         $0.text = "최근검색"
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
-        $0.font = UIFont(name: "Pretendard-Bold", size: 18)
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-SemiBold", size: 18)
+    }
+    
+    let removeAllBT = UIButton(type: .custom).then {
+        $0.backgroundColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
+        $0.layer.cornerRadius = 8
+        let string = "전체삭제"
+        let attributedString = NSMutableAttributedString(string: string)
+        attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Medium", size: 12)!, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: UIColor.white, range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
     }
     
     let separator = UIView().then {
         $0.backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
     }
     
-    lazy var recentCV: UICollectionView = {
+    let recentCV: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.backgroundColor = .clear
@@ -85,12 +95,16 @@ class SearchViewController: UIViewController {
         setCV()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        vm.input.recentCVObserver.accept(())
+    }
+    
 }
 
 extension SearchViewController {
     
     func setUI() {
-        self.view.backgroundColor = UIColor(red: 0.961, green: 0.961, blue: 0.961, alpha: 1)
+        self.view.backgroundColor = .white
         
         safeArea.addSubview(searchTextField)
         searchTextField.snp.makeConstraints {
@@ -122,7 +136,16 @@ extension SearchViewController {
         recentView.addSubview(recentLB)
         recentLB.snp.makeConstraints {
             $0.top.equalToSuperview().offset(26)
-            $0.leading.equalToSuperview().offset(30)
+            $0.leading.equalToSuperview().offset(31)
+            $0.height.equalTo(29)
+        }
+        
+        recentView.addSubview(removeAllBT)
+        removeAllBT.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(28)
+            $0.trailing.equalToSuperview().offset(-30)
+            $0.width.equalTo(62)
+            $0.height.equalTo(26)
         }
         
         recentView.addSubview(separator)
@@ -213,6 +236,10 @@ extension SearchViewController {
                 self.searchTextField.text = ""
                 self.isSearch = false
             }).disposed(by: disposeBag)
+        
+        removeAllBT.rx.tap
+            .bind(to: vm.input.removeAllObserver)
+            .disposed(by: disposeBag)
         
         
     }
@@ -308,20 +335,22 @@ class SearchCell: UICollectionViewCell {
         addSubview(imageView)
         imageView.snp.makeConstraints {
             $0.leading.equalToSuperview()
-            $0.top.equalToSuperview().offset(16)
+            $0.centerY.equalToSuperview()
+            $0.width.height.equalTo(22)
         }
         
         addSubview(locationLB)
         locationLB.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(15)
-            $0.leading.equalTo(imageView.snp.trailing).offset(10)
+            $0.centerY.equalToSuperview()
+            $0.leading.equalTo(imageView.snp.trailing).offset(12)
         }
         
         addSubview(removeButton)
         removeButton.snp.makeConstraints {
             $0.trailing.equalToSuperview()
-            $0.top.equalToSuperview().offset(17)
-            $0.leading.greaterThanOrEqualTo(locationLB.snp.trailing).offset(10)
+            $0.centerY.equalToSuperview()
+            $0.leading.greaterThanOrEqualTo(locationLB.snp.trailing).offset(12)
+            $0.width.height.equalTo(22)
         }
         
     }

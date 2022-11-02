@@ -11,10 +11,10 @@ import RxCocoa
 import FloatingPanel
 
 class MyMemoryViewController: UIViewController {
-
-    private let vm = MyMemoryViewModel.instance
-    private let disposeBag = DisposeBag()
     
+    private let vm = MyMemoryViewModel()
+    private let disposeBag = DisposeBag()
+    let isSidebar:Bool
     let headerView = UIView()
     
     let backBT = BackButton()
@@ -27,7 +27,6 @@ class MyMemoryViewController: UIViewController {
     let searchBT = UIButton(type: .custom).then {
         $0.setImage(UIImage(named: "memory_search"), for: .normal)
     }
-    
     
     var isLoading:Bool = false
     var loadingView:FooterLoadingView?
@@ -50,17 +49,31 @@ class MyMemoryViewController: UIViewController {
         $0.isHidden = true
     }
     
+    let noDataFrame = UIView()
+    
     let noDataImageView = UIImageView(image: UIImage(named: "no_memory"))
     
     let noDataLB = UILabel().then {
-        $0.text = "앗! 이 장소에 저장된\n나의 메모리가 없어요"
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
-        $0.font = UIFont(name: "Pretendard-Medium", size: 22)
-        $0.numberOfLines = 2
+        $0.text = "내가 작성한 메모리가 없습니다."
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
         $0.textAlignment = .center
+        $0.font = UIFont(name: "Pretendard-Medium", size: 20)
+    }
+    
+    let noDataLB2 = UILabel().then {
+        $0.text = "앗! 이 장소에 저장된\n나의 메모리가 없어요"
+        $0.textAlignment = .center
+        $0.numberOfLines = 2
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-Medium", size: 20)
+    }
+    
+    let noDataBT = CustomButton(title: "새 메모리 작성하기").then {
+        $0.isEnabled = true
     }
     
     let dataView = UIView()
+    let filterView = UIView()
     
     let groupFilter = CategoryPicker(title: "카테고리")
     let sortFilter = CategoryPicker(title: "최신 순")
@@ -73,6 +86,14 @@ class MyMemoryViewController: UIViewController {
         return collectionView
     }()
     
+    init(isSidebar: Bool = true) {
+        self.isSidebar = isSidebar
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,7 +105,7 @@ class MyMemoryViewController: UIViewController {
         vm.input.ourMemoryRefresh.accept(())
     }
     
-
+    
 }
 
 extension MyMemoryViewController {
@@ -126,19 +147,72 @@ extension MyMemoryViewController {
             $0.leading.trailing.bottom.equalToSuperview()
         }
         
-        dataView.addSubview(groupFilter)
+        safeArea.addSubview(noDataView)
+        noDataView.snp.makeConstraints {
+            $0.top.equalTo(headerView.snp.bottom)
+            $0.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        noDataView.addSubview(noDataFrame)
+        noDataFrame.snp.makeConstraints {
+            $0.width.equalTo(239)
+            $0.height.equalTo(189)
+            $0.centerX.centerY.equalToSuperview()
+        }
+        
+        noDataFrame.addSubview(noDataImageView)
+        noDataImageView.snp.makeConstraints {
+            $0.width.height.equalTo(46)
+            $0.top.equalToSuperview()
+            $0.centerX.equalToSuperview()
+        }
+        
+        if isSidebar {
+            noDataFrame.addSubview(noDataLB)
+            noDataLB.snp.makeConstraints {
+                $0.top.equalTo(noDataImageView.snp.bottom).offset(16)
+                $0.leading.trailing.equalToSuperview()
+                $0.height.equalTo(30)
+            }
+            
+            noDataFrame.addSubview(noDataBT)
+            noDataBT.snp.makeConstraints {
+                $0.top.equalTo(noDataLB.snp.bottom).offset(42)
+                $0.leading.trailing.equalToSuperview()
+                $0.height.equalTo(55)
+            }
+        } else {
+            noDataFrame.addSubview(noDataLB2)
+            noDataLB2.snp.makeConstraints {
+                $0.top.equalTo(noDataImageView.snp.bottom).offset(16)
+                $0.leading.trailing.equalToSuperview()
+                $0.height.equalTo(60)
+            }
+        }
+        
+        
+        
+        dataView.addSubview(filterView)
+        filterView.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+            $0.height.equalTo(77)
+        }
+        
+        
+        filterView.addSubview(groupFilter)
         groupFilter.snp.makeConstraints {
             $0.top.equalToSuperview().offset(25)
             $0.leading.equalToSuperview().offset(30)
             $0.height.equalTo(30)
         }
         
-        dataView.addSubview(sortFilter)
+        filterView.addSubview(sortFilter)
         sortFilter.snp.makeConstraints {
             $0.top.equalToSuperview().offset(25)
             $0.leading.equalTo(groupFilter.snp.trailing).offset(12)
             $0.height.equalTo(30)
         }
+        
         
         dataView.addSubview(dataCV)
         dataCV.snp.makeConstraints {
@@ -175,7 +249,7 @@ extension MyMemoryViewController {
                 if self.sortFilter.mode {
                     self.vm.input.sortObserver.accept("visitedDate,desc")
                 } else {
-                    let vc = MyMemoryFilterViewController()
+                    let vc = MyMemoryFilterViewController(self.vm)
                     self.filterPanel.set(contentViewController: vc)
                     self.filterPanel.addPanel(toParent: self)
                 }
@@ -187,7 +261,7 @@ extension MyMemoryViewController {
                 if self.groupFilter.mode {
                     self.vm.input.groupFilterObserver.accept(.all)
                 } else {
-                    let vc = MyMemoryGroupFilterViewController()
+                    let vc = MyMemoryGroupFilterViewController(self.vm)
                     self.filterPanel.set(contentViewController: vc)
                     self.filterPanel.addPanel(toParent: self)
                 }
@@ -256,6 +330,8 @@ extension MyMemoryViewController {
                 self.filterPanel.view.removeFromSuperview()
                 self.filterPanel.removeFromParent()
             }).disposed(by: disposeBag)
+        
+        
     }
     
 }
@@ -370,7 +446,7 @@ class MyMemoryPanelLayout: FloatingPanelLayout{
 class MyMemoryFilterViewController: UIViewController {
     
     let contentView = UIView()
-    let vm = MyMemoryViewModel.instance
+    let vm:MyMemoryViewModel
     private let disposeBag = DisposeBag()
     
     lazy var lastestBT = UIButton(type: .custom).then {
@@ -416,6 +492,14 @@ class MyMemoryFilterViewController: UIViewController {
         $0.setAttributedTitle(attributedString, for: .normal)
     }
     
+    init(_ vm: MyMemoryViewModel) {
+        self.vm = vm
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     
     override func viewDidLoad() {
@@ -492,7 +576,7 @@ class MyMemoryFilterViewController: UIViewController {
 class MyMemoryGroupFilterViewController: UIViewController {
     
     let contentView = UIView()
-    let vm = MyMemoryViewModel.instance
+    let vm:MyMemoryViewModel
     private let disposeBag = DisposeBag()
     
     lazy var familyBT = UIButton(type: .custom).then {
@@ -538,7 +622,14 @@ class MyMemoryGroupFilterViewController: UIViewController {
         $0.setAttributedTitle(attributedString, for: .normal)
     }
     
+    init(_ vm: MyMemoryViewModel) {
+        self.vm = vm
+        super.init(nibName: nil, bundle: nil)
+    }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -610,3 +701,4 @@ class MyMemoryGroupFilterViewController: UIViewController {
     }
     
 }
+

@@ -24,10 +24,9 @@ class MemoryListViewModel {
     let output = Output()
     
     struct OurMemory {
-        var lastId:Int = -1
+        var page:Int = 0
         var isEnd:Bool = false
-        var visitedDate:String = ""
-        var keyword:String = ""
+        var sort:String = "visitedDate,desc"
         var groupType:GroupFilter = .all
     }
     
@@ -42,6 +41,8 @@ class MemoryListViewModel {
         let ourMemoryRefresh = PublishRelay<Void>()
         let memorySelect = PublishRelay<Memory>()
         let otherMemoryRefresh = PublishRelay<Void>()
+        let ourSortObserver = PublishRelay<String>()
+        let ourGroupFilterObserver = PublishRelay<GroupFilter>()
     }
     
     struct Output {
@@ -49,6 +50,8 @@ class MemoryListViewModel {
         let otherMemoryValue = PublishRelay<[Memory]>()
         let errorValue = PublishRelay<String>()
         let selectMemoryValue = PublishRelay<Memory>()
+        let sortValue = PublishRelay<String>()
+        let groupFilterValue = PublishRelay<GroupFilter>()
     }
     
     init() {
@@ -118,10 +121,10 @@ class MemoryListViewModel {
                 let url = "https://api.melly.kr/api/memory/user/place/\(place.placeId)"
                 
                 let parameters:Parameters = ["size": 10,
-                                             "lastId": self.ourMemory.lastId,
-                                             "keyword": self.ourMemory.keyword,
-                                             "visitedDate": self.ourMemory.visitedDate,
+                                             "page": self.ourMemory.page,
+                                             "sort": self.ourMemory.sort,
                                              "groupType": self.ourMemory.groupType.rawValue]
+                
                 AF.request(url, method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: header)
                     .responseData { response in
                         switch response.result {
@@ -132,13 +135,13 @@ class MemoryListViewModel {
                                 print(json)
                                 if json.message == "내가 작성한 메모리 전체 조회" {
                                     
-                                    if let data = try? JSONSerialization.data(withJSONObject: json.data! as Any) {
+                                    if let data = try? JSONSerialization.data(withJSONObject: json.data?["memoryList"] as Any) {
                                         
-                                        if let result = try? decoder.decode(MemoryData.self, from: data) {
-                                            if !result.memoryList.content.isEmpty {
-                                                self.ourMemory.lastId = result.memoryList.content[result.memoryList.content.count - 1].memoryId
-                                                self.ourMemory.isEnd = result.memoryList.last
-                                                observer.onNext(result.memoryList.content)
+                                        if let result = try? decoder.decode(MemoryList.self, from: data) {
+                                            if !result.content.isEmpty {
+                                                self.ourMemory.page += 1
+                                                self.ourMemory.isEnd = result.last
+                                                observer.onNext(result.content)
                                             }
                                         } else {
                                             observer.onNext([])

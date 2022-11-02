@@ -28,53 +28,29 @@ class LocationViewController: UIViewController {
     
     let locationLB = UILabel().then {
         $0.text = "상수동"
-        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Bold", size: 20)
     }
     
     let categoryLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.545, green: 0.584, blue: 0.631, alpha: 1)
-        $0.text = "거리"
+        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Medium", size: 14)
+        $0.text = "거리"
     }
     
     let bookmarkBT = UIButton(type: .custom).then {
-        $0.setImage(UIImage(named: "bookmark"), for: .normal)
+        $0.setImage(UIImage(named: "bookmark_empty"), for: .normal)
+        $0.setImage(UIImage(named: "bookmark_fill"), for: .selected)
     }
     
-    let myMemoryLB = UILabel().then {
-        $0.text = "내 메모리 5개"
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
-        $0.font = UIFont(name: "Pretendard-Medium", size: 14)
-        $0.backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
-        $0.layer.cornerRadius = 12
-    }
+    let myMemoryLB = BasePaddingLabel(title: "내 메모리 5개")
     
-    let ourMemoryLB = UILabel().then {
-        $0.text = "이 장소에 저장된 메모리 20개"
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
-        $0.font = UIFont(name: "Pretendard-Medium", size: 14)
-        $0.backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
-        $0.layer.cornerRadius = 12
-    }
+    let ourMemoryLB = BasePaddingLabel(title: "이 장소에 저장된 메모리 20개")
+
     
-    let showMemoryBT = UIButton(type: .custom).then {
-        $0.setTitle("메모리 보기", for: .normal)
-        $0.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 16)
-        $0.titleLabel?.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
-        $0.backgroundColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1)
-        $0.layer.cornerRadius = 12
-        
-    }
+    let showMemoryBT = DefaultButton("메모리 보기", false)
     
-    let writeMemoryBT = UIButton(type: .custom).then {
-        $0.setTitle("메모리 쓰기", for: .normal)
-        $0.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 16)
-        $0.titleLabel?.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
-        $0.backgroundColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1)
-        $0.layer.cornerRadius = 12
-        
-    }
+    let writeMemoryBT = DefaultButton("메모리 쓰기", true)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -109,6 +85,7 @@ extension LocationViewController {
         bookmarkBT.snp.makeConstraints {
             $0.top.equalToSuperview().offset(49)
             $0.trailing.equalToSuperview().offset(-31)
+            $0.height.width.equalTo(24)
         }
         
         contentView.addSubview(myMemoryLB)
@@ -175,7 +152,7 @@ extension LocationViewController {
     func bindOutput() {
         vm.output.completeBookmark.asDriver(onErrorJustReturn: ())
             .drive(onNext: {
-                self.place?.isScraped = true
+                self.bookmarkBT.isSelected.toggle()
             }).disposed(by: disposeBag)
     }
     
@@ -184,10 +161,57 @@ extension LocationViewController {
         if let place = place {
             locationLB.text = place.placeName
             categoryLB.text = place.placeCategory
-            myMemoryLB.text = "내 메모리 \(place.myMemoryCount)개"
-            ourMemoryLB.text = "이 장소에 저장된 메모리 \(place.otherMemoryCount)개"
+            
+            bookmarkBT.isSelected = place.isScraped
+            
+            if place.myMemoryCount == 0 && place.otherMemoryCount == 0 {
+                myMemoryLB.text = "장소에 저장된 메모리가 없어요"
+                ourMemoryLB.isHidden = true
+            } else {
+                ourMemoryLB.isHidden = false
+                if place.myMemoryCount == 0 {
+                    myMemoryLB.text = "장소에 저장된 메모리가 없어요"
+                } else {
+                    myMemoryLB.text = "내 메모리 \(place.myMemoryCount)개"
+                }
+                
+                if place.otherMemoryCount == 0 {
+                    ourMemoryLB.text = "장소에 저장된 메모리가 없어요"
+                } else {
+                    ourMemoryLB.text = "이 장소에 저장된 메모리 \(place.otherMemoryCount)개"
+                }
+                
+            }
+            view.layoutIfNeeded()
         }
         
     }
     
+}
+
+class BasePaddingLabel: UILabel {
+    private var padding = UIEdgeInsets(top: 7, left: 9, bottom: 8, right: 9)
+
+    convenience init(title: String) {
+        self.init()
+        text = title
+        layer.cornerRadius = 8
+        layer.borderWidth = 1.2
+        layer.borderColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1).cgColor
+        clipsToBounds = true
+        textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        font = UIFont(name: "Pretendard-Medium", size: 14)
+    }
+
+    override func drawText(in rect: CGRect) {
+        super.drawText(in: rect.inset(by: padding))
+    }
+
+    override var intrinsicContentSize: CGSize {
+        var contentSize = super.intrinsicContentSize
+        contentSize.height += padding.top + padding.bottom
+        contentSize.width += padding.left + padding.right
+
+        return contentSize
+    }
 }

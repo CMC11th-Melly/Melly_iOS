@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class ResearchLoadingViewController: UIViewController {
     
@@ -28,6 +30,7 @@ class ResearchLoadingViewController: UIViewController {
         setUI()
         
     }
+    
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -65,5 +68,7 @@ class ResearchLoadingViewController: UIViewController {
         }
         
     }
+    
+    
     
 }

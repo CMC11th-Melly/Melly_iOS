@@ -29,31 +29,18 @@ class ScrapViewController: UIViewController {
     
     let buttonView = UIView()
     
-    let cancelBT = UIButton(type: .custom).then {
-        $0.setTitle("취소", for: .normal)
-        $0.titleLabel?.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
-        $0.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 16)
-        $0.backgroundColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1)
-        $0.layer.cornerRadius = 12
-    }
+    let cancelBT = DefaultButton("취소", false)
     
     // MARK: 스크랩 선택 안했을경우 색으로 구분
-    let confirmBT = UIButton(type: .custom).then {
-        $0.setTitle("저장", for: .normal)
-        $0.titleLabel?.textColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
-        $0.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 16)
-        $0.backgroundColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1)
+    let confirmBT = CustomButton(title: "스크랩 저장").then {
         $0.isEnabled = false
-        $0.layer.cornerRadius = 12
     }
     
-   
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
         bind()
-        
     }
     
     init(_ place: Place) {
@@ -136,10 +123,8 @@ extension ScrapViewController {
             .drive(onNext: { value in
                 if value {
                     self.confirmBT.isEnabled = true
-                    self.confirmBT.backgroundColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
                 } else {
                     self.confirmBT.isEnabled = false
-                    self.confirmBT.backgroundColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1)
                 }
             }).disposed(by: disposeBag)
         
@@ -203,10 +188,10 @@ class BookmarkCell: UICollectionViewCell {
         }
     }
     
-    let imageView = UIImageView(image: UIImage(named: "add_bookmark"))
+    let imageView = UIImageView(image: UIImage(named: "scrap_unselected"))
     let titleLB = UILabel().then {
         $0.text = "친구랑 가고 싶은 곳"
-        $0.textColor = .black
+        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
     }
     
@@ -220,19 +205,24 @@ class BookmarkCell: UICollectionViewCell {
     }
     
     private func setUI() {
-        backgroundColor = UIColor(red: 0.965, green: 0.969, blue: 0.973, alpha: 1)
+        backgroundColor = .white
         layer.cornerRadius = 12
+        layer.cornerRadius = 12
+        layer.borderWidth = 1
+        layer.borderColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1).cgColor
         
         addSubview(imageView)
         imageView.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.leading.equalToSuperview().offset(27)
+            $0.width.height.equalTo(22)
         }
         
         addSubview(titleLB)
         titleLB.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.leading.equalTo(imageView.snp.trailing).offset(17)
+            $0.height.equalTo(19)
         }
         
     }
@@ -240,11 +230,13 @@ class BookmarkCell: UICollectionViewCell {
     override var isSelected: Bool {
         didSet {
             if isSelected {
-                titleLB.textColor =  UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
-                backgroundColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+                imageView.image = UIImage(named: "scrap_selected")
+                titleLB.textColor = .white
+                backgroundColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
             } else {
-                titleLB.textColor = .black
-                backgroundColor = UIColor(red: 0.965, green: 0.969, blue: 0.973, alpha: 1)
+                imageView.image = UIImage(named: "scrap_unselected")
+                titleLB.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+                backgroundColor = .white
             }
         }
     }

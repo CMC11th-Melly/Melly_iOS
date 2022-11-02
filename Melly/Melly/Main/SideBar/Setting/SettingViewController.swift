@@ -15,13 +15,13 @@ class SettingViewController: UIViewController {
     private let disposeBag = DisposeBag()
     let backBT = BackButton()
     let titleLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+        $0.textColor = UIColor(red: 0.102, green: 0.118, blue: 0.153, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 20)
         $0.text = "설정"
     }
     
     let commentLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.textColor = UIColor(red: 0.472, green: 0.503, blue: 0.55, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Medium", size: 14)
         $0.text = "내가 선택한 항목만 알림을 받을 수 있어요"
     }
@@ -31,57 +31,57 @@ class SettingViewController: UIViewController {
     }
     
     let mainPushLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 18)
         $0.text = "앱 푸쉬"
     }
     
     lazy var mainPushSwitch = UISwitch().then {
-        $0.tintColor = UIColor.orange
+        $0.onTintColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
         $0.isOn = true
     }
 
     let commentLikeLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 18)
         $0.text = "메모리 댓글 좋아요 수신"
     }
     
     lazy var commentLikeSwitch = UISwitch().then {
-        $0.tintColor = UIColor.orange
+        $0.onTintColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
         $0.isOn = true
     }
     
     let commentPushLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 18)
         $0.text = "메모리 댓글 알림 수신"
     }
     
     lazy var commentPushSwitch = UISwitch().then {
-        $0.tintColor = UIColor.orange
+        $0.onTintColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
         $0.isOn = true
     }
     
     let scrabPushLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 18)
         $0.text = "메모리 스크랩 알림 수신"
     }
     
     lazy var scrabPushSwitch = UISwitch().then {
-        $0.tintColor = UIColor.orange
+        $0.onTintColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
         $0.isOn = true
     }
     
     let memoryPushLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 18)
         $0.text = "그룹원 메모리 기록 요청 알림 수신"
     }
     
     lazy var memoryPushSwitch = UISwitch().then {
-        $0.tintColor = UIColor.orange
+        $0.onTintColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
         $0.isOn = true
     }
     
@@ -215,6 +215,19 @@ extension SettingViewController {
             .subscribe(onNext: {
                 self.dismiss(animated: true)
             }).disposed(by: disposeBag)
+        
+        mainPushSwitch.rx.isOn
+            .subscribe(onNext: { value in
+                
+                if value {
+                    UIApplication.shared.unregisterForRemoteNotifications()
+                } else {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
+                
+            }).disposed(by: disposeBag)
+    
+        
     }
     
     private func bindOutput() {

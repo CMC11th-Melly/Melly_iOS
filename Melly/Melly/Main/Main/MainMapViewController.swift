@@ -104,9 +104,10 @@ class MainMapViewController: UIViewController {
     let familyBT = GroupToggleButton("가족만")
     let teamBT = GroupToggleButton("동료만")
     
-    let scrapAlert = AlertLabel().then {
-        $0.labelView.text = "스크랩 완료"
-        $0.isHidden = true
+    let scrapAlert = RightAlert().then {
+        $0.labelView.text = "장소 스크랩 완료"
+        $0.backgroundColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 0.7)
+        $0.alpha = 0
     }
     
     override func viewDidLoad() {
@@ -121,14 +122,14 @@ class MainMapViewController: UIViewController {
 
 extension MainMapViewController {
     
-   private func setMap() {
+    private func setMap() {
         locationManager = CLLocationManager()
         locationManager.delegate = self
         self.locationManager.requestWhenInUseAuthorization()
         
     }
     
-   private func setUI() {
+    private func setUI() {
         navigationController?.isNavigationBarHidden = true
         view.backgroundColor = .white
         
@@ -229,7 +230,7 @@ extension MainMapViewController {
         
     }
     
-   private func setCV() {
+    private func setCV() {
         filterCV.dataSource = nil
         filterCV.delegate = nil
         filterCV.rx.setDelegate(self).disposed(by: disposeBag)
@@ -387,12 +388,12 @@ extension MainMapViewController {
         
         popUpVm.output.completeBookmark.asDriver(onErrorJustReturn: ())
             .drive(onNext: {
-                self.scrapAlert.isHidden = false
+                self.scrapAlert.alpha = 1
                 self.scrapFloatingPanel.view.removeFromSuperview()
                 self.scrapFloatingPanel.removeFromParent()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     UIView.animate(withDuration: 1.5) {
-                        self.scrapAlert.isHidden = true
+                        self.scrapAlert.alpha = 0
                     }
                 }
             }).disposed(by: disposeBag)
@@ -405,9 +406,9 @@ extension MainMapViewController {
 extension MainMapViewController: GoPlaceDelegate {
     
     /**
-    해당 메모리에 대한 상세정보를 가져온다.
+     해당 메모리에 대한 상세정보를 가져온다.
      - Parameters:
-        - memory : Memory
+     - memory : Memory
      - Throws: None
      - Returns:None
      */
@@ -422,9 +423,9 @@ extension MainMapViewController: GoPlaceDelegate {
     }
     
     /**
-    해당 Place에 메모리 쓰기 뷰를 띄워준다.
+     해당 Place에 메모리 쓰기 뷰를 띄워준다.
      - Parameters:
-        - place : Place
+     - place : Place
      - Throws: None
      - Returns:None
      */
@@ -440,9 +441,9 @@ extension MainMapViewController: GoPlaceDelegate {
     }
     
     /**
-    해당 Place에 대한 간략한 정보가 있는 popup 뷰를 띄워준다.
+     해당 Place에 대한 간략한 정보가 있는 popup 뷰를 띄워준다.
      - Parameters:
-        - place : Place
+     - place : Place
      - Throws: None
      - Returns:None
      */
@@ -494,17 +495,17 @@ extension MainMapViewController: UICollectionViewDelegateFlowLayout {
     
     //collectionView 중복 선택시 deseleted 모드로 전환
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-           guard let cell = collectionView.cellForItem(at: indexPath) as? FilterCell else {
-               return true
-           }
-           if cell.isSelected {
-               collectionView.deselectItem(at: indexPath, animated: true)
-               
-               return false
-           } else {
-               return true
-           }
-       }
+        guard let cell = collectionView.cellForItem(at: indexPath) as? FilterCell else {
+            return true
+        }
+        if cell.isSelected {
+            collectionView.deselectItem(at: indexPath, animated: true)
+            
+            return false
+        } else {
+            return true
+        }
+    }
     
     //행과 행사이의 간격
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
@@ -602,8 +603,6 @@ class FilterCell: UICollectionViewCell {
         }
     }
     
-    
-    
-    
 }
+
 

@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "icon-twinkle-circle-mono.png",
+      "filename" : "icon-bookmark-mono.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "icon-twinkle-circle-mono@2x.png",
+      "filename" : "icon-bookmark-mono@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "icon-twinkle-circle-mono@3x.png",
+      "filename" : "icon-bookmark-mono@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

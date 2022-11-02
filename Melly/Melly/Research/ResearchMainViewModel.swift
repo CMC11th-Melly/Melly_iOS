@@ -79,9 +79,9 @@ class ResearchMainViewModel {
             self.output.nextBackValid.accept(self.currentStep)
         }).disposed(by: disposeBag)
         
-        
-        
     }
+    
+    
     
     
 }

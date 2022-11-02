@@ -312,7 +312,7 @@ extension GroupAddViewController {
         
         vm.output.groupAddComplete
             .subscribe(onNext: { value in
-                let vc = GroupAddCompleteViewController(value)
+                let vc = GroupAddCompleteViewController(group: value)
                 vc.modalTransitionStyle = .coverVertical
                 vc.modalPresentationStyle = .fullScreen
                 self.navigationController?.pushViewController(vc, animated: true)
@@ -321,6 +321,11 @@ extension GroupAddViewController {
         vm.output.removeValue
             .subscribe(onNext: {
                 self.navigationController?.popToRootViewController(animated: true)
+            }).disposed(by: disposeBag)
+        
+        vm.output.editValue
+            .subscribe(onNext: {
+                self.navigationController?.popViewController(animated: true)
             }).disposed(by: disposeBag)
         
     }
@@ -368,7 +373,6 @@ extension GroupAddViewController: UICollectionViewDelegateFlowLayout {
             }
             if cell.isSelected {
                 collectionView.deselectItem(at: indexPath, animated: true)
-                
                 return false
             } else {
                 return true

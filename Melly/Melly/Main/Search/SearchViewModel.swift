@@ -23,7 +23,8 @@ class SearchViewModel {
         let clickSearchObserver = PublishRelay<Search>()
         let searchTextObserver = PublishRelay<String?>()
         let removeRecentObserver = PublishRelay<Search>()
-        let recentCVObserver = BehaviorRelay<Void>(value: ())
+        let recentCVObserver = PublishRelay<Void>()
+        let removeAllObserver = PublishRelay<Void>()
     }
     
     struct Output {
@@ -40,9 +41,14 @@ class SearchViewModel {
         self.isSearch = isSearch
         
         input.recentCVObserver
-            .flatMap(getRecentSearch)
+            .map(getRecentSearch)
             .subscribe(onNext: { value in
-                print(value)
+                self.output.recentValue.accept(value)
+            }).disposed(by: disposeBag)
+        
+        input.removeAllObserver
+            .map(removeAllRecentSearch)
+            .subscribe(onNext: { value in
                 self.output.recentValue.accept(value)
             }).disposed(by: disposeBag)
         
@@ -65,7 +71,7 @@ class SearchViewModel {
                     self.output.searchValue.accept(result)
                     self.output.switchValue.accept(true)
                 }
-               
+                
             }).disposed(by: disposeBag)
         
         input.clickSearchObserver
@@ -112,23 +118,23 @@ class SearchViewModel {
         
     }
     
-    func getRecentSearch() -> Observable<[Search]> {
+    func getRecentSearch() -> [Search] {
         
-        return Observable.create { observer in
+        
+        if let user = User.loginedUser {
             
-            if let user = User.loginedUser {
-                
-                if let data = UserDefaults.standard.value(forKey: "\(user.email)_recent") as? Data {
-                    if let recents = try? PropertyListDecoder().decode([Search].self, from: data) {
-                        observer.onNext(recents)
-                    } else {
-                        observer.onNext([])
-                    }
+            if let data = UserDefaults.standard.value(forKey: "\(user.email)_recent") as? Data {
+                if let recents = try? PropertyListDecoder().decode([Search].self, from: data) {
+                    return recents
+                } else {
+                    return []
                 }
             }
-            return Disposables.create()
+        } else {
+            return []
         }
         
+        return []
     }
     
     func search(_ text: String) -> Observable<[Search]> {
@@ -161,7 +167,7 @@ class SearchViewModel {
     func searchMemory(_ text:String) -> Observable<[Search]> {
         
         return Observable.create { observer in
-         
+            
             if let user = User.loginedUser {
                 
                 let parameters:Parameters = ["memoryName": text]
@@ -169,7 +175,7 @@ class SearchViewModel {
                     "Connection":"keep-alive",
                     "Content-Type":"application/json",
                     "Authorization" : "Bearer \(user.jwtToken)"
-                    ]
+                ]
                 
                 AF.request("https://api.melly.kr/api/memory/search", method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: header)
                     .responseData { response in
@@ -178,7 +184,7 @@ class SearchViewModel {
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
                                 if json.message == "메모리 제목 검색" {
-    
+                                    
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data?["memoryNames"] as Any) {
                                         
                                         if let memories = try? decoder.decode([SearchMemory].self, from: data) {
@@ -274,7 +280,7 @@ class SearchViewModel {
                         "Connection":"keep-alive",
                         "Content-Type":"application/json",
                         "Authorization" : "Bearer \(user.jwtToken)"
-                        ]
+                    ]
                     
                     AF.request("https://api.melly.kr/api/place", method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: header)
                         .responseData { response in
@@ -323,7 +329,7 @@ class SearchViewModel {
                         "Connection":"keep-alive",
                         "Content-Type":"application/json",
                         "Authorization" : "Bearer \(user.jwtToken)"
-                        ]
+                    ]
                     
                     AF.request("https://api.melly.kr/api/place/\(search.placeId)/search", method: .get, headers: header)
                         .responseData { response in
@@ -333,7 +339,7 @@ class SearchViewModel {
                                 if let json = try? decoder.decode(ResponseData.self, from: data) {
                                     
                                     if json.message == "장소 상세 조회" {
-                                
+                                        
                                         if let data = try? JSONSerialization.data(withJSONObject: json.data as Any) {
                                             if let place = try? decoder.decode(Place.self, from: data) {
                                                 
@@ -368,7 +374,8 @@ class SearchViewModel {
     func addRecentSearch(_ search: Search) {
         
         if let user = User.loginedUser {
-            
+            var search = search
+            search.isRecent = true
             if let data = UserDefaults.standard.value(forKey: "\(user.email)_recent") as? Data {
                 if var recents = try? PropertyListDecoder().decode([Search].self, from: data) {
                     
@@ -393,7 +400,7 @@ class SearchViewModel {
         }
         
     }
-   
+    
     func removeRecentSearch(_ search: Search) -> Observable<[Search]> {
         
         return Observable.create { observer in
@@ -406,6 +413,7 @@ class SearchViewModel {
                         if let index = recents.firstIndex(of: search) {
                             
                             recents.remove(at: index)
+                            UserDefaults.standard.set(try? PropertyListEncoder().encode(recents), forKey: "\(user.email)_recent")
                             observer.onNext(recents)
                             
                         }
@@ -420,6 +428,18 @@ class SearchViewModel {
         }
         
     }
+    
+    func removeAllRecentSearch() -> [Search] {
+        
+        if let user = User.loginedUser {
+            UserDefaults.standard.set(nil, forKey: "\(user.email)_recent")
+        }
+        
+        
+        return []
+    }
+    
+    
     
     
 }
