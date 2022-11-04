@@ -34,8 +34,11 @@ class GroupViewModel {
         let groupCategoryObserver = PublishRelay<String>()
         let groupIconObserver = PublishRelay<Int>()
         let addGroupObserver = PublishRelay<Void>()
+        let connectAddObserver = PublishRelay<Void>()
         let removeObserver = PublishRelay<Void>()
+        
         let editGroupObserver = PublishRelay<Void>()
+        let connectEditObserver = PublishRelay<Void>()
         
     }
     
@@ -97,6 +100,16 @@ class GroupViewModel {
         }).disposed(by: disposeBag)
         
         input.addGroupObserver
+            .map(getHandleError)
+            .subscribe(onNext: { value in
+                if value == "" {
+                    self.input.connectAddObserver.accept(())
+                } else {
+                    self.output.errorValue.accept(value)
+                }
+            }).disposed(by: disposeBag)
+        
+        input.connectAddObserver
             .flatMap(addGroup)
             .subscribe({ event in
                 switch event {
@@ -141,6 +154,16 @@ class GroupViewModel {
             }).disposed(by: disposeBag)
         
         input.editGroupObserver
+            .map(getHandleError)
+            .subscribe(onNext: { value in
+                if value == "" {
+                    self.input.connectEditObserver.accept(())
+                } else {
+                    self.output.errorValue.accept(value)
+                }
+            }).disposed(by: disposeBag)
+        
+        input.connectEditObserver
             .flatMap(editGroup)
             .subscribe({ event in
                 switch event {
@@ -222,16 +245,7 @@ class GroupViewModel {
         
         return Observable.create { observer in
             
-            if self.groupName == "" {
-                let error = MellyError(code: 0, msg: "그룹명을 입력해주세요.")
-                observer.onError(error)
-            } else if self.groupType == "" {
-                let error = MellyError(code: 0, msg: "그룹 카테고리를 선택해주세요.")
-                observer.onError(error)
-            } else if self.groupIcon == -1 {
-                let error = MellyError(code: 0, msg: "그룹 아이콘을 선택해주세요.")
-                observer.onError(error)
-            } else if let user = User.loginedUser {
+            if let user = User.loginedUser {
                 
                 let parameters:Parameters = ["groupName": self.groupName,
                                              "groupType": self.groupType,
@@ -293,16 +307,7 @@ class GroupViewModel {
         
         return Observable.create { observer in
             
-            if self.groupName == "" {
-                let error = MellyError(code: 0, msg: "그룹명을 입력해주세요.")
-                observer.onError(error)
-            } else if self.groupType == "" {
-                let error = MellyError(code: 0, msg: "그룹 카테고리를 선택해주세요.")
-                observer.onError(error)
-            } else if self.groupIcon == -1 {
-                let error = MellyError(code: 0, msg: "그룹 아이콘을 선택해주세요.")
-                observer.onError(error)
-            } else if let user = User.loginedUser ,
+             if let user = User.loginedUser ,
                       let group = self.group {
                 
                 let parameters:Parameters = ["groupName": self.groupName,
@@ -402,5 +407,21 @@ class GroupViewModel {
         }
     }
     
+    
+    func getHandleError() -> String {
+        
+        if groupName == "" {
+            return "그룹명을 입력해주세요."
+        } else if self.groupType == "" {
+            return "그룹 카테고리를 선택해주세요."
+        } else if self.groupIcon == -1 {
+            return "그룹 아이콘을 선택해주세요."
+        } else {
+            return ""
+        }
+        
+    }
+    
+   
     
 }

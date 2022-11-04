@@ -27,11 +27,11 @@ pod 'RxSwift'
 pod 'RxCocoa'
 pod 'NMapsMap'
 pod 'FloatingPanel'
-pod 'DropDown'
 
 #Firebase
 pod 'Firebase/Auth'
 pod 'Firebase/Core'
 pod 'FirebaseAnalytics'
+pod 'FirebaseDynamicLinks'
 pod 'Firebase/Messaging'
 end

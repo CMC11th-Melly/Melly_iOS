@@ -6,7 +6,6 @@ PODS:
   - AppAuth/Core (1.6.0)
   - AppAuth/ExternalUserAgent (1.6.0):
     - AppAuth/Core
-  - DropDown (2.3.13)
   - Firebase/Auth (10.1.0):
     - Firebase/CoreOnly
     - FirebaseAuth (~> 10.1.0)
@@ -47,6 +46,8 @@ PODS:
     - GoogleUtilities/Logger (~> 7.8)
   - FirebaseCoreInternal (10.1.0):
     - "GoogleUtilities/NSData+zlib (~> 7.8)"
+  - FirebaseDynamicLinks (10.1.0):
+    - FirebaseCore (~> 10.0)
   - FirebaseInstallations (10.1.0):
     - FirebaseCore (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
@@ -166,11 +167,11 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire
-  - DropDown
   - Firebase/Auth
   - Firebase/Core
   - Firebase/Messaging
   - FirebaseAnalytics
+  - FirebaseDynamicLinks
   - FloatingPanel
   - GoogleSignIn
   - KakaoSDKAuth
@@ -192,12 +193,12 @@ SPEC REPOS:
   trunk:
     - Alamofire
     - AppAuth
-    - DropDown
     - Firebase
     - FirebaseAnalytics
     - FirebaseAuth
     - FirebaseCore
     - FirebaseCoreInternal
+    - FirebaseDynamicLinks
     - FirebaseInstallations
     - FirebaseMessaging
     - FloatingPanel
@@ -228,12 +229,12 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   Alamofire: d368e1ff8a298e6dde360e35a3e68e6c610e7204
   AppAuth: 8fca6b5563a5baef2c04bee27538025e4ceb2add
-  DropDown: 8a2116376c1981888557f72ec2ffc9a5e0e456ec
   Firebase: 444b35a9c568a516666213c2f6cccd10cb12559f
   FirebaseAnalytics: 24cb27b52b2e11ad5013528195b4ca0755dec960
   FirebaseAuth: 19a85b8a42e7c1104a2ffa6987c748daa79a5e64
   FirebaseCore: 55e7ae35991ccca4db03ff8d8df6ed5f17a3e4c7
   FirebaseCoreInternal: 96d75228e10fd369564da51bd898414eb0f54df5
+  FirebaseDynamicLinks: 0c8492a77625ee3c0c564bf98b4cdaa89d9e6535
   FirebaseInstallations: 99d24bac0243cf8b0e96cf5426340d211f0bcc80
   FirebaseMessaging: 4487bbff9b9b927ba1dd3ea40d1ceb58e4ee3cb5
   FloatingPanel: a27e7827e0f710fa6236fe2596dd1b5484cb4fc1
@@ -261,6 +262,6 @@ SPEC CHECKSUMS:
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   Then: 844265ae87834bbe1147d91d5d41a404da2ec27d
 
-PODFILE CHECKSUM: a3ae2c0baf1a10180132901be566584526fece97
+PODFILE CHECKSUM: d010fa78c4dc8b34368e59720ba22c0ee085c124
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3

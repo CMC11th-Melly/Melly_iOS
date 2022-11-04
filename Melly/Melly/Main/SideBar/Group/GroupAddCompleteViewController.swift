@@ -167,7 +167,7 @@ extension GroupAddCompleteViewController {
         copyBT.rx.tap.asDriver(onErrorJustReturn: ())
             .drive(onNext: {
                 self.rightLabel.alpha = 1
-                
+                UIPasteboard.general.string = "https://cmc11th.page.link/?link=https://minjuling.notion.site/minjuling/1aae3484826f4e64a831e623a6a905d6&apn=com.melly&isi=6444202109&ibi=com.neordinary.CMC11th.Melly&cid=6563168647626591997&_osl=https://cmc11th.page.link/invite_group&_fpb=CNQGEIkDGgVrby1LUg==&_cpt=cpit&_iumenbl=1&_iumchkactval=1&_plt=707&_uit=2424&_cpb=1&_fpb=CNQGEIkDGgVrby1LUg==&_cpt=cpit&_iumenbl=1&_iumchkactval=1&_plt=707&_uit=100356&_cpb=1&_icp=1"
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                     UIView.animate(withDuration: 1.5) {
                         self.rightLabel.alpha = 0
@@ -179,6 +179,8 @@ extension GroupAddCompleteViewController {
         skipBT.rx.tap.subscribe(onNext: {
             self.navigationController?.popToRootViewController(animated: true)
         }).disposed(by: disposeBag)
+        
+        
         
     }
     

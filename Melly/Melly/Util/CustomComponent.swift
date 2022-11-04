@@ -541,24 +541,49 @@ class DynamicHeightCollectionView: UICollectionView {
 
 class CommentView: UIView {
     
-    var comment:Comment
-    
-    lazy var profileImageView = UIImageView(image: UIImage(named: "profile")).then {
-        $0.clipsToBounds = true
-        $0.layer.cornerRadius = 7.2
-        if let image = comment.profileImage {
-            let url = URL(string: image)!
-            $0.kf.setImage(with: url)
+    var comment:Comment? {
+        didSet {
+            setData()
         }
     }
     
-    lazy var nameLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.4, green: 0.435, blue: 0.486, alpha: 1)
-        if let text = comment.nickname {
-            $0.text = text
-        } else {
-            $0.text = "삭제된 댓글"
+    var height:CGFloat = 65
+    
+    func setData() {
+        if let comment = comment {
+            if let image = comment.profileImage {
+                let url = URL(string: image)!
+                profileImageView.kf.setImage(with: url)
+            }
+            if let text = comment.nickname {
+                nameLB.text = text
+            } else {
+                nameLB.text = "삭제된 댓글"
+            }
+            
+            commentLB.text = comment.content
+            
+            height += commentLB.frame.height
+            
+            if let createdDate = comment.createdDate {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyyMMddHHmm"
+                let date = dateFormatter.date(from: createdDate) ?? Date()
+                dateLb.text = date.timeAgoDisplay()
+            } else {
+                dateLb.text = ""
+            }
         }
+    }
+    
+    let profileImageView = UIImageView(image: UIImage(named: "profile")).then {
+        $0.clipsToBounds = true
+        $0.layer.cornerRadius = 7.2
+        
+    }
+    
+    let nameLB = UILabel().then {
+        $0.textColor = UIColor(red: 0.4, green: 0.435, blue: 0.486, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 14)
     }
     
@@ -566,42 +591,29 @@ class CommentView: UIView {
         $0.setImage(UIImage(named: "memory_dot"), for: .normal)
     }
     
-    lazy var commentLB = UILabel().then {
+    let commentLB = UILabel().then {
         $0.textColor = UIColor(red: 0.472, green: 0.503, blue: 0.55, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Medium", size: 13)
-        $0.text = comment.content
         $0.numberOfLines = 0
     }
     
-    lazy var dateLb = UILabel().then {
+    let bottomView = UIView()
+    
+    let dateLb = UILabel().then {
         $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
-        
         $0.font = UIFont(name: "Pretendard-Regular", size: 12)
-        if let createdDate = comment.createdDate {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyyMMddHHmm"
-            let date = dateFormatter.date(from: createdDate) ?? Date()
-            $0.text = date.timeAgoDisplay()
-        } else {
-            $0.text = ""
-        }
         
     }
-    
-    let bottomView = UIView()
     
     let stOne = UIView().then {
         $0.backgroundColor = UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
     }
     
-    lazy var likeBT = UIButton(type: .custom).then {
-        let text = comment.likeCount == 0 ? "좋아요" : "좋아요 \(comment.likeCount)개"
+    let likeBT = UIButton(type: .custom).then {
+        let text = "좋아요"
         $0.setImage(UIImage(named: "memory_heart"), for: .normal)
         $0.setTitle(text, for: .normal)
         $0.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 16)
-        $0.imageEdgeInsets = UIEdgeInsets(top: 0, left: -9, bottom: 0, right: 0)
-        $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -9)
-        
     }
     
     
@@ -618,9 +630,7 @@ class CommentView: UIView {
         $0.setAttributedTitle(attributedString, for: .normal)
     }
     
-    
-    init(frame: CGRect, comment: Comment) {
-        self.comment = comment
+    override init(frame: CGRect) {
         super.init(frame: frame)
         setUI()
     }
@@ -629,51 +639,57 @@ class CommentView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
     private func setUI() {
         layer.cornerRadius = 8
+        backgroundColor = UIColor(red: 0.975, green: 0.979, blue: 0.988, alpha: 1)
         
         addSubview(profileImageView)
         profileImageView.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(9)
-            $0.leading.equalToSuperview()
+            $0.top.equalToSuperview().offset(11)
+            $0.leading.equalToSuperview().offset(11)
             $0.width.height.equalTo(36)
         }
         
         addSubview(nameLB)
         nameLB.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(8)
-            $0.leading.equalTo(profileImageView.snp.trailing).offset(12)
+            $0.top.equalToSuperview().offset(10)
+            $0.leading.equalTo(profileImageView.snp.trailing).offset(15)
+            $0.height.equalTo(22)
         }
         
         addSubview(editBT)
         editBT.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(12)
-            $0.trailing.equalToSuperview()
+            $0.top.equalToSuperview().offset(13)
+            $0.trailing.equalToSuperview().offset(-10)
+            $0.width.height.equalTo(14)
         }
         
         addSubview(commentLB)
         commentLB.snp.makeConstraints {
             $0.top.equalTo(nameLB.snp.bottom)
             $0.leading.equalTo(profileImageView.snp.trailing).offset(12)
-            $0.trailing.equalToSuperview().offset(-52)
+            $0.trailing.equalTo(editBT.snp.leading).offset(-4)
         }
         
         addSubview(bottomView)
         bottomView.snp.makeConstraints {
-            $0.top.equalTo(commentLB.snp.bottom)
-            $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(26)
+            $0.top.equalTo(commentLB.snp.bottom).offset(4)
+            $0.leading.trailing.equalTo(commentLB)
+            $0.height.equalTo(19)
+            $0.bottom.equalToSuperview().offset(-10)
         }
         
         bottomView.addSubview(dateLb)
         dateLb.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(2)
-            $0.leading.equalTo(commentLB)
+            $0.top.equalToSuperview()
+            $0.leading.equalToSuperview().offset(4)
+            $0.height.equalTo(19)
         }
         
         bottomView.addSubview(stOne)
         stOne.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(6)
+            $0.centerY.equalToSuperview()
             $0.leading.equalTo(dateLb.snp.trailing).offset(8)
             $0.width.equalTo(1)
             $0.height.equalTo(12)
@@ -681,14 +697,16 @@ class CommentView: UIView {
         
         bottomView.addSubview(likeBT)
         likeBT.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(2)
+            $0.top.equalToSuperview()
             $0.leading.equalTo(stOne.snp.trailing).offset(4)
+            $0.width.equalTo(70.5)
+            $0.height.equalTo(19)
         }
         
         bottomView.addSubview(stTwo)
         stTwo.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(6)
-            $0.leading.equalTo(likeBT.snp.trailing).offset(3.5)
+            $0.centerY.equalToSuperview()
+            $0.leading.equalTo(likeBT.snp.trailing).offset(4)
             $0.width.equalTo(1)
             $0.height.equalTo(12)
         }
@@ -696,8 +714,9 @@ class CommentView: UIView {
         
         bottomView.addSubview(reCommentBT)
         reCommentBT.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(2)
+            $0.top.equalToSuperview()
             $0.leading.equalTo(stTwo.snp.trailing).offset(8)
+            $0.height.equalTo(19)
         }
         
     }

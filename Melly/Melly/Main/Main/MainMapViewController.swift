@@ -24,9 +24,7 @@ class MainMapViewController: UIViewController {
     weak var delegate: HomeViewControllerDelegate?
     var disposeBag = DisposeBag()
     var locationManager: CLLocationManager!
-    let vm = MainMapViewModel()
-    
-    
+    let vm = MainMapViewModel.instance
     
     let secretView = UIView().then {
         $0.backgroundColor = .clear
@@ -126,7 +124,6 @@ extension MainMapViewController {
         locationManager = CLLocationManager()
         locationManager.delegate = self
         self.locationManager.requestWhenInUseAuthorization()
-        
     }
     
     private func setUI() {
@@ -144,7 +141,6 @@ extension MainMapViewController {
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(layoutView.snp.top)
         }
-        
         
         safeArea.addSubview(mainView)
         mainView.snp.makeConstraints {
@@ -346,6 +342,7 @@ extension MainMapViewController {
                     for marker in markers {
                         marker.mapView = self.mapView
                     }
+                    
                 }
                 
             }).disposed(by: disposeBag)

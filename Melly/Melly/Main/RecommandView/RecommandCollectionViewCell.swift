@@ -65,6 +65,7 @@ class RecommandCollectionViewCell: UICollectionViewCell {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.register(RecommandMemoryCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.isScrollEnabled = true
+        collectionView.allowsSelection = false
         collectionView.isUserInteractionEnabled = true
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false

@@ -11,7 +11,7 @@ import RxSwift
 import Then
 import Photos
 import PhotosUI
-import DropDown
+import FloatingPanel
 
 class MemoryWriteViewController: UIViewController {
     
@@ -59,29 +59,15 @@ class MemoryWriteViewController: UIViewController {
     
     let titleLB = UILabel().then {
         $0.text = "제목 *"
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
     }
     
-    let titleTF = UITextField().then {
-        $0.placeholder = "메모리 제목을 입력해주세요"
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
-        $0.font = UIFont(name: "Pretendard-Medium", size: 16)
-        $0.layer.cornerRadius = 12
-        $0.layer.borderWidth = 1
-        $0.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
-        let lv = UIView()
-        lv.snp.makeConstraints {
-            $0.width.equalTo(17)
-            $0.height.equalTo(58)
-        }
-        $0.leftView = lv
-        $0.leftViewMode = .always
-    }
+    let titleTF = CustomTextField(title: "메모리 제목을 입력해주세요")
     
     let contentsLB = UILabel().then {
         $0.text = "메모리 작성 *"
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
     }
     
@@ -90,43 +76,36 @@ class MemoryWriteViewController: UIViewController {
         $0.layer.borderWidth = 1
         $0.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
     }
-    let placeHolder = "이 메모리에서 느낀 내 기분은 어떤가요?"
+    
+    let placeHolder = "이 장소 메모리를 작성해보세요"
     
     lazy var contentsTF = UITextView().then {
         $0.text = placeHolder
-        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Medium", size: 16)
         $0.delegate = self
     }
     
     let textCountLB = UILabel().then {
         $0.text = "0자 | 최소 20자"
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.textColor = UIColor(red: 0.4, green: 0.435, blue: 0.486, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Medium", size: 12)
     }
     
     let groupLB = UILabel().then {
         $0.text = "그룹 설정 *"
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
     }
     
-    let groupDetailLB = UILabel().then {
-        $0.text = "누구와 함께 메모리를 쌓았나요?"
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
-        $0.font = UIFont(name: "Pretendard-Medium", size: 12)
-    }
     
     let groupPickerView = DropMenuButton()
+    let filterPanel = FloatingPanelController()
     
-    lazy var groupDropDown = DropDown().then {
-        $0.anchorView = groupPickerView
-        $0.bottomOffset = CGPoint(x: 0, y: ($0.anchorView?.plainView.bounds.height)!)
-    }
     
     let dateLB = UILabel().then {
-        $0.text = "날짜"
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        $0.text = "날짜 *"
+        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
     }
     
@@ -134,8 +113,8 @@ class MemoryWriteViewController: UIViewController {
     let timeBT = DatePickerButton(Date(), isTime: false)
     
     let starLB = UILabel().then {
-        $0.text = "메모리 별점"
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        $0.text = "메모리 별점 *"
+        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
     }
     
@@ -165,15 +144,14 @@ class MemoryWriteViewController: UIViewController {
     
     let keywordLB = UILabel().then {
         $0.text = "내 기분 키워드"
-        $0.textColor = UIColor(red: 0.42, green: 0.463, blue: 0.518, alpha: 1)
+        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
     }
     
     let keywordDetailView = UILabel().then {
         $0.text = "이 메모리에서 느낀 내 기분은 어떤가요?"
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
-        $0.font = UIFont(name: "Pretendard-Medium", size: 12)
-        
+        $0.textColor = UIColor(red: 0.472, green: 0.503, blue: 0.55, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-Medium", size: 14)
     }
     
     let keywordCV:UICollectionView = {
@@ -188,11 +166,11 @@ class MemoryWriteViewController: UIViewController {
     }()
     
     let errorLable = AlertLabel().then {
-        $0.isHidden = true
+        $0.alpha = 0
     }
     
-    let cancelBT = CustomButton(title: "취소")
-    let writeBT = CustomButton(title: "메모리 저장")
+    let cancelBT = DefaultButton("취소", false)
+    let writeBT = DefaultButton("메모리 저장", true)
     
     
     init(vm: MemoryWriteViewModel) {
@@ -335,12 +313,6 @@ extension MemoryWriteViewController {
             $0.leading.equalToSuperview().offset(30)
         }
         
-        contentView.addSubview(groupDetailLB)
-        groupDetailLB.snp.makeConstraints {
-            $0.top.equalTo(contentsTFView.snp.bottom).offset(35)
-            $0.leading.equalTo(groupLB.snp.trailing).offset(9)
-            
-        }
         
         contentView.addSubview(groupPickerView)
         groupPickerView.snp.makeConstraints {
@@ -409,6 +381,9 @@ extension MemoryWriteViewController {
         
         keywordCV.layoutIfNeeded()
         
+        filterPanel.isRemovalInteractionEnabled
+        filterPanel.layout = MemoryDetailPanel()
+        
     }
     
     private func bind() {
@@ -437,7 +412,7 @@ extension MemoryWriteViewController {
             .disposed(by: disposeBag)
         
         imageButton.rx.tap.subscribe(onNext: {
-            let alert = UIAlertController(title: "프로필 사진 추가하기", message: nil, preferredStyle: .actionSheet)
+            let alert = UIAlertController(title: "사진 추가하기", message: nil, preferredStyle: .actionSheet)
             
             let pickerAction = UIAlertAction(title: "앨범에서 사진 선택", style: .default) { _ in
                 var config = PHPickerConfiguration(photoLibrary: .shared())
@@ -455,10 +430,15 @@ extension MemoryWriteViewController {
                 self.present(picker, animated: true)
             }
             
+            let removeAction = UIAlertAction(title: "사진 삭제하기", style: .default) { _ in
+                self.vm.input.imagesObserver.accept([])
+            }
+            
             let cancelAction = UIAlertAction(title: "취소", style: .cancel)
             
             alert.addAction(pickerAction)
             alert.addAction(cameraAction)
+            alert.addAction(removeAction)
             alert.addAction(cancelAction)
             self.present(alert, animated: true)
             
@@ -473,11 +453,6 @@ extension MemoryWriteViewController {
             .map { self.contentsTF.text ?? "" }
             .bind(to: vm.input.contentObserver)
             .disposed(by: disposeBag)
-        
-        groupDropDown.selectionAction = { [unowned self] (index: Int, item: String) in
-            self.groupPickerView.textLB.text = item
-            self.vm.input.groupObserver.accept(item)
-        }
         
         dateBT.rx.tap
             .subscribe(onNext: {
@@ -547,7 +522,9 @@ extension MemoryWriteViewController {
         
         groupPickerView.rx.tap
             .subscribe(onNext: {
-                self.groupDropDown.show()
+                let vc = MemoryWriteGroupPickerViewController(vm: self.vm)
+                self.filterPanel.set(contentViewController: vc)
+                self.filterPanel.addPanel(toParent: self)
             }).disposed(by: disposeBag)
         
         writeBT.rx.tap
@@ -600,22 +577,20 @@ extension MemoryWriteViewController {
         vm.output.imagesValue.asDriver(onErrorJustReturn: [])
             .drive(onNext: { value in
                 
-                if value.count == 0 {
-                    
-                    DispatchQueue.main.async {
-                        self.imageContentView.subviews.forEach { $0.removeFromSuperview() }
-                        self.imageContentView.addSubview(self.imageButton)
-                        self.imageButton.snp.makeConstraints {
-                            $0.top.equalToSuperview().offset(11)
-                            $0.leading.equalToSuperview().offset(4)
-                            $0.width.equalTo(330)
-                            $0.height.equalTo(170)
-                            $0.trailing.equalToSuperview()
-                        }
-                        self.viewDidLayoutSubviews()
+                
+                DispatchQueue.main.async {
+                    self.imageContentView.subviews.forEach { $0.removeFromSuperview() }
+                    self.imageContentView.addSubview(self.imageButton)
+                    self.imageButton.snp.makeConstraints {
+                        $0.top.equalToSuperview().offset(11)
+                        $0.leading.equalToSuperview().offset(4)
+                        $0.width.equalTo(330)
+                        $0.height.equalTo(170)
+                        $0.trailing.equalToSuperview()
                     }
-                    
-                } else {
+                    self.viewDidLayoutSubviews()
+                }
+                if !value.isEmpty {
                     DispatchQueue.main.async {
                         self.imageContentView.subviews.forEach { $0.removeFromSuperview() }
                         let imagesView:[UIImageView] = {
@@ -665,20 +640,24 @@ extension MemoryWriteViewController {
                 
             }).disposed(by: disposeBag)
         
-        vm.output.groupValue.asDriver(onErrorJustReturn: [])
-            .drive(onNext: { value in
-                self.groupDropDown.dataSource = value
-            }).disposed(by: disposeBag)
+        vm.output.groupValue.subscribe(onNext: { value in
+            if let value = value {
+                self.groupPickerView.textLB.text = value.groupName
+                self.groupPickerView.textLB.font = UIFont(name: "Pretendard-Regular", size: 16)
+            }
+            self.filterPanel.view.removeFromSuperview()
+            self.filterPanel.removeFromParent()
+        }).disposed(by: disposeBag)
         
         vm.output.errorValue.asDriver(onErrorJustReturn: "")
             .drive(onNext: { value in
                 
                 self.errorLable.labelView.text = value
-                self.errorLable.isHidden = false
+                self.errorLable.alpha = 1
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                     UIView.animate(withDuration: 1.5) {
-                        self.errorLable.isHidden = true
+                        self.errorLable.alpha = 0
                     }
                 }
             }).disposed(by: disposeBag)
@@ -712,17 +691,17 @@ extension MemoryWriteViewController: UICollectionViewDelegateFlowLayout {
     
     //2번 선택할 때 deselect 모드로 변경
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-           guard let cell = collectionView.cellForItem(at: indexPath) as? KeyWordCell else {
-               return true
-           }
-           if cell.isSelected {
-               collectionView.deselectItem(at: indexPath, animated: true)
-               
-               return false
-           } else {
-               return true
-           }
-       }
+        guard let cell = collectionView.cellForItem(at: indexPath) as? KeyWordCell else {
+            return true
+        }
+        if cell.isSelected {
+            collectionView.deselectItem(at: indexPath, animated: true)
+            
+            return false
+        } else {
+            return true
+        }
+    }
     
 }
 
@@ -818,15 +797,19 @@ extension MemoryWriteViewController: UIScrollViewDelegate, UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
         if textView.text == placeHolder {
             textView.text = nil
+            textView.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         }
+        contentsTFView.layer.borderColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1).cgColor
     }
     
     //textView에서 포커싱이 벗어날 때 호출
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             textView.text = placeHolder
+            textView.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
             updateCountLabel(characterCount: 0)
         }
+        contentsTFView.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
     }
     
     //textView의 text가 바뀔 때 마다 호출
@@ -860,7 +843,7 @@ final class KeyWordCell: UICollectionViewCell {
     }
     
     let titleLabel: UILabel = UILabel().then {
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Medium", size: 14)
         $0.textAlignment = .center
     }
@@ -881,8 +864,10 @@ final class KeyWordCell: UICollectionViewCell {
     
     
     private func setupView() {
-        backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
-        layer.cornerRadius = 12
+        backgroundColor = .white
+        layer.cornerRadius = 8
+        layer.borderWidth = 1.2
+        layer.borderColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1).cgColor
         contentView.addSubview(titleLabel)
         titleLabel.snp.makeConstraints {
             $0.top.equalToSuperview().offset(8)
@@ -899,12 +884,268 @@ final class KeyWordCell: UICollectionViewCell {
     override var isSelected: Bool {
         didSet {
             if isSelected {
-                backgroundColor = UIColor(red: 0.4, green: 0.435, blue: 0.486, alpha: 1)
-                titleLabel.textColor = UIColor(red: 0.975, green: 0.979, blue: 0.988, alpha: 1)
+                backgroundColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
+                titleLabel.textColor = .white
             } else {
-                backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
-                titleLabel.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+                backgroundColor = .white
+                titleLabel.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
             }
         }
     }
+}
+
+class MemoryDetailPanel: FloatingPanelLayout{
+    var position: FloatingPanelPosition = .bottom
+    var initialState: FloatingPanelState = .tip
+    
+    
+    var anchors: [FloatingPanelState: FloatingPanelLayoutAnchoring] {
+        return [
+            .tip: FloatingPanelLayoutAnchor(absoluteInset: 383, edge: .bottom, referenceGuide: .superview)
+        ]
+    }
+}
+
+class MemoryWriteGroupPickerViewController: UIViewController {
+    
+    let vm:MemoryWriteViewModel
+    
+    var selectGroup:Group? {
+        didSet {
+            if selectGroup == nil {
+                saveBT.isEnabled = false
+            } else {
+                saveBT.isEnabled = true
+            }
+        }
+    }
+    
+    private let disposeBag = DisposeBag()
+    
+    let contentView = UIView()
+    
+    let groupCV:UICollectionView = {
+        let flowLayout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
+        collectionView.isScrollEnabled = true
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.showsHorizontalScrollIndicator = false
+        return collectionView
+    }()
+    
+    let bottomView = UIView()
+    let cancelBT = DefaultButton("취소", false)
+    let saveBT = CustomButton(title: "저장").then {
+        $0.isEnabled = false
+    }
+    
+    init(vm: MemoryWriteViewModel) {
+        self.vm = vm
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setUI()
+        setCV()
+        bind()
+    }
+    
+    private func setUI() {
+        
+        view.backgroundColor = .white
+        
+        view.addSubview(contentView)
+        contentView.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+            $0.height.equalTo(381)
+        }
+        
+        contentView.addSubview(bottomView)
+        bottomView.snp.makeConstraints {
+            $0.bottom.leading.trailing.equalToSuperview()
+            $0.height.equalTo(105)
+        }
+        
+        bottomView.addSubview(cancelBT)
+        cancelBT.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(9)
+            $0.leading.equalToSuperview().offset(30)
+            $0.height.equalTo(56)
+            $0.width.equalTo((self.view.frame.width-70)/2)
+        }
+        
+        bottomView.addSubview(saveBT)
+        saveBT.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(9)
+            $0.trailing.equalToSuperview().offset(-30)
+            $0.height.equalTo(56)
+            $0.width.equalTo((self.view.frame.width-70)/2)
+        }
+        
+        contentView.addSubview(groupCV)
+        groupCV.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(33)
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(bottomView.snp.top)
+        }
+        
+    }
+    
+    private func setCV() {
+        groupCV.delegate = self
+        groupCV.dataSource = self
+        groupCV.register(SelectGroupCell.self, forCellWithReuseIdentifier: "cell")
+    }
+    
+    private func bind() {
+        
+        saveBT.rx.tap
+            .map { self.selectGroup }
+            .bind(to: vm.input.groupObserver)
+            .disposed(by: disposeBag)
+        
+        cancelBT.rx.tap
+            .map { nil }
+            .bind(to: vm.input.groupObserver)
+            .disposed(by: disposeBag)
+    }
+    
+    
+    
+}
+
+
+extension MemoryWriteGroupPickerViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return vm.groupData.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! SelectGroupCell
+        cell.group = self.vm.groupData[indexPath.row]
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: self.view.frame.width, height: 56)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        selectGroup = vm.groupData[indexPath.row]
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? SelectGroupCell else {
+            return true
+        }
+        if cell.isSelected {
+            collectionView.deselectItem(at: indexPath, animated: true)
+            selectGroup = nil
+            return false
+        } else {
+            return true
+        }
+    }
+    
+    
+    
+}
+
+class SelectGroupCell: UICollectionViewCell {
+    
+    var group:Group? {
+        didSet {
+            setData()
+        }
+    }
+    
+    override var isSelected: Bool {
+        didSet {
+            if isSelected {
+                backgroundColor = UIColor(red: 0.975, green: 0.979, blue: 0.988, alpha: 1)
+            } else {
+                backgroundColor = .white
+            }
+        }
+    }
+    
+    let groupTypeLB = UILabel().then {
+        $0.clipsToBounds = true
+        $0.textColor = .white
+        $0.layer.cornerRadius = 4
+        $0.textAlignment = .center
+        $0.font = UIFont(name: "Pretendard-Medium", size: 12)
+    }
+    
+    let groupNameLB = UILabel().then {
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-Medium", size: 16)
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setUI() {
+        backgroundColor = .white
+        
+        addSubview(groupTypeLB)
+        groupTypeLB.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalToSuperview().offset(47)
+            $0.height.equalTo(19)
+            $0.width.equalTo(29)
+        }
+        
+        addSubview(groupNameLB)
+        groupNameLB.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalTo(groupTypeLB.snp.trailing).offset(10)
+            $0.height.equalTo(19)
+        }
+        
+    }
+    
+    private func setData() {
+        if let group = group {
+            groupNameLB.text = group.groupName
+            
+            switch group.groupType {
+            case "FAMILY":
+                groupTypeLB.text = "가족"
+                groupTypeLB.backgroundColor = UIColor(red: 0.337, green: 0.29, blue: 0.898, alpha: 1)
+            case "COUPLE":
+                groupTypeLB.text = "연인"
+                groupTypeLB.backgroundColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1)
+            case "COMPANY":
+                groupTypeLB.text = "동료"
+                groupTypeLB.backgroundColor = UIColor(red: 0.278, green: 0.494, blue: 0.922, alpha: 1)
+            case "FRIEND":
+                groupTypeLB.text = "친구"
+                groupTypeLB.backgroundColor = UIColor(red: 0.221, green: 0.679, blue: 0.459, alpha: 1)
+            default:
+                break
+            }
+            
+            
+        }
+        
+    }
+    
+    
 }

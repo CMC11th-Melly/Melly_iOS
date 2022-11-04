@@ -8,7 +8,7 @@
 import Foundation
 import RxCocoa
 import RxSwift
-
+import Alamofire
 
 class ResearchMainViewModel {
     
@@ -17,6 +17,7 @@ class ResearchMainViewModel {
     let output = Output()
     var searchData = ["","",""]
     var currentStep = 1
+    var survey: Survey?
     
     static let instance = ResearchMainViewModel()
     
@@ -30,11 +31,16 @@ class ResearchMainViewModel {
         let researchThreeObserver = PublishRelay<String>()
         let backObserver = PublishRelay<Void>()
         let nextObserver = PublishRelay<Void>()
+        let surveyObserver = PublishRelay<Void>()
+        let goMainObserver = PublishRelay<Void>()
     }
     
     struct Output {
         let buttonValid = PublishRelay<Bool>()
         let nextBackValid = PublishRelay<Int>()
+        let errorValue = PublishRelay<String>()
+        let surveyValue = PublishRelay<Survey>()
+        let goToMainValue = PublishRelay<Void>()
     }
     
     init() {
@@ -79,9 +85,164 @@ class ResearchMainViewModel {
             self.output.nextBackValid.accept(self.currentStep)
         }).disposed(by: disposeBag)
         
+        input.surveyObserver
+            .flatMap(getSurvey)
+            .subscribe({ event in
+                switch event {
+                case .next(let survey):
+                    self.survey = survey
+                case .error(let error):
+                    if let mellyError = error as? MellyError {
+                        if mellyError.msg == "" {
+                            self.output.errorValue.accept(error.localizedDescription)
+                        } else {
+                            self.output.errorValue.accept(mellyError.msg)
+                        }
+                    }
+                case .completed:
+                    break
+                }
+            }).disposed(by: disposeBag)
+        
+        
+        input.goMainObserver
+            .flatMap(transferPlace)
+            .subscribe({ event in
+                switch event {
+                case .next(let place):
+                    UserDefaults.standard.setValue("no", forKey: "initialUser")
+                    MainMapViewModel.instance.output.locationValue.accept(place)
+                    self.output.goToMainValue.accept(())
+                case .error(let error):
+                    if let mellyError = error as? MellyError {
+                        if mellyError.msg == "" {
+                            self.output.errorValue.accept(error.localizedDescription)
+                        } else {
+                            self.output.errorValue.accept(mellyError.msg)
+                        }
+                    }
+                case .completed:
+                    break
+                }
+            }).disposed(by: disposeBag)
+        
     }
     
     
+    
+    /**
+     푸시 알림 선택 시 해당 메모리로 이동
+     - Parameters:
+     -push: Push
+     - Throws: MellyError
+     - Returns:Memory
+     */
+    func getSurvey() -> Observable<Survey> {
+        
+        return Observable.create { observer in
+            
+            if let user = User.loginedUser {
+                let header:HTTPHeaders = [
+                    "Content-Type": "application/json",
+                    "Authorization" : "Bearer \(user.jwtToken)"
+                ]
+                
+                let parameters:Parameters = ["recommendPlace": self.searchData[0],
+                                             "recommendActivity": self.searchData[1],
+                                             "recommendGroup": GroupFilter.getGroupValue(self.searchData[2])]
+                
+                let url = "https://api.melly.kr/api/user/survey"
+                
+                AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: header)
+                    .responseData { response in
+                        switch response.result {
+                        case .success(let data):
+                            
+                            let decoder = JSONDecoder()
+                            
+                            if let json = try? decoder.decode(ResponseData.self, from: data) {
+                                print(json)
+                                if json.message == "설문 조사 기반 추천 조회" {
+                                    
+                                    if let data = try? JSONSerialization.data(withJSONObject: json.data?["surveyRecommend"] as Any) {
+                                        
+                                        if let survey = try? decoder.decode(Survey.self, from: data) {
+                                            
+                                            observer.onNext(survey)
+                                        }
+                                    }
+                                    
+                                } else {
+                                    let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
+                                    observer.onError(error)
+                                }
+                            }
+                        case .failure(let error):
+                            observer.onError(error)
+                        }
+                    }
+            }
+            
+            return Disposables.create()
+        }
+        
+    }
+    
+    func transferPlace() -> Observable<Place> {
+        
+        return Observable.create { observer in
+            
+            if let user = User.loginedUser,
+               let survey = self.survey {
+                
+                let parameters:Parameters = ["lat": survey.position.lat,
+                                             "lng": survey.position.lng]
+                let header:HTTPHeaders = [
+                    "Connection":"keep-alive",
+                    "Content-Type":"application/json",
+                    "Authorization" : "Bearer \(user.jwtToken)"
+                ]
+                
+                AF.request("https://api.melly.kr/api/place", method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: header)
+                    .responseData { response in
+                        switch response.result {
+                        case .success(let data):
+                            
+                            
+                            let decoder = JSONDecoder()
+                            if let json = try? decoder.decode(ResponseData.self, from: data) {
+                                
+                                if json.message == "장소 상세 조회" {
+                                    
+                                    if let data = try? JSONSerialization.data(withJSONObject: json.data as Any) {
+                                        
+                                        if let place = try? decoder.decode(Place.self, from: data) {
+                                            
+                                            observer.onNext(place)
+                                        }
+                                        
+                                    }
+                                    
+                                } else {
+                                    let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
+                                    observer.onError(error)
+                                }
+                                
+                            } else {
+                                let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
+                                observer.onError(error)
+                            }
+                        case .failure(let error):
+                            observer.onError(error)
+                        }
+                    }
+            }
+            
+            
+            return Disposables.create()
+        }
+        
+    }
     
     
 }

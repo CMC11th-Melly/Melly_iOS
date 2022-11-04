@@ -8,5 +8,9 @@
 	<array>
 		<string>Default</string>
 	</array>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>cmc11th.page.link/?link=https://minjuling.notion.site/minjuling/1aae3484826f4e64a831e623a6a905d6&amp;apn=com.melly&amp;isi=6444202109&amp;ibi=com.neordinary.CMC11th.Melly&amp;cid=5186898667994263355&amp;_osl=https://cmc11th.page.link/invite_group&amp;_icp=1</string>
+	</array>
 </dict>
 </plist>

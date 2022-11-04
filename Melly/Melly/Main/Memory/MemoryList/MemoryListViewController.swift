@@ -8,11 +8,12 @@
 import UIKit
 import RxCocoa
 import RxSwift
+import FloatingPanel
 
 class MemoryListViewController: UIViewController {
     
-    let vm = MemoryListViewModel.instance
-    
+    let vm:MemoryListViewModel
+    let filterPanel = FloatingPanelController()
     private let disposeBag = DisposeBag()
     
     let bottomView = UIView()
@@ -20,19 +21,19 @@ class MemoryListViewController: UIViewController {
     let contentView = UIView()
     
     lazy var locationTitleLB = UILabel().then {
-        $0.text = vm.place?.placeName ?? "성수동"
+        $0.text = vm.place.placeName
         $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Bold", size: 18)
     }
     
     lazy var locationCategoryLB = UILabel().then {
-        $0.text = vm.place?.placeCategory ?? "거리"
+        $0.text = vm.place.placeCategory
         $0.textColor = UIColor(red: 0.545, green: 0.584, blue: 0.631, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Medium", size: 14)
     }
     
     lazy var bmButton = UIImageView().then {
-        let image = UIImage(named: vm.place!.isScraped ? "bookmark_fill" : "bookmark_empty")
+        let image = UIImage(named: vm.place.isScraped ? "bookmark_fill" : "bookmark_empty")
         $0.image = image
     }
     
@@ -62,13 +63,15 @@ class MemoryListViewController: UIViewController {
         
     }
     
-    private let ourMemoryViewController = OurMemoryListViewController()
-    private let otherMemoryViewController = OtherMemoryListViewController()
+    private lazy var ourMemoryViewController = OurMemoryListViewController(vm: vm)
+    private lazy var otherMemoryViewController = OtherMemoryListViewController(vm: vm)
     
     
     var dataView: [UIViewController] { [self.ourMemoryViewController, self.otherMemoryViewController] }
     
-    let writeMemoryBT = CustomButton(title: "이 장소에 메모리 쓰기")
+    let writeMemoryBT = CustomButton(title: "이 장소에 메모리 쓰기").then {
+        $0.isEnabled = true
+    }
     
     var currentPage: Int = 0 {
         didSet {
@@ -82,6 +85,14 @@ class MemoryListViewController: UIViewController {
         }
       }
     
+    init(vm: MemoryListViewModel) {
+        self.vm = vm
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -171,6 +182,8 @@ extension MemoryListViewController {
         }
         
         
+        filterPanel.isRemovalInteractionEnabled = true
+        
     }
     
     private func bind() {
@@ -202,6 +215,77 @@ extension MemoryListViewController {
             self.present(vc, animated: true)
             
         }).disposed(by: disposeBag)
+        
+        vm.output.goToOurFilterVC
+            .subscribe(onNext: {
+                let vc = OurMemoryGroupFilterViewController(vm: self.vm)
+                self.filterPanel.layout = MyMemoryPanelLayout()
+                self.filterPanel.set(contentViewController: vc)
+                self.filterPanel.addPanel(toParent: self)
+            }).disposed(by: disposeBag)
+        
+        vm.output.goToOurSortVC
+            .subscribe(onNext: {
+                let vc = OurMemoryFilterViewController(vm: self.vm)
+                self.filterPanel.layout = MyMemoryPanelLayout()
+                self.filterPanel.set(contentViewController: vc)
+                self.filterPanel.addPanel(toParent: self)
+            }).disposed(by: disposeBag)
+        
+        vm.output.ourSortValue
+            .subscribe(onNext: { value in
+                self.filterPanel.view.removeFromSuperview()
+                self.filterPanel.removeFromParent()
+            }).disposed(by: disposeBag)
+        
+        vm.output.ourGroupFilterValue
+            .subscribe(onNext: { value in
+                self.filterPanel.view.removeFromSuperview()
+                self.filterPanel.removeFromParent()
+            }).disposed(by: disposeBag)
+        
+        vm.output.goToOtherFilterVC
+            .subscribe(onNext: {
+                let vc = OtherMemoryGroupFilterViewController(vm: self.vm)
+                self.filterPanel.layout = MyMemoryPanelLayout()
+                self.filterPanel.set(contentViewController: vc)
+                self.filterPanel.addPanel(toParent: self)
+            }).disposed(by: disposeBag)
+        
+        vm.output.goToOtherSortVC
+            .subscribe(onNext: {
+                let vc = OtherMemoryFilterViewController(vm: self.vm)
+                self.filterPanel.layout = MyMemoryPanelLayout()
+                self.filterPanel.set(contentViewController: vc)
+                self.filterPanel.addPanel(toParent: self)
+            }).disposed(by: disposeBag)
+        
+        vm.output.goToOtherAllVC
+            .subscribe(onNext: {
+                let vc = OtherAllViewController(vm: self.vm)
+                self.filterPanel.layout = OtherAllPanelLayout()
+                self.filterPanel.set(contentViewController: vc)
+                self.filterPanel.addPanel(toParent: self)
+            }).disposed(by: disposeBag)
+        
+        vm.output.otherSortValue
+            .subscribe(onNext: { value in
+                self.filterPanel.view.removeFromSuperview()
+                self.filterPanel.removeFromParent()
+            }).disposed(by: disposeBag)
+        
+        vm.output.otherGroupFilterValue
+            .subscribe(onNext: { value in
+                self.filterPanel.view.removeFromSuperview()
+                self.filterPanel.removeFromParent()
+            }).disposed(by: disposeBag)
+        
+        vm.output.otherAllValue
+            .subscribe(onNext: { value in
+                self.filterPanel.view.removeFromSuperview()
+                self.filterPanel.removeFromParent()
+            }).disposed(by: disposeBag)
+        
     }
     
 }
@@ -237,4 +321,16 @@ extension MemoryListViewController: UIPageViewControllerDataSource, UIPageViewCo
         self.memorySegmentedControl.selectedSegmentIndex = index
     }
     
+}
+
+class OtherAllPanelLayout: FloatingPanelLayout{
+    var position: FloatingPanelPosition = .bottom
+    var initialState: FloatingPanelState = .tip
+    
+    
+    var anchors: [FloatingPanelState: FloatingPanelLayoutAnchoring] {
+        return [
+            .tip: FloatingPanelLayoutAnchor(absoluteInset: 192, edge: .bottom, referenceGuide: .superview)
+        ]
+    }
 }

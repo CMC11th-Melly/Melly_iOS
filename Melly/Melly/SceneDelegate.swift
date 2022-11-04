@@ -8,6 +8,7 @@
 import UIKit
 import KakaoSDKAuth
 import NaverThirdPartyLogin
+import FirebaseDynamicLinks
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -21,6 +22,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.rootViewController = SplashViewController()
         window.makeKeyAndVisible()
         self.window = window
+        
+        if let userActivity = connectionOptions.userActivities.first {
+            self.scene(scene, continue: userActivity)
+        }
         
     }
     
@@ -38,6 +43,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         
     }
+    
+    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+        if let incomingURL = userActivity.webpageURL {
+            let linkHandled = DynamicLinks.dynamicLinks().handleUniversalLink(incomingURL) { dynamicLink, error in
+                print(dynamicLink)
+            }
+        }
+    }
+    
+    
 
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.

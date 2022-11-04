@@ -258,6 +258,15 @@ extension GroupViewController {
                 }
             }).disposed(by: disposeBag)
         
+        vm.output.errorValue.asDriver(onErrorJustReturn: "")
+            .drive(onNext: { value in
+                
+                let alert = UIAlertController(title: "에러", message: value, preferredStyle: .alert)
+                let alertAction = UIAlertAction(title: "확인", style: .cancel)
+                alert.addAction(alertAction)
+                self.present(alert, animated: true)
+                
+            }).disposed(by: disposeBag)
         
     }
     

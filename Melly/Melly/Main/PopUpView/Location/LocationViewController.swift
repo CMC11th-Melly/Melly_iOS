@@ -132,8 +132,8 @@ extension LocationViewController {
             .disposed(by: disposeBag)
         
         showMemoryBT.rx.tap.subscribe(onNext: {
-            MemoryListViewModel.instance.place = self.place
-            let vc = MemoryListViewController()
+            let vm = MemoryListViewModel(place: self.place!)
+            let vc = MemoryListViewController(vm: vm)
             vc.modalTransitionStyle = .crossDissolve
             vc.modalPresentationStyle = .fullScreen
             self.present(vc, animated: true)

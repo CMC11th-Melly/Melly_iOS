@@ -33,7 +33,7 @@ extension UIScrollView {
         let unionCalculatedTotalRect = recursiveUnionInDepthFor(view: self)
         
         // 계산된 크기로 컨텐츠 사이즈 설정
-        self.contentSize = CGSize(width: unionCalculatedTotalRect.width + 5, height: 192)
+        self.contentSize = CGSize(width: unionCalculatedTotalRect.width, height: unionCalculatedTotalRect.height + 20)
     }
     
     private func recursiveUnionInDepthFor(view: UIView) -> CGRect {

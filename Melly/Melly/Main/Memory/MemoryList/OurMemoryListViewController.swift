@@ -16,11 +16,11 @@ class OurMemoryListViewController: UIViewController {
     
     private let disposeBag = DisposeBag()
     
-    let vm = MemoryListViewModel.instance
+    let vm:MemoryListViewModel
     var isLoading:Bool = false
     var loadingView:FooterLoadingView?
     var memories:[Memory] = []
-    let filterPanel = FloatingPanelController()
+    
     var isNoData:Bool = false {
         didSet {
             if isNoData {
@@ -61,6 +61,15 @@ class OurMemoryListViewController: UIViewController {
         collectionView.showsHorizontalScrollIndicator = false
         return collectionView
     }()
+    
+    init(vm: MemoryListViewModel) {
+        self.vm = vm
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -130,8 +139,7 @@ extension OurMemoryListViewController {
             $0.bottom.equalToSuperview()
         }
         
-        filterPanel.layout = MyMemoryPanelLayout()
-        filterPanel.isRemovalInteractionEnabled = true
+        
         
     }
     
@@ -145,6 +153,28 @@ extension OurMemoryListViewController {
         dataCV.dataSource = self
         dataCV.register(MemoryListCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         dataCV.register(FooterLoadingView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: FooterLoadingView.identifier)
+        
+        sortFilter.rx.tap
+            .subscribe(onNext: {
+                
+                if self.sortFilter.mode {
+                    self.vm.input.ourSortObserver.accept("visitedDate,desc")
+                } else {
+                    self.vm.output.goToOurSortVC.accept(())
+                    
+                }
+            }).disposed(by: disposeBag)
+        
+        groupFilter.rx.tap
+            .subscribe(onNext: {
+                
+                if self.groupFilter.mode {
+                    self.vm.input.ourGroupFilterObserver.accept(.all)
+                } else {
+                    self.vm.output.goToOurFilterVC.accept(())
+                }
+                
+            }).disposed(by: disposeBag)
         
     }
     
@@ -160,29 +190,51 @@ extension OurMemoryListViewController {
                 }
             }).disposed(by: disposeBag)
         
-        sortFilter.rx.tap
-            .subscribe(onNext: {
-                
-                if self.sortFilter.mode {
-                    self.vm.input.ourSortObserver.accept("visitedDate,desc")
+        vm.output.ourSortValue.asDriver(onErrorJustReturn: "")
+            .drive(onNext: { value in
+                if value == "visitedDate,asc" {
+                    self.sortFilter.textLabel.text = "오래된 순"
+                    self.sortFilter.mode = true
+                } else if value == "stars,desc" {
+                    self.sortFilter.textLabel.text = "별점이 높은 순"
+                    self.sortFilter.mode = true
+                } else if value == "stars,asc" {
+                    self.sortFilter.textLabel.text = "별점이 낮은 순"
+                    self.sortFilter.mode = true
                 } else {
-                    let vc = OurMemoryFilterViewController()
-                    self.filterPanel.set(contentViewController: vc)
-                    self.filterPanel.addPanel(toParent: self)
+                    self.sortFilter.textLabel.text = "최신 순"
+                    self.sortFilter.mode = false
                 }
+                
+                self.view.layoutIfNeeded()
+                self.memories = []
+                self.vm.input.ourMemoryRefresh.accept(())
             }).disposed(by: disposeBag)
         
-        groupFilter.rx.tap
-            .subscribe(onNext: {
+        vm.output.ourGroupFilterValue.asDriver(onErrorJustReturn: .all)
+            .drive(onNext: { value in
                 
-                if self.groupFilter.mode {
-                    self.vm.input.ourGroupFilterObserver.accept(.all)
-                } else {
-                    let vc = OurMemoryGroupFilterViewController()
-                    self.filterPanel.set(contentViewController: vc)
-                    self.filterPanel.addPanel(toParent: self)
+                switch value {
+                case .company:
+                    self.groupFilter.textLabel.text = "동료만"
+                    self.groupFilter.mode = true
+                case .friend:
+                    self.groupFilter.textLabel.text = "친구만"
+                    self.groupFilter.mode = true
+                case .couple:
+                    self.groupFilter.textLabel.text = "연인만"
+                    self.groupFilter.mode = true
+                case .family:
+                    self.groupFilter.textLabel.text = "가족만"
+                    self.groupFilter.mode = true
+                default :
+                    self.groupFilter.textLabel.text = "카테고리"
+                    self.groupFilter.mode = false
                 }
                 
+                self.view.layoutIfNeeded()
+                self.memories = []
+                self.vm.input.ourMemoryRefresh.accept(())
             }).disposed(by: disposeBag)
         
         
@@ -285,7 +337,7 @@ extension OurMemoryListViewController: UICollectionViewDelegate, UICollectionVie
 class OurMemoryFilterViewController: UIViewController {
     
     let contentView = UIView()
-    let vm = MemoryListViewModel.instance
+    let vm:MemoryListViewModel
     private let disposeBag = DisposeBag()
     
     lazy var lastestBT = UIButton(type: .custom).then {
@@ -331,6 +383,14 @@ class OurMemoryFilterViewController: UIViewController {
         $0.setAttributedTitle(attributedString, for: .normal)
     }
     
+    init(vm: MemoryListViewModel) {
+        self.vm = vm
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -406,7 +466,7 @@ class OurMemoryFilterViewController: UIViewController {
 class OurMemoryGroupFilterViewController: UIViewController {
     
     let contentView = UIView()
-    let vm = MemoryListViewModel.instance
+    let vm:MemoryListViewModel
     private let disposeBag = DisposeBag()
     
     lazy var familyBT = UIButton(type: .custom).then {
@@ -452,6 +512,14 @@ class OurMemoryGroupFilterViewController: UIViewController {
         $0.setAttributedTitle(attributedString, for: .normal)
     }
     
+    init(vm: MemoryListViewModel) {
+        self.vm = vm
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

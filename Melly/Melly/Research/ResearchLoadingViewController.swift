@@ -11,6 +11,9 @@ import RxCocoa
 
 class ResearchLoadingViewController: UIViewController {
     
+    let vm = ResearchMainViewModel.instance
+    let disposeBag = DisposeBag()
+    
     let mainLB = UILabel().then {
         $0.textColor = UIColor(red: 0.059, green: 0.053, blue: 0.363, alpha: 1)
         $0.text = "소피아님을 분석중이에요"
@@ -29,6 +32,10 @@ class ResearchLoadingViewController: UIViewController {
         super.viewDidLoad()
         setUI()
         
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        vm.input.surveyObserver.accept(())
     }
     
     

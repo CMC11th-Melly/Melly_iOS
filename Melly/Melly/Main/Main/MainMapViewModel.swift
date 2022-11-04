@@ -14,6 +14,8 @@ import NMapsMap
 
 class MainMapViewModel {
     
+    static let instance = MainMapViewModel()
+    
     let disposeBag = DisposeBag()
     let input = Input()
     let output = Output()

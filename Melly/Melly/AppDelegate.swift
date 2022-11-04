@@ -16,6 +16,7 @@ import NaverThirdPartyLogin
 import NMapsMap
 import UserNotifications
 import FirebaseMessaging
+import FirebaseDynamicLinks
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -73,6 +74,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if AuthApi.isKakaoTalkLoginUrl(url) {
             return AuthController.rx.handleOpenUrl(url: url)
         }
+        
+        
         
         //네이버 딥링크 연결
         let naverInstance = NaverThirdPartyLoginConnection.getSharedInstance().application(app, open: url, options: options)

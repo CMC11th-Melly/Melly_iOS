@@ -34,4 +34,11 @@ struct Place:Codable {
     let recommendType:String
 }
 
-
+struct PlaceList:Codable {
+    let content: [Place]
+    let pageable: Pageable
+    let number: Int
+    let sort: MemorySort
+    let size, numberOfElements: Int
+    let first, last, empty: Bool
+}

@@ -32,7 +32,6 @@ class MyMemoryViewModel {
     
     struct Input {
         let ourMemoryRefresh = PublishRelay<Void>()
-        let ourMemorySelect = PublishRelay<Memory>()
         let sortObserver = PublishRelay<String>()
         let groupFilterObserver = PublishRelay<GroupFilter>()
     }

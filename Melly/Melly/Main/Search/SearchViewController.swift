@@ -373,6 +373,8 @@ class SearchCell: UICollectionViewCell {
             .bind(to: vm!.input.removeRecentObserver)
             .disposed(by: disposeBag)
         
+        
+        
     }
     
 }

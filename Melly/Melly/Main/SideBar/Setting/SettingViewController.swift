@@ -13,6 +13,9 @@ import RxCocoa
 class SettingViewController: UIViewController {
     
     private let disposeBag = DisposeBag()
+    
+    let vm = SettingViewModel()
+    
     let backBT = BackButton()
     let titleLB = UILabel().then {
         $0.textColor = UIColor(red: 0.102, green: 0.118, blue: 0.153, alpha: 1)
@@ -38,7 +41,7 @@ class SettingViewController: UIViewController {
     
     lazy var mainPushSwitch = UISwitch().then {
         $0.onTintColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
-        $0.isOn = true
+        $0.isOn = UIApplication.shared.isRegisteredForRemoteNotifications
     }
 
     let commentLikeLB = UILabel().then {
@@ -71,7 +74,7 @@ class SettingViewController: UIViewController {
     
     lazy var scrabPushSwitch = UISwitch().then {
         $0.onTintColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
-        $0.isOn = true
+        $0.isOn = false
     }
     
     let memoryPushLB = UILabel().then {
@@ -82,7 +85,7 @@ class SettingViewController: UIViewController {
     
     lazy var memoryPushSwitch = UISwitch().then {
         $0.onTintColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
-        $0.isOn = true
+        $0.isOn = false
     }
     
     override func viewDidLoad() {
@@ -92,6 +95,9 @@ class SettingViewController: UIViewController {
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        vm.input.settingObserver.accept(())
+    }
     
     
     
@@ -226,11 +232,49 @@ extension SettingViewController {
                 }
                 
             }).disposed(by: disposeBag)
+        
+        commentLikeSwitch.rx.isOn
+            .subscribe(onNext: { value in
+                
+                if value {
+                    self.vm.input.commentLikeOnObserver.accept(())
+                } else {
+                    self.vm.input.commentLikeOffObserver.accept(())
+                }
+                
+            }).disposed(by: disposeBag)
+        
+        commentPushSwitch.rx.isOn
+            .subscribe(onNext: { value in
+                
+                if value {
+                    self.vm.input.commentPushOnObserver.accept(())
+                } else {
+                    self.vm.input.commentPushOffObserver.accept(())
+                }
+                
+            }).disposed(by: disposeBag)
     
         
     }
     
     private func bindOutput() {
+        vm.output.getInitialValue.subscribe(onNext: {
+            
+            self.commentLikeSwitch.isOn = self.vm.pushInfo[0]
+            self.commentPushSwitch.isOn = self.vm.pushInfo[1]
+            
+        }).disposed(by: disposeBag)
+        
+        vm.output.errorValue.asDriver(onErrorJustReturn: "")
+            .drive(onNext: { value in
+                
+                let alert = UIAlertController(title: "에러", message: value, preferredStyle: .alert)
+                let alertAction = UIAlertAction(title: "확인", style: .cancel)
+                alert.addAction(alertAction)
+                self.present(alert, animated: true)
+                
+            }).disposed(by: disposeBag)
         
     }
     

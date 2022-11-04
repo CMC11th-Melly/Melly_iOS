@@ -13,7 +13,8 @@ import RxCocoa
 class ResearchResultViewController: UIViewController {
 
     private let disposeBag = DisposeBag()
-    
+    let vm = ResearchMainViewModel.instance
+
     let scrollView = UIScrollView()
     let contentsView = UIView()
     
@@ -60,6 +61,7 @@ class ResearchResultViewController: UIViewController {
         super.viewDidLoad()
         setUI()
         bind()
+        setData()
     }
     
     
@@ -154,14 +156,30 @@ extension ResearchResultViewController {
     
     private func bind() {
         
-        nextBT.rx.tap.subscribe(onNext: {
-            UserDefaults.standard.setValue("no", forKey: "initialUser")
-            self.dismiss(animated: true)
-        }).disposed(by: disposeBag)
+        nextBT.rx.tap
+            .bind(to: vm.input.goMainObserver)
+            .disposed(by: disposeBag)
         
         reloadBT.rx.tap.subscribe(onNext: {
             self.navigationController?.popToRootViewController(animated: true)
         }).disposed(by: disposeBag)
+        
+        vm.output.goToMainValue
+            .subscribe(onNext: {
+                self.dismiss(animated: true)
+            }).disposed(by: disposeBag)
+        
+    }
+    
+    private func setData() {
+        
+        if let survey = vm.survey {
+            
+            mainLB.text = survey.words[0]
+            groupSubLb.label.text = survey.words[1]
+            contentsSubLb.label.text = survey.words[2]
+            locationSubLb.label.text = survey.words[3]
+        }
         
     }
     

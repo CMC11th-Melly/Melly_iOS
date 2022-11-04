@@ -15,7 +15,7 @@ import RxCocoa
 class OtherMemoryListViewController: UIViewController {
     
     let disposeBag = DisposeBag()
-    let vm = MemoryListViewModel.instance
+    let vm: MemoryListViewModel
     var isLoading:Bool = false
     var loadingView:FooterLoadingView?
     var memories:[Memory] = []
@@ -48,13 +48,11 @@ class OtherMemoryListViewController: UIViewController {
         $0.isHidden = true
     }
     
-    let dataLB = UILabel().then {
-        $0.text = "총 5개"
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
-        $0.font = UIFont(name: "Pretendard-Medium", size: 14)
-        $0.layer.cornerRadius = 8
-        $0.backgroundColor = UIColor(red: 0.965, green: 0.969, blue: 0.973, alpha: 1)
-    }
+    let filterView = UIView()
+    
+    let groupFilter = CategoryPicker(title: "카테고리")
+    let sortFilter = CategoryPicker(title: "최신 순")
+    let allFilter = CategoryPicker(title: "내 그룹만")
     
     let otherAlertImageView = UIImageView(image: UIImage(named: "memory_info"))
     
@@ -70,6 +68,15 @@ class OtherMemoryListViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         return collectionView
     }()
+    
+    init(vm: MemoryListViewModel) {
+        self.vm = vm
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -110,24 +117,46 @@ extension OtherMemoryListViewController {
             $0.edges.equalToSuperview()
         }
         
-        
-        dataView.addSubview(dataLB)
-        dataLB.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(22)
-            $0.trailing.equalToSuperview().offset(-30)
-            
+        dataView.addSubview(filterView)
+        filterView.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+            $0.height.equalTo(117)
         }
+        
+        filterView.addSubview(groupFilter)
+        groupFilter.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(25)
+            $0.leading.equalToSuperview().offset(30)
+            $0.height.equalTo(30)
+        }
+        
+        filterView.addSubview(sortFilter)
+        sortFilter.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(25)
+            $0.leading.equalTo(groupFilter.snp.trailing).offset(12)
+            $0.height.equalTo(30)
+        }
+        
+        filterView.addSubview(allFilter)
+        allFilter.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(25)
+            $0.leading.equalTo(sortFilter.snp.trailing).offset(12)
+            $0.height.equalTo(30)
+        }
+        
         
         dataView.addSubview(otherAlertImageView)
         otherAlertImageView.snp.makeConstraints {
-            $0.top.equalTo(dataLB.snp.bottom).offset(23)
+            $0.top.equalTo(allFilter.snp.bottom).offset(23)
             $0.leading.equalToSuperview().offset(30)
+            $0.height.width.equalTo(18)
         }
         
         dataView.addSubview(otherAlertLB)
         otherAlertLB.snp.makeConstraints {
-            $0.top.equalTo(dataLB.snp.bottom).offset(23)
+            $0.top.equalTo(allFilter.snp.bottom).offset(23)
             $0.leading.equalTo(otherAlertImageView.snp.trailing).offset(5)
+            $0.height.equalTo(17)
         }
         
         dataView.addSubview(dataCV)
@@ -150,6 +179,38 @@ extension OtherMemoryListViewController {
         dataCV.dataSource = self
         dataCV.register(MemoryListCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         dataCV.register(FooterLoadingView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: FooterLoadingView.identifier)
+        
+        sortFilter.rx.tap
+            .subscribe(onNext: {
+                
+                if self.sortFilter.mode {
+                    self.vm.input.otherSortObserver.accept("visitedDate,desc")
+                } else {
+                    self.vm.output.goToOtherSortVC.accept(())
+                    
+                }
+            }).disposed(by: disposeBag)
+        
+        groupFilter.rx.tap
+            .subscribe(onNext: {
+                
+                if self.groupFilter.mode {
+                    self.vm.input.otherGroupFilterObserver.accept(.all)
+                } else {
+                    self.vm.output.goToOtherFilterVC.accept(())
+                }
+                
+            }).disposed(by: disposeBag)
+        
+        allFilter.rx.tap
+            .subscribe(onNext: {
+                if self.allFilter.mode {
+                    self.vm.input.otherAllObserver.accept(false)
+                } else {
+                    self.vm.output.goToOtherAllVC.accept(())
+                }
+            }).disposed(by: disposeBag)
+        
     }
     
     private func bindOutput() {
@@ -158,12 +219,69 @@ extension OtherMemoryListViewController {
             .drive(onNext: { value in
                 DispatchQueue.main.async {
                     self.memories += value
-                    self.dataLB.text = "총 \(self.memories.count)개"
                     self.dataCV.reloadData()
                     self.isLoading = false
                     self.isNoData = value.isEmpty ? true : false
                 }
             }).disposed(by: disposeBag)
+        
+        vm.output.otherSortValue.asDriver(onErrorJustReturn: "")
+            .drive(onNext: { value in
+                if value == "visitedDate,asc" {
+                    self.sortFilter.textLabel.text = "오래된 순"
+                    self.sortFilter.mode = true
+                } else if value == "stars,desc" {
+                    self.sortFilter.textLabel.text = "별점이 높은 순"
+                    self.sortFilter.mode = true
+                } else if value == "stars,asc" {
+                    self.sortFilter.textLabel.text = "별점이 낮은 순"
+                    self.sortFilter.mode = true
+                } else {
+                    self.sortFilter.textLabel.text = "최신 순"
+                    self.sortFilter.mode = false
+                }
+                
+                self.view.layoutIfNeeded()
+                self.memories = []
+                self.vm.input.otherMemoryRefresh.accept(())
+            }).disposed(by: disposeBag)
+        
+        vm.output.otherGroupFilterValue.asDriver(onErrorJustReturn: .all)
+            .drive(onNext: { value in
+                
+                switch value {
+                case .company:
+                    self.groupFilter.textLabel.text = "동료만"
+                    self.groupFilter.mode = true
+                case .friend:
+                    self.groupFilter.textLabel.text = "친구만"
+                    self.groupFilter.mode = true
+                case .couple:
+                    self.groupFilter.textLabel.text = "연인만"
+                    self.groupFilter.mode = true
+                case .family:
+                    self.groupFilter.textLabel.text = "가족만"
+                    self.groupFilter.mode = true
+                default :
+                    self.groupFilter.textLabel.text = "카테고리"
+                    self.groupFilter.mode = false
+                }
+                
+                self.view.layoutIfNeeded()
+                self.memories = []
+                self.vm.input.otherMemoryRefresh.accept(())
+            }).disposed(by: disposeBag)
+        
+        vm.output.otherAllValue.asDriver(onErrorJustReturn: false)
+            .drive(onNext: { value in
+                
+                self.allFilter.mode = value
+                self.allFilter.textLabel.text = "전체보기"
+                self.view.layoutIfNeeded()
+                self.memories = []
+                self.vm.input.otherMemoryRefresh.accept(())
+            }).disposed(by: disposeBag)
+        
         
     }
 }
@@ -256,6 +374,351 @@ extension OtherMemoryListViewController: UICollectionViewDelegate, UICollectionV
                 self.vm.input.otherMemoryRefresh.accept(())
             }
         }
+    }
+    
+}
+
+class OtherMemoryFilterViewController: UIViewController {
+    
+    let contentView = UIView()
+    let vm:MemoryListViewModel
+    private let disposeBag = DisposeBag()
+    
+    lazy var lastestBT = UIButton(type: .custom).then {
+        let string = "최신 순"
+        let attributedString = NSMutableAttributedString(string: string)
+        
+        let font = vm.ourMemory.sort == "visitedDate,desc" ? UIFont(name: "Pretendard-SemiBold", size: 20)! : UIFont(name: "Pretendard-Medium", size: 20)!
+        let color = vm.ourMemory.sort == "visitedDate,desc" ?  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1) : UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value:  color, range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+    }
+    
+    lazy var oldestBT = UIButton(type: .custom).then {
+        let string = "오래된 순"
+        let attributedString = NSMutableAttributedString(string: string)
+        
+        let font = vm.ourMemory.sort == "visitedDate,asc" ? UIFont(name: "Pretendard-SemiBold", size: 20)! : UIFont(name: "Pretendard-Medium", size: 20)!
+        let color = vm.ourMemory.sort == "visitedDate,asc" ?  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1) : UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: color, range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+    }
+    
+    lazy var starsHighBT = UIButton(type: .custom).then {
+        let string = "별점이 높은 순"
+        let attributedString = NSMutableAttributedString(string: string)
+        
+        let font = vm.ourMemory.sort == "stars,desc" ? UIFont(name: "Pretendard-SemiBold", size: 20)! : UIFont(name: "Pretendard-Medium", size: 20)!
+        let color = vm.ourMemory.sort == "stars,desc" ?  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1) : UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value:  color, range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+    }
+    
+    lazy var starsLowBT = UIButton(type: .custom).then {
+        let string = "별점이 낮은 순"
+        let attributedString = NSMutableAttributedString(string: string)
+        let font = vm.ourMemory.sort == "stars,asc" ? UIFont(name: "Pretendard-SemiBold", size: 20)! : UIFont(name: "Pretendard-Medium", size: 20)!
+        let color = vm.ourMemory.sort == "stars,asc" ?  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1) : UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: color, range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+    }
+    
+    init(vm: MemoryListViewModel) {
+        self.vm = vm
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setUI()
+        bind()
+    }
+    
+    private func setUI() {
+        
+        view.backgroundColor = .white
+        
+        view.addSubview(contentView)
+        contentView.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+            $0.height.equalTo(301)
+        }
+        
+        contentView.addSubview(lastestBT)
+        lastestBT.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(41)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(24)
+        }
+        
+        contentView.addSubview(oldestBT)
+        oldestBT.snp.makeConstraints {
+            $0.top.equalTo(lastestBT.snp.bottom).offset(32)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(24)
+        }
+        
+        contentView.addSubview(starsHighBT)
+        starsHighBT.snp.makeConstraints {
+            $0.top.equalTo(oldestBT.snp.bottom).offset(32)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(24)
+        }
+        
+        contentView.addSubview(starsLowBT)
+        starsLowBT.snp.makeConstraints {
+            $0.top.equalTo(starsHighBT.snp.bottom).offset(32)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(24)
+        }
+        
+    }
+    
+    private func bind() {
+        
+        lastestBT.rx.tap
+            .map { "visitedDate,desc" }
+            .bind(to: vm.input.otherSortObserver)
+            .disposed(by: disposeBag)
+        
+        oldestBT.rx.tap
+            .map { "visitedDate,asc" }
+            .bind(to: vm.input.otherSortObserver)
+            .disposed(by: disposeBag)
+        
+        starsHighBT.rx.tap
+            .map { "stars,desc" }
+            .bind(to: vm.input.otherSortObserver)
+            .disposed(by: disposeBag)
+        
+        starsLowBT.rx.tap
+            .map { "stars,asc" }
+            .bind(to: vm.input.otherSortObserver)
+            .disposed(by: disposeBag)
+    }
+    
+}
+
+class OtherMemoryGroupFilterViewController: UIViewController {
+    
+    let contentView = UIView()
+    let vm :MemoryListViewModel
+    private let disposeBag = DisposeBag()
+    
+    lazy var familyBT = UIButton(type: .custom).then {
+        let string = "가족만"
+        let attributedString = NSMutableAttributedString(string: string)
+        
+        let font = vm.ourMemory.groupType == .family ? UIFont(name: "Pretendard-SemiBold", size: 20)! : UIFont(name: "Pretendard-Medium", size: 20)!
+        let color = vm.ourMemory.groupType == .family ?  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1) : UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value:  color, range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+    }
+    
+    lazy var coupleBT = UIButton(type: .custom).then {
+        let string = "연인만"
+        let attributedString = NSMutableAttributedString(string: string)
+        
+        let font = vm.ourMemory.groupType == .couple ? UIFont(name: "Pretendard-SemiBold", size: 20)! : UIFont(name: "Pretendard-Medium", size: 20)!
+        let color = vm.ourMemory.groupType == .couple ?  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1) : UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: color, range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+    }
+    
+    lazy var friendBT = UIButton(type: .custom).then {
+        let string = "친구만"
+        let attributedString = NSMutableAttributedString(string: string)
+        
+        let font = vm.ourMemory.groupType == .friend ? UIFont(name: "Pretendard-SemiBold", size: 20)! : UIFont(name: "Pretendard-Medium", size: 20)!
+        let color = vm.ourMemory.groupType == .friend ?  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1) : UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value:  color, range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+    }
+    
+    lazy var companyBT = UIButton(type: .custom).then {
+        let string = "동료만"
+        let attributedString = NSMutableAttributedString(string: string)
+        let font = vm.ourMemory.groupType == .company  ? UIFont(name: "Pretendard-SemiBold", size: 20)! : UIFont(name: "Pretendard-Medium", size: 20)!
+        let color = vm.ourMemory.groupType == .company ?  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1) : UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: color, range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+    }
+    
+    init(vm: MemoryListViewModel) {
+        self.vm = vm
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setUI()
+        bind()
+    }
+    
+    private func setUI() {
+        
+        view.backgroundColor = .white
+        
+        view.addSubview(contentView)
+        contentView.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+            $0.height.equalTo(301)
+        }
+        
+        contentView.addSubview(familyBT)
+        familyBT.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(41)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(24)
+        }
+        
+        contentView.addSubview(coupleBT)
+        coupleBT.snp.makeConstraints {
+            $0.top.equalTo(familyBT.snp.bottom).offset(32)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(24)
+        }
+        
+        contentView.addSubview(friendBT)
+        friendBT.snp.makeConstraints {
+            $0.top.equalTo(coupleBT.snp.bottom).offset(32)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(24)
+        }
+        
+        contentView.addSubview(companyBT)
+        companyBT.snp.makeConstraints {
+            $0.top.equalTo(friendBT.snp.bottom).offset(32)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(24)
+        }
+        
+    }
+    
+    private func bind() {
+        
+        familyBT.rx.tap
+            .map { GroupFilter.family }
+            .bind(to: vm.input.otherGroupFilterObserver)
+            .disposed(by: disposeBag)
+        
+        coupleBT.rx.tap
+            .map { GroupFilter.couple }
+            .bind(to: vm.input.otherGroupFilterObserver)
+            .disposed(by: disposeBag)
+        
+        friendBT.rx.tap
+            .map { GroupFilter.friend }
+            .bind(to: vm.input.otherGroupFilterObserver)
+            .disposed(by: disposeBag)
+        
+        companyBT.rx.tap
+            .map { GroupFilter.company }
+            .bind(to: vm.input.otherGroupFilterObserver)
+            .disposed(by: disposeBag)
+    }
+    
+}
+
+class OtherAllViewController: UIViewController {
+    
+    let contentView = UIView()
+    let vm:MemoryListViewModel
+    private let disposeBag = DisposeBag()
+    
+    lazy var myGroupBT = UIButton(type: .custom).then {
+        let string = "내 그룹만"
+        let attributedString = NSMutableAttributedString(string: string)
+        
+        let font = !vm.otherMemory.isAll ? UIFont(name: "Pretendard-SemiBold", size: 20)! : UIFont(name: "Pretendard-Medium", size: 20)!
+        let color = !vm.otherMemory.isAll ?  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1) : UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value:  color, range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+    }
+    
+    lazy var allBT = UIButton(type: .custom).then {
+        let string = "전체보기"
+        let attributedString = NSMutableAttributedString(string: string)
+        
+        let font = vm.otherMemory.isAll ? UIFont(name: "Pretendard-SemiBold", size: 20)! : UIFont(name: "Pretendard-Medium", size: 20)!
+        let color = vm.otherMemory.isAll ?  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1) : UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
+        attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: color, range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+    }
+    
+    init(vm: MemoryListViewModel) {
+        self.vm = vm
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setUI()
+        bind()
+    }
+    
+    private func setUI() {
+        
+        view.backgroundColor = .white
+        
+        view.addSubview(contentView)
+        contentView.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+            $0.height.equalTo(301)
+        }
+        
+        contentView.addSubview(myGroupBT)
+        myGroupBT.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(41)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(24)
+        }
+        
+        contentView.addSubview(allBT)
+        allBT.snp.makeConstraints {
+            $0.top.equalTo(myGroupBT.snp.bottom).offset(32)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(24)
+        }
+        
+        
+        
+    }
+    
+    private func bind() {
+        
+        myGroupBT.rx.tap
+            .map { false }
+            .bind(to: vm.input.otherAllObserver)
+            .disposed(by: disposeBag)
+        
+        allBT.rx.tap
+            .map { true }
+            .bind(to: vm.input.otherAllObserver)
+            .disposed(by: disposeBag)
+        
     }
     
 }

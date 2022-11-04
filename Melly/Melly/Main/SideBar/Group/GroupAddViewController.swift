@@ -243,8 +243,9 @@ extension GroupAddViewController {
                 self.navigationController?.popViewController(animated: true)
             }).disposed(by: disposeBag)
         
-        nameTF.rx.controlEvent([.editingDidEnd])
-            .map { self.nameTF.text ?? "" }
+        nameTF.rx.text.orEmpty
+            .debounce(RxTimeInterval.microseconds(5), scheduler: MainScheduler.instance)
+            .distinctUntilChanged()
             .bind(to: vm.input.groupNameObserver)
             .disposed(by: disposeBag)
         

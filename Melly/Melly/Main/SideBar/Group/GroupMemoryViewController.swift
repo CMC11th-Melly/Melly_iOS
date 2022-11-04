@@ -348,7 +348,11 @@ extension GroupMemoryViewController: UICollectionViewDelegate, UICollectionViewD
     //셀 선택시 이동
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let memory = memories[indexPath.row]
-        self.vm.input.ourMemorySelect.accept(memory)
+        let vm = MemoryDetailViewModel(memory)
+        let vc = MemoryDetailViewController(vm: vm)
+        vc.modalTransitionStyle = .coverVertical
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true)
     }
     
     //footer(인디케이터) 배경색 등 상세 설정

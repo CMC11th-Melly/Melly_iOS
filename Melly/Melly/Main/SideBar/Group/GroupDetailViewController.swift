@@ -9,6 +9,7 @@ import UIKit
 import RxCocoa
 import RxSwift
 import Kingfisher
+import FirebaseDynamicLinks
 
 class GroupDetailViewController: UIViewController {
     
@@ -120,6 +121,7 @@ class GroupDetailViewController: UIViewController {
             groupImageView.image = UIImage(named: "group_icon_\(group.groupIcon)")
             groupNameLB.text = group.groupName
             categoryNameLB.text = GroupFilter.getGroupValue(group.groupType)
+            vm.output.groupMemberValue.accept(group.users)
         }
     }
     
@@ -290,7 +292,21 @@ extension GroupDetailViewController {
                 self.navigationController?.pushViewController(vc, animated: true)
             }).disposed(by: disposeBag)
         
+        memberAddBT.rx.tap
+            .subscribe(onNext: {
+                self.rightLabel.labelView.text = "초대 링크 복사 완료"
+                self.rightLabel.alpha = 1
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    UIView.animate(withDuration: 1.5) {
+                        self.rightLabel.alpha = 0
+                    }
+                }
+            }).disposed(by: disposeBag)
+        
+        
     }
+    
+    
     
     private func bindOutput() {
         
@@ -309,6 +325,7 @@ extension GroupDetailViewController {
         
         vm.output.editValue
             .subscribe(onNext: {
+                self.rightLabel.labelView.text = "메모리 수정 완료"
                 self.rightLabel.alpha = 1
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                     UIView.animate(withDuration: 1.5) {
@@ -317,7 +334,10 @@ extension GroupDetailViewController {
                 }
             }).disposed(by: disposeBag)
         
+        
+        
     }
+    
     
     
 }

@@ -18,11 +18,19 @@ class MemoryDetailViewController: UIViewController {
     var commentFooterView:CommentFooterView?
     var commentHeaderView:CommentHeaderView?
     
+    lazy var pageControl = UIPageControl().then {
+        $0.numberOfPages = vm.memory.memoryImages.count
+        $0.currentPage = 0
+    }
     
     lazy var imagePageView = UIScrollView().then {
         $0.delegate = self
         $0.isScrollEnabled = true
         $0.isPagingEnabled = true
+        $0.backgroundColor = .orange
+        $0.showsVerticalScrollIndicator = false
+        $0.showsHorizontalScrollIndicator = false
+        $0.bounces = false
     }
     let scrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = false
@@ -40,11 +48,15 @@ class MemoryDetailViewController: UIViewController {
     
     lazy var imageCountLB = UILabel().then {
         $0.text = "1/\(vm.memory.memoryImages.count)"
+        if vm.memory.memoryImages.count == 1 {
+            $0.isHidden = true
+        }
         $0.textAlignment = .center
-        $0.backgroundColor = UIColor(red: 0.102, green: 0.118, blue: 0.153, alpha: 0.8)
+        $0.backgroundColor = UIColor(red: 0.122, green: 0.141, blue: 0.173, alpha: 0.8)
         $0.layer.cornerRadius = 8
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.textColor = .white
         $0.font = UIFont(name: "Pretendard-Medium", size: 12)
+        $0.clipsToBounds = true
     }
     
     lazy var titleLB = UILabel().then {
@@ -59,7 +71,7 @@ class MemoryDetailViewController: UIViewController {
     
     lazy var placeLB = UILabel().then {
         $0.text = vm.memory.placeName
-        $0.textColor = UIColor(red: 0.4, green: 0.435, blue: 0.486, alpha: 1)
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 14)
     }
     
@@ -71,7 +83,7 @@ class MemoryDetailViewController: UIViewController {
         let date = dateFormatter.date(from: text) ?? Date()
         dateFormatter.dateFormat = "yyyy. MM. dd a HH:mm"
         $0.text = dateFormatter.string(from: date)
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.textColor = UIColor(red: 0.588, green: 0.623, blue: 0.663, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Regular", size: 12)
     }
     
@@ -109,17 +121,17 @@ class MemoryDetailViewController: UIViewController {
     }
     
     lazy var groupIconView = UIImageView().then {
-        $0.image = UIImage(systemName: "heart.text.square.fill")
+        $0.image = UIImage(named: "group_icon_1")
     }
     
     lazy var groupNameLB = UILabel().then {
         $0.text = vm.memory.groupName
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
     }
     
     let groupSubLB = UILabel().then {
-        $0.textColor = UIColor(red: 0.694, green: 0.722, blue: 0.753, alpha: 1)
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Regular", size: 16)
         $0.text = "와(과) 메모리를 쌓았어요"
     }
@@ -131,7 +143,7 @@ class MemoryDetailViewController: UIViewController {
     lazy var contentLB = UILabel().then {
         $0.text = vm.memory.content
         $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
-        $0.font = UIFont(name: "Pretendard-Medium", size: 16)
+        $0.font = UIFont(name: "Pretendard-Regular", size: 15)
         $0.numberOfLines = 0
     }
     
@@ -155,12 +167,18 @@ class MemoryDetailViewController: UIViewController {
         $0.font = UIFont(name: "Pretendard-Regular", size: 12)
     }
     
-    let commentCV:DynamicHeightCollectionView = {
+    lazy var commentCV:DynamicHeightCollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
-        let collectionView = DynamicHeightCollectionView(frame: CGRect.zero, collectionViewLayout: flowLayout)
+        let collectionView = DynamicHeightCollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.isScrollEnabled = true
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.contentInsetAdjustmentBehavior = .always
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.register(CommentCell.self, forCellWithReuseIdentifier: "comment")
+        collectionView.register(CommentFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: CommentFooterView.identifier)
+        collectionView.register(CommentHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CommentHeaderView.identifier)
         return collectionView
     }()
     
@@ -171,7 +189,7 @@ class MemoryDetailViewController: UIViewController {
     init(vm: MemoryDetailViewModel) {
         self.vm = vm
         super.init(nibName: nil, bundle: nil)
-        addContentScrollView()
+        
     }
     
     required init?(coder: NSCoder) {
@@ -181,24 +199,69 @@ class MemoryDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
+        //test()
         setCV()
         bind()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         vm.input.refreshComment.accept(())
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        addContentScrollView()
+    }
+    
 }
 
 extension MemoryDetailViewController {
     
+    private func test() {
+        safeArea.addSubview(commentCV)
+        commentCV.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+    }
+    
     private func setUI() {
         view.backgroundColor = .white
         safeArea.backgroundColor = .clear
-        view.addSubview(scrollView)
+        
+        safeArea.addSubview(imagePageView)
+        imagePageView.snp.makeConstraints {
+            $0.top.equalTo(self.view)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(289)
+        }
+        imagePageView.addSubview(pageControl)
+        
+        view.addSubview(backBT)
+        backBT.snp.makeConstraints {
+            $0.top.equalTo(safeArea.snp.top).offset(11)
+            $0.leading.equalToSuperview().offset(30)
+        }
+        
+        view.addSubview(editBT)
+        editBT.snp.makeConstraints {
+            $0.top.equalTo(safeArea.snp.top).offset(11)
+            $0.trailing.equalToSuperview().offset(-30)
+        }
+        
+        view.addSubview(imageCountLB)
+        imageCountLB.snp.makeConstraints {
+            $0.bottom.equalTo(imagePageView.snp.bottom).offset(-20)
+            $0.trailing.equalToSuperview().offset(-28)
+            $0.width.equalTo(37)
+            $0.height.equalTo(24)
+        }
+        
+        safeArea.addSubview(scrollView)
         scrollView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.leading.trailing.bottom.equalToSuperview()
+            $0.top.equalTo(imagePageView.snp.bottom)
         }
         
         scrollView.addSubview(contentView)
@@ -206,52 +269,32 @@ extension MemoryDetailViewController {
             $0.width.centerX.top.bottom.equalToSuperview()
         }
         
-        contentView.addSubview(imagePageView)
-        imagePageView.snp.makeConstraints {
-            $0.top.leading.trailing.equalToSuperview()
-            $0.height.equalTo(289)
-        }
-        
-        contentView.addSubview(backBT)
-        backBT.snp.makeConstraints {
-            $0.top.equalTo(safeArea.snp.top).offset(11)
-            $0.leading.equalToSuperview().offset(30)
-        }
-        
-        contentView.addSubview(editBT)
-        editBT.snp.makeConstraints {
-            $0.top.equalTo(safeArea.snp.top).offset(11)
-            $0.trailing.equalToSuperview().offset(-30)
-        }
-        
-        contentView.addSubview(imageCountLB)
-        imageCountLB.snp.makeConstraints {
-            $0.bottom.equalTo(imagePageView.snp.bottom).offset(-20)
-            $0.trailing.equalToSuperview().offset(-28)
-        }
-        
         contentView.addSubview(titleLB)
         titleLB.snp.makeConstraints {
             $0.top.equalTo(imagePageView.snp.bottom).offset(24)
             $0.leading.equalToSuperview().offset(34)
+            $0.height.equalTo(28)
         }
         
         contentView.addSubview(shareBT)
         shareBT.snp.makeConstraints {
             $0.top.equalTo(imagePageView.snp.bottom).offset(26)
             $0.trailing.equalToSuperview().offset(-30)
+            $0.height.width.equalTo(24)
         }
         
         contentView.addSubview(placeLB)
         placeLB.snp.makeConstraints {
             $0.top.equalTo(titleLB.snp.bottom).offset(13)
             $0.leading.equalToSuperview().offset(34)
+            $0.height.equalTo(22)
         }
         
         contentView.addSubview(visitedLB)
         visitedLB.snp.makeConstraints {
             $0.top.equalTo(placeLB.snp.bottom).offset(2)
             $0.leading.equalToSuperview().offset(34)
+            $0.height.equalTo(19)
         }
         
         contentView.addSubview(separateOne)
@@ -260,6 +303,14 @@ extension MemoryDetailViewController {
             $0.leading.equalTo(visitedLB.snp.trailing).offset(8)
             $0.width.equalTo(1)
             $0.height.equalTo(12)
+        }
+        
+        contentView.addSubview(stackView)
+        stackView.snp.makeConstraints {
+            $0.top.equalTo(placeLB.snp.bottom).offset(3)
+            $0.leading.equalTo(separateOne.snp.trailing).offset(9)
+            $0.height.equalTo(16)
+            $0.width.equalTo(95.36)
         }
         
         contentView.addSubview(separatorTwo)
@@ -280,12 +331,14 @@ extension MemoryDetailViewController {
         groupNameLB.snp.makeConstraints {
             $0.top.equalTo(separatorTwo.snp.bottom).offset(20)
             $0.leading.equalTo(groupIconView.snp.trailing).offset(9)
+            $0.height.equalTo(19)
         }
         
         contentView.addSubview(groupSubLB)
         groupSubLB.snp.makeConstraints {
             $0.top.equalTo(separatorTwo.snp.bottom).offset(20)
             $0.leading.equalTo(groupNameLB.snp.trailing).offset(4)
+            $0.height.equalTo(19)
         }
         
         contentView.addSubview(separatorThree)
@@ -322,17 +375,17 @@ extension MemoryDetailViewController {
             $0.leading.equalToSuperview().offset(30)
         }
         
-        contentView.addSubview(commentCV)
-        commentCV.snp.makeConstraints {
-            $0.top.equalTo(commentCountLB.snp.bottom).offset(20)
-            $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(500)
-            
-        }
+        //        contentView.addSubview(commentCV)
+        //        commentCV.snp.makeConstraints {
+        //            $0.top.equalTo(commentCountLB.snp.bottom).offset(20)
+        //            $0.leading.trailing.equalToSuperview()
+        //            $0.height.equalTo(commentCV.contentSize.height)
+        //
+        //        }
         
         contentView.addSubview(bottomView)
         bottomView.snp.makeConstraints {
-            $0.top.equalTo(commentCV.snp.bottom)
+            $0.top.equalTo(commentCountLB.snp.bottom)
             $0.height.equalTo(95)
             $0.leading.trailing.bottom.equalToSuperview()
         }
@@ -344,7 +397,6 @@ extension MemoryDetailViewController {
             $0.trailing.equalToSuperview().offset(-30)
             $0.height.equalTo(54)
         }
-        
         
         
     }
@@ -360,12 +412,6 @@ extension MemoryDetailViewController {
                 cell.configure(name: element)
             }.disposed(by: disposeBag)
         
-        commentCV.delegate = self
-        commentCV.dataSource = self
-        commentCV.register(CommentCell.self, forCellWithReuseIdentifier: "comment")
-        commentCV.register(CommentFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: CommentFooterView.identifier)
-        commentCV.register(CommentHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CommentHeaderView.identifier)
-        
     }
     
     
@@ -380,6 +426,21 @@ extension MemoryDetailViewController {
             self.dismiss(animated: true)
         }).disposed(by: disposeBag)
         
+        shareBT.rx.tap
+            .subscribe(onNext: {
+                let object = ["https://cmc11th.page.link/?link=https://minjuling.notion.site/minjuling/1aae3484826f4e64a831e623a6a905d6&apn=com.melly&isi=6444202109&ibi=com.neordinary.CMC11th.Melly&cid=6563168647626591997&_osl=https://cmc11th.page.link/invite_group&_fpb=CNQGEIkDGgVrby1LUg==&_cpt=cpit&_iumenbl=1&_iumchkactval=1&_plt=707&_uit=2424&_cpb=1&_fpb=CNQGEIkDGgVrby1LUg==&_cpt=cpit&_iumenbl=1&_iumchkactval=1&_plt=707&_uit=100356&_cpb=1&_icp=1"]
+                
+                let activityVC = UIActivityViewController(activityItems: object, applicationActivities: nil)
+                activityVC.popoverPresentationController?.sourceView = self.view
+                
+                self.present(activityVC, animated: true, completion: nil)
+            }).disposed(by: disposeBag)
+        
+        
+        editBT.rx.tap
+            .subscribe(onNext: {
+                
+            }).disposed(by: disposeBag)
         
     }
     
@@ -391,7 +452,16 @@ extension MemoryDetailViewController {
         
         vm.output.completeRefresh.asDriver(onErrorJustReturn: ())
             .drive(onNext: {
-                self.commentCV.reloadData()
+                
+                DispatchQueue.main.async {
+                    self.commentCV.reloadData()
+                    //                    self.commentCV.updateContentSize()
+                    //                    self.commentCV.snp.updateConstraints {
+                    //                        $0.height.equalTo(self.commentCV.contentSize.height)
+                    //                    }
+                    //                    self.view.layoutIfNeeded()
+                }
+                
             }).disposed(by: disposeBag)
         
     }
@@ -413,6 +483,8 @@ extension MemoryDetailViewController: UICollectionViewDelegateFlowLayout, UIColl
         cell.comment = vm.comment[indexPath.row]
         cell.vm = vm
         return cell
+        
+        
     }
     
     //collectionView 자체의 레이아웃
@@ -440,9 +512,9 @@ extension MemoryDetailViewController: UICollectionViewDelegateFlowLayout, UIColl
         if collectionView == commentCV {
             return 20
         } else {
-           return 20
+            return 20
         }
-       
+        
     }
     
     //셀 사이즈 설정
@@ -451,11 +523,11 @@ extension MemoryDetailViewController: UICollectionViewDelegateFlowLayout, UIColl
         if collectionView == keywordCV {
             return KeyWordCell.fittingSize(availableHeight: 33, name: vm.memory.keyword[indexPath.item])
         } else {
+            
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "comment", for: indexPath) as! CommentCell
             cell.comment = vm.comment[indexPath.row]
-            cell.vm = vm
             
-            return CGSize(width: view.frame.width, height: cell.getSize())
+            return CGSize(width: self.view.frame.width, height: 65 + cell.commentView.commentLB.frame.height)
         }
         
     }
@@ -521,6 +593,7 @@ extension MemoryDetailViewController: UIScrollViewDelegate {
     private func addContentScrollView() {
         DispatchQueue.main.async {
             for i in 0..<self.vm.memory.memoryImages.count {
+         
                 let imageView = UIImageView()
                 let xPos = self.view.frame.width * CGFloat(i)
                 imageView.frame = CGRect(x: xPos, y: 0, width: self.imagePageView.bounds.width, height: self.imagePageView.bounds.height)
@@ -528,16 +601,18 @@ extension MemoryDetailViewController: UIScrollViewDelegate {
                 
                 imageView.kf.setImage(with: url)
                 self.imagePageView.addSubview(imageView)
-                self.imagePageView.contentSize.width = imageView.frame.width * CGFloat(i + 1)
+                
+                
             }
-            self.viewDidLayoutSubviews()
+            self.imagePageView.contentSize.width = self.view.frame.width * CGFloat(self.vm.memory.memoryImages.count)
         }
         
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let value = imagePageView.contentOffset.x/imagePageView.frame.size.width
-        imageCountLB.text = "\(Int(round(value)))/\(vm.memory.memoryImages.count)"
+        let value = imagePageView.contentOffset.x/UIScreen.main.bounds.width
+        pageControl.currentPage = Int(value)
+        imageCountLB.text = "\(Int(round(value))+1)/\(vm.memory.memoryImages.count)"
     }
     
 }

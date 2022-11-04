@@ -13,7 +13,7 @@ import RxCocoa
 class MyScrapViewController: UIViewController {
     
     let disposeBag = DisposeBag()
-    let vm = MyScrapViewModel()
+    let vm = MyScrapViewModel.instance
     
     let headerView = UIView()
     
@@ -90,7 +90,12 @@ extension MyScrapViewController {
         dataCV.rx.setDelegate(self).disposed(by: disposeBag)
         dataCV.register(ScrapCell.self, forCellWithReuseIdentifier: "cell")
         
-        
+        dataCV.rx.itemSelected
+            .map { index in
+                let cell = self.dataCV.cellForItem(at: index) as! ScrapCell
+                return cell.scrapCount!
+            }.bind(to: vm.input.goScrapDetailObserver)
+            .disposed(by: disposeBag)
         
         backBT.rx.tap
             .subscribe(onNext: {
@@ -105,6 +110,14 @@ extension MyScrapViewController {
             .bind(to: dataCV.rx.items(cellIdentifier: "cell", cellType: ScrapCell.self)) { row, element, cell in
                 cell.scrapCount = element
             }.disposed(by: disposeBag)
+        
+        vm.output.goToScrapDetail
+            .subscribe(onNext: {
+                let vc = ScrapDetailViewController()
+                vc.modalTransitionStyle = .coverVertical
+                vc.modalPresentationStyle = .fullScreen
+                self.navigationController?.pushViewController(vc, animated: true)
+            }).disposed(by: disposeBag)
         
         
     }

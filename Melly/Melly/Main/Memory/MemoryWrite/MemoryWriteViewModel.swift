@@ -18,7 +18,7 @@ class MemoryWriteViewModel {
     let keywordData = ["행복해요", "즐거워요", "재밌어요", "기뻐요", "좋아요", "그냥 그래요"]
     let rxKeywordData = Observable<[String]>.just(["행복해요", "즐거워요", "재밌어요", "기뻐요", "좋아요", "그냥 그래요"])
     var starData = [false, false, false, false, false]
-    var groupData:[String:Int?] = ["전체 공개":nil]
+    var groupData:[Group] = []
     var dateValue:String = ""
     var timeValue:String = ""
     var images:[Data] = []
@@ -33,16 +33,17 @@ class MemoryWriteViewModel {
         let keywordObserver = PublishRelay<String>()
         let titleObserver = PublishRelay<String>()
         let contentObserver = PublishRelay<String>()
-        let groupObserver = PublishRelay<String>()
+        let groupObserver = PublishRelay<Group?>()
         let dateObserver = BehaviorRelay<Date>(value: Date())
         let timeObserver = BehaviorRelay<Date>(value: Date())
         let writeObserver = PublishRelay<Void>()
+        let registerServerObserver = PublishRelay<Void>()
     }
     
     struct Output {
         let starValue = PublishRelay<[Bool]>()
         let imagesValue = PublishRelay<[UIImage]>()
-        let groupValue = PublishRelay<[String]>()
+        let groupValue = PublishRelay<Group?>()
         let errorValue = PublishRelay<String>()
         let successValue = PublishRelay<Void>()
     }
@@ -54,7 +55,7 @@ class MemoryWriteViewModel {
         let placeCategory:String
         var title:String = ""
         var content:String = ""
-        var keyword:String = ""
+        var keyword:[String] = []
         var groupId:Int? = nil
         var visitedDate:String = ""
         var star:Int = 0
@@ -74,7 +75,7 @@ class MemoryWriteViewModel {
         getGroupName().subscribe({ event in
             switch event {
             case .next(let data):
-                self.output.groupValue.accept(data)
+                self.groupData = data
             case .error(let error):
                 if let mellyError = error as? MellyError {
                     if mellyError.msg == "" {
@@ -113,16 +114,23 @@ class MemoryWriteViewModel {
         
         input.keywordObserver.subscribe(onNext: { value in
             
-            if self.memoryData.keyword == value {
-                self.memoryData.keyword = ""
+            if self.memoryData.keyword.contains(value) {
+                
+                if let index = self.memoryData.keyword.firstIndex(of: value) {
+                    self.memoryData.keyword.remove(at: index)
+                }
+                
             } else {
-                self.memoryData.keyword = value
+                self.memoryData.keyword.append(value)
             }
             
         }).disposed(by: disposeBag)
         
         input.groupObserver.subscribe(onNext: { value in
-            self.memoryData.groupId = self.groupData[value] ?? nil
+            if let value = value {
+                self.memoryData.groupId = value.groupId
+            }
+            self.output.groupValue.accept(value)
         }).disposed(by: disposeBag)
         
         input.dateObserver.subscribe(onNext: { value in
@@ -138,6 +146,16 @@ class MemoryWriteViewModel {
         }).disposed(by: disposeBag)
         
         input.writeObserver
+            .map(checkValue)
+            .subscribe(onNext: { value in
+                if value == "" {
+                    self.input.registerServerObserver.accept(())
+                } else {
+                    self.output.errorValue.accept(value)
+                }
+            }).disposed(by: disposeBag)
+        
+        input.registerServerObserver
             .flatMap(writeMemory)
             .subscribe({ event in
                 switch event {
@@ -191,7 +209,7 @@ class MemoryWriteViewModel {
      - Throws: MellyError
      - Returns:[String]
      */
-    func getGroupName() -> Observable<[String]> {
+    func getGroupName() -> Observable<[Group]> {
         
         return Observable.create { observer in
             
@@ -210,18 +228,14 @@ class MemoryWriteViewModel {
                             let decoder = JSONDecoder()
                             
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                if json.message == "유저가 속해있는 그룹 조회" {
+                                
+                                if json.message == "My 그룹 조회" {
                                     
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data?["groupInfo"] as Any) {
                                         
                                         if let groups = try? decoder.decode([Group].self, from: data) {
-                                            var result:[String] = ["전체 공개"]
-                                            
-                                            for group in groups {
-                                                result.append(group.groupName)
-                                                self.groupData[group.groupName] = group.groupId
-                                            }
-                                            observer.onNext(result)
+                                            self.groupData = groups
+                                            observer.onNext(groups)
                                         }
                                         
                                     }
@@ -260,85 +274,78 @@ class MemoryWriteViewModel {
         
         return Observable.create { observer in
             
-            if self.images.count != 0 {
-
-                if self.memoryData.title != "" {
-
-                    if self.memoryData.content.count >= 20 {
-
-                        if self.memoryData.groupId != -1 {
-
-                            if let user = User.loginedUser {
-                                
-                                let header:HTTPHeaders = [
-                                            "Content-Type": "multipart/form-data",
-                                            "Authorization" : "Bearer \(user.jwtToken)"
-                                        ]
-                                
-                                let realUrl = URL(string: "https://api.melly.kr/api/memory")
-                                let url:Alamofire.URLConvertible = realUrl!
-                                
-                                self.memoryData.visitedDate = self.dateValue+self.timeValue
-                                
-                                AF.upload(multipartFormData: { multipartFormData in
-                                    
-                                    for image in self.images {
-                                        multipartFormData.append(image, withName: "images", fileName: "test.jpeg", mimeType: "image/jpeg")
-                                    }
-                                    
-                                    if let memoryData = try? JSONEncoder().encode(self.memoryData) {
-                                        multipartFormData.append(memoryData, withName: "memoryData", mimeType: "application/json")
-                                    }
-                                    
-                                }, to: url, method: .post, headers: header)
-                                .responseData { response in
-                                    switch response.result {
-                                    case .success(let response):
-                                        
-                                        let decoder = JSONDecoder()
-                                        
-                                        if let json = try? decoder.decode(ResponseData.self, from: response) {
-                                            if json.message == "메모리 저장 완료" {
-                                                observer.onNext(())
-                                            } else {
-                                                let error = MellyError(code: Int(json.code) ?? 0 , msg: json.message)
-                                                observer.onError(error)
-                                            }
-                                        } else {
-                                            let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
-                                            observer.onError(error)
-                                        }
-                                        
+            
+            if let user = User.loginedUser {
+                
+                let header:HTTPHeaders = [
+                    "Content-Type": "multipart/form-data",
+                    "Authorization" : "Bearer \(user.jwtToken)"
+                ]
+                
+                let realUrl = URL(string: "https://api.melly.kr/api/memory")
+                let url:Alamofire.URLConvertible = realUrl!
+                
+                self.memoryData.visitedDate = self.dateValue+self.timeValue
+                
+                AF.upload(multipartFormData: { multipartFormData in
+                    
+                    for image in self.images {
+                        multipartFormData.append(image, withName: "images", fileName: "test.jpeg", mimeType: "image/jpeg")
+                    }
+                    
+                    if let memoryData = try? JSONEncoder().encode(self.memoryData) {
+                        multipartFormData.append(memoryData, withName: "memoryData", mimeType: "application/json")
+                    }
+                    
+                }, to: url, method: .post, headers: header)
+                .responseData { response in
+                    switch response.result {
+                    case .success(let response):
                         
-                                    case .failure(let error):
-                                        observer.onError(error)
-                                    }
-                                }
-                                
+                        let decoder = JSONDecoder()
+                        
+                        if let json = try? decoder.decode(ResponseData.self, from: response) {
+                            if json.message == "메모리 저장 완료" {
+                                observer.onNext(())
+                            } else {
+                                let error = MellyError(code: Int(json.code) ?? 0 , msg: json.message)
+                                observer.onError(error)
                             }
-                            
                         } else {
-                            let error = MellyError(code: 888, msg: "그룹을 선택해주세요.")
+                            let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
                             observer.onError(error)
                         }
-
-                    } else {
-                        let error = MellyError(code: 888, msg: "메모리를 20자 이상 적어주세요.")
+                        
+                        
+                    case .failure(let error):
                         observer.onError(error)
                     }
-
-                } else {
-                    let error = MellyError(code: 888, msg: "메모리 제목을 입력해주세요.")
-                    observer.onError(error)
                 }
-
-            } else {
-                let error = MellyError(code: 888, msg: "이미지를 등록해주세요.")
-                observer.onError(error)
+                
             }
+            
+            
             
             return Disposables.create()
         }
+        
+    }
+    
+    func checkValue() -> String {
+        
+        if images.isEmpty {
+            return "사진을 등록해주세요"
+        } else if memoryData.title == "" {
+            return "제목을 입력해주세요"
+        } else if memoryData.content.count <= 20 {
+            return "메모리를 최소 20자 이상 적어주세요"
+        } else if memoryData.groupId == nil {
+            return "그룹을 선택해주세요"
+        } else if memoryData.star == 0 {
+            return "별점을 입력해주세요"
+        }
+        
+        return ""
         
     }
     

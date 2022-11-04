@@ -12,9 +12,7 @@ import Alamofire
 
 class MemoryListViewModel {
     
-    var place:Place?
-    
-    static let instance = MemoryListViewModel()
+    var place:Place
     
     private let disposeBag = DisposeBag()
     
@@ -22,6 +20,8 @@ class MemoryListViewModel {
     var otherMemory = OtherMemory()
     let input = Input()
     let output = Output()
+    
+   lazy var otherUrl = "https://api.melly.kr/api/memory/group/place/\(place.placeId)"
     
     struct OurMemory {
         var page:Int = 0
@@ -31,18 +31,25 @@ class MemoryListViewModel {
     }
     
     struct OtherMemory {
-        var lastId:Int = -1
+        var page:Int = 0
         var isEnd:Bool = false
-        var visitedDate:String = ""
+        var sort:String = "visitedDate,desc"
         var groupType:GroupFilter = .all
+        var isAll = false
     }
     
     struct Input {
         let ourMemoryRefresh = PublishRelay<Void>()
         let memorySelect = PublishRelay<Memory>()
         let otherMemoryRefresh = PublishRelay<Void>()
+        
         let ourSortObserver = PublishRelay<String>()
         let ourGroupFilterObserver = PublishRelay<GroupFilter>()
+        
+        let otherSortObserver = PublishRelay<String>()
+        let otherGroupFilterObserver = PublishRelay<GroupFilter>()
+        let otherAllObserver = PublishRelay<Bool>()
+        
     }
     
     struct Output {
@@ -50,11 +57,28 @@ class MemoryListViewModel {
         let otherMemoryValue = PublishRelay<[Memory]>()
         let errorValue = PublishRelay<String>()
         let selectMemoryValue = PublishRelay<Memory>()
-        let sortValue = PublishRelay<String>()
-        let groupFilterValue = PublishRelay<GroupFilter>()
+        
+        //OurMemory
+        let ourSortValue = PublishRelay<String>()
+        let ourGroupFilterValue = PublishRelay<GroupFilter>()
+        let goToOurSortVC = PublishRelay<Void>()
+        let goToOurFilterVC = PublishRelay<Void>()
+        
+        //OurMemory
+        let otherSortValue = PublishRelay<String>()
+        let otherGroupFilterValue = PublishRelay<GroupFilter>()
+        let otherAllValue = PublishRelay<Bool>()
+        let goToOtherSortVC = PublishRelay<Void>()
+        let goToOtherFilterVC = PublishRelay<Void>()
+        let goToOtherAllVC = PublishRelay<Void>()
+        
+        
+        
     }
     
-    init() {
+    init(place: Place) {
+        
+        self.place = place
         
         input.ourMemoryRefresh
             .flatMap(getOurPlace)
@@ -98,6 +122,46 @@ class MemoryListViewModel {
             self.output.selectMemoryValue.accept(value)
         }).disposed(by: disposeBag)
         
+        input.ourSortObserver
+            .subscribe(onNext: { value in
+                
+                self.ourMemory.sort = value
+                self.ourMemory.page = 0
+                self.ourMemory.isEnd = false
+                self.output.ourSortValue.accept(value)
+                
+            }).disposed(by: disposeBag)
+        
+        input.ourGroupFilterObserver
+            .subscribe(onNext: { value in
+                
+                self.ourMemory.groupType = value
+                self.ourMemory.page = 0
+                self.ourMemory.isEnd = false
+                self.output.ourGroupFilterValue.accept(value)
+                
+            }).disposed(by: disposeBag)
+        
+        input.otherSortObserver
+            .subscribe(onNext: { value in
+                
+                self.otherMemory.sort = value
+                self.otherMemory.page = 0
+                self.otherMemory.isEnd = false
+                self.output.otherSortValue.accept(value)
+                
+            }).disposed(by: disposeBag)
+        
+        input.otherGroupFilterObserver
+            .subscribe(onNext: { value in
+                
+                self.otherMemory.groupType = value
+                self.otherMemory.page = 0
+                self.otherMemory.isEnd = false
+                self.output.otherGroupFilterValue.accept(value)
+                
+            }).disposed(by: disposeBag)
+        
     }
     
     
@@ -111,14 +175,13 @@ class MemoryListViewModel {
         
         return Observable.create { observer in
             
-            if let user = User.loginedUser,
-               let place = self.place {
+            if let user = User.loginedUser {
                 let header:HTTPHeaders = [
                     "Content-Type": "application/json",
                     "Authorization" : "Bearer \(user.jwtToken)"
                 ]
                 
-                let url = "https://api.melly.kr/api/memory/user/place/\(place.placeId)"
+                let url = "https://api.melly.kr/api/memory/user/place/\(self.place.placeId)"
                 
                 let parameters:Parameters = ["size": 10,
                                              "page": self.ourMemory.page,
@@ -177,34 +240,33 @@ class MemoryListViewModel {
         
         return Observable.create { observer in
             
-            if let user = User.loginedUser,
-               let place = self.place {
+            if let user = User.loginedUser {
                 let header:HTTPHeaders = [
                     "Content-Type": "application/json",
                     "Authorization" : "Bearer \(user.jwtToken)"
                 ]
                 
-                let url = "https://api.melly.kr/api/memory/other/place/\(place.placeId)"
-                
                 let parameters:Parameters = ["size": 10,
-                                             "lastId": self.otherMemory.lastId,
-                                             "visitedDate": self.otherMemory.visitedDate,
-                                             "groupType": self.otherMemory.groupType.rawValue]
-                AF.request(url, method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: header)
+                                             "page": self.ourMemory.page,
+                                             "sort": self.ourMemory.sort,
+                                             "groupType": self.ourMemory.groupType.rawValue]
+                
+                AF.request(self.otherUrl, method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: header)
                     .responseData { response in
                         switch response.result {
                         case .success(let data):
                             
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                
-                                if json.message == "다른 유저가 전체 공개로 올린 메모리 조회" {
+                                print(json)
+                                if json.message == "다른 유저가 전체 공개로 올린 메모리 조회" || json.message == "내 그룹의 메모리 조회" {
                                     
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data! as Any) {
                                         
                                         if let result = try? decoder.decode(MemoryData.self, from: data) {
                                             if !result.memoryList.content.isEmpty {
-                                                self.otherMemory.lastId = result.memoryList.content[result.memoryList.content.count - 1].memoryId
+                                                self.otherMemory.page += 1
+                                                
                                                 self.otherMemory.isEnd = result.memoryList.last
                                                 observer.onNext(result.memoryList.content)
                                             }

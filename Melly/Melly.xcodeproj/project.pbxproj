@@ -46,6 +46,10 @@
 		BF81F96E28E1732A007E5D35 /* RecommandCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81F96D28E1732A007E5D35 /* RecommandCollectionViewCell.swift */; };
 		BF852E41290C319400122299 /* MyScrapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF852E40290C319400122299 /* MyScrapViewController.swift */; };
 		BF852E43290C338E00122299 /* MyScrapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF852E42290C338E00122299 /* MyScrapViewModel.swift */; };
+		BF8EA7502914A350006D8E6B /* SettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8EA74F2914A350006D8E6B /* SettingViewModel.swift */; };
+		BF8EA7522914AB9C006D8E6B /* Push.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8EA7512914AB9C006D8E6B /* Push.swift */; };
+		BF8EA7542914C474006D8E6B /* ScrapDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8EA7532914C474006D8E6B /* ScrapDetailViewController.swift */; };
+		BF8EA7562914D185006D8E6B /* Survey.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8EA7552914D185006D8E6B /* Survey.swift */; };
 		BF8F9AD728D064D700EAA49E /* RecommandViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8F9AD628D064D700EAA49E /* RecommandViewController.swift */; };
 		BF957BCF290B65D80056E99D /* GroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF957BCE290B65D80056E99D /* GroupViewController.swift */; };
 		BF957BD1290B6D8B0056E99D /* GroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF957BD0290B6D8B0056E99D /* GroupViewModel.swift */; };
@@ -137,6 +141,10 @@
 		BF81F96D28E1732A007E5D35 /* RecommandCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommandCollectionViewCell.swift; sourceTree = "<group>"; };
 		BF852E40290C319400122299 /* MyScrapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScrapViewController.swift; sourceTree = "<group>"; };
 		BF852E42290C338E00122299 /* MyScrapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScrapViewModel.swift; sourceTree = "<group>"; };
+		BF8EA74F2914A350006D8E6B /* SettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewModel.swift; sourceTree = "<group>"; };
+		BF8EA7512914AB9C006D8E6B /* Push.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Push.swift; sourceTree = "<group>"; };
+		BF8EA7532914C474006D8E6B /* ScrapDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrapDetailViewController.swift; sourceTree = "<group>"; };
+		BF8EA7552914D185006D8E6B /* Survey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Survey.swift; sourceTree = "<group>"; };
 		BF8F9AD628D064D700EAA49E /* RecommandViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommandViewController.swift; sourceTree = "<group>"; };
 		BF957BCE290B65D80056E99D /* GroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupViewController.swift; sourceTree = "<group>"; };
 		BF957BD0290B6D8B0056E99D /* GroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupViewModel.swift; sourceTree = "<group>"; };
@@ -259,6 +267,8 @@
 				BFBEB9E528FFD3E60074E6B7 /* Memory.swift */,
 				BFF6610729091FC4003E998B /* Comment.swift */,
 				BFABEF03290CFE2000D14115 /* Scrap.swift */,
+				BF8EA7512914AB9C006D8E6B /* Push.swift */,
+				BF8EA7552914D185006D8E6B /* Survey.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -305,6 +315,7 @@
 			isa = PBXGroup;
 			children = (
 				BF6DB828290ACDD2009B735F /* SettingViewController.swift */,
+				BF8EA74F2914A350006D8E6B /* SettingViewModel.swift */,
 			);
 			path = Setting;
 			sourceTree = "<group>";
@@ -351,6 +362,7 @@
 			children = (
 				BF852E40290C319400122299 /* MyScrapViewController.swift */,
 				BF852E42290C338E00122299 /* MyScrapViewModel.swift */,
+				BF8EA7532914C474006D8E6B /* ScrapDetailViewController.swift */,
 			);
 			path = Scrap;
 			sourceTree = "<group>";
@@ -709,6 +721,7 @@
 				BF638A8E28DAA96D0031233F /* ResponseData.swift in Sources */,
 				BF957BD5290BBA730056E99D /* GroupMemoryViewModel.swift in Sources */,
 				BFC9368328F6A46C00A2C53F /* OtherMemoryListViewController.swift in Sources */,
+				BF8EA7542914C474006D8E6B /* ScrapDetailViewController.swift in Sources */,
 				BFD6C57628D7373F0092A6E5 /* SignUpTwoViewController.swift in Sources */,
 				BFA3399328C832E500C1CD4C /* MainLoginViewController.swift in Sources */,
 				BFD6C56F28D724160092A6E5 /* SignUpOneViewModel.swift in Sources */,
@@ -718,6 +731,7 @@
 				BFFDFFFF2902314100AACD16 /* MyPageViewController.swift in Sources */,
 				BFF84EB028C6D40B00892CB5 /* SplashViewController.swift in Sources */,
 				BFDA0B3028F54190008FE376 /* PopUpViewModel.swift in Sources */,
+				BF8EA7522914AB9C006D8E6B /* Push.swift in Sources */,
 				BF6DB82C290AD673009B735F /* NoticeViewController.swift in Sources */,
 				BF638A9228DAD6050031233F /* FoundationExtension.swift in Sources */,
 				BFB5015029065F21000621DC /* MemoryDetailViewModel.swift in Sources */,
@@ -734,6 +748,7 @@
 				BFDC1BF928D8096D005ADC6A /* SignUpThreeViewModel.swift in Sources */,
 				BFDA0B2C28F533E0008FE376 /* ScrapViewController.swift in Sources */,
 				BF5A7F4528D0591A000A1B08 /* MainMapViewController.swift in Sources */,
+				BF8EA7562914D185006D8E6B /* Survey.swift in Sources */,
 				BF957BD3290B74490056E99D /* GroupAddViewController.swift in Sources */,
 				BFC9368528F6A57A00A2C53F /* MemoryListCollectionViewCell.swift in Sources */,
 				BF852E41290C319400122299 /* MyScrapViewController.swift in Sources */,
@@ -760,6 +775,7 @@
 				BFA3399628C8349B00C1CD4C /* UIKitExtension.swift in Sources */,
 				BFECADA02910EE9500BB7C04 /* GroupAddCompleteViewController.swift in Sources */,
 				BFDE616E28ED12A10099FF97 /* ResearchLoadingViewController.swift in Sources */,
+				BF8EA7502914A350006D8E6B /* SettingViewModel.swift in Sources */,
 				BFD6C56D28D723CD0092A6E5 /* SignUpOneViewController.swift in Sources */,
 				BF0A11C928CDCDEB00B06DE1 /* SideBarViewController.swift in Sources */,
 				BF5A7F4728D05926000A1B08 /* ContainerViewController.swift in Sources */,

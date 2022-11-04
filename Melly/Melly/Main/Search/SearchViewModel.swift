@@ -292,7 +292,7 @@ class SearchViewModel {
                                 if let json = try? decoder.decode(ResponseData.self, from: data) {
                                     
                                     if json.message == "장소 상세 조회" {
-                                        
+                                        print(json)
                                         if let data = try? JSONSerialization.data(withJSONObject: json.data as Any) {
                                             
                                             if var place = try? decoder.decode(Place.self, from: data) {
@@ -339,7 +339,7 @@ class SearchViewModel {
                                 if let json = try? decoder.decode(ResponseData.self, from: data) {
                                     
                                     if json.message == "장소 상세 조회" {
-                                        
+                                        print(json)
                                         if let data = try? JSONSerialization.data(withJSONObject: json.data as Any) {
                                             if let place = try? decoder.decode(Place.self, from: data) {
                                                 
