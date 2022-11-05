@@ -23,8 +23,6 @@ class MyPageViewModel {
     let input = Input()
     let output = Output()
     
-    
-    
     struct Input {
         let volumeObserver = PublishRelay<Void>()
         let profileImgObserver = PublishRelay<UIImage?>()

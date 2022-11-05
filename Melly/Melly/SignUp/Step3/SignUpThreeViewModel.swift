@@ -85,7 +85,7 @@ class SignUpThreeViewModel {
                 case .next(let user):
                     User.loginedUser = user
                     UserDefaults.standard.set(try? PropertyListEncoder().encode(user), forKey: "loginUser")
-                    UserDefaults.standard.set(user.jwtToken, forKey: "token")
+                    UserDefaults.standard.setValue(user.jwtToken, forKey: "token")
                     UserDefaults.standard.setValue("yes", forKey: "initialUser")
                     self.output.userValue.accept(nil)
                 }
@@ -114,7 +114,8 @@ class SignUpThreeViewModel {
             var parameters:[String:Any] = [
                 "nickname": self.user.nickname,
                 "gender": self.user.gender,
-                "ageGroup": self.user.ageGroup
+                "ageGroup": self.user.ageGroup,
+                "fcmToken" : UserDefaults.standard.string(forKey: "fcmToken") ?? ""
             ]
             
             if self.user.provider == LoginType.Default.rawValue {
@@ -141,8 +142,12 @@ class SignUpThreeViewModel {
                     let decoder = JSONDecoder()
                     if let json = try? decoder.decode(ResponseData.self, from: response) {
                         if json.message == "회원가입 완료" {
+                            print(json)
                             if let dic = json.data?["user"] as? [String:Any] {
-                                if let user = dictionaryToObject(objectType: User.self, dictionary: dic) {
+                                if var user = dictionaryToObject(objectType: User.self, dictionary: dic),
+                                   let token = json.data?["token"] as? String{
+                                    print(token)
+                                    user.jwtToken = token
                                     observer.onNext(user)
                                 }
                             }

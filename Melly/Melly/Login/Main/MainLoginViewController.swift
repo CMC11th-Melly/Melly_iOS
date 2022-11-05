@@ -237,7 +237,7 @@ extension MainLoginViewController {
             .drive(onNext: { value in
                 
                 if value.0 {
-                    let vm = SignUpZeroViewModel(User())
+                    let vm = SignUpZeroViewModel(value.1)
                     let vc = SignUpZeroViewController(vm: vm)
                     let nav = UINavigationController(rootViewController: vc)
                     nav.isNavigationBarHidden = true

@@ -247,9 +247,9 @@ class MemoryListViewModel {
                 ]
                 
                 let parameters:Parameters = ["size": 10,
-                                             "page": self.ourMemory.page,
-                                             "sort": self.ourMemory.sort,
-                                             "groupType": self.ourMemory.groupType.rawValue]
+                                             "page": self.otherMemory.page,
+                                             "sort": self.otherMemory.sort,
+                                             "groupType": self.otherMemory.groupType.rawValue]
                 
                 AF.request(self.otherUrl, method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: header)
                     .responseData { response in
@@ -259,7 +259,7 @@ class MemoryListViewModel {
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
                                 print(json)
-                                if json.message == "다른 유저가 전체 공개로 올린 메모리 조회" || json.message == "내 그룹의 메모리 조회" {
+                                if json.message == "성공" {
                                     
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data! as Any) {
                                         

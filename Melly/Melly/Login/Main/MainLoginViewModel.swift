@@ -188,7 +188,8 @@ class MainLoginViewModel {
         return Observable.create { observer in
             
             let parameters:Parameters = ["accessToken": token,
-                                         "provider": type.rawValue]
+                                         "provider": type.rawValue,
+                                         "fcmToken" : UserDefaults.standard.string(forKey: "fcmToken") ?? ""]
             
             let header:HTTPHeaders = [ "Connection":"close",
                                        "Content-Type":"application/json"]
@@ -201,7 +202,8 @@ class MainLoginViewModel {
                         let decoder = JSONDecoder()
                         if let json = try? decoder.decode(ResponseData.self, from: response.1) {
                             if let dic = json.data?["user"] as? [String:Any] {
-                                if let user = dictionaryToObject(objectType: User.self, dictionary: dic) {
+                                if var user = dictionaryToObject(objectType: User.self, dictionary: dic) {
+                                    user.provider = type.rawValue
                                     let newUser = json.data?["newUser"] as! Bool
                                     observer.onNext((newUser, user))
                                 }

@@ -91,4 +91,19 @@ enum GroupFilter: String {
         }
     }
     
+    static func getGroupSurveyValue(_ text: String) -> String {
+        switch text {
+        case "가족":
+            return "FAMILY"
+        case "동료":
+            return "COMPANY"
+        case "연인":
+            return "COUPLE"
+        case "친구":
+            return "FRIEND"
+        default:
+            return "모두"
+        }
+    }
+    
 }

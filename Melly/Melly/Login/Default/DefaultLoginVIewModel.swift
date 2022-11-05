@@ -97,7 +97,8 @@ class DefaultLoginViewModel {
         
         return Observable.create { observer in
             let parameters:Parameters = ["email": self.user.email,
-                                         "password": self.user.pw]
+                                         "password": self.user.pw,
+                                         "fcmToken" : UserDefaults.standard.string(forKey: "fcmToken") ?? ""]
             
             let header:HTTPHeaders = [ "Connection":"close",
                                        "Content-Type":"application/json"]

@@ -21,20 +21,25 @@ class SplashViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        if let data = UserDefaults.standard.value(forKey: "loginUser") as? Data,
-           let token = UserDefaults.standard.string(forKey: "token"){
-            if var user = try? PropertyListDecoder().decode(User.self, from: data) {
-                user.jwtToken = token
-                User.loginedUser = user
-            }
-        }
+        let vc = ReportViewController()
+        vc.modalTransitionStyle = .coverVertical
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true)
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            let vc = MainLoginViewController()
-            vc.modalTransitionStyle = .crossDissolve
-            vc.modalPresentationStyle = .fullScreen
-            self.present(vc, animated: true)
-        }
+//        if let data = UserDefaults.standard.value(forKey: "loginUser") as? Data,
+//           let token = UserDefaults.standard.string(forKey: "token"){
+//            if var user = try? PropertyListDecoder().decode(User.self, from: data) {
+//                user.jwtToken = token
+//                User.loginedUser = user
+//            }
+//        }
+//
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+//            let vc = MainLoginViewController()
+//            vc.modalTransitionStyle = .crossDissolve
+//            vc.modalPresentationStyle = .fullScreen
+//            self.present(vc, animated: true)
+//        }
     }
     
 }

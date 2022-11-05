@@ -42,6 +42,8 @@
 		BF72FC6C29053B3F0076AEF8 /* MyProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF72FC6B29053B3F0076AEF8 /* MyProfileViewController.swift */; };
 		BF72FC6E290541150076AEF8 /* ProfileEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF72FC6D290541150076AEF8 /* ProfileEditViewController.swift */; };
 		BF7CAAFF28DE04B60076CD1A /* AgreeNTermsText.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7CAAFE28DE04B60076CD1A /* AgreeNTermsText.swift */; };
+		BF7E243E29163A6C00E05362 /* ReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7E243D29163A6C00E05362 /* ReportViewController.swift */; };
+		BF7E24402916601200E05362 /* ReportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7E243F2916601200E05362 /* ReportViewModel.swift */; };
 		BF7E3CCA28D43F0E007C3236 /* DefaultLoginVIewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7E3CC928D43F0E007C3236 /* DefaultLoginVIewModel.swift */; };
 		BF81F96E28E1732A007E5D35 /* RecommandCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81F96D28E1732A007E5D35 /* RecommandCollectionViewCell.swift */; };
 		BF852E41290C319400122299 /* MyScrapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF852E40290C319400122299 /* MyScrapViewController.swift */; };
@@ -137,6 +139,8 @@
 		BF72FC6B29053B3F0076AEF8 /* MyProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyProfileViewController.swift; sourceTree = "<group>"; };
 		BF72FC6D290541150076AEF8 /* ProfileEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditViewController.swift; sourceTree = "<group>"; };
 		BF7CAAFE28DE04B60076CD1A /* AgreeNTermsText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgreeNTermsText.swift; sourceTree = "<group>"; };
+		BF7E243D29163A6C00E05362 /* ReportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewController.swift; sourceTree = "<group>"; };
+		BF7E243F2916601200E05362 /* ReportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewModel.swift; sourceTree = "<group>"; };
 		BF7E3CC928D43F0E007C3236 /* DefaultLoginVIewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLoginVIewModel.swift; sourceTree = "<group>"; };
 		BF81F96D28E1732A007E5D35 /* RecommandCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommandCollectionViewCell.swift; sourceTree = "<group>"; };
 		BF852E40290C319400122299 /* MyScrapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScrapViewController.swift; sourceTree = "<group>"; };
@@ -421,6 +425,8 @@
 				BFC9368428F6A57A00A2C53F /* MemoryListCollectionViewCell.swift */,
 				BFDDED5E28F7EAD5003AE5DA /* MemoryListViewModel.swift */,
 				BF2525BA2900E24E00F4E177 /* FooterLoadingView.swift */,
+				BF7E243D29163A6C00E05362 /* ReportViewController.swift */,
+				BF7E243F2916601200E05362 /* ReportViewModel.swift */,
 			);
 			path = MemoryList;
 			sourceTree = "<group>";
@@ -721,6 +727,7 @@
 				BF638A8E28DAA96D0031233F /* ResponseData.swift in Sources */,
 				BF957BD5290BBA730056E99D /* GroupMemoryViewModel.swift in Sources */,
 				BFC9368328F6A46C00A2C53F /* OtherMemoryListViewController.swift in Sources */,
+				BF7E24402916601200E05362 /* ReportViewModel.swift in Sources */,
 				BF8EA7542914C474006D8E6B /* ScrapDetailViewController.swift in Sources */,
 				BFD6C57628D7373F0092A6E5 /* SignUpTwoViewController.swift in Sources */,
 				BFA3399328C832E500C1CD4C /* MainLoginViewController.swift in Sources */,
@@ -783,6 +790,7 @@
 				BFFD000129025D7100AACD16 /* ContainerViewModel.swift in Sources */,
 				BFC9368128F6A44100A2C53F /* OurMemoryListViewController.swift in Sources */,
 				BF34F88128D1A60400EA1C16 /* DefaultLoginViewController.swift in Sources */,
+				BF7E243E29163A6C00E05362 /* ReportViewController.swift in Sources */,
 				BF957BD1290B6D8B0056E99D /* GroupViewModel.swift in Sources */,
 				BFF6610829091FC4003E998B /* Comment.swift in Sources */,
 				BFF84EAE28C6D40B00892CB5 /* SceneDelegate.swift in Sources */,

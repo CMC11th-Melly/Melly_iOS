@@ -33,6 +33,7 @@ class ResearchMainViewModel {
         let nextObserver = PublishRelay<Void>()
         let surveyObserver = PublishRelay<Void>()
         let goMainObserver = PublishRelay<Void>()
+        let getSurveyObserver = PublishRelay<Void>()
     }
     
     struct Output {
@@ -86,11 +87,11 @@ class ResearchMainViewModel {
         }).disposed(by: disposeBag)
         
         input.surveyObserver
-            .flatMap(getSurvey)
+            .flatMap(inputSurvey)
             .subscribe({ event in
                 switch event {
-                case .next(let survey):
-                    self.survey = survey
+                case .next(_):
+                    print("설문조사")
                 case .error(let error):
                     if let mellyError = error as? MellyError {
                         if mellyError.msg == "" {
@@ -104,6 +105,25 @@ class ResearchMainViewModel {
                 }
             }).disposed(by: disposeBag)
         
+        input.getSurveyObserver
+            .flatMap(getSurvey)
+            .subscribe({ event in
+                switch event {
+                case .next(let survey):
+                    self.survey = survey
+                    self.output.surveyValue.accept(survey)
+                case .error(let error):
+                    if let mellyError = error as? MellyError {
+                        if mellyError.msg == "" {
+                            self.output.errorValue.accept(error.localizedDescription)
+                        } else {
+                            self.output.errorValue.accept(mellyError.msg)
+                        }
+                    }
+                case .completed:
+                    break
+                }
+            }).disposed(by: disposeBag)
         
         input.goMainObserver
             .flatMap(transferPlace)
@@ -137,6 +157,60 @@ class ResearchMainViewModel {
      - Throws: MellyError
      - Returns:Memory
      */
+    func inputSurvey() -> Observable<Void> {
+        
+        return Observable.create { observer in
+            
+            if let user = User.loginedUser {
+                let header:HTTPHeaders = [
+                    "Content-Type": "application/json",
+                    "Authorization" : "Bearer \(user.jwtToken)"
+                ]
+                
+                
+                let parameters:Parameters = ["recommendPlace": self.searchData[0],
+                                             "recommendActivity": self.searchData[1],
+                                             "recommendGroup": GroupFilter.getGroupSurveyValue(self.searchData[2])]
+                
+                
+                let url = "https://api.melly.kr/api/user/survey"
+                
+                AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: header)
+                    .responseData { response in
+                        switch response.result {
+                        case .success(let data):
+                    
+                            let decoder = JSONDecoder()
+                            
+                            if let json = try? decoder.decode(ResponseData.self, from: data) {
+                                print(json)
+                                if json.message == "성공" {
+                                
+                                    observer.onNext(())
+                                    
+                                } else {
+                                    let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
+                                    observer.onError(error)
+                                }
+                            }
+                        case .failure(let error):
+                            observer.onError(error)
+                        }
+                    }
+            }
+            
+            return Disposables.create()
+        }
+        
+    }
+    
+    /**
+     푸시 알림 선택 시 해당 메모리로 이동
+     - Parameters:
+     -push: Push
+     - Throws: MellyError
+     - Returns:Memory
+     */
     func getSurvey() -> Observable<Survey> {
         
         return Observable.create { observer in
@@ -147,23 +221,19 @@ class ResearchMainViewModel {
                     "Authorization" : "Bearer \(user.jwtToken)"
                 ]
                 
-                let parameters:Parameters = ["recommendPlace": self.searchData[0],
-                                             "recommendActivity": self.searchData[1],
-                                             "recommendGroup": GroupFilter.getGroupValue(self.searchData[2])]
-                
                 let url = "https://api.melly.kr/api/user/survey"
                 
-                AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: header)
+                AF.request(url, method: .get, headers: header)
                     .responseData { response in
                         switch response.result {
                         case .success(let data):
-                            
+                    
                             let decoder = JSONDecoder()
                             
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
                                 print(json)
-                                if json.message == "설문 조사 기반 추천 조회" {
-                                    
+                                if json.message == "성공" {
+                                
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data?["surveyRecommend"] as Any) {
                                         
                                         if let survey = try? decoder.decode(Survey.self, from: data) {

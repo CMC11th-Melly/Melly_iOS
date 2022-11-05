@@ -497,7 +497,7 @@ extension MainMapViewController: UICollectionViewDelegateFlowLayout {
         }
         if cell.isSelected {
             collectionView.deselectItem(at: indexPath, animated: true)
-            
+            vm.input.filterGroupObserver.accept(.all)
             return false
         } else {
             return true

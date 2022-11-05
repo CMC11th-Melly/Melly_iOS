@@ -273,96 +273,96 @@ class SearchViewModel {
             if let user = User.loginedUser {
                 
                 
-                if search.placeId == -1 {
-                    let parameters:Parameters = ["lat": search.lat,
-                                                 "lng": search.lng]
-                    let header:HTTPHeaders = [
-                        "Connection":"keep-alive",
-                        "Content-Type":"application/json",
-                        "Authorization" : "Bearer \(user.jwtToken)"
-                    ]
-                    
-                    AF.request("https://api.melly.kr/api/place", method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: header)
-                        .responseData { response in
-                            switch response.result {
-                            case .success(let data):
+                let parameters:Parameters = ["lat": search.lat,
+                                             "lng": search.lng]
+                let header:HTTPHeaders = [
+                    "Connection":"keep-alive",
+                    "Content-Type":"application/json",
+                    "Authorization" : "Bearer \(user.jwtToken)"
+                ]
+                
+                AF.request("https://api.melly.kr/api/place", method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: header)
+                    .responseData { response in
+                        switch response.result {
+                        case .success(let data):
+                            
+                            
+                            let decoder = JSONDecoder()
+                            if let json = try? decoder.decode(ResponseData.self, from: data) {
                                 
-                                
-                                let decoder = JSONDecoder()
-                                if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                    
-                                    if json.message == "장소 상세 조회" {
-                                        print(json)
-                                        if let data = try? JSONSerialization.data(withJSONObject: json.data as Any) {
+                                if json.message == "장소 상세 조회" {
+                                    print(json)
+                                    if let data = try? JSONSerialization.data(withJSONObject: json.data as Any) {
+                                        
+                                        if var place = try? decoder.decode(Place.self, from: data) {
                                             
-                                            if var place = try? decoder.decode(Place.self, from: data) {
-                                                
-                                                if place.placeId == -1 {
-                                                    place.placeName = search.title
-                                                    place.placeCategory = search.category
-                                                } else {
-                                                    place.placeName = search.title
-                                                    place.placeCategory = search.category
-                                                }
-                                                
-                                                observer.onNext(place)
-                                                self.addRecentSearch(search)
+                                            if place.placeId == -1 {
+                                                place.placeName = search.title
+                                                place.placeCategory = search.category
+                                            } else {
+                                                place.placeName = search.title
+                                                place.placeCategory = search.category
                                             }
                                             
+                                            observer.onNext(place)
+                                            self.addRecentSearch(search)
                                         }
                                         
-                                    } else {
-                                        let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                        observer.onError(error)
                                     }
                                     
                                 } else {
-                                    let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
+                                    let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
                                     observer.onError(error)
                                 }
-                            case .failure(let error):
+                                
+                            } else {
+                                let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
                                 observer.onError(error)
                             }
+                        case .failure(let error):
+                            observer.onError(error)
                         }
-                } else {
-                    let header:HTTPHeaders = [
-                        "Connection":"keep-alive",
-                        "Content-Type":"application/json",
-                        "Authorization" : "Bearer \(user.jwtToken)"
-                    ]
-                    
-                    AF.request("https://api.melly.kr/api/place/\(search.placeId)/search", method: .get, headers: header)
-                        .responseData { response in
-                            switch response.result {
-                            case .success(let data):
-                                let decoder = JSONDecoder()
-                                if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                    
-                                    if json.message == "장소 상세 조회" {
-                                        print(json)
-                                        if let data = try? JSONSerialization.data(withJSONObject: json.data as Any) {
-                                            if let place = try? decoder.decode(Place.self, from: data) {
-                                                
-                                                observer.onNext(place)
-                                                self.addRecentSearch(search)
-                                            }
-                                        }
-                                        
-                                    } else {
-                                        let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                        observer.onError(error)
-                                    }
-                                    
-                                } else {
-                                    let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
-                                    observer.onError(error)
-                                }
-                            case .failure(let error):
-                                observer.onError(error)
-                            }
-                        }
-                }
+                    }
             }
+//                } else {
+//                    let header:HTTPHeaders = [
+//                        "Connection":"keep-alive",
+//                        "Content-Type":"application/json",
+//                        "Authorization" : "Bearer \(user.jwtToken)"
+//                    ]
+//
+//                    AF.request("https://api.melly.kr/api/place/\(search.placeId)/search", method: .get, headers: header)
+//                        .responseData { response in
+//                            switch response.result {
+//                            case .success(let data):
+//                                let decoder = JSONDecoder()
+//                                if let json = try? decoder.decode(ResponseData.self, from: data) {
+//
+//                                    if json.message == "장소 상세 조회" {
+//
+//                                        if let data = try? JSONSerialization.data(withJSONObject: json.data as Any) {
+//                                            if let place = try? decoder.decode(Place.self, from: data) {
+//
+//                                                observer.onNext(place)
+//                                                self.addRecentSearch(search)
+//                                            }
+//                                        }
+//
+//                                    } else {
+//                                        let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
+//                                        observer.onError(error)
+//                                    }
+//
+//                                } else {
+//                                    let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
+//                                    observer.onError(error)
+//                                }
+//                            case .failure(let error):
+//                                observer.onError(error)
+//                            }
+//                        }
+//                }
+//            }
             
             return Disposables.create()
         }

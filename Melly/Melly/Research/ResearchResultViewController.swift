@@ -19,7 +19,7 @@ class ResearchResultViewController: UIViewController {
     let contentsView = UIView()
     
     lazy var titleLB = UILabel().then {
-        $0.text = "소피아님에게 딱맞는 메모리 활동은?"
+        $0.text = "\(User.loginedUser!.nickname)님에게 딱맞는 메모리 활동은?"
         $0.textColor = UIColor(red: 0.098, green: 0.122, blue: 0.157, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 22)
     }
@@ -61,9 +61,11 @@ class ResearchResultViewController: UIViewController {
         super.viewDidLoad()
         setUI()
         bind()
-        setData()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        vm.input.getSurveyObserver.accept(())
+    }
     
 
 }
@@ -169,18 +171,14 @@ extension ResearchResultViewController {
                 self.dismiss(animated: true)
             }).disposed(by: disposeBag)
         
+        vm.output.surveyValue.subscribe(onNext: { survey in
+            self.mainLB.text = survey.words[0]
+            self.groupSubLb.label.text = survey.words[1]
+            self.contentsSubLb.label.text = survey.words[2]
+            self.locationSubLb.label.text = survey.words[3]
+        }).disposed(by: disposeBag)
+        
     }
     
-    private func setData() {
-        
-        if let survey = vm.survey {
-            
-            mainLB.text = survey.words[0]
-            groupSubLb.label.text = survey.words[1]
-            contentsSubLb.label.text = survey.words[2]
-            locationSubLb.label.text = survey.words[3]
-        }
-        
-    }
     
 }
