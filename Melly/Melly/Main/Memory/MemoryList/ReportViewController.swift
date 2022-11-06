@@ -12,7 +12,8 @@ import RxSwift
 class ReportViewController: UIViewController {
     
     let headerView = UIView()
-    let vm = ReportViewModel()
+    let vm:ReportViewModel
+    var detailVm:MemoryDetailViewModel?
     
     private let disposeBag = DisposeBag()
     
@@ -122,6 +123,15 @@ class ReportViewController: UIViewController {
     
     let alertLabel = AlertLabel().then {
         $0.alpha = 0
+    }
+    
+    init(vm: ReportViewModel) {
+        self.vm = vm
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {
@@ -327,8 +337,12 @@ extension ReportViewController {
                     }
                 }
                 
-                
-                
+            }).disposed(by: disposeBag)
+        
+        vm.output.completeValue
+            .subscribe(onNext: { value in
+                self.detailVm?.output.errorValue.accept(value)
+                self.dismiss(animated: true)
             }).disposed(by: disposeBag)
         
     }

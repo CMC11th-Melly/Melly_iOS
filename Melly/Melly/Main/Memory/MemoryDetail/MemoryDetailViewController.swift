@@ -186,6 +186,10 @@ class MemoryDetailViewController: UIViewController {
     
     let commentTF = CommentTextField(title: "댓글을 입력해주세요.")
     
+    let errorAlert = AlertLabel().then {
+        $0.alpha = 0
+    }
+    
     init(vm: MemoryDetailViewModel) {
         self.vm = vm
         super.init(nibName: nil, bundle: nil)
@@ -199,7 +203,6 @@ class MemoryDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
-        //test()
         setCV()
         bind()
         
@@ -271,14 +274,14 @@ extension MemoryDetailViewController {
         
         contentView.addSubview(titleLB)
         titleLB.snp.makeConstraints {
-            $0.top.equalTo(imagePageView.snp.bottom).offset(24)
+            $0.top.equalToSuperview().offset(24)
             $0.leading.equalToSuperview().offset(34)
             $0.height.equalTo(28)
         }
         
         contentView.addSubview(shareBT)
         shareBT.snp.makeConstraints {
-            $0.top.equalTo(imagePageView.snp.bottom).offset(26)
+            $0.top.equalToSuperview().offset(26)
             $0.trailing.equalToSuperview().offset(-30)
             $0.height.width.equalTo(24)
         }
@@ -375,17 +378,17 @@ extension MemoryDetailViewController {
             $0.leading.equalToSuperview().offset(30)
         }
         
-        //        contentView.addSubview(commentCV)
-        //        commentCV.snp.makeConstraints {
-        //            $0.top.equalTo(commentCountLB.snp.bottom).offset(20)
-        //            $0.leading.trailing.equalToSuperview()
-        //            $0.height.equalTo(commentCV.contentSize.height)
-        //
-        //        }
+        contentView.addSubview(commentCV)
+        commentCV.snp.makeConstraints {
+            $0.top.equalTo(commentCountLB.snp.bottom).offset(20)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(600)
+            
+        }
         
         contentView.addSubview(bottomView)
         bottomView.snp.makeConstraints {
-            $0.top.equalTo(commentCountLB.snp.bottom)
+            $0.top.equalTo(commentCV.snp.bottom)
             $0.height.equalTo(95)
             $0.leading.trailing.bottom.equalToSuperview()
         }
@@ -395,7 +398,15 @@ extension MemoryDetailViewController {
             $0.centerY.equalToSuperview()
             $0.leading.equalToSuperview().offset(30)
             $0.trailing.equalToSuperview().offset(-30)
-            $0.height.equalTo(54)
+            $0.height.equalTo(56)
+        }
+        
+        view.addSubview(errorAlert)
+        errorAlert.snp.makeConstraints {
+            $0.bottom.equalToSuperview().offset(-47)
+            $0.leading.equalToSuperview().offset(30)
+            $0.trailing.equalToSuperview().offset(-30)
+            $0.height.equalTo(56)
         }
         
         
@@ -426,6 +437,11 @@ extension MemoryDetailViewController {
             self.dismiss(animated: true)
         }).disposed(by: disposeBag)
         
+        commentTF.rightButton.rx.tap
+            .map { self.commentTF.textField.text }
+            .bind(to: vm.input.textFieldEditObserver)
+            .disposed(by: disposeBag)
+        
         shareBT.rx.tap
             .subscribe(onNext: {
                 let object = ["https://cmc11th.page.link/?link=https://minjuling.notion.site/minjuling/1aae3484826f4e64a831e623a6a905d6&apn=com.melly&isi=6444202109&ibi=com.neordinary.CMC11th.Melly&cid=6563168647626591997&_osl=https://cmc11th.page.link/invite_group&_fpb=CNQGEIkDGgVrby1LUg==&_cpt=cpit&_iumenbl=1&_iumchkactval=1&_plt=707&_uit=2424&_cpb=1&_fpb=CNQGEIkDGgVrby1LUg==&_cpt=cpit&_iumenbl=1&_iumchkactval=1&_plt=707&_uit=100356&_cpb=1&_icp=1"]
@@ -440,7 +456,37 @@ extension MemoryDetailViewController {
         editBT.rx.tap
             .subscribe(onNext: {
                 
+                let alert = UIAlertController(title: "메모리 메뉴", message: nil, preferredStyle: .actionSheet)
+                
+                let deleteAction = UIAlertAction(title: "메모리 삭제", style: .default) { _ in
+                    self.vm.output.isDeleteMemory.accept(())
+                }
+                
+                let reportAction = UIAlertAction(title: "메모리 신고", style: .default) { _ in
+                    let vm = ReportViewModel()
+                    vm.memory = self.vm.memory
+                    let vc = ReportViewController(vm: vm)
+                    vc.detailVm = self.vm
+                    vc.modalTransitionStyle = .coverVertical
+                    vc.modalPresentationStyle = .fullScreen
+                    self.present(vc, animated: true)
+                    
+                }
+                
+                let rejectAction = UIAlertAction(title: "메모리 차단", style: .default) { _ in
+                    
+                }
+                
+                let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+                
+                alert.addAction(deleteAction)
+                alert.addAction(reportAction)
+                alert.addAction(rejectAction)
+                alert.addAction(cancelAction)
+                self.present(alert, animated: true)
+                
             }).disposed(by: disposeBag)
+                
         
     }
     
@@ -455,12 +501,90 @@ extension MemoryDetailViewController {
                 
                 DispatchQueue.main.async {
                     self.commentCV.reloadData()
-                    //                    self.commentCV.updateContentSize()
-                    //                    self.commentCV.snp.updateConstraints {
-                    //                        $0.height.equalTo(self.commentCV.contentSize.height)
-                    //                    }
-                    //                    self.view.layoutIfNeeded()
+                    self.commentCV.layoutSubviews()
+                    self.commentCV.snp.updateConstraints {
+                        $0.height.equalTo(self.commentCV.intrinsicContentSize.height)
+                    }
+                    print(self.commentCV.intrinsicContentSize.height)
+                                        
                 }
+                
+            }).disposed(by: disposeBag)
+        
+        vm.output.isDeleteMemory.asDriver(onErrorJustReturn: ())
+            .drive(onNext: {
+                
+                let alert = UIAlertController(title: "정말 삭제하시겠어요?", message: "메모리를 삭제하면 다시 복구할 수 없어요", preferredStyle: .alert)
+                
+                let deleteAction = UIAlertAction(title: "확인", style: .default) { _ in
+                    self.vm.input.deleteMemoryObserver.accept(())
+                }
+            
+                let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+                
+                alert.addAction(cancelAction)
+                alert.addAction(deleteAction)
+                self.present(alert, animated: true)
+                
+            }).disposed(by: disposeBag)
+        
+        vm.output.completeDelete
+            .subscribe(onNext: {
+                self.dismiss(animated: true)
+            }).disposed(by: disposeBag)
+        
+        vm.output.errorValue
+            .subscribe(onNext: { value in
+                self.errorAlert.labelView.text = value
+                self.errorAlert.alpha = 1
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    UIView.animate(withDuration: 1.5) {
+                        self.errorAlert.alpha = 0
+                    }
+                }
+                
+            }).disposed(by: disposeBag)
+        
+        vm.output.commentEdit
+            .subscribe(onNext: { value in
+                
+                let alert = UIAlertController(title: "메모리 메뉴", message: nil, preferredStyle: .actionSheet)
+                
+                let deleteAction = UIAlertAction(title: "댓글 삭제", style: .default) { _ in
+                    let alert = UIAlertController(title: "정말 삭제하시겠어요?", message: "메모리를 삭제하면 다시 복구할 수 없어요", preferredStyle: .alert)
+                    
+                    let deleteAction = UIAlertAction(title: "확인", style: .default) { _ in
+                        self.vm.input.commentDeleteObserver.accept(value)
+                    }
+                
+                    let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+                    
+                    alert.addAction(cancelAction)
+                    alert.addAction(deleteAction)
+                    self.present(alert, animated: true)
+                }
+                
+                let reportAction = UIAlertAction(title: "댓글 신고", style: .default) { _ in
+                    let vm = ReportViewModel()
+                    vm.comment = value
+                    let vc = ReportViewController(vm: vm)
+                    vc.detailVm = self.vm
+                    vc.modalTransitionStyle = .coverVertical
+                    vc.modalPresentationStyle = .fullScreen
+                    self.present(vc, animated: true)
+                    
+                }
+                
+                
+                let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+                
+                if value.isLoginUserWrite { alert.addAction(deleteAction) }
+                    
+                
+                alert.addAction(reportAction)
+                alert.addAction(cancelAction)
+                self.present(alert, animated: true)
                 
             }).disposed(by: disposeBag)
         
@@ -526,8 +650,9 @@ extension MemoryDetailViewController: UICollectionViewDelegateFlowLayout, UIColl
             
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "comment", for: indexPath) as! CommentCell
             cell.comment = vm.comment[indexPath.row]
-            
-            return CGSize(width: self.view.frame.width, height: 65 + cell.commentView.commentLB.frame.height)
+            cell.commentView.commentLB.sizeToFit()
+            let height = cell.commentView.commentLB.frame.height + 76
+            return CGSize(width: self.view.frame.width, height: height)
         }
         
     }
@@ -593,7 +718,7 @@ extension MemoryDetailViewController: UIScrollViewDelegate {
     private func addContentScrollView() {
         DispatchQueue.main.async {
             for i in 0..<self.vm.memory.memoryImages.count {
-         
+                
                 let imageView = UIImageView()
                 let xPos = self.view.frame.width * CGFloat(i)
                 imageView.frame = CGRect(x: xPos, y: 0, width: self.imagePageView.bounds.width, height: self.imagePageView.bounds.height)

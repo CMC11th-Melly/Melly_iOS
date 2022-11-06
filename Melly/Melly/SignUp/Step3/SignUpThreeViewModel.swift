@@ -25,7 +25,7 @@ class SignUpThreeViewModel {
         let genderObserver = PublishRelay<String>()
         let ageObserver = PublishRelay<String>()
         let profileImgObserver = PublishRelay<UIImage?>()
-        let signUpObserver = PublishRelay<Void>()
+        let signUpObserver = PublishSubject<Void>()
     }
     
     struct Output {
@@ -70,24 +70,20 @@ class SignUpThreeViewModel {
         
         input.signUpObserver
             .flatMap(signUp)
-            .subscribe({ event in
-                switch event {
-                case .completed:
-                    break
-                case .error(let error):
-                    if let mellyError = error as? MellyError {
-                        if mellyError.msg == "" {
-                            self.output.userValue.accept(error.localizedDescription)
-                        } else {
-                            self.output.userValue.accept(mellyError.msg)
-                        }
+            .subscribe(onNext: { result in
+                
+                if let error = result.error {
+                    self.output.userValue.accept(error.msg)
+                    
+                } else {
+                    
+                    if let user = result.success as? User {
+                        User.loginedUser = user
+                        UserDefaults.standard.set(try? PropertyListEncoder().encode(user), forKey: "loginUser")
+                        UserDefaults.standard.setValue(user.jwtToken, forKey: "token")
+                        UserDefaults.standard.setValue("yes", forKey: "initialUser")
+                        self.output.userValue.accept(nil)
                     }
-                case .next(let user):
-                    User.loginedUser = user
-                    UserDefaults.standard.set(try? PropertyListEncoder().encode(user), forKey: "loginUser")
-                    UserDefaults.standard.setValue(user.jwtToken, forKey: "token")
-                    UserDefaults.standard.setValue("yes", forKey: "initialUser")
-                    self.output.userValue.accept(nil)
                 }
             }).disposed(by: disposeBag)
         
@@ -100,9 +96,11 @@ class SignUpThreeViewModel {
      - Throws: MellyError
      - Returns:User
      */
-    func signUp() -> Observable<User> {
+    func signUp() -> Observable<Result> {
         
         return Observable.create { observer in
+            
+            var result = Result()
             
             let header:HTTPHeaders = [
                 "Content-Type": "multipart/form-data"
@@ -142,22 +140,25 @@ class SignUpThreeViewModel {
                     let decoder = JSONDecoder()
                     if let json = try? decoder.decode(ResponseData.self, from: response) {
                         if json.message == "회원가입 완료" {
-                            print(json)
+                            
                             if let dic = json.data?["user"] as? [String:Any] {
                                 if var user = dictionaryToObject(objectType: User.self, dictionary: dic),
                                    let token = json.data?["token"] as? String{
-                                    print(token)
                                     user.jwtToken = token
-                                    observer.onNext(user)
+                                    result.success = user
+                                    observer.onNext(result)
                                 }
                             }
                         } else {
                             let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                            observer.onError(error)
+                            result.error = error
+                            observer.onNext(result)
                         }
                     }
                 case .failure(let error):
-                    observer.onError(error)
+                    let error = MellyError(code: 999, msg: error.localizedDescription)
+                    result.error = error
+                    observer.onNext(result)
                 }
             }
             return Disposables.create()

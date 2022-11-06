@@ -88,64 +88,50 @@ class ResearchMainViewModel {
         
         input.surveyObserver
             .flatMap(inputSurvey)
-            .subscribe({ event in
-                switch event {
-                case .next(_):
-                    print("설문조사")
-                case .error(let error):
-                    if let mellyError = error as? MellyError {
-                        if mellyError.msg == "" {
-                            self.output.errorValue.accept(error.localizedDescription)
-                        } else {
-                            self.output.errorValue.accept(mellyError.msg)
-                        }
-                    }
-                case .completed:
-                    break
+            .subscribe(onNext: { result in
+               
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
                 }
+                
             }).disposed(by: disposeBag)
         
         input.getSurveyObserver
             .flatMap(getSurvey)
-            .subscribe({ event in
-                switch event {
-                case .next(let survey):
-                    self.survey = survey
-                    self.output.surveyValue.accept(survey)
-                case .error(let error):
-                    if let mellyError = error as? MellyError {
-                        if mellyError.msg == "" {
-                            self.output.errorValue.accept(error.localizedDescription)
-                        } else {
-                            self.output.errorValue.accept(mellyError.msg)
-                        }
+            .subscribe(onNext: { result in
+               
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
+                } else {
+                    
+                    if let survey = result.success as? Survey {
+                        self.survey = survey
+                        self.output.surveyValue.accept(survey)
                     }
-                case .completed:
-                    break
+                    
                 }
+                
             }).disposed(by: disposeBag)
+            
         
         input.goMainObserver
             .flatMap(transferPlace)
-            .subscribe({ event in
-                switch event {
-                case .next(let place):
-                    UserDefaults.standard.setValue("no", forKey: "initialUser")
-                    MainMapViewModel.instance.output.locationValue.accept(place)
-                    self.output.goToMainValue.accept(())
-                case .error(let error):
-                    if let mellyError = error as? MellyError {
-                        if mellyError.msg == "" {
-                            self.output.errorValue.accept(error.localizedDescription)
-                        } else {
-                            self.output.errorValue.accept(mellyError.msg)
-                        }
+            .subscribe(onNext: { result in
+               
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
+                } else {
+                    
+                    if let place = result.success as? Place {
+                        UserDefaults.standard.setValue("no", forKey: "initialUser")
+                        MainMapViewModel.instance.output.locationValue.accept(place)
+                        self.output.goToMainValue.accept(())
                     }
-                case .completed:
-                    break
+                    
                 }
+                
             }).disposed(by: disposeBag)
-        
+            
     }
     
     
@@ -157,9 +143,11 @@ class ResearchMainViewModel {
      - Throws: MellyError
      - Returns:Memory
      */
-    func inputSurvey() -> Observable<Void> {
+    func inputSurvey() -> Observable<Result> {
         
         return Observable.create { observer in
+            
+            var result = Result()
             
             if let user = User.loginedUser {
                 let header:HTTPHeaders = [
@@ -183,18 +171,21 @@ class ResearchMainViewModel {
                             let decoder = JSONDecoder()
                             
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                print(json)
+                                
                                 if json.message == "성공" {
                                 
-                                    observer.onNext(())
+                                    observer.onNext(result)
                                     
                                 } else {
                                     let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                    observer.onError(error)
+                                    result.error = error
+                                    observer.onNext(result)
                                 }
                             }
                         case .failure(let error):
-                            observer.onError(error)
+                            let error = MellyError(code: 0, msg: error.localizedDescription)
+                            result.error = error
+                            observer.onNext(result)
                         }
                     }
             }
@@ -211,9 +202,11 @@ class ResearchMainViewModel {
      - Throws: MellyError
      - Returns:Memory
      */
-    func getSurvey() -> Observable<Survey> {
+    func getSurvey() -> Observable<Result> {
         
         return Observable.create { observer in
+            
+            var result = Result()
             
             if let user = User.loginedUser {
                 let header:HTTPHeaders = [
@@ -231,24 +224,27 @@ class ResearchMainViewModel {
                             let decoder = JSONDecoder()
                             
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                print(json)
+                                
                                 if json.message == "성공" {
                                 
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data?["surveyRecommend"] as Any) {
                                         
                                         if let survey = try? decoder.decode(Survey.self, from: data) {
-                                            
-                                            observer.onNext(survey)
+                                            result.success = survey
+                                            observer.onNext(result)
                                         }
                                     }
                                     
                                 } else {
                                     let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                    observer.onError(error)
+                                    result.error = error
+                                    observer.onNext(result)
                                 }
                             }
                         case .failure(let error):
-                            observer.onError(error)
+                            let error = MellyError(code: 0, msg: error.localizedDescription)
+                            result.error = error
+                            observer.onNext(result)
                         }
                     }
             }
@@ -258,9 +254,10 @@ class ResearchMainViewModel {
         
     }
     
-    func transferPlace() -> Observable<Place> {
+    func transferPlace() -> Observable<Result> {
         
         return Observable.create { observer in
+            var result = Result()
             
             if let user = User.loginedUser,
                let survey = self.survey {
@@ -287,23 +284,27 @@ class ResearchMainViewModel {
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data as Any) {
                                         
                                         if let place = try? decoder.decode(Place.self, from: data) {
-                                            
-                                            observer.onNext(place)
+                                            result.success = place
+                                            observer.onNext(result)
                                         }
                                         
                                     }
                                     
                                 } else {
                                     let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                    observer.onError(error)
+                                    result.error = error
+                                    observer.onNext(result)
                                 }
                                 
                             } else {
                                 let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
-                                observer.onError(error)
+                                result.error = error
+                                observer.onNext(result)
                             }
                         case .failure(let error):
-                            observer.onError(error)
+                            let error = MellyError(code: 999, msg: error.localizedDescription)
+                            result.error = error
+                            observer.onNext(result)
                         }
                     }
             }

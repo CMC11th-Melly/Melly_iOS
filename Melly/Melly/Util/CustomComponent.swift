@@ -565,6 +565,14 @@ class CommentView: UIView {
             
             height += commentLB.frame.height
             
+            if comment.isLoginUserLike {
+                likeBT.heartImageView.image = UIImage(named: "comment_heart_fill")
+                likeBT.titleLB.textColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
+            }
+            
+            likeBT.titleLB.text = comment.likeCount == 0 ? "좋아요" : "좋아요 \(comment.likeCount)개"
+            
+            
             if let createdDate = comment.createdDate {
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "yyyyMMddHHmm"
@@ -588,7 +596,7 @@ class CommentView: UIView {
     }
     
     let editBT = UIButton(type: .custom).then {
-        $0.setImage(UIImage(named: "memory_dot"), for: .normal)
+        $0.setImage(UIImage(named: "comment_edit"), for: .normal)
     }
     
     let commentLB = UILabel().then {
@@ -609,12 +617,7 @@ class CommentView: UIView {
         $0.backgroundColor = UIColor(red: 0.835, green: 0.852, blue: 0.875, alpha: 1)
     }
     
-    let likeBT = UIButton(type: .custom).then {
-        let text = "좋아요"
-        $0.setImage(UIImage(named: "memory_heart"), for: .normal)
-        $0.setTitle(text, for: .normal)
-        $0.titleLabel?.font = UIFont(name: "Pretendard-SemiBold", size: 16)
-    }
+    let likeBT = LikeButton()
     
     
     let stTwo = UIView().then {
@@ -699,36 +702,28 @@ class CommentView: UIView {
         likeBT.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.leading.equalTo(stOne.snp.trailing).offset(4)
-            $0.width.equalTo(70.5)
+            $0.width.equalTo(72.5)
             $0.height.equalTo(19)
         }
         
-        bottomView.addSubview(stTwo)
-        stTwo.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
-            $0.leading.equalTo(likeBT.snp.trailing).offset(4)
-            $0.width.equalTo(1)
-            $0.height.equalTo(12)
-        }
-        
-        
-        bottomView.addSubview(reCommentBT)
-        reCommentBT.snp.makeConstraints {
-            $0.top.equalToSuperview()
-            $0.leading.equalTo(stTwo.snp.trailing).offset(8)
-            $0.height.equalTo(19)
-        }
+//        bottomView.addSubview(stTwo)
+//        stTwo.snp.makeConstraints {
+//            $0.centerY.equalToSuperview()
+//            $0.leading.equalTo(likeBT.snp.trailing).offset(4)
+//            $0.width.equalTo(1)
+//            $0.height.equalTo(12)
+//        }
+//
+//
+//        bottomView.addSubview(reCommentBT)
+//        reCommentBT.snp.makeConstraints {
+//            $0.top.equalToSuperview()
+//            $0.leading.equalTo(stTwo.snp.trailing).offset(8)
+//            $0.height.equalTo(19)
+//        }
         
     }
     
-    func getSize() -> CGFloat {
-        var totalRect: CGFloat = 88.0
-        commentLB.sizeToFit()
-        totalRect += (commentLB.frame.width - 1.0)
-        
-        // 최종 계산 영역의 크기를 반환
-        return totalRect
-    }
     
     
     
@@ -736,7 +731,14 @@ class CommentView: UIView {
 }
 
 
-class CommentTextField: UITextField {
+class CommentTextField: UIView {
+    
+    lazy var textField = UITextField().then {
+        
+        $0.delegate = self
+        $0.font = UIFont(name: "Pretendard-Regular", size: 16)
+        $0.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+    }
     
     let rightButton = UIButton(type: .custom).then {
         let string = "등록"
@@ -747,6 +749,8 @@ class CommentTextField: UITextField {
         $0.setAttributedTitle(attributedString, for: .normal)
     }
     
+    
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -754,21 +758,7 @@ class CommentTextField: UITextField {
     
     convenience init(title: String) {
         self.init()
-        self.placeholder = title
-        
-        let wrapedView = UIView()
-        wrapedView.snp.makeConstraints {
-            $0.height.equalTo(self.frame.height)
-            $0.width.equalTo(45)
-        }
-        
-        wrapedView.addSubview(rightButton)
-        rightButton.snp.makeConstraints {
-            $0.leading.equalToSuperview()
-            $0.centerY.equalToSuperview()
-        }
-        rightView = wrapedView
-        rightViewMode = .always
+        textField.placeholder = title
         
         
     }
@@ -778,16 +768,28 @@ class CommentTextField: UITextField {
     }
     
     private func setupViews() {
-        self.delegate = self
-        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 21, height: self.frame.height))
-        self.leftView = paddingView
-        self.leftViewMode = .always
+        
         self.backgroundColor = .clear
         self.layer.cornerRadius = 12
         self.layer.borderWidth = 1
         self.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
-        self.font = UIFont(name: "Pretendard-Regular", size: 16)
-        self.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+        
+        addSubview(rightButton)
+        rightButton.snp.makeConstraints {
+            $0.trailing.equalToSuperview().offset(-15)
+            $0.centerY.equalToSuperview()
+            $0.height.equalTo(26)
+            $0.width.equalTo(40)
+        }
+        
+        addSubview(textField)
+        textField.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalToSuperview().offset(22)
+            $0.trailing.equalTo(rightButton.snp.leading)
+            $0.height.equalTo(26)
+        }
+       
     }
     
 }
@@ -795,10 +797,16 @@ class CommentTextField: UITextField {
 extension CommentTextField: UITextFieldDelegate {
     
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        textField.layer.borderColor = UIColor(red: 0.274, green: 0.173, blue: 0.9, alpha: 1).cgColor
+        layer.borderColor = UIColor(red: 0.274, green: 0.173, blue: 0.9, alpha: 1).cgColor
         textField.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         return true
     }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        self.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
+    }
+    
+    
     
 }
 
@@ -934,6 +942,43 @@ class DefaultButton:UIButton {
             backgroundColor = UIColor(red: 0.941, green: 0.945, blue: 0.984, alpha: 1)
         }
         
+        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+}
+
+class LikeButton: UIButton {
+    
+    let titleLB = UILabel().then {
+        $0.textColor = UIColor(red: 0.588, green: 0.623, blue: 0.663, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-Regular", size: 12)
+        $0.textAlignment = .left
+    }
+    
+    let heartImageView = UIImageView(image: UIImage(named: "comment_heart"))
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(heartImageView)
+        heartImageView.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(4)
+            $0.centerY.equalToSuperview()
+            $0.height.equalTo(9.62)
+            $0.width.equalTo(10.5)
+        }
+        
+        addSubview(titleLB)
+        titleLB.snp.makeConstraints {
+            $0.height.equalToSuperview()
+            $0.leading.equalTo(heartImageView.snp.trailing).offset(3)
+            $0.trailing.equalToSuperview().offset(-4)
+        }
         
     }
     

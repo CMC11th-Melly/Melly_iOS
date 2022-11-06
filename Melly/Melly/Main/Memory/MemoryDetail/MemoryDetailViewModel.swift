@@ -29,35 +29,88 @@ class MemoryDetailViewModel {
     
     struct Input {
         let refreshComment = PublishRelay<Void>()
+        let deleteMemoryObserver = PublishRelay<Void>()
+        let textFieldEditObserver = PublishRelay<String?>()
+        let likeButtonClicked = PublishRelay<Comment?>()
+        let commentEditObserver = PublishRelay<Comment>()
+        let commentDeleteObserver = PublishRelay<Comment>()
     }
     
     struct Output {
         let errorValue = PublishRelay<String>()
         let completeRefresh = PublishRelay<Void>()
         let commentCountValue = PublishRelay<Int>()
+        let isDeleteMemory = PublishRelay<Void>()
+        let completeDelete = PublishRelay<Void>()
+        let commentEdit = PublishRelay<Comment>()
     }
+    
+    
     
     init(_ memory: Memory) {
         self.memory = memory
         
         input.refreshComment
             .flatMap(getComment)
-            .subscribe({ event in
-                switch event {
-                case .next(let data):
-                    self.comment = data.comments
-                    self.output.commentCountValue.accept(data.commentCount)
-                    self.output.completeRefresh.accept(())
-                case .completed:
-                    break
-                case .error(let error):
-                    if let mellyError = error as? MellyError {
-                        if mellyError.msg == "" {
-                            self.output.errorValue.accept(error.localizedDescription)
-                        } else {
-                            self.output.errorValue.accept(mellyError.msg)
-                        }
+            .subscribe(onNext: { result in
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
+                } else {
+                    
+                    if let data = result.success as? CommentData {
+                        self.comment = data.comments
+                        self.output.commentCountValue.accept(data.commentCount)
+                        self.output.completeRefresh.accept(())
                     }
+                    
+                }
+                
+            }).disposed(by: disposeBag)
+        
+        input.deleteMemoryObserver
+            .flatMap(deleteMemory)
+            .subscribe(onNext: { result in
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
+                } else {
+                    self.output.completeDelete.accept(())
+                }
+                
+                
+            }).disposed(by: disposeBag)
+        
+        input.textFieldEditObserver
+            .flatMap(addComment)
+            .subscribe(onNext: { result in
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
+                } else {
+                    self.input.refreshComment.accept(())
+                }
+            }).disposed(by: disposeBag)
+        
+        input.likeButtonClicked
+            .flatMap(likeComment)
+            .subscribe(onNext: { result in
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
+                } else {
+                    self.input.refreshComment.accept(())
+                }
+            }).disposed(by: disposeBag)
+        
+        input.commentEditObserver
+            .subscribe(onNext: { value in
+                self.output.commentEdit.accept(value)
+            }).disposed(by: disposeBag)
+        
+        input.commentDeleteObserver
+            .flatMap(deleteComment)
+            .subscribe(onNext: { result in
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
+                } else {
+                    self.input.refreshComment.accept(())
                 }
             }).disposed(by: disposeBag)
         
@@ -70,9 +123,10 @@ class MemoryDetailViewModel {
      - Throws: MellyError
      - Returns:CommentData
      */
-    func getComment() -> Observable<CommentData> {
+    func getComment() -> Observable<Result> {
         
         return Observable.create { observer in
+            var result = Result()
             
             if let user = User.loginedUser {
                 let header:HTTPHeaders = [
@@ -94,26 +148,287 @@ class MemoryDetailViewModel {
                                     
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data as Any) {
                                         
-                                        if let result = try? decoder.decode(CommentData.self, from: data) {
-                                            
+                                        if let comments = try? decoder.decode(CommentData.self, from: data) {
+                                            result.success = comments
                                             observer.onNext(result)
                                         }
                                         
                                     }
-                                   
+                                    
                                 } else {
-                                    let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                    observer.onError(error)
+                                    let error = MellyError(code: Int(json.code) ?? 0 , msg: json.message)
+                                    result.error = error
+                                    observer.onNext(result)
                                 }
+                            } else {
+                                let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
+                                result.error = error
+                                observer.onNext(result)
                             }
                         case .failure(let error):
-                            observer.onError(error)
+                            let mellyError = MellyError(code: 999, msg: error.localizedDescription)
+                            result.error = mellyError
+                            observer.onNext(result)
                         }
                     }
             }
             
             return Disposables.create()
         }
+        
+    }
+    
+    func deleteMemory() -> Observable<Result> {
+        
+        return Observable.create { observer in
+            var result = Result()
+            
+            if let user = User.loginedUser {
+                
+                let header:HTTPHeaders = [
+                    "Connection":"keep-alive",
+                    "Authorization" : "Bearer \(user.jwtToken)"
+                ]
+                
+                AF.request("https://api.melly.kr/api/comment/\(self.memory.memoryId)", method: .delete, headers: header)
+                    .responseData { response in
+                        switch response.result {
+                        case .success(let data):
+                            let decoder = JSONDecoder()
+                            if let json = try? decoder.decode(ResponseData.self, from: data) {
+                                print(json)
+                                if json.message == "메세지 삭제 완료" {
+                                    observer.onNext(result)
+                                } else {
+                                    let error = MellyError(code: Int(json.code) ?? 0 , msg: json.message)
+                                    result.error = error
+                                    observer.onNext(result)
+                                }
+                                
+                            } else {
+                                let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
+                                result.error = error
+                                observer.onNext(result)
+                            }
+                        case .failure(let error):
+                            let mellyError = MellyError(code: 999, msg: error.localizedDescription)
+                            result.error = mellyError
+                            observer.onNext(result)
+                        }
+                    }
+                
+                
+            }
+            
+            
+            return Disposables.create()
+        }
+        
+        
+    }
+    
+    func addComment(_ text: String?) -> Observable<Result> {
+        
+        return Observable.create { observer in
+            var result = Result()
+            
+            
+            if let user = User.loginedUser,
+               let text = text, text != ""{
+                
+                let header:HTTPHeaders = [
+                    "Connection":"keep-alive",
+                    "Content-Type": "application/json",
+                    "Authorization" : "Bearer \(user.jwtToken)"
+                ]
+                
+                let parameters:Parameters = [
+                    "content": text,
+                    "memoryId": self.memory.memoryId
+                ]
+                
+                AF.request("https://api.melly.kr/api/comment", method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: header)
+                    .responseData { response in
+                        switch response.result {
+                        case .success(let data):
+                            let decoder = JSONDecoder()
+                            if let json = try? decoder.decode(ResponseData.self, from: data) {
+                                
+                                if json.message == "댓글 추가 완료" {
+                                    observer.onNext(result)
+                                } else {
+                                    let error = MellyError(code: Int(json.code) ?? 0 , msg: json.message)
+                                    result.error = error
+                                    observer.onNext(result)
+                                }
+                                
+                            } else {
+                                let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
+                                result.error = error
+                                observer.onNext(result)
+                            }
+                        case .failure(let error):
+                            let mellyError = MellyError(code: 999, msg: error.localizedDescription)
+                            result.error = mellyError
+                            observer.onNext(result)
+                        }
+                    }
+                
+                
+            } else {
+                let error = MellyError(code: 999, msg: "댓글을 입력해주세요")
+                result.error = error
+                observer.onNext(result)
+            }
+            
+            
+            return Disposables.create()
+        }
+        
+        
+    }
+    
+    func likeComment(_ comment: Comment?) -> Observable<Result> {
+        
+        return Observable.create { observer in
+            var result = Result()
+            
+            
+            if let user = User.loginedUser,
+               let comment = comment {
+                
+                let header:HTTPHeaders = [
+                    "Connection":"keep-alive",
+                    "Content-Type": "application/json",
+                    "Authorization" : "Bearer \(user.jwtToken)"
+                ]
+                
+                if comment.isLoginUserLike {
+                    
+                    AF.request("https://api.melly.kr/api/comment/\(comment.id)/like", method: .delete, headers: header)
+                        .responseData { response in
+                            switch response.result {
+                            case .success(let data):
+                                let decoder = JSONDecoder()
+                                if let json = try? decoder.decode(ResponseData.self, from: data) {
+                                    print(json)
+                                    if json.message == "댓글에 좋아요 삭제 완료" {
+                                        observer.onNext(result)
+                                    } else {
+                                        let error = MellyError(code: Int(json.code) ?? 0 , msg: json.message)
+                                        result.error = error
+                                        observer.onNext(result)
+                                    }
+                                    
+                                } else {
+                                    let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
+                                    result.error = error
+                                    observer.onNext(result)
+                                }
+                            case .failure(let error):
+                                let mellyError = MellyError(code: 999, msg: error.localizedDescription)
+                                result.error = mellyError
+                                observer.onNext(result)
+                            }
+                        }
+                    
+                } else {
+                    let parameters:Parameters = [
+                        "commentId": comment.id
+                    ]
+                    
+                    AF.request("https://api.melly.kr/api/comment/like", method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: header)
+                        .responseData { response in
+                            switch response.result {
+                            case .success(let data):
+                                let decoder = JSONDecoder()
+                                if let json = try? decoder.decode(ResponseData.self, from: data) {
+                                    print(json)
+                                    if json.message == "댓글에 좋아요 추가 완료" {
+                                        observer.onNext(result)
+                                    } else {
+                                        let error = MellyError(code: Int(json.code) ?? 0 , msg: json.message)
+                                        result.error = error
+                                        observer.onNext(result)
+                                    }
+                                    
+                                } else {
+                                    let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
+                                    result.error = error
+                                    observer.onNext(result)
+                                }
+                            case .failure(let error):
+                                let mellyError = MellyError(code: 999, msg: error.localizedDescription)
+                                result.error = mellyError
+                                observer.onNext(result)
+                            }
+                        }
+                }
+                
+            } else {
+                let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
+                result.error = error
+                observer.onNext(result)
+            }
+            
+            
+            return Disposables.create()
+        }
+        
+        
+    }
+    
+    func deleteComment(_ comment: Comment) -> Observable<Result> {
+        
+        return Observable.create { observer in
+            var result = Result()
+            
+            
+            if let user = User.loginedUser {
+                
+                let header:HTTPHeaders = [
+                    "Connection":"keep-alive",
+                    "Authorization" : "Bearer \(user.jwtToken)"
+                ]
+                
+                AF.request("https://api.melly.kr/api/comment/\(comment.id)", method: .delete, headers: header)
+                    .responseData { response in
+                        switch response.result {
+                        case .success(let data):
+                            let decoder = JSONDecoder()
+                            if let json = try? decoder.decode(ResponseData.self, from: data) {
+                                
+                                if json.message == "댓글 삭제 완료" {
+                                    observer.onNext(result)
+                                } else {
+                                    let error = MellyError(code: Int(json.code) ?? 0 , msg: json.message)
+                                    result.error = error
+                                    observer.onNext(result)
+                                }
+                                
+                            } else {
+                                let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
+                                result.error = error
+                                observer.onNext(result)
+                            }
+                        case .failure(let error):
+                            let mellyError = MellyError(code: 999, msg: error.localizedDescription)
+                            result.error = mellyError
+                            observer.onNext(result)
+                        }
+                    }
+                
+                
+            } else {
+                let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
+                result.error = error
+                observer.onNext(result)
+            }
+            
+            
+            return Disposables.create()
+        }
+        
         
     }
     

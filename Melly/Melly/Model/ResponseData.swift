@@ -28,3 +28,10 @@ struct ResponseData: Decodable {
     }
     
 }
+
+struct Result {
+    
+    var error:MellyError? = nil
+    var success:Any? = nil
+    
+}
