@@ -54,47 +54,34 @@ class SearchViewModel {
         
         input.searchObserver
             .flatMap(search)
-            .subscribe({ event in
+            .subscribe(onNext: { result in
                 
-                switch event {
-                case .completed:
-                    break
-                case .error(let error):
-                    if let mellyError = error as? MellyError {
-                        if mellyError.msg == "" {
-                            self.output.errorValue.accept(error.localizedDescription)
-                        } else {
-                            self.output.errorValue.accept(mellyError.msg)
-                        }
-                    }
-                case .next(let result):
-                    self.output.searchValue.accept(result)
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
+                } else if let searchs = result.success as? [Search] {
+                    self.output.searchValue.accept(searchs)
                     self.output.switchValue.accept(true)
                 }
+                
                 
             }).disposed(by: disposeBag)
         
         input.clickSearchObserver
             .flatMap(transferPlace)
-            .subscribe({ event in
-                switch event {
-                case .next(let place):
+            .subscribe(onNext: { result in
+                
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
+                } else if let place = result.success as? Place {
+                    print(place)
                     if self.isSearch {
                         self.output.getPlaceValue.accept(place)
                     } else {
                         self.output.goToMemoryValue.accept(place)
                     }
-                case .error(let error):
-                    if let mellyError = error as? MellyError {
-                        if mellyError.msg == "" {
-                            self.output.errorValue.accept(error.localizedDescription)
-                        } else {
-                            self.output.errorValue.accept(mellyError.msg)
-                        }
-                    }
-                case .completed:
-                    break
+                    
                 }
+                
             }).disposed(by: disposeBag)
         
         input.searchTextObserver
@@ -137,21 +124,26 @@ class SearchViewModel {
         return []
     }
     
-    func search(_ text: String) -> Observable<[Search]> {
+    func search(_ text: String) -> Observable<Result> {
         
         return Observable.create { observer in
-            
+            var result = Result()
             Observable.combineLatest(self.searchNaver(text), self.searchMemory(text))
-                .subscribe({ event in
-                    switch event {
-                    case .completed:
-                        break
-                    case .error(let error):
-                        observer.onError(error)
-                    case .next((let naver, let memory)):
-                        let result = naver + memory
-                        observer.onNext(result)
+                .subscribe(onNext: { naver, memory in
+                    
+                    if let error = naver.error {
+                        result.error = error
+                    } else if let error = memory.error {
+                        result.error = error
+                    } else {
+                        let searchNaver = naver.success as? [Search] ?? []
+                        let searchMemory = memory.success as? [Search] ?? []
+                        
+                        result.success = searchNaver + searchMemory
                     }
+                    
+                    
+                    observer.onNext(result)
                     
                     
                 }).disposed(by: self.disposeBag)
@@ -164,10 +156,10 @@ class SearchViewModel {
     }
     
     
-    func searchMemory(_ text:String) -> Observable<[Search]> {
+    func searchMemory(_ text:String) -> Observable<Result> {
         
         return Observable.create { observer in
-            
+            var result = Result()
             if let user = User.loginedUser {
                 
                 let parameters:Parameters = ["memoryName": text]
@@ -188,13 +180,18 @@ class SearchViewModel {
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data?["memoryNames"] as Any) {
                                         
                                         if let memories = try? decoder.decode([SearchMemory].self, from: data) {
-                                            var result:[Search] = []
+                                            var searchs:[Search] = []
                                             
                                             for memory in memories {
                                                 let search = Search(memory)
-                                                result.append(search)
+                                                searchs.append(search)
                                                 
                                             }
+                                            result.success = searchs
+                                            observer.onNext(result)
+                                        } else {
+                                            let searchs:[Search] = []
+                                            result.success = searchs
                                             observer.onNext(result)
                                         }
                                         
@@ -202,15 +199,19 @@ class SearchViewModel {
                                     
                                 } else {
                                     let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                    observer.onError(error)
+                                    result.error = error
+                                    observer.onNext(result)
                                 }
                                 
                             } else {
                                 let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
-                                observer.onError(error)
+                                result.error = error
+                                observer.onNext(result)
                             }
-                        case .failure(let error):
-                            observer.onError(error)
+                        case .failure(_):
+                            let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                            result.error = error
+                            observer.onNext(result)
                         }
                     }
                 
@@ -223,10 +224,10 @@ class SearchViewModel {
     }
     
     
-    func searchNaver(_ text: String) -> Observable<[Search]> {
+    func searchNaver(_ text: String) -> Observable<Result> {
         
         return Observable.create { observer in
-            
+            var result = Result()
             let headers:HTTPHeaders = ["Connection": "keep-alive",
                                        "Content-Type": "application/json",
                                        "X-Naver-Client-Id":"jtQc03hW31ZbOhWbv35m",
@@ -245,17 +246,20 @@ class SearchViewModel {
                         let decoder = JSONDecoder()
                         if let json = try? decoder.decode(SearchLocation.self, from: data) {
                             
-                            var result:[Search] = []
+                            var searchs:[Search] = []
                             
                             for item in json.items {
                                 let s = Search(item, type: true)
-                                result.append(s)
+                                searchs.append(s)
                                 
                             }
+                            result.success = searchs
                             observer.onNext(result)
                         }
-                    case .failure(let error):
-                        observer.onError(error)
+                    case .failure(_):
+                        let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                        result.error = error
+                        observer.onNext(result)
                     }
                     
                 }
@@ -266,103 +270,115 @@ class SearchViewModel {
     }
     
     
-    func transferPlace(_ search: Search) -> Observable<Place> {
+    func transferPlace(_ search: Search) -> Observable<Result> {
         
         return Observable.create { observer in
+            var result = Result()
             
             if let user = User.loginedUser {
                 
-                
-                let parameters:Parameters = ["lat": search.lat,
-                                             "lng": search.lng]
-                let header:HTTPHeaders = [
-                    "Connection":"keep-alive",
-                    "Content-Type":"application/json",
-                    "Authorization" : "Bearer \(user.jwtToken)"
-                ]
-                
-                AF.request("https://api.melly.kr/api/place", method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: header)
-                    .responseData { response in
-                        switch response.result {
-                        case .success(let data):
-                            
-                            
-                            let decoder = JSONDecoder()
-                            if let json = try? decoder.decode(ResponseData.self, from: data) {
+                if search.placeId == -1 {
+                    let parameters:Parameters = ["lat": search.lat,
+                                                 "lng": search.lng]
+                    let header:HTTPHeaders = [
+                        "Connection":"keep-alive",
+                        "Content-Type":"application/json",
+                        "Authorization" : "Bearer \(user.jwtToken)"
+                    ]
+                    
+                    AF.request("https://api.melly.kr/api/place", method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: header)
+                        .responseData { response in
+                            switch response.result {
+                            case .success(let data):
                                 
-                                if json.message == "장소 상세 조회" {
-                                    print(json)
-                                    if let data = try? JSONSerialization.data(withJSONObject: json.data as Any) {
-                                        
-                                        if var place = try? decoder.decode(Place.self, from: data) {
+                                let decoder = JSONDecoder()
+                                if let json = try? decoder.decode(ResponseData.self, from: data) {
+                                    
+                                    if json.message == "장소 상세 조회" {
+                                       
+                                        if let data = try? JSONSerialization.data(withJSONObject: json.data as Any) {
                                             
-                                            if place.placeId == -1 {
-                                                place.placeName = search.title
-                                                place.placeCategory = search.category
-                                            } else {
-                                                place.placeName = search.title
-                                                place.placeCategory = search.category
+                                            if var place = try? decoder.decode(Place.self, from: data) {
+                                                
+                                                if place.placeId == -1 {
+                                                    place.placeName = search.title
+                                                    place.placeCategory = search.category
+                                                } else {
+                                                    place.placeName = search.title
+                                                    place.placeCategory = search.category
+                                                }
+                                                result.success = place
+                                                observer.onNext(result)
+                                                self.addRecentSearch(search)
                                             }
                                             
-                                            observer.onNext(place)
-                                            self.addRecentSearch(search)
                                         }
                                         
+                                    } else {
+                                        let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
+                                        result.error = error
+                                        observer.onNext(result)
                                     }
                                     
                                 } else {
-                                    let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                    observer.onError(error)
+                                    let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
+                                    result.error = error
+                                    observer.onNext(result)
                                 }
-                                
-                            } else {
-                                let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
-                                observer.onError(error)
+                            case .failure(_):
+                                let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                                result.error = error
+                                observer.onNext(result)
                             }
-                        case .failure(let error):
-                            observer.onError(error)
                         }
-                    }
+                    
+                } else {
+                    let header:HTTPHeaders = [
+                        "Connection":"keep-alive",
+                        "Content-Type":"application/json",
+                        "Authorization" : "Bearer \(user.jwtToken)"
+                    ]
+
+                    AF.request("https://api.melly.kr/api/place/\(search.placeId)/search", method: .get, headers: header)
+                        .responseData { response in
+                            switch response.result {
+                            case .success(let data):
+                                
+                                let decoder = JSONDecoder()
+                                if let json = try? decoder.decode(ResponseData.self, from: data) {
+
+                                    if json.message == "메모리 제목으로 장소 검색" {
+
+                                        if let data = try? JSONSerialization.data(withJSONObject: json.data?["placeInfo"] as Any) {
+                                            if let place = try? decoder.decode(Place.self, from: data) {
+                                                result.success = place
+                                                observer.onNext(result)
+                                                self.addRecentSearch(search)
+                                            }
+                                        }
+
+                                    } else {
+                                        let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
+                                        result.error = error
+                                        observer.onNext(result)
+                                    }
+
+                                } else {
+                                    let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
+                                    result.error = error
+                                    observer.onNext(result)
+                                }
+                            case .failure(_):
+                                let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                                result.error = error
+                                observer.onNext(result)
+                            }
+                        }
+                }
+            
+
             }
-//                } else {
-//                    let header:HTTPHeaders = [
-//                        "Connection":"keep-alive",
-//                        "Content-Type":"application/json",
-//                        "Authorization" : "Bearer \(user.jwtToken)"
-//                    ]
-//
-//                    AF.request("https://api.melly.kr/api/place/\(search.placeId)/search", method: .get, headers: header)
-//                        .responseData { response in
-//                            switch response.result {
-//                            case .success(let data):
-//                                let decoder = JSONDecoder()
-//                                if let json = try? decoder.decode(ResponseData.self, from: data) {
-//
-//                                    if json.message == "장소 상세 조회" {
-//
-//                                        if let data = try? JSONSerialization.data(withJSONObject: json.data as Any) {
-//                                            if let place = try? decoder.decode(Place.self, from: data) {
-//
-//                                                observer.onNext(place)
-//                                                self.addRecentSearch(search)
-//                                            }
-//                                        }
-//
-//                                    } else {
-//                                        let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-//                                        observer.onError(error)
-//                                    }
-//
-//                                } else {
-//                                    let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
-//                                    observer.onError(error)
-//                                }
-//                            case .failure(let error):
-//                                observer.onError(error)
-//                            }
-//                        }
-//                }
-//            }
+                
             
             return Disposables.create()
         }

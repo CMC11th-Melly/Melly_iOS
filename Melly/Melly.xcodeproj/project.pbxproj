@@ -89,6 +89,8 @@
 		BFDE617328ED179F0099FF97 /* ResearchResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE617228ED179F0099FF97 /* ResearchResultViewController.swift */; };
 		BFDE617628ED59DB0099FF97 /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE617528ED59DB0099FF97 /* LocationViewController.swift */; };
 		BFECADA02910EE9500BB7C04 /* GroupAddCompleteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFECAD9F2910EE9500BB7C04 /* GroupAddCompleteViewController.swift */; };
+		BFEE8A7B291A0F20008AE94B /* InviteGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFEE8A7A291A0F20008AE94B /* InviteGroupViewController.swift */; };
+		BFEE8A7D291A4881008AE94B /* InviteGroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFEE8A7C291A4881008AE94B /* InviteGroupViewModel.swift */; };
 		BFF661042908C6F9003E998B /* CommentHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF661032908C6F9003E998B /* CommentHeaderView.swift */; };
 		BFF6610829091FC4003E998B /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF6610729091FC4003E998B /* Comment.swift */; };
 		BFF6610A290920EC003E998B /* CommentFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF66109290920EC003E998B /* CommentFooterView.swift */; };
@@ -139,6 +141,7 @@
 		BF72FC6B29053B3F0076AEF8 /* MyProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyProfileViewController.swift; sourceTree = "<group>"; };
 		BF72FC6D290541150076AEF8 /* ProfileEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditViewController.swift; sourceTree = "<group>"; };
 		BF7CAAFE28DE04B60076CD1A /* AgreeNTermsText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgreeNTermsText.swift; sourceTree = "<group>"; };
+		BF7D95732918AD32005DDBC2 /* splash.lottie */ = {isa = PBXFileReference; lastKnownFileType = file; path = splash.lottie; sourceTree = "<group>"; };
 		BF7E243D29163A6C00E05362 /* ReportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewController.swift; sourceTree = "<group>"; };
 		BF7E243F2916601200E05362 /* ReportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewModel.swift; sourceTree = "<group>"; };
 		BF7E3CC928D43F0E007C3236 /* DefaultLoginVIewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLoginVIewModel.swift; sourceTree = "<group>"; };
@@ -187,6 +190,8 @@
 		BFDE617228ED179F0099FF97 /* ResearchResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResearchResultViewController.swift; sourceTree = "<group>"; };
 		BFDE617528ED59DB0099FF97 /* LocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
 		BFECAD9F2910EE9500BB7C04 /* GroupAddCompleteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupAddCompleteViewController.swift; sourceTree = "<group>"; };
+		BFEE8A7A291A0F20008AE94B /* InviteGroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteGroupViewController.swift; sourceTree = "<group>"; };
+		BFEE8A7C291A4881008AE94B /* InviteGroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteGroupViewModel.swift; sourceTree = "<group>"; };
 		BFF661032908C6F9003E998B /* CommentHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentHeaderView.swift; sourceTree = "<group>"; };
 		BFF6610729091FC4003E998B /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		BFF66109290920EC003E998B /* CommentFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentFooterView.swift; sourceTree = "<group>"; };
@@ -239,7 +244,6 @@
 				BFDE617428ED576F0099FF97 /* PopUpView */,
 				BFDE616F28ED13EA0099FF97 /* Search */,
 				BF075F8228E52CC700E581E7 /* Main */,
-				BFFCF2BC28E3FFAC0011701D /* SideBar */,
 				BF81F96C28E1627F007E5D35 /* RecommandView */,
 				BF5A7F4628D05926000A1B08 /* ContainerViewController.swift */,
 				BFFD000029025D7100AACD16 /* ContainerViewModel.swift */,
@@ -523,6 +527,15 @@
 			path = PopUpView;
 			sourceTree = "<group>";
 		};
+		BFEE8A79291A0F08008AE94B /* DeepLink */ = {
+			isa = PBXGroup;
+			children = (
+				BFEE8A7A291A0F20008AE94B /* InviteGroupViewController.swift */,
+				BFEE8A7C291A4881008AE94B /* InviteGroupViewModel.swift */,
+			);
+			path = DeepLink;
+			sourceTree = "<group>";
+		};
 		BFF84E9F28C6D40B00892CB5 = {
 			isa = PBXGroup;
 			children = (
@@ -544,17 +557,20 @@
 		BFF84EAA28C6D40B00892CB5 /* Melly */ = {
 			isa = PBXGroup;
 			children = (
+				BFEE8A79291A0F08008AE94B /* DeepLink */,
 				BF2814FD28EBC2F9004F6A31 /* Research */,
 				BF63C38528DBECA700A37CF3 /* Font */,
 				BFD6C56B28D723520092A6E5 /* SignUp */,
 				BFBDC76828C9A98400DA6330 /* Melly.entitlements */,
 				BF34F87928D1915000EA1C16 /* Model */,
 				BF0A11C728CDCDA600B06DE1 /* Main */,
+				BFFCF2BC28E3FFAC0011701D /* SideBar */,
 				BFA3399428C8348400C1CD4C /* Util */,
 				BFA3399028C832B900C1CD4C /* Login */,
 				BFF84EAD28C6D40B00892CB5 /* SceneDelegate.swift */,
 				BFF84EAB28C6D40B00892CB5 /* AppDelegate.swift */,
 				BFF84EAF28C6D40B00892CB5 /* SplashViewController.swift */,
+				BF7D95732918AD32005DDBC2 /* splash.lottie */,
 				BFA3398E28C82A4E00C1CD4C /* GoogleService-Info.plist */,
 				BFF84EB428C6D40D00892CB5 /* Assets.xcassets */,
 				BFF84EB628C6D40D00892CB5 /* LaunchScreen.storyboard */,
@@ -722,6 +738,7 @@
 				BFC9367E28F6475600A2C53F /* MemoryListViewController.swift in Sources */,
 				BFC9AFAB2907B8C700BA2043 /* CommentCell.swift in Sources */,
 				BF957BCF290B65D80056E99D /* GroupViewController.swift in Sources */,
+				BFEE8A7D291A4881008AE94B /* InviteGroupViewModel.swift in Sources */,
 				BF03B8F128FE465400CBAE97 /* Group.swift in Sources */,
 				BF72FC68290527570076AEF8 /* MyMemoryViewController.swift in Sources */,
 				BF638A8E28DAA96D0031233F /* ResponseData.swift in Sources */,
@@ -759,6 +776,7 @@
 				BF957BD3290B74490056E99D /* GroupAddViewController.swift in Sources */,
 				BFC9368528F6A57A00A2C53F /* MemoryListCollectionViewCell.swift in Sources */,
 				BF852E41290C319400122299 /* MyScrapViewController.swift in Sources */,
+				BFEE8A7B291A0F20008AE94B /* InviteGroupViewController.swift in Sources */,
 				BF075F8428E52D6B00E581E7 /* MainMapViewModel.swift in Sources */,
 				BFBEB9E628FFD3E60074E6B7 /* Memory.swift in Sources */,
 				BFDE617328ED179F0099FF97 /* ResearchResultViewController.swift in Sources */,
@@ -944,6 +962,7 @@
 				DEVELOPMENT_TEAM = GX47BK9CV6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Melly/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_NSCameraUsageDescription = "카메라 권한 허용을 요청합니다.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "사용자의 위치를 받습니다.";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "사용자의 위치를 받습니다.";
@@ -952,7 +971,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -984,6 +1003,7 @@
 				DEVELOPMENT_TEAM = GX47BK9CV6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Melly/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_NSCameraUsageDescription = "카메라 권한 허용을 요청합니다.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "사용자의 위치를 받습니다.";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "사용자의 위치를 받습니다.";
@@ -992,7 +1012,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;

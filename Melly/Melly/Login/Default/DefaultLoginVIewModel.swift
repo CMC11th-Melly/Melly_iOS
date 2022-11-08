@@ -64,26 +64,18 @@ class DefaultLoginViewModel {
         
         input.loginObserver
             .flatMap(login)
-            .subscribe { event in
-                switch event {
-                case .next(let user):
+            .subscribe(onNext: { result in
+                
+                if let error = result.error {
+                    self.output.loginResponse.accept(error)
+                } else if let user = result.success as? User {
                     User.loginedUser = user
                     UserDefaults.standard.set(try? PropertyListEncoder().encode(user), forKey: "loginUser")
                     UserDefaults.standard.set(user.jwtToken, forKey: "token")
                     self.output.loginResponse.accept(nil)
-                case .error(let error):
-                    if var mellyError = error as? MellyError {
-                        if mellyError.msg == "" {
-                            mellyError.msg = error.localizedDescription
-                            self.output.loginResponse.accept(mellyError)
-                        } else {
-                            self.output.loginResponse.accept(mellyError)
-                        }
-                    }
-                case .completed:
-                    break
                 }
-            }.disposed(by: disposeBag)
+                
+            }).disposed(by: disposeBag)
         
     }
     
@@ -93,9 +85,12 @@ class DefaultLoginViewModel {
      - Throws: MellyError
      - Returns:User
      */
-    func login() -> Observable<User> {
+    func login() -> Observable<Result> {
         
         return Observable.create { observer in
+            
+            var result = Result()
+            
             let parameters:Parameters = ["email": self.user.email,
                                          "password": self.user.pw,
                                          "fcmToken" : UserDefaults.standard.string(forKey: "fcmToken") ?? ""]
@@ -115,19 +110,24 @@ class DefaultLoginViewModel {
                                  
                                     if var user = dictionaryToObject(objectType: User.self, dictionary: dic) {
                                         user.jwtToken = token
-                                        observer.onNext(user)
+                                        result.success = user
+                                        observer.onNext(result)
                                     }
                                 }
                             } else {
                                 let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                observer.onError(error)
+                                result.error = error
+                                observer.onNext(result)
                             }
                         } else {
                             let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
-                            observer.onError(error)
+                            result.error = error
+                            observer.onNext(result)
                         }
                     case .error(let error):
-                        observer.onError(error)
+                        let mellyError = MellyError(code: 2, msg: error.localizedDescription)
+                        result.error = mellyError
+                        observer.onNext(result)
                     case .completed:
                         break
                     }

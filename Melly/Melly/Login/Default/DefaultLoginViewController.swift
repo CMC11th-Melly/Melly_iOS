@@ -184,24 +184,34 @@ extension DefaultLoginViewController {
                 self.dismiss(animated: true, completion: nil)
             }).disposed(by: disposeBag)
         
-        emailTf.rx.controlEvent([.editingDidEnd])
-            .map { self.emailTf.text ?? "" }
+        emailTf.textField.rx.controlEvent([.editingDidEnd])
+            .map { self.emailTf.textField.text ?? "" }
             .bind(to: vm.input.emailObserver)
             .disposed(by: disposeBag)
         
-        pwTf.rx.controlEvent([.editingDidEnd])
-            .map { self.pwTf.text ?? "" }
+        pwTf.textField.rx.controlEvent([.editingDidEnd])
+            .map { self.pwTf.textField.text ?? "" }
             .bind(to: vm.input.pwObserver)
             .disposed(by: disposeBag)
         
-        pwTf.rightButton.rx.tap
-            .subscribe(onNext: {
-                self.pwTf.isSecureTextEntry.toggle()
-            }).disposed(by: disposeBag)
         
         loginBT.rx.tap
             .bind(to: vm.input.loginObserver)
             .disposed(by: disposeBag)
+        
+        findPwBT.rx.tap.subscribe(onNext: {
+            if let url = URL(string: "https://minjuling.notion.site/1-1-44994e3a48ff4d98a2035f498ca5dfe2") {
+                UIApplication.shared.open(url)
+            }
+        }).disposed(by: disposeBag)
+        
+        findEmailBT.rx.tap.subscribe(onNext: {
+            if let url = URL(string: "https://minjuling.notion.site/1-1-44994e3a48ff4d98a2035f498ca5dfe2") {
+                UIApplication.shared.open(url)
+            }
+        }).disposed(by: disposeBag)
+        
+        
     }
     
     private func bindOutput() {
@@ -212,13 +222,13 @@ extension DefaultLoginViewController {
                 self.alertView.isHidden = true
                 self.alertView.labelView.text = ""
                 self.emailTf.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
-                self.emailTf.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+                self.emailTf.textField.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
                 
             } else {
                 self.alertView.isHidden = false
                 self.alertView.labelView.text = "아이디를 정확히 입력해주세요."
                 self.emailTf.layer.borderColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1).cgColor
-                self.emailTf.textColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1)
+                self.emailTf.textField.textColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1)
             }
             
         }).disposed(by: disposeBag)
@@ -230,12 +240,12 @@ extension DefaultLoginViewController {
                     self.alertView.isHidden = true
                     self.alertView.labelView.text = ""
                     self.pwTf.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
-                    self.pwTf.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+                    self.pwTf.textField.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
                 } else {
                     self.alertView.isHidden = false
                     self.alertView.labelView.text = "비밀번호는 8자리 이상입니다."
                     self.pwTf.layer.borderColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1).cgColor
-                    self.pwTf.textColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1)
+                    self.pwTf.textField.textColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1)
                 }
                 
             }).disposed(by: disposeBag)
@@ -257,12 +267,14 @@ extension DefaultLoginViewController {
                 
                 if let error = valid {
                     self.alertView.isHidden = false
-                    self.alertView.labelView.text = error.localizedDescription
+                    self.alertView.labelView.text = error.msg
                 } else {
                     self.dismiss(animated: true)
                 }
                 
             }).disposed(by: disposeBag)
+        
+        
         
     }
     

@@ -116,6 +116,21 @@ class MainMapViewController: UIViewController {
         setCV()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        
+        if let value = UserDefaults.standard.value(forKey: "InviteGroup") as? [String] {
+            
+            let vm = InviteGroupViewModel(userId: value[1], groupId: value[0])
+            let vc = InviteGroupViewController(vm: vm)
+            vc.modalTransitionStyle = .coverVertical
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
+            
+        }
+        
+        vm.input.initMarkerObserver.accept(.all)
+    }
+    
 }
 
 extension MainMapViewController {

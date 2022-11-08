@@ -223,7 +223,7 @@ class ResearchOneView: UIView, UICollectionViewDelegateFlowLayout {
         
         vm.oneData
             .bind(to: researchCV.rx.items(cellIdentifier: "cell", cellType: ResearchViewCell.self)) { row, element, cell in
-                cell.titleLB.text = element
+                cell.title = element
             }.disposed(by: disposeBag)
         
         researchCV.rx.itemSelected
@@ -341,7 +341,7 @@ class ResearchTwoView: UIView, UICollectionViewDelegateFlowLayout {
         
         vm.twoData
             .bind(to: researchCV.rx.items(cellIdentifier: "cell", cellType: ResearchViewCell.self)) { row, element, cell in
-                cell.titleLB.text = element
+                cell.title = element
             }.disposed(by: disposeBag)
         
         researchCV.rx.itemSelected
@@ -458,7 +458,7 @@ class ResearchThreeView: UIView, UICollectionViewDelegateFlowLayout {
         
         vm.threeData
             .bind(to: researchCV.rx.items(cellIdentifier: "cell", cellType: ResearchViewCell.self)) { row, element, cell in
-                cell.titleLB.text = element
+                cell.title = element
             }.disposed(by: disposeBag)
         
         researchCV.rx.itemSelected
@@ -503,8 +503,18 @@ class ResearchThreeView: UIView, UICollectionViewDelegateFlowLayout {
 
 class ResearchViewCell: UICollectionViewCell {
     
+    var title:String? {
+        didSet {
+            if let title = title {
+                let imageTitle = title.components(separatedBy: " / ").joined()
+                
+                logoImageView.image = UIImage(named: imageTitle)
+                titleLB.text = title
+            }
+        }
+    }
     
-    let logoImageView = UIImageView(image: UIImage(systemName: "globe.americas.fill"))
+    let logoImageView = UIImageView()
     
     
     let titleLB = UILabel().then {
@@ -538,6 +548,7 @@ class ResearchViewCell: UICollectionViewCell {
         titleLB.snp.makeConstraints {
             $0.top.equalTo(logoImageView.snp.bottom).offset(5)
             $0.centerX.equalToSuperview()
+            $0.height.equalTo(20)
         }
         
     }
@@ -547,9 +558,14 @@ class ResearchViewCell: UICollectionViewCell {
             if isSelected {
                 backgroundColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
                 titleLB.textColor = .white
+                logoImageView.image!.withRenderingMode(.alwaysTemplate)
+                logoImageView.tintColor = UIColor.white
+                
+                
             } else {
                 backgroundColor = .white
                 titleLB.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+                logoImageView.image?.withRenderingMode(.alwaysOriginal)
             }
         }
     }

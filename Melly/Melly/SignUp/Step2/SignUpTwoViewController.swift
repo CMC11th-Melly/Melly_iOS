@@ -140,8 +140,8 @@ extension SignUpTwoViewController {
                 self.navigationController?.popViewController(animated: true)
             }).disposed(by: disposeBag)
 
-        nameTf.rx.controlEvent([.editingDidEnd])
-            .map { self.nameTf.text ?? "" }
+        nameTf.textField.rx.controlEvent([.editingDidEnd])
+            .map { self.nameTf.textField.text ?? "" }
             .bind(to: vm.input.nameObserver)
             .disposed(by: disposeBag)
         
@@ -161,12 +161,12 @@ extension SignUpTwoViewController {
                 self.alertView.isHidden = true
                 self.nextBT.isEnabled = true
                 self.nameTf.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
-                self.nameTf.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+                self.nameTf.textField.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
             default:
                 self.alertView.isHidden = false
                 self.nextBT.isEnabled = false
                 self.nameTf.layer.borderColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1).cgColor
-                self.nameTf.textColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1)
+                self.nameTf.textField.textColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1)
             }
 
         }).disposed(by: disposeBag)

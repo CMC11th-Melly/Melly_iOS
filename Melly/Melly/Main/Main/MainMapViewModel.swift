@@ -21,9 +21,10 @@ class MainMapViewModel {
     let output = Output()
     var marker:[Marker] = []
     var filterGroup = GroupFilter.all
+    var totalMarkers = [NMFMarker]()
     
     struct Input {
-        let initMarkerObserver = BehaviorRelay<GroupFilter>(value: .all)
+        let initMarkerObserver = PublishRelay<GroupFilter>()
         let touchMarkerObserver = PublishRelay<Int>()
         let filterGroupObserver = PublishRelay<GroupFilter>()
     }
@@ -38,13 +39,16 @@ class MainMapViewModel {
     init() {
         
         input.initMarkerObserver
+            .map(removeMarker)
             .flatMap(createMarker)
-            .subscribe({ event in
-                switch event {
-                case .next(let markers):
+            .subscribe(onNext: { result in
+                
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
+                } else if let markers = result.success as? [Marker] {
                     DispatchQueue.global().async {
                         
-                        var totalMarkers = [NMFMarker]()
+                        
                         for i in 0..<markers.count {
                             
                             let marker = NMFMarker(position: NMGLatLng(lat: markers[i].position.lat, lng: markers[i].position.lng))
@@ -57,22 +61,14 @@ class MainMapViewModel {
                                 self.input.touchMarkerObserver.accept(markers[i].placeId)
                                 return true
                             }
-                            totalMarkers.append(marker)
+                            self.totalMarkers.append(marker)
                         }
-                        self.output.markerValue.accept(totalMarkers)
+                        self.output.markerValue.accept(self.totalMarkers)
                     }
                     
-                case .error(let error):
-                    if let mellyError = error as? MellyError {
-                        if mellyError.msg == "" {
-                            self.output.errorValue.accept(error.localizedDescription)
-                        } else {
-                            self.output.errorValue.accept(mellyError.msg)
-                        }
-                    }
-                case .completed:
-                    break
                 }
+                
+                
             }).disposed(by: disposeBag)
         
         input.filterGroupObserver.subscribe(onNext: { value in
@@ -84,21 +80,14 @@ class MainMapViewModel {
         
         input.touchMarkerObserver
             .flatMap(clickMarker)
-            .subscribe({ event in
-                switch event {
-                case .next(let place):
+            .subscribe(onNext: { result in
+                
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
+                } else if let place = result.success as? Place {
                     self.output.locationValue.accept(place)
-                case .error(let error):
-                    if let mellyError = error as? MellyError {
-                        if mellyError.msg == "" {
-                            self.output.errorValue.accept(error.localizedDescription)
-                        } else {
-                            self.output.errorValue.accept(mellyError.msg)
-                        }
-                    }
-                case .completed:
-                    break
                 }
+                
             }).disposed(by: disposeBag)
         
     }
@@ -111,10 +100,10 @@ class MainMapViewModel {
      - Throws: MellyError
      - Returns:[Marker]
      */
-    func createMarker(_ filter: GroupFilter) -> Observable<[Marker]> {
+    func createMarker(_ filter: GroupFilter) -> Observable<Result> {
         
         return Observable.create { observer in
-            
+            var result = Result()
             if let user = User.loginedUser {
                 
                 let parameters:Parameters = ["groupType": filter.rawValue]
@@ -135,28 +124,37 @@ class MainMapViewModel {
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data?["place"] as Any) {
                                         
                                         if let markers = try? decoder.decode([Marker].self, from: data) {
+                                            
                                             self.marker = markers
-                                    
-                                            observer.onNext(markers)
+                                            result.success = markers
+                                            observer.onNext(result)
                                         } else {
-                                            observer.onNext([])
+                                            let data:[Marker] = []
+                                            result.success = data
+                                            observer.onNext(result)
                                         }
                                         
                                     } else {
-                                        observer.onNext([])
+                                        let data:[Marker] = []
+                                        result.success = data
+                                        observer.onNext(result)
                                     }
                                     
                                 } else {
                                     let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                    observer.onError(error)
+                                    result.error = error
+                                    observer.onNext(result)
                                 }
                                 
                             } else {
                                 let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
-                                observer.onError(error)
+                                result.error = error
+                                observer.onNext(result)
                             }
-                        case .failure(let error):
-                            observer.onError(error)
+                        case .failure(_):
+                            let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                            result.error = error
+                            observer.onNext(result)
                         }
                     }
                 
@@ -173,10 +171,10 @@ class MainMapViewModel {
      - Throws: MellyError
      - Returns:Place
      */
-    func clickMarker(_ placeId: Int) -> Observable<Place> {
+    func clickMarker(_ placeId: Int) -> Observable<Result> {
         
         return Observable.create { observer in
-            
+            var result = Result()
             if let user = User.loginedUser {
                 
                 let header:HTTPHeaders = [
@@ -198,21 +196,25 @@ class MainMapViewModel {
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data?["placeInfo"] as Any) {
                                         
                                         if let place = try? decoder.decode(Place.self, from: data) {
-                                    
-                                            observer.onNext(place)
+                                            result.success = place
+                                            observer.onNext(result)
                                         }
                                     }
                                 } else {
                                     let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                    observer.onError(error)
+                                    result.error = error
+                                    observer.onNext(result)
                                 }
                                 
                             } else {
                                 let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
-                                observer.onError(error)
+                                result.error = error
+                                observer.onNext(result)
                             }
-                        case .failure(let error):
-                            observer.onError(error)
+                        case .failure(_):
+                            let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                            result.error = error
+                            observer.onNext(result)
                         }
                     }
                 
@@ -222,6 +224,17 @@ class MainMapViewModel {
             return Disposables.create()
         }
         
+    }
+    
+    func removeMarker(_ filter: GroupFilter) -> GroupFilter {
+        
+        for marker in totalMarkers {
+            marker.mapView = nil
+        }
+        
+        totalMarkers = []
+        
+        return filter
     }
     
 }

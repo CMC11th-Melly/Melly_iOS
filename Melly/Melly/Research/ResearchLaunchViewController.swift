@@ -27,7 +27,9 @@ class ResearchLaunchViewController: UIViewController {
         $0.textAlignment = .center
     }
     
-    let logoImageView = UIImageView(image: UIImage(systemName: "bubble.left.and.bubble.right.fill"))
+    let logoImageView = UIImageView(image: UIImage(named: "research_launch")).then {
+        $0.contentMode = .scaleAspectFit
+    }
     
     let bottomView = UIView()
     
@@ -60,8 +62,7 @@ class ResearchLaunchViewController: UIViewController {
         safeArea.addSubview(logoImageView)
         logoImageView.snp.makeConstraints {
             $0.top.equalTo(subLB.snp.bottom).offset(16)
-            $0.leading.equalToSuperview().offset(30)
-            $0.trailing.equalToSuperview().offset(-31)
+            $0.centerX.equalToSuperview()
             $0.height.equalTo(350)
         }
         

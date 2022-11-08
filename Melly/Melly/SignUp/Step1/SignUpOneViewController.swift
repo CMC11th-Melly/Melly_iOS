@@ -227,18 +227,18 @@ extension SignUpOneViewController: UIScrollViewDelegate {
                 self.navigationController?.popViewController(animated: true)
             }).disposed(by: disposeBag)
         
-        emailTf.rx.controlEvent([.editingDidEnd])
-            .map { self.emailTf.text ?? "" }
+        emailTf.textField.rx.controlEvent([.editingDidEnd])
+            .map { self.emailTf.textField.text ?? "" }
             .bind(to: vm.input.emailObserver)
             .disposed(by: disposeBag)
         
-        pwTf.rx.controlEvent([.editingDidEnd])
-            .map { self.pwTf.text ?? "" }
+        pwTf.textField.rx.controlEvent([.editingDidEnd])
+            .map { self.pwTf.textField.text ?? "" }
             .bind(to: vm.input.pwObserver)
             .disposed(by: disposeBag)
         
-        pwCheckTf.rx.controlEvent([.editingDidEnd])
-            .map { self.pwCheckTf.text ?? "" }
+        pwCheckTf.textField.rx.controlEvent([.editingDidEnd])
+            .map { self.pwCheckTf.textField.text ?? "" }
             .bind(to: vm.input.pwCheckObserver)
             .disposed(by: disposeBag)
         
@@ -255,11 +255,11 @@ extension SignUpOneViewController: UIScrollViewDelegate {
             case .correct:
                 self.alertView.isHidden = true
                 self.emailTf.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
-                self.emailTf.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+                self.emailTf.textField.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
             default:
                 self.alertView.isHidden = false
                 self.emailTf.layer.borderColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1).cgColor
-                self.emailTf.textColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1)
+                self.emailTf.textField.textColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1)
             }
             
         }).disposed(by: disposeBag)
@@ -271,12 +271,12 @@ extension SignUpOneViewController: UIScrollViewDelegate {
                     self.alertView.isHidden = true
                     self.alertView.labelView.text = ""
                     self.pwTf.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
-                    self.pwTf.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+                    self.pwTf.textField.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
                 } else {
                     self.alertView.isHidden = false
                     self.alertView.labelView.text = "비밀번호는 8자리 이상이여야합니다."
                     self.pwTf.layer.borderColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1).cgColor
-                    self.pwTf.textColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1)
+                    self.pwTf.textField.textColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1)
                 }
                 
             }).disposed(by: disposeBag)
@@ -287,12 +287,12 @@ extension SignUpOneViewController: UIScrollViewDelegate {
                     self.alertView.isHidden = true
                     self.alertView.labelView.text = ""
                     self.pwCheckTf.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
-                    self.pwCheckTf.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+                    self.pwCheckTf.textField.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
                 } else {
                     self.alertView.isHidden = false
                     self.alertView.labelView.text = "비밀번호가 일치하지 않습니다."
                     self.pwCheckTf.layer.borderColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1).cgColor
-                    self.pwCheckTf.textColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1)
+                    self.pwCheckTf.textField.textColor = UIColor(red: 0.941, green: 0.259, blue: 0.322, alpha: 1)
                 }
             }).disposed(by: disposeBag)
         

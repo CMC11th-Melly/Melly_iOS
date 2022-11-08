@@ -38,6 +38,7 @@ class MemoryWriteViewModel {
         let timeObserver = BehaviorRelay<Date>(value: Date())
         let writeObserver = PublishRelay<Void>()
         let registerServerObserver = PublishRelay<Void>()
+        
     }
     
     struct Output {
@@ -72,22 +73,16 @@ class MemoryWriteViewModel {
     init(_ place: Place) {
         self.place = place
         
-        getGroupName().subscribe({ event in
-            switch event {
-            case .next(let data):
-                self.groupData = data
-            case .error(let error):
-                if let mellyError = error as? MellyError {
-                    if mellyError.msg == "" {
-                        self.output.errorValue.accept(error.localizedDescription)
-                    } else {
-                        self.output.errorValue.accept(mellyError.msg)
-                    }
+        getGroupName()
+            .subscribe(onNext: { result in
+                
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
+                } else if let data = result.success as? [Group] {
+                    self.groupData = data
                 }
-            case .completed:
-                break
-            }
-        }).disposed(by: disposeBag)
+                
+            }).disposed(by: disposeBag)
         
         input.titleObserver.subscribe(onNext: { value in
             self.memoryData.title = value
@@ -157,21 +152,14 @@ class MemoryWriteViewModel {
         
         input.registerServerObserver
             .flatMap(writeMemory)
-            .subscribe({ event in
-                switch event {
-                case .next(_):
+            .subscribe(onNext: { result in
+                
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
+                } else {
                     self.output.successValue.accept(())
-                case .error(let error):
-                    if let mellyError = error as? MellyError {
-                        if mellyError.msg == "" {
-                            self.output.errorValue.accept(error.localizedDescription)
-                        } else {
-                            self.output.errorValue.accept(mellyError.msg)
-                        }
-                    }
-                case .completed:
-                    break
                 }
+                
             }).disposed(by: disposeBag)
         
     }
@@ -209,10 +197,10 @@ class MemoryWriteViewModel {
      - Throws: MellyError
      - Returns:[String]
      */
-    func getGroupName() -> Observable<[Group]> {
+    func getGroupName() -> Observable<Result> {
         
         return Observable.create { observer in
-            
+            var result = Result()
             if let user = User.loginedUser {
                 
                 let header:HTTPHeaders = [
@@ -235,22 +223,27 @@ class MemoryWriteViewModel {
                                         
                                         if let groups = try? decoder.decode([Group].self, from: data) {
                                             self.groupData = groups
-                                            observer.onNext(groups)
+                                            result.success = groups
+                                            observer.onNext(result)
                                         }
                                         
                                     }
                                     
                                 } else {
                                     let error = MellyError(code: Int(json.code) ?? 0 , msg: json.message)
-                                    observer.onError(error)
+                                    result.error = error
+                                    observer.onNext(result)
                                 }
                                 
                             } else {
                                 let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
-                                observer.onError(error)
+                                result.error = error
+                                observer.onNext(result)
                             }
-                        case .failure(let error):
-                            observer.onError(error)
+                        case .failure(_):
+                            let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                            result.error = error
+                            observer.onNext(result)
                         }
                     }
                 
@@ -270,10 +263,10 @@ class MemoryWriteViewModel {
      - Throws: MellyError
      - Returns:None
      */
-    func writeMemory() -> Observable<Void> {
+    func writeMemory() -> Observable<Result> {
         
         return Observable.create { observer in
-            
+            var result = Result()
             
             if let user = User.loginedUser {
                 
@@ -306,19 +299,23 @@ class MemoryWriteViewModel {
                         
                         if let json = try? decoder.decode(ResponseData.self, from: response) {
                             if json.message == "메모리 저장 완료" {
-                                observer.onNext(())
+                                observer.onNext(result)
                             } else {
                                 let error = MellyError(code: Int(json.code) ?? 0 , msg: json.message)
-                                observer.onError(error)
+                                result.error = error
+                                observer.onNext(result)
                             }
                         } else {
                             let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
-                            observer.onError(error)
+                            result.error = error
+                            observer.onNext(result)
                         }
                         
                         
-                    case .failure(let error):
-                        observer.onError(error)
+                    case .failure(_):
+                        let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                        result.error = error
+                        observer.onNext(result)
                     }
                 }
                 

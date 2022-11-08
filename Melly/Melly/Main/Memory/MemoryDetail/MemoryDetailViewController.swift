@@ -474,12 +474,12 @@ extension MemoryDetailViewController {
                 }
                 
                 let rejectAction = UIAlertAction(title: "메모리 차단", style: .default) { _ in
-                    
+                    self.vm.input.blockMemoryObserver.accept(())
                 }
                 
                 let cancelAction = UIAlertAction(title: "취소", style: .cancel)
                 
-                alert.addAction(deleteAction)
+                if self.vm.memory.loginUserWrite { alert.addAction(deleteAction) }
                 alert.addAction(reportAction)
                 alert.addAction(rejectAction)
                 alert.addAction(cancelAction)
@@ -576,12 +576,16 @@ extension MemoryDetailViewController {
                     
                 }
                 
+                let blockAction = UIAlertAction(title: "댓글 차단", style: .default) { _ in
+                    self.vm.input.blockCommentObserver.accept(value)
+                }
+                
                 
                 let cancelAction = UIAlertAction(title: "취소", style: .cancel)
                 
-                if value.isLoginUserWrite { alert.addAction(deleteAction) }
+                if value.loginUserWrite { alert.addAction(deleteAction) }
                     
-                
+                alert.addAction(blockAction)
                 alert.addAction(reportAction)
                 alert.addAction(cancelAction)
                 self.present(alert, animated: true)

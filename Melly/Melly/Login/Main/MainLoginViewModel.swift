@@ -33,87 +33,65 @@ class MainLoginViewModel {
     struct Output {
         
         let outputData = PublishRelay<(Bool, User)>()
-        let errorData = PublishRelay<MellyError>()
+        let errorData = PublishRelay<String>()
     }
     
     init() {
         input.googleLoginObserver.flatMap(googleLogin)
-            .subscribe { event in
-                switch event {
-                case .next(let token):
+            .subscribe(onNext: { result in
+                
+                if let error = result.error {
+                    self.output.errorData.accept(error.msg)
+                } else if let token = result.success as? (Bool, User) {
                     self.output.outputData.accept(token)
-                case .error(let error):
-                    if var mellyError = error as? MellyError {
-                        if mellyError.msg == "" {
-                            mellyError.msg = error.localizedDescription
-                            self.output.errorData.accept(mellyError)
-                        } else {
-                            self.output.errorData.accept(mellyError)
-                        }
-                    }
-                case .completed:
-                    break
                 }
-            }.disposed(by: disposeBag)
+                
+            }).disposed(by: disposeBag)
         
         input.kakaoLoginObserver
             .flatMap(kakaoLogin)
-            .subscribe{ event in
-                switch event {
-                case .next(let token):
+            .subscribe(onNext: { result in
+                
+                if let error = result.error {
+                    self.output.errorData.accept(error.msg)
+                } else if let token = result.success as? (Bool, User) {
                     self.output.outputData.accept(token)
-                case .error(let error):
-                    if var mellyError = error as? MellyError {
-                        if mellyError.msg == "" {
-                            mellyError.msg = error.localizedDescription
-                            self.output.errorData.accept(mellyError)
-                        } else {
-                            self.output.errorData.accept(mellyError)
-                        }
-                    }
-                case .completed:
-                    break
                 }
-            }.disposed(by: disposeBag)
+                
+            }).disposed(by: disposeBag)
         
         
         input.naverAppleLoginObserver
             .flatMap { self.checkUser(token: $0.0, type: $0.1) }
-            .subscribe { event in
-                switch event {
-                case .next(let value):
-                    self.output.outputData.accept(value)
-                case .error(let error):
-                    if var mellyError = error as? MellyError {
-                        if mellyError.msg == "" {
-                            mellyError.msg = error.localizedDescription
-                            self.output.errorData.accept(mellyError)
-                        } else {
-                            self.output.errorData.accept(mellyError)
-                        }
-                    }
-                case .completed:
-                    break
+            .subscribe(onNext: { result in
+                
+                if let error = result.error {
+                    self.output.errorData.accept(error.msg)
+                } else if let token = result.success as? (Bool, User) {
+                    self.output.outputData.accept(token)
                 }
-            }.disposed(by: disposeBag)
+                
+            }).disposed(by: disposeBag)
     }
     
-    func googleLogin(_ vc: UIViewController) -> Observable<(Bool, User)> {
+    func googleLogin(_ vc: UIViewController) -> Observable<Result> {
         
-        return Observable.create { observe in
-            
+        return Observable.create { observer in
+            var result = Result()
             let clientID = FirebaseApp.app()?.options.clientID ?? ""
             let signInConfig = GIDConfiguration.init(clientID: clientID)
             
             GIDSignIn.sharedInstance.signIn(with: signInConfig, presenting: vc) { user, error in
                 if let error = error {
-                    observe.onError(error)
+                    let mellyError = MellyError(code: 2, msg: error.localizedDescription)
+                    result.error = mellyError
+                    observer.onNext(result)
                 }
                 
                 if let userToken = user?.authentication.idToken {
                     self.checkUser(token: userToken, type: .google)
-                        .subscribe(onNext: { value in
-                            observe.onNext(value)
+                        .subscribe(onNext: { result in
+                            observer.onNext(result)
                         }).disposed(by: self.disposeBag)
                 }
             }
@@ -122,33 +100,26 @@ class MainLoginViewModel {
         }
     }
     
-    func kakaoLogin() -> Observable<(Bool, User)> {
+    func kakaoLogin() -> Observable<Result> {
         
         
         return Observable.create { observer in
-            
+            var result = Result()
             if UserApi.isKakaoTalkLoginAvailable() {
                 UserApi.shared.rx.loginWithKakaoTalk()
                     .subscribe { event in
                         switch event {
                         case .next(let token):
-                            
                             self.checkUser(token: token.accessToken, type: LoginType.kakao)
-                                .subscribe { event in
-                                    switch event {
-                                    case .next(let user):
-                                        observer.onNext(user)
-                                    case .completed:
-                                        break
-                                    case .error(let error):
-                                        observer.onError(error)
-                                    }
-                                }.disposed(by: self.disposeBag)
-                            
+                                .subscribe(onNext: { result in
+                                    observer.onNext(result)
+                                }).disposed(by: self.disposeBag)
                         case .completed:
                             break
                         case .error(let error):
-                            observer.onError(error)
+                            let mellyError = MellyError(code: 2, msg: error.localizedDescription)
+                            result.error = mellyError
+                            observer.onNext(result)
                         }
                     }
                     .disposed(by: self.disposeBag)
@@ -158,20 +129,15 @@ class MainLoginViewModel {
                         switch event {
                         case .next(let token):
                             self.checkUser(token: token.accessToken, type: LoginType.kakao)
-                                .subscribe { event in
-                                    switch event {
-                                    case .next(let user):
-                                        observer.onNext(user)
-                                    case .completed:
-                                        break
-                                    case .error(let error):
-                                        observer.onError(error)
-                                    }
-                                }.disposed(by: self.disposeBag)
+                                .subscribe(onNext: { result in
+                                    observer.onNext(result)
+                                }).disposed(by: self.disposeBag)
                         case .completed:
                             break
                         case .error(let error):
-                            observer.onError(error)
+                            let mellyError = MellyError(code: 2, msg: error.localizedDescription)
+                            result.error = mellyError
+                            observer.onNext(result)
                         }
                     }
                     .disposed(by: self.disposeBag)
@@ -183,9 +149,11 @@ class MainLoginViewModel {
         
     }
     
-    func checkUser(token: String, type: LoginType) -> Observable<(Bool, User)> {
+    func checkUser(token: String, type: LoginType) -> Observable<Result> {
         
         return Observable.create { observer in
+            
+            var result = Result()
             
             let parameters:Parameters = ["accessToken": token,
                                          "provider": type.rawValue,
@@ -201,19 +169,23 @@ class MainLoginViewModel {
                     case .next(let response):
                         let decoder = JSONDecoder()
                         if let json = try? decoder.decode(ResponseData.self, from: response.1) {
-                            if let dic = json.data?["user"] as? [String:Any] {
+                            if let dic = json.data?["user"] as? [String:Any],
+                               let newUser = json.data?["newUser"] as? Bool{
                                 if var user = dictionaryToObject(objectType: User.self, dictionary: dic) {
                                     user.provider = type.rawValue
-                                    let newUser = json.data?["newUser"] as! Bool
-                                    observer.onNext((newUser, user))
+                                    result.success = (newUser, user)
+                                    observer.onNext(result)
                                 }
                             }
                         } else {
                             let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
-                            observer.onError(error)
+                            result.error = error
+                            observer.onNext(result)
                         }
                     case .error(let error):
-                        observer.onError(error)
+                        let mellyError = MellyError(code: 2, msg: error.localizedDescription)
+                        result.error = mellyError
+                        observer.onNext(result)
                     case .completed:
                         break
                     }

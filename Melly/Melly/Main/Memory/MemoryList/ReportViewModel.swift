@@ -133,9 +133,6 @@ class ReportViewModel {
                 
             }
             
-            
-            
-            
             return Disposables.create()
         }
         

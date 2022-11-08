@@ -24,7 +24,9 @@ class ResearchResultViewController: UIViewController {
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 22)
     }
     
-    let titleImageView = UIImageView(image: UIImage(systemName: "bed.double"))
+    let titleImageView = UIImageView(image: UIImage(named: "research_complete")).then {
+        $0.contentMode = .scaleAspectFit
+    }
     
     let mainLB = UILabel().then {
         $0.text = "연인과 성수동 맛집테이블"
@@ -163,6 +165,7 @@ extension ResearchResultViewController {
             .disposed(by: disposeBag)
         
         reloadBT.rx.tap.subscribe(onNext: {
+            self.vm.currentStep = 1
             self.navigationController?.popToRootViewController(animated: true)
         }).disposed(by: disposeBag)
         

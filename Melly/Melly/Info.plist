@@ -28,6 +28,22 @@
 				<string>naverlogin</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>Bundle ID</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.neordinary.CMC11th.Melly</string>
+			</array>
+		</dict>
+	</array>
+	<key>FirebaseDynamicLinksCustomDomains</key>
+	<array>
+		<string>https://cmc11th.page.link/invite_group</string>
+		<string>https://minjuling.notion.site/MELLY-10251f84ed7940b0bb75778357193684</string>
+		<string>https://cmc11th.page.link</string>
 	</array>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>

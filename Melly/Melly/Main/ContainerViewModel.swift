@@ -27,26 +27,17 @@ class ContainerViewModel {
         let volumeValue = PublishRelay<String>()
         let logoutValue = PublishRelay<Void>()
         let errorValue = PublishRelay<String>()
+        let withDrawValue = PublishRelay<Void>()
     }
     
     init() {
         
         input.volumeObserver
             .flatMap(getUserVolume)
-            .subscribe({ event in
-                
-                switch event {
-                case .completed:
-                    break
-                case .error(let error):
-                    if let mellyError = error as? MellyError {
-                        if mellyError.msg == "" {
-                            self.output.errorValue.accept(error.localizedDescription)
-                        } else {
-                            self.output.errorValue.accept(mellyError.msg)
-                        }
-                    }
-                case .next(let volume):
+            .subscribe(onNext: { result in
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
+                } else if let volume = result.success as? Int{
                     let value = String.formatSize(fileSize: volume)
                     self.output.volumeValue.accept(value)
                 }
@@ -55,19 +46,10 @@ class ContainerViewModel {
         
         input.logoutObserver
             .flatMap(logout)
-            .subscribe({ event in
-                switch event {
-                case .completed:
-                    break
-                case .error(let error):
-                    if let mellyError = error as? MellyError {
-                        if mellyError.msg == "" {
-                            self.output.errorValue.accept(error.localizedDescription)
-                        } else {
-                            self.output.errorValue.accept(mellyError.msg)
-                        }
-                    }
-                case .next(_):
+            .subscribe(onNext: { result in
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
+                } else {
                     self.output.logoutValue.accept(())
                 }
             }).disposed(by: disposeBag)
@@ -80,10 +62,10 @@ class ContainerViewModel {
      - Throws: MellyError
      - Returns:Int(현재 사용량 바이트 단위)
      */
-    func getUserVolume() -> Observable<Int> {
+    func getUserVolume() -> Observable<Result> {
         
         return Observable.create { observer in
-            
+            var result = Result()
             if let user = User.loginedUser {
                 
                 let header:HTTPHeaders = [
@@ -103,22 +85,27 @@ class ContainerViewModel {
                                 if json.message == "유저가 저장한 사진 총 용량" {
                                     
                                     if let volume = json.data?["volume"] as? Int {
-                                        observer.onNext(volume)
+                                        result.success = volume
+                                        observer.onNext(result)
                                     }
                                    
                                 } else {
-                                    let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                    observer.onError(error)
+                                    let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
+                                    result.error = error
+                                    observer.onNext(result)
                                 }
                                 
                             } else {
                                 let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
-                                observer.onError(error)
+                                result.error = error
+                                observer.onNext(result)
                             }
                             
                             
                         case .failure(let error):
-                            observer.onError(error)
+                            let mellyError = MellyError(code: 2, msg: error.localizedDescription)
+                            result.error = mellyError
+                            observer.onNext(result)
                         }
                     }
                 
@@ -137,10 +124,10 @@ class ContainerViewModel {
      - Throws: MellyError
      - Returns:None
      */
-    func logout() -> Observable<Void> {
+    func logout() -> Observable<Result> {
         
         return Observable.create { observer in
-            
+            var result = Result()
             if let user = User.loginedUser {
                 
                 let header:HTTPHeaders = [
@@ -162,21 +149,26 @@ class ContainerViewModel {
                                     UserDefaults.standard.set(nil, forKey: "loginUser")
                                     UserDefaults.standard.set(nil, forKey: "token")
                                     User.loginedUser = nil
-                                    observer.onNext(())
+                                    observer.onNext(result)
                                     
                                 } else {
                                     let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                    observer.onError(error)
+                                    result.error = error
+                                    observer.onNext(result)
+                                    observer.onNext(result)
                                 }
                                 
                             } else {
                                 let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
-                                observer.onError(error)
+                                result.error = error
+                                observer.onNext(result)
                             }
                             
                             
                         case .failure(let error):
-                            observer.onError(error)
+                            let mellyError = MellyError(code: 2, msg: error.localizedDescription)
+                            result.error = mellyError
+                            observer.onNext(result)
                         }
                     }
                 

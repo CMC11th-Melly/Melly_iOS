@@ -41,19 +41,16 @@ class PopUpViewModel {
         
         input.bookmarkPopUpObserver
             .flatMap(removeBookmark)
-            .subscribe({ event in
-                switch event {
-                case .completed:
-                    break
-                case .error(let error):
-                    self.output.errorValue.accept(error.localizedDescription)
-                case .next(let value):
-                    if let value = value {
-                        self.output.goToBookmarkView.accept(value)
-                    } else {
-                        self.output.removeBookmark.accept(())
-                    }
+            .subscribe(onNext: { result in
+                
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
+                } else if let place = result.success as? Place {
+                    self.output.goToBookmarkView.accept(place)
+                } else {
+                    self.output.removeBookmark.accept(())
                 }
+                
             }).disposed(by: disposeBag)
         
         input.filterObserver.subscribe(onNext: {value in
@@ -68,23 +65,22 @@ class PopUpViewModel {
         
         input.addBookmarkObserver
             .flatMap(addBookMark)
-            .subscribe({ event in
-                switch event {
-                case .next(_):
+            .subscribe(onNext: { result in
+                
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
+                } else {
                     self.output.completeBookmark.accept(())
-                case .error(let error):
-                    print(error.localizedDescription)
-                case .completed:
-                    break
                 }
+                
             }).disposed(by: disposeBag)
         
     }
     
     
-    func removeBookmark(_ place: Place) -> Observable<Place?> {
+    func removeBookmark(_ place: Place) -> Observable<Result> {
         return Observable.create { observer in
-            
+            var result = Result()
             if let user = User.loginedUser {
                 
                 if place.isScraped {
@@ -108,24 +104,29 @@ class PopUpViewModel {
                                 if let json = try? decoder.decode(ResponseData.self, from: data) {
                                     if json.message == "스크랩 삭제 완료" {
                                         
-                                        observer.onNext(nil)
+                                        observer.onNext(result)
                                         
                                     } else {
                                         let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                        observer.onError(error)
+                                        result.error = error
+                                        observer.onNext(result)
                                     }
                                     
                                 } else {
                                     let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
-                                    observer.onError(error)
+                                    result.error = error
+                                    observer.onNext(result)
                                 }
-                            case .failure(let error):
-                                observer.onError(error)
+                            case .failure(_):
+                                let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                                result.error = error
+                                observer.onNext(result)
                             }
                         }
                     
                 } else {
-                    observer.onNext(place)
+                    result.success = place
+                    observer.onNext(result)
                 }
             }
             
@@ -134,10 +135,10 @@ class PopUpViewModel {
     }
     
     
-    func addBookMark(_ place:Place) -> Observable<Void> {
+    func addBookMark(_ place:Place) -> Observable<Result> {
         
         return Observable.create { observer in
-            
+            var result = Result()
             if let user = User.loginedUser {
                 
                 let parameters:Parameters = [
@@ -160,22 +161,26 @@ class PopUpViewModel {
                         case .success(let data):
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                print(json)
+                               
                                 if json.message == "스크랩 완료" {
                                     
-                                    observer.onNext(())
+                                    observer.onNext(result)
                                     
                                 } else {
                                     let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                    observer.onError(error)
+                                    result.error = error
+                                    observer.onNext(result)
                                 }
                                 
                             } else {
                                 let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
-                                observer.onError(error)
+                                result.error = error
+                                observer.onNext(result)
                             }
-                        case .failure(let error):
-                            observer.onError(error)
+                        case .failure(_):
+                            let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                            result.error = error
+                            observer.onNext(result)
                         }
                     }
                 

@@ -38,81 +38,54 @@ class RecommandViewModel {
         input.viewAppearObserver
             .subscribe(onNext: {
                 Observable.combineLatest(self.getHotPlace(), self.getTrendsPlace())
-                    .subscribe({ event in
-                        switch event {
-                        case .next((let hot, let trends)):
-                            self.output.hotLocationObserver.accept(hot)
-                            self.output.trendsLocationObserver.accept(trends)
-                        case .error(let error):
-                            if let mellyError = error as? MellyError {
-                                if mellyError.msg == "" {
-                                    self.output.errorValue.accept(error.localizedDescription)
-                                } else {
-                                    self.output.errorValue.accept(mellyError.msg)
-                                }
-                            }
-                        case .completed:
-                            break
+                    .subscribe(onNext: { hotResult, trendResult in
+                        if let error = hotResult.error {
+                            self.output.errorValue.accept(error.msg)
                         }
+                        if let error = trendResult.error {
+                            self.output.errorValue.accept(error.msg)
+                        }
+                        if let hot = hotResult.success as? [ItLocation] {
+                            self.output.hotLocationObserver.accept(hot)
+                        }
+                        if let trends = trendResult.success as? [ItLocation] {
+                            self.output.trendsLocationObserver.accept(trends)
+                        }
+                        
                     }).disposed(by: self.disposeBag)
             }).disposed(by: disposeBag)
         
         input.bookmarkAddObserver
             .flatMap(getPlace)
-            .subscribe({ event in
-                switch event {
-                case .next(let place):
+            .subscribe(onNext: { result in
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
+                } else if let place = result.success as? Place {
+                    
                     PopUpViewModel.instance.output.goToBookmarkView.accept(place)
-                case .error(let error):
-                    if let mellyError = error as? MellyError {
-                        if mellyError.msg == "" {
-                            self.output.errorValue.accept(error.localizedDescription)
-                        } else {
-                            self.output.errorValue.accept(mellyError.msg)
-                        }
-                    }
-                case .completed:
-                    break
                 }
+                
             }).disposed(by: disposeBag)
         
         input.bookmarkRemoveObserver
             .flatMap(getPlace)
             .flatMap(removeBookmark)
-            .subscribe({ event in
-                switch event {
-                case .next(_):
-                    print("북마크 삭제")
-                case .error(let error):
-                    if let mellyError = error as? MellyError {
-                        if mellyError.msg == "" {
-                            self.output.errorValue.accept(error.localizedDescription)
-                        } else {
-                            self.output.errorValue.accept(mellyError.msg)
-                        }
-                    }
-                case .completed:
-                    break
+            .subscribe(onNext: { result in
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
                 }
             }).disposed(by: disposeBag)
         
         input.placeObserver
             .flatMap(getPlace)
-            .subscribe({ event in
-                switch event {
-                case .next(let place):
+            .subscribe(onNext: { result in
+                
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
+                } else if let place = result.success as? Place {
                     self.output.goToPlace.accept(place)
-                case .error(let error):
-                    if let mellyError = error as? MellyError {
-                        if mellyError.msg == "" {
-                            self.output.errorValue.accept(error.localizedDescription)
-                        } else {
-                            self.output.errorValue.accept(mellyError.msg)
-                        }
-                    }
-                case .completed:
-                    break
                 }
+                    
             }).disposed(by: disposeBag)
         
     }
@@ -123,10 +96,10 @@ class RecommandViewModel {
      - Throws: MellyError
      - Returns:[ItLocation]
      */
-    func getTrendsPlace() -> Observable<[ItLocation]> {
+    func getTrendsPlace() -> Observable<Result> {
         
         return Observable.create { observer in
-            
+            var result = Result()
             if let user = User.loginedUser {
                 
                 let header:HTTPHeaders = [
@@ -144,31 +117,39 @@ class RecommandViewModel {
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
                                 
                                 if json.message == "핫한 장소" {
-                                    
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data?["trend"] as Any) {
                                         
                                         if let locations = try? decoder.decode([ItLocation].self, from: data) {
                                     
-                                            observer.onNext(locations)
+                                            result.success = locations
+                                            observer.onNext(result)
                                         } else {
-                                            observer.onNext([])
+                                            let locations:[ItLocation] = []
+                                            result.success = locations
+                                            observer.onNext(result)
                                         }
                                         
                                     } else {
-                                        observer.onNext([])
+                                        let locations:[ItLocation] = []
+                                        result.success = locations
+                                        observer.onNext(result)
                                     }
                                     
                                 } else {
                                     let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                    observer.onError(error)
+                                    result.error = error
+                                    observer.onNext(result)
                                 }
                                 
                             } else {
                                 let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
-                                observer.onError(error)
+                                result.error = error
+                                observer.onNext(result)
                             }
                         case .failure(let error):
-                            observer.onError(error)
+                            let mellyError = MellyError(code: 2, msg: error.localizedDescription)
+                            result.error = mellyError
+                            observer.onNext(result)
                         }
                     }
                 
@@ -192,10 +173,10 @@ class RecommandViewModel {
      - Throws: MellyError
      - Returns:[ItLocation]
      */
-    func getHotPlace() -> Observable<[ItLocation]> {
+    func getHotPlace() -> Observable<Result> {
         
         return Observable.create { observer in
-            
+            var result = Result()
             if let user = User.loginedUser {
                 
                 let header:HTTPHeaders = [
@@ -217,26 +198,35 @@ class RecommandViewModel {
                                         
                                         if let locations = try? decoder.decode([ItLocation].self, from: data) {
                                     
-                                            observer.onNext(locations)
+                                            result.success = locations
+                                            observer.onNext(result)
                                         } else {
-                                            observer.onNext([])
+                                            let locations:[ItLocation] = []
+                                            result.success = locations
+                                            observer.onNext(result)
                                         }
                                         
                                     } else {
-                                        observer.onNext([])
+                                        let locations:[ItLocation] = []
+                                        result.success = locations
+                                        observer.onNext(result)
                                     }
                                     
                                 } else {
                                     let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                    observer.onError(error)
+                                    result.error = error
+                                    observer.onNext(result)
                                 }
                                 
                             } else {
                                 let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
-                                observer.onError(error)
+                                result.error = error
+                                observer.onNext(result)
                             }
                         case .failure(let error):
-                            observer.onError(error)
+                            let mellyError = MellyError(code: 2, msg: error.localizedDescription)
+                            result.error = mellyError
+                            observer.onNext(result)
                         }
                     }
                 
@@ -259,10 +249,10 @@ class RecommandViewModel {
      - Throws: MellyError
      - Returns: Place
      */
-    func getPlace(_ placeInfo: PlaceInfo) -> Observable<Place> {
+    func getPlace(_ placeInfo: PlaceInfo) -> Observable<Result> {
         
         return Observable.create { observer in
-            
+            var result = Result()
             if let user = User.loginedUser {
                 
                 let header:HTTPHeaders = [
@@ -284,22 +274,26 @@ class RecommandViewModel {
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data?["placeInfo"] as Any) {
                                         
                                         if let place = try? decoder.decode(Place.self, from: data) {
-                                    
-                                            observer.onNext(place)
+                                            result.success = place
+                                            observer.onNext(result)
                                         }
                                         
                                     }
                                 } else {
                                     let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                    observer.onError(error)
+                                    result.error = error
+                                    observer.onNext(result)
                                 }
                                 
                             } else {
                                 let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
-                                observer.onError(error)
+                                result.error = error
+                                observer.onNext(result)
                             }
                         case .failure(let error):
-                            observer.onError(error)
+                            let mellyError = MellyError(code: 2, msg: error.localizedDescription)
+                            result.error = mellyError
+                            observer.onNext(result)
                         }
                     }
                 
@@ -317,10 +311,13 @@ class RecommandViewModel {
      - Throws: MellyError
      - Returns: None
      */
-    func removeBookmark(_ place: Place) -> Observable<Void> {
+    func removeBookmark(_ nextValue: Result) -> Observable<Result> {
         return Observable.create { observer in
             
-            if let user = User.loginedUser {
+            var result = Result()
+            
+            if let user = User.loginedUser,
+               let place = nextValue.success as? Place {
                 
                 if place.isScraped {
                     
@@ -341,22 +338,26 @@ class RecommandViewModel {
                             case .success(let data):
                                 let decoder = JSONDecoder()
                                 if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                    print(json)
+                                    
                                     if json.message == "스크랩 삭제 완료" {
                                         
-                                        observer.onNext(())
+                                        observer.onNext(result)
                                         
                                     } else {
                                         let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                        observer.onError(error)
+                                        result.error = error
+                                        observer.onNext(result)
                                     }
                                     
                                 } else {
                                     let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
-                                    observer.onError(error)
+                                    result.error = error
+                                    observer.onNext(result)
                                 }
                             case .failure(let error):
-                                observer.onError(error)
+                                let mellyError = MellyError(code: 2, msg: error.localizedDescription)
+                                result.error = mellyError
+                                observer.onNext(result)
                             }
                         }
                 }

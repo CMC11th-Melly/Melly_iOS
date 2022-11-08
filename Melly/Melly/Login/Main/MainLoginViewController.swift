@@ -22,7 +22,10 @@ class MainLoginViewController: UIViewController {
     let vm = MainLoginViewModel()
     let disposeBag = DisposeBag()
     
-    let scrollView = UIScrollView()
+    let scrollView = UIScrollView().then {
+        $0.showsVerticalScrollIndicator = false
+        $0.showsHorizontalScrollIndicator = false
+    }
     let contentView = UIView()
     
     let welcomeLabel = UILabel().then {
@@ -40,7 +43,7 @@ class MainLoginViewController: UIViewController {
         $0.numberOfLines = 2
     }
     
-    let logoImageView = UIImageView(image: UIImage(systemName: "bubble.left.and.bubble.right.fill"))
+    let logoImageView = UIImageView(image: UIImage(named: "login_main_logo"))
     
     let loginBT = UIButton(type: .custom).then {
         $0.backgroundColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
@@ -142,21 +145,21 @@ extension MainLoginViewController {
         
         contentView.addSubview(welcomeLabel)
         welcomeLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(91)
+            $0.top.equalToSuperview().offset(69)
             $0.centerX.equalToSuperview()
         }
         
         contentView.addSubview(logoImageView)
         logoImageView.snp.makeConstraints {
-            $0.top.equalTo(welcomeLabel.snp.bottom).offset(71)
-            $0.centerX.equalToSuperview()
-            $0.width.equalTo(248)
-            $0.height.equalTo(163)
+            $0.top.equalTo(welcomeLabel.snp.bottom).offset(37)
+            $0.leading.equalToSuperview().offset(30)
+            $0.trailing.equalToSuperview().offset(-30)
+            $0.height.equalTo(270)
         }
         
         contentView.addSubview(loginBT)
         loginBT.snp.makeConstraints {
-            $0.top.equalTo(logoImageView.snp.bottom).offset(91)
+            $0.top.equalTo(logoImageView.snp.bottom).offset(44)
             $0.leading.equalToSuperview().offset(30)
             $0.trailing.equalTo(safeArea).offset(-30)
             $0.height.equalTo(56)
@@ -253,9 +256,9 @@ extension MainLoginViewController {
                 }
             }).disposed(by: disposeBag)
         
-        vm.output.errorData.asDriver(onErrorJustReturn: MellyError(code: 999, msg: "관리자에게 문의하세요."))
+        vm.output.errorData.asDriver(onErrorJustReturn: "")
             .drive(onNext: { value in
-                let alert = UIAlertController(title: "에러", message: value.msg, preferredStyle: .alert)
+                let alert = UIAlertController(title: "에러", message: value, preferredStyle: .alert)
                 let cancelAction = UIAlertAction(title: "확인", style: .cancel)
                 alert.addAction(cancelAction)
                 self.present(alert, animated: true)

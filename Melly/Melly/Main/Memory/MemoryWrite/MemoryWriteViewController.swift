@@ -444,8 +444,8 @@ extension MemoryWriteViewController {
             
         }).disposed(by: disposeBag)
         
-        titleTF.rx.controlEvent([.editingDidEnd])
-            .map { self.titleTF.text ?? "" }
+        titleTF.textField.rx.controlEvent([.editingDidEnd])
+            .map { self.titleTF.textField.text ?? "" }
             .bind(to: vm.input.titleObserver)
             .disposed(by: disposeBag)
         
@@ -580,16 +580,9 @@ extension MemoryWriteViewController {
                 
                 DispatchQueue.main.async {
                     self.imageContentView.subviews.forEach { $0.removeFromSuperview() }
-                    self.imageContentView.addSubview(self.imageButton)
-                    self.imageButton.snp.makeConstraints {
-                        $0.top.equalToSuperview().offset(11)
-                        $0.leading.equalToSuperview().offset(4)
-                        $0.width.equalTo(330)
-                        $0.height.equalTo(170)
-                        $0.trailing.equalToSuperview()
-                    }
                     self.viewDidLayoutSubviews()
                 }
+                
                 if !value.isEmpty {
                     DispatchQueue.main.async {
                         self.imageContentView.subviews.forEach { $0.removeFromSuperview() }
@@ -636,6 +629,22 @@ extension MemoryWriteViewController {
                         self.imageScrollView.contentSize = CGSize(width: 335 * (value.count + 1), height: 192)
                         self.viewDidLayoutSubviews()
                     }
+                } else {
+                    DispatchQueue.main.async {
+                        self.imageContentView.addSubview(self.imageButton)
+                        self.imageButton.snp.makeConstraints {
+                            $0.top.equalToSuperview().offset(11)
+                            $0.leading.equalToSuperview().offset(4)
+                            $0.width.equalTo(330)
+                            $0.height.equalTo(170)
+                            $0.trailing.equalToSuperview()
+                        }
+                        self.imageScrollView.contentSize = CGSize(width: 335, height: 192)
+                        self.viewDidLayoutSubviews()
+                        
+                    }
+                    
+                    
                 }
                 
             }).disposed(by: disposeBag)

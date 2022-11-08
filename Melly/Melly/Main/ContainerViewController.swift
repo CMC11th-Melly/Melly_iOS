@@ -62,6 +62,14 @@ extension ContainerViewController {
                 self.dismiss(animated: true)
             }).disposed(by: disposeBag)
         
+        vm.output.withDrawValue
+            .subscribe(onNext: {
+                UserDefaults.standard.set(nil, forKey: "loginUser")
+                UserDefaults.standard.set(nil, forKey: "token")
+                User.loginedUser = nil
+                self.dismiss(animated: true)
+            }).disposed(by: disposeBag)
+        
     }
     
 }

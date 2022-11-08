@@ -26,7 +26,15 @@ class ResearchLoadingViewController: UIViewController {
         $0.text = "조금만 기다려주세요!"
     }
     
-    let logoImageView = UIImageView(image: UIImage(systemName: "bubble.left.and.bubble.right.fill"))
+    let logoImageView = UIImageView(image: UIImage(named: "research_loading")).then {
+        $0.contentMode = .scaleAspectFit
+    }
+    
+    let indicater = UIActivityIndicatorView().then {
+        $0.color = .white
+        $0.style = .large
+        $0.startAnimating()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,7 +49,7 @@ class ResearchLoadingViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
             let vc = ResearchResultViewController()
             vc.modalTransitionStyle = .crossDissolve
             vc.modalPresentationStyle = .fullScreen
@@ -72,6 +80,13 @@ class ResearchLoadingViewController: UIViewController {
             $0.leading.equalToSuperview().offset(30)
             $0.trailing.equalToSuperview().offset(-30)
             $0.height.equalTo(350)
+        }
+        
+        logoImageView.addSubview(indicater)
+        indicater.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(155.43)
+            $0.centerX.equalToSuperview()
+            $0.width.height.equalTo(67.13)
         }
         
     }

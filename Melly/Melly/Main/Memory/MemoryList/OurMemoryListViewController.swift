@@ -24,17 +24,17 @@ class OurMemoryListViewController: UIViewController {
     var isNoData:Bool = false {
         didSet {
             if isNoData {
-                noDataView.isHidden = false
-                dataView.isHidden = true
+                noDataView.alpha = 1
+                dataCV.alpha = 0
             } else {
-                noDataView.isHidden = true
-                dataView.isHidden = false
+                noDataView.alpha = 0
+                dataCV.alpha = 1
             }
         }
     }
     
     let noDataView = UIView().then {
-        $0.isHidden = true
+        $0.alpha = 0
     }
     
     let noDataImageView = UIImageView(image: UIImage(named: "no_memory"))
@@ -46,8 +46,6 @@ class OurMemoryListViewController: UIViewController {
         $0.numberOfLines = 2
         $0.textAlignment = .center
     }
-    
-    let dataView = UIView()
     
     let filterView = UIView()
     
@@ -88,29 +86,7 @@ extension OurMemoryListViewController {
     private func setUI() {
         view.backgroundColor = .white
         
-        view.addSubview(noDataView)
-        noDataView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-        
-        noDataView.addSubview(noDataImageView)
-        noDataImageView.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(106)
-            $0.centerX.equalToSuperview()
-        }
-        
-        noDataView.addSubview(noDataLB)
-        noDataLB.snp.makeConstraints {
-            $0.top.equalTo(noDataImageView.snp.bottom).offset(19)
-            $0.centerX.equalToSuperview()
-        }
-        
-        safeArea.addSubview(dataView)
-        dataView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-        
-        dataView.addSubview(filterView)
+        view.addSubview(filterView)
         filterView.snp.makeConstraints {
             $0.top.leading.trailing.equalToSuperview()
             $0.height.equalTo(77)
@@ -130,8 +106,27 @@ extension OurMemoryListViewController {
             $0.height.equalTo(30)
         }
         
+        view.addSubview(noDataView)
+        noDataView.snp.makeConstraints {
+            $0.leading.trailing.bottom.equalToSuperview()
+            $0.top.equalTo(sortFilter.snp.bottom).offset(22)
+        }
         
-        dataView.addSubview(dataCV)
+        noDataView.addSubview(noDataImageView)
+        noDataImageView.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(106)
+            $0.centerX.equalToSuperview()
+        }
+        
+        noDataView.addSubview(noDataLB)
+        noDataLB.snp.makeConstraints {
+            $0.top.equalTo(noDataImageView.snp.bottom).offset(19)
+            $0.centerX.equalToSuperview()
+        }
+        
+        
+        
+        view.addSubview(dataCV)
         dataCV.snp.makeConstraints {
             $0.top.equalTo(sortFilter.snp.bottom).offset(22)
             $0.leading.equalToSuperview().offset(30)

@@ -27,7 +27,7 @@ pod 'RxSwift'
 pod 'RxCocoa'
 pod 'NMapsMap'
 pod 'FloatingPanel'
-
+pod 'lottie-ios'
 #Firebase
 pod 'Firebase/Auth'
 pod 'Firebase/Core'

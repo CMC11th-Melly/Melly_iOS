@@ -148,6 +148,8 @@ class CommentCell: UICollectionViewCell {
                 .bind(to: vm.input.commentEditObserver)
                 .disposed(by: disposeBag)
             
+            
+            
         }
     }
     

@@ -82,40 +82,26 @@ class MemoryListViewModel {
         
         input.ourMemoryRefresh
             .flatMap(getOurPlace)
-            .subscribe({ event in
-                switch event {
-                case .next(let memories):
+            .subscribe(onNext: { result in
+                
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
+                } else if let memories = result.success as? [Memory] {
                     self.output.ourMemoryValue.accept(memories)
-                case .error(let error):
-                    if let mellyError = error as? MellyError {
-                        if mellyError.msg == "" {
-                            self.output.errorValue.accept(error.localizedDescription)
-                        } else {
-                            self.output.errorValue.accept(mellyError.msg)
-                        }
-                    }
-                case .completed:
-                    break
                 }
+                
             }).disposed(by: disposeBag)
         
         input.otherMemoryRefresh
             .flatMap(getOtherPlace)
-            .subscribe({ event in
-                switch event {
-                case .next(let memories):
+            .subscribe(onNext: { result in
+                
+                if let error = result.error {
+                    self.output.errorValue.accept(error.msg)
+                } else if let memories = result.success as? [Memory] {
                     self.output.otherMemoryValue.accept(memories)
-                case .error(let error):
-                    if let mellyError = error as? MellyError {
-                        if mellyError.msg == "" {
-                            self.output.errorValue.accept(error.localizedDescription)
-                        } else {
-                            self.output.errorValue.accept(mellyError.msg)
-                        }
-                    }
-                case .completed:
-                    break
                 }
+            
             }).disposed(by: disposeBag)
         
         input.memorySelect.subscribe(onNext: { value in
@@ -171,10 +157,10 @@ class MemoryListViewModel {
      - Throws: MellyError
      - Returns:[Memory]
      */
-    func getOurPlace() -> Observable<[Memory]> {
+    func getOurPlace() -> Observable<Result> {
         
         return Observable.create { observer in
-            
+            var result = Result()
             if let user = User.loginedUser {
                 let header:HTTPHeaders = [
                     "Content-Type": "application/json",
@@ -200,26 +186,33 @@ class MemoryListViewModel {
                                     
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data?["memoryList"] as Any) {
                                         
-                                        if let result = try? decoder.decode(MemoryList.self, from: data) {
-                                            if !result.content.isEmpty {
-                                                self.ourMemory.page += 1
-                                                self.ourMemory.isEnd = result.last
-                                                observer.onNext(result.content)
+                                        if let memories = try? decoder.decode(MemoryList.self, from: data) {
+                                            if !memories.content.isEmpty {
+                                                self.otherMemory.page += 1
+                                                self.otherMemory.isEnd = memories.last
+                                                
+                                                result.success = memories.content
+                                                
+                                                observer.onNext(result)
+                                            } else {
+                                                let memories:[Memory] = []
+                                                result.success = memories
+                                                observer.onNext(result)
+                                        
                                             }
-                                        } else {
-                                            observer.onNext([])
                                         }
                                         
-                                    } else {
-                                        observer.onNext([])
                                     }
                                 } else {
                                     let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                    observer.onError(error)
+                                    result.error = error
+                                    observer.onNext(result)
                                 }
                             }
-                        case .failure(let error):
-                            observer.onError(error)
+                        case .failure(_):
+                            let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                            result.error = error
+                            observer.onNext(result)
                         }
                     }
             }
@@ -236,10 +229,10 @@ class MemoryListViewModel {
      - Throws: MellyError
      - Returns:[Memory]
      */
-    func getOtherPlace() -> Observable<[Memory]> {
+    func getOtherPlace() -> Observable<Result> {
         
         return Observable.create { observer in
-            
+            var result = Result()
             if let user = User.loginedUser {
                 let header:HTTPHeaders = [
                     "Content-Type": "application/json",
@@ -263,27 +256,32 @@ class MemoryListViewModel {
                                     
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data! as Any) {
                                         
-                                        if let result = try? decoder.decode(MemoryData.self, from: data) {
-                                            if !result.memoryList.content.isEmpty {
+                                        if let memories = try? decoder.decode(MemoryList.self, from: data) {
+                                            if !memories.content.isEmpty {
                                                 self.otherMemory.page += 1
+                                                self.otherMemory.isEnd = memories.last
                                                 
-                                                self.otherMemory.isEnd = result.memoryList.last
-                                                observer.onNext(result.memoryList.content)
-                                            }
-                                        } else {
-                                            observer.onNext([])
-                                        }
+                                                result.success = memories.content
+                                                
+                                                observer.onNext(result)
+                                            } else {
+                                                let memories:[Memory] = []
+                                                result.success = memories
+                                                observer.onNext(result)
                                         
-                                    } else {
-                                        observer.onNext([])
+                                            }
+                                        }
                                     }
                                 } else {
                                     let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
-                                    observer.onError(error)
+                                    result.error = error
+                                    observer.onNext(result)
                                 }
                             }
-                        case .failure(let error):
-                            observer.onError(error)
+                        case .failure(_):
+                            let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                            result.error = error
+                            observer.onNext(result)
                         }
                     }
             }

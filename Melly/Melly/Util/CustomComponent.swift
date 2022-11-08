@@ -57,49 +57,48 @@ class CustomButton: UIButton {
     
 }
 
-class CustomTextField: UITextField {
+class CustomTextField: UIView {
     
-    override var isSecureTextEntry: Bool {
+    private let disposeBag = DisposeBag()
+    
+    var isSecure:Bool = false {
         didSet {
-            if isSecureTextEntry {
+            if isSecure {
                 rightButton.setImage(UIImage(named: "open_eye"), for: .normal)
+                textField.isSecureTextEntry = true
             } else {
                 rightButton.setImage(UIImage(named: "close_eye"), for: .normal)
+                textField.isSecureTextEntry = false
             }
         }
     }
     
+    lazy var textField = UITextField().then {
+        $0.delegate = self
+        $0.font = UIFont(name: "Pretendard-Regular", size: 16)
+        $0.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+    }
+    
+    
     let rightButton = UIButton(type: .custom).then {
         $0.setImage(UIImage(named: "open_eye"), for: .normal)
+        $0.isHidden = true
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
+        bind()
     }
-    
-    
     
     convenience init(title: String, isSecure: Bool = false) {
         self.init()
-        self.placeholder = title
+        textField.placeholder = title
         
         if isSecure {
-            self.isSecureTextEntry = true
-            let wrapedView = UIView()
-            wrapedView.snp.makeConstraints {
-                $0.height.equalTo(56)
-                $0.width.equalTo(45)
-            }
-            
-            wrapedView.addSubview(rightButton)
-            rightButton.snp.makeConstraints {
-                $0.leading.equalToSuperview()
-                $0.centerY.equalToSuperview()
-            }
-            self.rightView = wrapedView
-            self.rightViewMode = .always
-            
+            textField.isSecureTextEntry = true
+            rightButton.isHidden = false
+            self.isSecure = true
         }
     }
     
@@ -108,34 +107,55 @@ class CustomTextField: UITextField {
     }
     
     private func setupViews() {
-        self.delegate = self
-        let paddingView = UIView()
-        paddingView.snp.makeConstraints {
-            $0.width.equalTo(21)
-            $0.height.equalTo(56)
-        }
-        self.leftView = paddingView
-        self.leftViewMode = .always
+        
         self.backgroundColor = .clear
         self.layer.cornerRadius = 12
         self.layer.borderWidth = 1
         self.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
-        self.font = UIFont(name: "Pretendard-Regular", size: 16)
-        self.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
+        
+        addSubview(rightButton)
+        rightButton.snp.makeConstraints {
+            $0.trailing.equalToSuperview().offset(-22)
+            $0.height.width.equalTo(24)
+            $0.centerY.equalToSuperview()
+        }
+        
+        addSubview(textField)
+        textField.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(22)
+            $0.centerY.equalToSuperview()
+            $0.trailing.equalTo(rightButton.snp.leading).offset(-5)
+            $0.height.equalTo(19)
+        }
+        
+        
+        
+        
     }
+    
+    private func bind() {
+        
+        rightButton.rx.tap
+            .subscribe(onNext: {
+                self.isSecure.toggle()
+            }).disposed(by: disposeBag)
+        
+    }
+    
+    
     
 }
 
 extension CustomTextField: UITextFieldDelegate {
     
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        textField.layer.borderColor = UIColor(red: 0.274, green: 0.173, blue: 0.9, alpha: 1).cgColor
+        layer.borderColor = UIColor(red: 0.274, green: 0.173, blue: 0.9, alpha: 1).cgColor
         textField.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         return true
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        textField.layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
+        layer.borderColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1).cgColor
         textField.textColor =  UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
     }
     
@@ -565,7 +585,7 @@ class CommentView: UIView {
             
             height += commentLB.frame.height
             
-            if comment.isLoginUserLike {
+            if comment.loginUserLike {
                 likeBT.heartImageView.image = UIImage(named: "comment_heart_fill")
                 likeBT.titleLB.textColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
             }

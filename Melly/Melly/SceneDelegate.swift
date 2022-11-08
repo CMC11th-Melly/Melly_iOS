@@ -42,6 +42,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         NaverThirdPartyLoginConnection.getSharedInstance()?.receiveAccessToken(URLContexts.first?.url)
         
         
+        
+        
     }
     
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {

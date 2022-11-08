@@ -21,8 +21,8 @@ class ResearchMainViewModel {
     
     static let instance = ResearchMainViewModel()
     
-    let oneData = Observable<[String]>.of(["성수", "을지로", "홍대", "강남", "청담", "용산", "이태원", "잠실"])
-    let twoData = Observable<[String]>.of(["카페방문", "맛집탐방", "전시회 / 미술관", "액티비티", "취미생활", "자연 / 산책"])
+    let oneData = Observable<[String]>.of(["성수", "남산", "홍대", "강남", "광화문", "용산", "여의도", "잠실"])
+    let twoData = Observable<[String]>.of(["카페 방문", "맛집 탐방", "전시회 / 미술관", "액티비티", "취미생활", "자연 / 산책"])
     let threeData = Observable<[String]>.of(["연인", "가족", "친구", "동료"])
     
     struct Input {
@@ -253,6 +253,7 @@ class ResearchMainViewModel {
         }
         
     }
+    
     
     func transferPlace() -> Observable<Result> {
         

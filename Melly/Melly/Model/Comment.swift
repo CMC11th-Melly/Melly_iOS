@@ -12,8 +12,8 @@ struct Comment:Codable {
     let id:Int
     let nickname:String?
     let content:String
-    let isLoginUserWrite:Bool
-    let isLoginUserLike:Bool
+    let loginUserWrite:Bool
+    let loginUserLike:Bool
     let likeCount:Int
     let profileImage:String?
     let createdDate:String?

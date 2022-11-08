@@ -19,6 +19,7 @@ struct Memory:Codable {
     let keyword:[String]
     let placeId:Int
     let placeName:String
+    let loginUserWrite:Bool
 }
 
 struct Image:Codable {
