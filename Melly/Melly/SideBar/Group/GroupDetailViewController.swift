@@ -346,7 +346,7 @@ extension GroupDetailViewController {
         if let user = User.loginedUser,
            let group = vm.group {
             let link = URL(string: "https://minjuling.notion.site/ff86bf42bbec40c4ac8dc8432c24f0c5?/groupId=\(group.groupId)&userId=\(user.userSeq)")
-            let referralLink = DynamicLinkComponents(link: link!, domainURIPrefix: "https://cmc11th.page.link/invite_group")
+            let referralLink = DynamicLinkComponents(link: link!, domainURIPrefix: "https://cmc11th.page.link")
             
             // iOS 설정
             referralLink?.iOSParameters = DynamicLinkIOSParameters(bundleID: "com.neordinary.CMC11th.Melly")
@@ -354,8 +354,12 @@ extension GroupDetailViewController {
             referralLink?.iOSParameters?.appStoreID = "6444202109"
             referralLink?.iOSParameters?.customScheme = "invite_group"
             
-            
             referralLink?.shorten { (shortURL, warnings, error) in
+                
+                if let error = error {
+                    print(error)
+                }
+                
                 if let shortURL = shortURL {
                     let object = [shortURL]
                     let activityVC = UIActivityViewController(activityItems: object, applicationActivities: nil)

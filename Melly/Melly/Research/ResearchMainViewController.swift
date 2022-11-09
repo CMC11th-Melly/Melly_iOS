@@ -21,7 +21,7 @@ class ResearchMainViewController: UIViewController {
         $0.showsVerticalScrollIndicator = false
         $0.isPagingEnabled = true
         $0.alwaysBounceVertical = false
-        $0.isScrollEnabled = false
+        $0.isScrollEnabled = true
         $0.bounces = false
         $0.backgroundColor = .clear
     }

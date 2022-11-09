@@ -123,8 +123,8 @@ class SideBarViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        setData()
         vm.input.volumeObserver.accept(())
+        vm.input.getUserObserver.accept(())
     }
     
     override func viewDidLayoutSubviews() {
@@ -261,6 +261,11 @@ extension SideBarViewController {
         vm.output.volumeValue.asDriver(onErrorJustReturn: "")
             .drive(onNext: { value in
                 self.userSizeLB.text = "\(value) / 3GB"
+            }).disposed(by: disposeBag)
+        
+        vm.output.userValue.asDriver(onErrorJustReturn: ())
+            .drive(onNext: {
+                self.setData()
             }).disposed(by: disposeBag)
         
         

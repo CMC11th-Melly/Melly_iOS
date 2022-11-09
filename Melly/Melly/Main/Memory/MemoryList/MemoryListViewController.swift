@@ -9,6 +9,7 @@ import UIKit
 import RxCocoa
 import RxSwift
 import FloatingPanel
+import Kingfisher
 
 class MemoryListViewController: UIViewController {
     
@@ -41,7 +42,15 @@ class MemoryListViewController: UIViewController {
         $0.setImage(UIImage(named: "search_x"), for: .normal)
     }
     
-    let locationImageView = UIImageView().then {
+    lazy var locationImageView = UIImageView().then {
+        if let imageUrl = vm.place.placeImage {
+            let url = URL(string: imageUrl)!
+            $0.kf.setImage(with: url)
+        } else {
+            $0.image = UIImage(named: "place_default_image")
+        }
+        
+        
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 12
         $0.backgroundColor = UIColor(red: 0.945, green: 0.953, blue: 0.961, alpha: 1)
@@ -198,6 +207,14 @@ extension MemoryListViewController {
         
         closeButton.rx.tap.subscribe(onNext: {
             self.dismiss(animated: true)
+        }).disposed(by: disposeBag)
+        
+        writeMemoryBT.rx.tap.subscribe(onNext: {
+            let vm = MemoryWriteViewModel(self.vm.place)
+            let vc = MemoryWriteViewController(vm: vm)
+            vc.modalTransitionStyle = .coverVertical
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
         }).disposed(by: disposeBag)
         
     }

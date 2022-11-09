@@ -292,6 +292,8 @@ extension MyPageViewController {
                 let url = URL(string: imageUrl)!
                 imageView.kf.setImage(with: url)
                 
+            } else {
+                imageView.image = UIImage(named: "profile")
             }
             
             

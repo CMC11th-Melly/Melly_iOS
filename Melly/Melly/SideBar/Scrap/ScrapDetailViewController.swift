@@ -339,7 +339,7 @@ final class ScrapPlaceCell: UICollectionViewCell {
                 let url = URL(string: urlString)!
                 imageView.kf.setImage(with: url)
             } else {
-                //기본 이미지 등록
+                imageView.image = UIImage(named: "place_default_image")
             }
             
             locationNameLB.text = place.placeName

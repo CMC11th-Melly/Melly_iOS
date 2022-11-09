@@ -99,9 +99,15 @@ class ProfileEditViewController: UIViewController {
         super.viewDidLoad()
         setUI()
         bind()
-        setData()
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        vm.input.initialObserver
+    }
 
 }
 
@@ -323,10 +329,18 @@ extension ProfileEditViewController {
         
         writeBT.rx.tap.bind(to: vm.input.editObserver).disposed(by: disposeBag)
         
+        nameTf.textField.rx.text.orEmpty
+            .debounce(RxTimeInterval.microseconds(5), scheduler: MainScheduler.instance)
+            .distinctUntilChanged()
+            .bind(to: vm.input.nicnameObserver)
+            .disposed(by: disposeBag)
+        
         
     }
     
     private func bindOutput() {
+        
+        
         
         vm.output.imageValue.asDriver(onErrorJustReturn: nil)
             .drive(onNext: { image in
@@ -365,6 +379,8 @@ extension ProfileEditViewController {
             if let image = user.profileImage {
                 let url = URL(string: image)!
                 profileView.kf.setImage(with: url)
+            } else {
+                profileView.image = UIImage(named: "profile")
             }
             
             nameTf.textField.text = user.nickname

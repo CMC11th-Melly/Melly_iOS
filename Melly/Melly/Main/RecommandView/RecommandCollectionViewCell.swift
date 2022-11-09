@@ -148,6 +148,8 @@ class RecommandCollectionViewCell: UICollectionViewCell {
             if let urlString = itLocation.placeInfo.placeImage {
                 let url = URL(string: urlString)!
                 mainImageView.kf.setImage(with: url, for: .normal)
+            } else {
+                mainImageView.setImage(UIImage(named: "place_default_image"), for: .normal)
             }
             
             mainImageView.rx.tap

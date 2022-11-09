@@ -138,7 +138,7 @@ class NoticeViewModel {
                             let decoder = JSONDecoder()
                         
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                
+                                print(json)
                                 if json.message == "알림 조회" {
                                     
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data?["data"] as Any) {

@@ -67,6 +67,7 @@ class MemoryDetailViewController: UIViewController {
     
     let shareBT = UIButton(type: .custom).then {
         $0.setImage(UIImage(named: "memory_share"), for: .normal)
+        $0.isHidden = true
     }
     
     lazy var placeLB = UILabel().then {

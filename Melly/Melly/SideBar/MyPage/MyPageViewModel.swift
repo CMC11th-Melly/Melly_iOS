@@ -28,6 +28,7 @@ class MyPageViewModel {
         let volumeObserver = PublishRelay<Void>()
         let profileImgObserver = PublishRelay<UIImage?>()
         let genderObserver = PublishRelay<String>()
+        let nicnameObserver = PublishRelay<String>()
         let ageObserver = PublishRelay<String>()
         let editObserver = PublishRelay<Void>()
         let withdrawObserver = PublishRelay<Void>()
@@ -124,6 +125,12 @@ class MyPageViewModel {
                 }
             }).disposed(by: disposeBag)
         
+        input.nicnameObserver
+            .subscribe(onNext: { value in
+                self.user.nickname = value
+            }).disposed(by: disposeBag)
+        
+        
     }
     
     /**
@@ -153,7 +160,7 @@ class MyPageViewModel {
                     "ageGroup": self.user.ageGroup,
                     "deleteImage" : self.deleteImage
                 ]
-                
+                print(parameters)
                 AF.upload(multipartFormData: { multipartFormData in
                     
                     if let profileData = self.profileData {
@@ -170,6 +177,7 @@ class MyPageViewModel {
                     case .success(let response):
                         let decoder = JSONDecoder()
                         if let json = try? decoder.decode(ResponseData.self, from: response) {
+                            print(json)
                             if json.message == "프로필 수정 완료" {
                                 observer.onNext(result)
                             } else {
@@ -278,16 +286,16 @@ class MyPageViewModel {
                             
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                
+                                print(json)
                                 if json.message == "유저 프로필 수정을 위한 폼 정보 조회" {
                                     
                                     if let data = json.data?["userInfo"] as? [String:String] {
                                         
-                                        User.loginedUser?.gender = data["gender"]!
-                                        User.loginedUser?.ageGroup = data["ageGroup"]!
-                                        User.loginedUser?.nickname = data["nickname"]!
-                                        User.loginedUser?.profileImage = data["profileImage"]!
-                                        UserDefaults.standard.set(try? PropertyListEncoder().encode(user), forKey: "loginUser")
+                                        User.loginedUser!.gender = data["gender"]!
+                                        User.loginedUser!.ageGroup = data["ageGroup"]!
+                                        User.loginedUser!.nickname = data["nickname"]!
+                                        User.loginedUser!.profileImage = data["profileImage"]
+                                        UserDefaults.standard.set(try? PropertyListEncoder().encode(User.loginedUser!), forKey: "loginUser")
                                         observer.onNext(result)
                                     }
                                     
