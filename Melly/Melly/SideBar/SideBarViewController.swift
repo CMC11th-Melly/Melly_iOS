@@ -27,7 +27,6 @@ class SideBarViewController: UIViewController {
     let userNameLb = UILabel().then {
         $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 26)
-        $0.text = "소피아"
     }
     
     let myPageBT = UIButton(type: .custom).then {

@@ -99,6 +99,9 @@ class ContainerViewModel {
                                     if let volume = json.data?["volume"] as? Int {
                                         result.success = volume
                                         observer.onNext(result)
+                                    } else {
+                                        result.success = 0
+                                        observer.onNext(result)
                                     }
                                    
                                 } else {
@@ -217,14 +220,20 @@ class ContainerViewModel {
                                 
                                 if json.message == "유저 프로필 수정을 위한 폼 정보 조회" {
                                     
-                                    if let data = json.data?["userInfo"] as? [String:String] {
+                                    if let data = try? JSONSerialization.data(withJSONObject: json.data?["userInfo"] as Any){
                                         
-                                        User.loginedUser!.gender = data["gender"]!
-                                        User.loginedUser!.ageGroup = data["ageGroup"]!
-                                        User.loginedUser!.nickname = data["nickname"]!
-                                        User.loginedUser!.profileImage = data["profileImage"]!
-                                        UserDefaults.standard.set(try? PropertyListEncoder().encode(User.loginedUser!), forKey: "loginUser")
-                                        observer.onNext(result)
+                                        if let userInfo = try? decoder.decode(UserInitial.self, from: data) {
+                                            User.loginedUser!.gender = userInfo.gender
+                                            User.loginedUser!.ageGroup = userInfo.ageGroup ?? ""
+                                            User.loginedUser!.nickname = userInfo.nickname
+                                            User.loginedUser!.profileImage = userInfo.profileImage
+                                            
+                                            UserDefaults.standard.set(try? PropertyListEncoder().encode(User.loginedUser!), forKey: "loginUser")
+                                            observer.onNext(result)
+                                        } else {
+                                            observer.onNext(result)
+                                        }
+                                        
                                     }
                                     
                                 } else {

@@ -123,6 +123,7 @@ class SignUpThreeViewModel {
                 parameters["uid"] = self.user.uid
             }
             
+            
             AF.upload(multipartFormData: { multipartFormData in
                 
                 if let profileData = self.profileData {
@@ -139,7 +140,7 @@ class SignUpThreeViewModel {
                 case .success(let response):
                     let decoder = JSONDecoder()
                     if let json = try? decoder.decode(ResponseData.self, from: response) {
-                        if json.message == "회원가입 완료" {
+                        if json.message == "회원가입 완료" || json.message == "로그인 완료" {
                             
                             if let dic = json.data?["user"] as? [String:Any] {
                                 if var user = dictionaryToObject(objectType: User.self, dictionary: dic),

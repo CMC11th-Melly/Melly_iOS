@@ -60,4 +60,12 @@ struct User: Codable, Identifiable, Equatable {
     
 }
 
+struct UserInitial:Codable {
+    
+    let nickname:String
+    let ageGroup:String?
+    let profileImage:String?
+    let gender:String
+    
+}
 

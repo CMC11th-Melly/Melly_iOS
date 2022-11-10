@@ -170,6 +170,24 @@ extension InviteGroupViewController {
                 self.dismiss(animated: true)
             }).disposed(by: disposeBag)
         
+        vm.output.getInitial
+            .subscribe(onNext: {value in
+                
+                self.setData(value: value)
+                
+            }).disposed(by: disposeBag)
+        
+    }
+    
+    private func setData(value: [String]) {
+        
+        if let user = User.loginedUser {
+            
+            titleLB.text =  "\(value[0])님이 \(user.nickname)님을\n그룹에 초대하셨어요"
+            groupTitleLB.text = "\(value[1])는 뭘까 그룹에\n새로운 멤버를 초대해보세요!"
+            
+        }
+        
     }
     
 }
