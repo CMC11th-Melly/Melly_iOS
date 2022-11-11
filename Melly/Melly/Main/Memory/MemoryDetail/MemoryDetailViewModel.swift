@@ -41,7 +41,7 @@ class MemoryDetailViewModel {
         let blockCommentObserver = PublishRelay<Comment>()
         
         let reviseCommentObserver = PublishRelay<Comment>()
-        
+        let reviseCancelObserver = PublishRelay<Void>()
         
         
     }
@@ -154,6 +154,13 @@ class MemoryDetailViewModel {
                 self.commentID = value.id
                 self.isRecommented = true
                 self.output.commentRevise.accept(value)
+            }).disposed(by: disposeBag)
+        
+        input.reviseCancelObserver
+            .subscribe(onNext: { value in
+                self.commentID = nil
+                self.isRecommented = false
+                self.input.refreshComment.accept(())
             }).disposed(by: disposeBag)
         
     }

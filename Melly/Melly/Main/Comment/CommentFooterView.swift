@@ -7,10 +7,24 @@
 
 import Foundation
 import Then
+import RxSwift
+import RxCocoa
 
 class CommentFooterView: UICollectionReusableView {
     
+    private let disposeBag = DisposeBag()
+    
     static let identifier = "CommentFooter"
+    var vm:MemoryDetailViewModel? {
+        didSet {
+            if let vm = vm {
+                cancelBT.rx.tap
+                    .bind(to: vm.input.reviseCancelObserver)
+                    .disposed(by: disposeBag)
+            }
+        }
+    }
+    
     
     let titleView = UILabel().then {
         $0.textColor = UIColor(red: 0.588, green: 0.623, blue: 0.663, alpha: 1)

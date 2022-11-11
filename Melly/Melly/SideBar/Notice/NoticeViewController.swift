@@ -46,6 +46,7 @@ class NoticeViewController: UIViewController {
         super.viewDidLoad()
         setUI()
         bind()
+        setNC()
         
     }
     
@@ -56,6 +57,48 @@ class NoticeViewController: UIViewController {
 }
 
 extension NoticeViewController {
+    
+    func setNC() {
+        NotificationCenter.default.addObserver(self, selector: #selector(goToInviteGroup), name: NSNotification.InviteGroupNotification, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(shareMemory), name: NSNotification.MemoryShareNotification, object: nil)
+    }
+    
+    @objc func goToInviteGroup(_ notification: Notification) {
+        
+        if let value = notification.object as? [String] {
+            let vm = InviteGroupViewModel(userId: value[1], groupId: value[0])
+            let vc = InviteGroupViewController(vm: vm)
+            vc.modalTransitionStyle = .coverVertical
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
+        }
+        
+    }
+    
+    @objc func shareMemory(_ notification:Notification) {
+        
+        if let memoryId = notification.object as? String {
+            
+            ShareMemoryViewModel.getMemory(memoryId)
+                .subscribe(onNext: { value in
+                    
+                    if let error = value.error {
+                        self.vm.output.errorValue.accept(error.msg)
+                    } else if let memory = value.success as? Memory {
+                        let vm = MemoryDetailViewModel(memory)
+                        let vc = MemoryDetailViewController(vm: vm)
+                        vc.modalTransitionStyle = .coverVertical
+                        vc.modalPresentationStyle = .fullScreen
+                        self.present(vc, animated: true)
+                        
+                    }
+                    
+                }).disposed(by: disposeBag)
+            
+        }
+        
+    }
     
     private func setUI() {
         view.backgroundColor = .white

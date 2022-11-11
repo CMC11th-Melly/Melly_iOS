@@ -33,6 +33,7 @@
 		BF63C38B28DBED2E00A37CF3 /* Pretendard-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = BF63C38728DBED2E00A37CF3 /* Pretendard-Medium.otf */; };
 		BF63C38C28DBED2E00A37CF3 /* Pretendard-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = BF63C38828DBED2E00A37CF3 /* Pretendard-Regular.otf */; };
 		BF63C38D28DBED2E00A37CF3 /* Pretendard-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = BF63C38928DBED2E00A37CF3 /* Pretendard-SemiBold.otf */; };
+		BF6D30EF291E83E000333B9B /* ShareMemoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6D30EE291E83E000333B9B /* ShareMemoryViewModel.swift */; };
 		BF6DB829290ACDD2009B735F /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6DB828290ACDD2009B735F /* SettingViewController.swift */; };
 		BF6DB82C290AD673009B735F /* NoticeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6DB82B290AD673009B735F /* NoticeViewController.swift */; };
 		BF6DB82E290AD9AE009B735F /* NoticeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6DB82D290AD9AE009B735F /* NoticeViewModel.swift */; };
@@ -133,6 +134,7 @@
 		BF63C38728DBED2E00A37CF3 /* Pretendard-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.otf"; sourceTree = "<group>"; };
 		BF63C38828DBED2E00A37CF3 /* Pretendard-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.otf"; sourceTree = "<group>"; };
 		BF63C38928DBED2E00A37CF3 /* Pretendard-SemiBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-SemiBold.otf"; sourceTree = "<group>"; };
+		BF6D30EE291E83E000333B9B /* ShareMemoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareMemoryViewModel.swift; sourceTree = "<group>"; };
 		BF6DB828290ACDD2009B735F /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		BF6DB82B290AD673009B735F /* NoticeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeViewController.swift; sourceTree = "<group>"; };
 		BF6DB82D290AD9AE009B735F /* NoticeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeViewModel.swift; sourceTree = "<group>"; };
@@ -532,6 +534,7 @@
 			isa = PBXGroup;
 			children = (
 				BFEE8A7A291A0F20008AE94B /* InviteGroupViewController.swift */,
+				BF6D30EE291E83E000333B9B /* ShareMemoryViewModel.swift */,
 				BFEE8A7C291A4881008AE94B /* InviteGroupViewModel.swift */,
 			);
 			path = DeepLink;
@@ -752,6 +755,7 @@
 				BFA3399328C832E500C1CD4C /* MainLoginViewController.swift in Sources */,
 				BFD6C56F28D724160092A6E5 /* SignUpOneViewModel.swift in Sources */,
 				BF28150328EBF7E7004F6A31 /* ResearchMainViewModel.swift in Sources */,
+				BF6D30EF291E83E000333B9B /* ShareMemoryViewModel.swift in Sources */,
 				BFD0F7A228EEB40C0053C5CC /* SearchLocation.swift in Sources */,
 				BFDE617628ED59DB0099FF97 /* LocationViewController.swift in Sources */,
 				BFFDFFFF2902314100AACD16 /* MyPageViewController.swift in Sources */,

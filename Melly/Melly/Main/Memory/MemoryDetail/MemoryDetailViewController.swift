@@ -31,11 +31,14 @@ class MemoryDetailViewController: UIViewController {
         $0.showsVerticalScrollIndicator = false
         $0.showsHorizontalScrollIndicator = false
         $0.bounces = false
+        
     }
-    let scrollView = UIScrollView().then {
+    lazy var scrollView = UIScrollView().then {
+        $0.delegate = self
         $0.showsVerticalScrollIndicator = false
         $0.showsHorizontalScrollIndicator = false
     }
+    
     let contentView = UIView()
     
     let backBT = UIButton(type: .custom).then {
@@ -190,6 +193,9 @@ class MemoryDetailViewController: UIViewController {
         $0.alpha = 0
     }
     
+    let keyboardView = UIView()
+    
+    
     init(vm: MemoryDetailViewModel) {
         self.vm = vm
         super.init(nibName: nil, bundle: nil)
@@ -205,6 +211,8 @@ class MemoryDetailViewController: UIViewController {
         setUI()
         setCV()
         bind()
+        setSV()
+        setNC()
         
     }
     
@@ -220,11 +228,45 @@ class MemoryDetailViewController: UIViewController {
 }
 
 extension MemoryDetailViewController {
+
+    func setNC() {
+        NotificationCenter.default.addObserver(self, selector: #selector(goToInviteGroup), name: NSNotification.InviteGroupNotification, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(shareMemory), name: NSNotification.MemoryShareNotification, object: nil)
+    }
     
-    private func test() {
-        safeArea.addSubview(commentCV)
-        commentCV.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+    @objc func goToInviteGroup(_ notification: Notification) {
+        
+        if let value = notification.object as? [String] {
+            let vm = InviteGroupViewModel(userId: value[1], groupId: value[0])
+            let vc = InviteGroupViewController(vm: vm)
+            vc.modalTransitionStyle = .coverVertical
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
+        }
+        
+    }
+    
+    @objc func shareMemory(_ notification:Notification) {
+        
+        if let memoryId = notification.object as? String {
+            
+            ShareMemoryViewModel.getMemory(memoryId)
+                .subscribe(onNext: { value in
+                    
+                    if let error = value.error {
+                        self.vm.output.errorValue.accept(error.msg)
+                    } else if let memory = value.success as? Memory {
+                        let vm = MemoryDetailViewModel(memory)
+                        let vc = MemoryDetailViewController(vm: vm)
+                        vc.modalTransitionStyle = .coverVertical
+                        vc.modalPresentationStyle = .fullScreen
+                        self.present(vc, animated: true)
+                        
+                    }
+                    
+                }).disposed(by: disposeBag)
+            
         }
         
     }
@@ -390,7 +432,7 @@ extension MemoryDetailViewController {
         bottomView.snp.makeConstraints {
             $0.top.equalTo(commentCV.snp.bottom)
             $0.height.equalTo(95)
-            $0.leading.trailing.bottom.equalToSuperview()
+            $0.leading.trailing.equalToSuperview()
         }
         
         bottomView.addSubview(commentTF)
@@ -400,6 +442,14 @@ extension MemoryDetailViewController {
             $0.trailing.equalToSuperview().offset(-30)
             $0.height.equalTo(56)
         }
+        
+        contentView.addSubview(keyboardView)
+        keyboardView.snp.makeConstraints {
+            $0.top.equalTo(commentTF.snp.bottom)
+            $0.leading.bottom.trailing.equalToSuperview()
+            $0.height.equalTo(1)
+        }
+        
         
         view.addSubview(errorAlert)
         errorAlert.snp.makeConstraints {
@@ -438,7 +488,10 @@ extension MemoryDetailViewController {
         }).disposed(by: disposeBag)
         
         commentTF.rightButton.rx.tap
-            .map { self.commentTF.textField.text }
+            .map ( {
+                self.view.endEditing(true)
+               return self.commentTF.textField.text
+            })
             .bind(to: vm.input.textFieldEditObserver)
             .disposed(by: disposeBag)
         
@@ -503,6 +556,7 @@ extension MemoryDetailViewController {
             .drive(onNext: {
                 
                 DispatchQueue.main.async {
+                    self.commentTF.textField.text = nil
                     self.commentCV.reloadData()
                     self.commentCV.layoutSubviews()
                     self.commentCV.snp.updateConstraints {
@@ -640,6 +694,98 @@ extension MemoryDetailViewController {
     
 }
 
+//MARK: - ScrollView, TextView Delegate
+extension MemoryDetailViewController: UIScrollViewDelegate {
+    
+    //scrollView에서 스크롤이 시작되어도 키보드가 있으면 사라지게 함
+//    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+//        self.view.endEditing(true)
+//    }
+//
+    //키보드 관련 이벤트를 scrollview에 설정
+    func setSV() {
+        
+//        let singleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(myTapMethod))
+//        singleTapGestureRecognizer.numberOfTapsRequired = 1
+//        singleTapGestureRecognizer.isEnabled = true
+//
+//        singleTapGestureRecognizer.cancelsTouchesInView = false
+//
+//        scrollView.addGestureRecognizer(singleTapGestureRecognizer)
+        
+        NotificationCenter.default.addObserver(self,selector: #selector(self.keyboardDidShow(notification:)),
+                                               name: UIResponder.keyboardDidShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self,selector: #selector(self.keyboardDidHide(notification:)),
+                                               name: UIResponder.keyboardDidHideNotification, object: nil)
+    }
+    
+    //키보드 이외에 다른 곳을 터치할 때 키보드 사라지게 하기
+    @objc func myTapMethod(sender: UITapGestureRecognizer) {
+        self.view.endEditing(true)
+    }
+    
+    //키보드가 나타날 때 scrollview의 inset 변경
+    @objc func keyboardDidShow(notification: NSNotification) {
+        let info = notification.userInfo
+        let keyBoardSize = info![UIResponder.keyboardFrameEndUserInfoKey] as! CGRect
+        
+        keyboardView.snp.remakeConstraints {
+            $0.top.equalTo(commentTF.snp.bottom)
+            $0.leading.bottom.trailing.equalToSuperview()
+            $0.height.equalTo(10)
+            
+        }
+        
+        scrollView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyBoardSize.height, right: 0.0)
+        scrollView.scrollIndicatorInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyBoardSize.height, right: 0.0)
+    }
+    
+    //키보드가 사라질때 scrollview의 inset 변경
+    @objc func keyboardDidHide(notification: NSNotification) {
+        
+        keyboardView.snp.remakeConstraints {
+            $0.top.equalTo(commentTF.snp.bottom)
+            $0.leading.bottom.trailing.equalToSuperview()
+            $0.height.equalTo(1)
+            
+        }
+        
+        scrollView.contentInset = UIEdgeInsets.zero
+        scrollView.scrollIndicatorInsets = UIEdgeInsets.zero
+    }
+    
+    private func addContentScrollView() {
+        DispatchQueue.main.async {
+            for i in 0..<self.vm.memory.memoryImages.count {
+                
+                let imageView = UIImageView()
+                let xPos = self.view.frame.width * CGFloat(i)
+                imageView.frame = CGRect(x: xPos, y: 0, width: self.imagePageView.bounds.width, height: self.imagePageView.bounds.height)
+                imageView.contentMode = .scaleAspectFill
+                let url = URL(string: self.vm.memory.memoryImages[i].memoryImage)!
+                
+                imageView.kf.setImage(with: url)
+                self.imagePageView.addSubview(imageView)
+                
+                
+            }
+            self.imagePageView.contentSize.width = self.view.frame.width * CGFloat(self.vm.memory.memoryImages.count)
+        }
+        
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView == imagePageView {
+            let value = imagePageView.contentOffset.x/UIScreen.main.bounds.width
+            pageControl.currentPage = Int(value)
+            imageCountLB.text = "\(Int(round(value))+1)/\(vm.memory.memoryImages.count)"
+        }
+        
+    }
+    
+    
+}
+
 //MARK: - CollectionView delegate
 extension MemoryDetailViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     
@@ -762,32 +908,3 @@ extension MemoryDetailViewController: UICollectionViewDelegateFlowLayout, UIColl
 }
 
 
-extension MemoryDetailViewController: UIScrollViewDelegate {
-    
-    private func addContentScrollView() {
-        DispatchQueue.main.async {
-            for i in 0..<self.vm.memory.memoryImages.count {
-                
-                let imageView = UIImageView()
-                let xPos = self.view.frame.width * CGFloat(i)
-                imageView.frame = CGRect(x: xPos, y: 0, width: self.imagePageView.bounds.width, height: self.imagePageView.bounds.height)
-                imageView.contentMode = .scaleAspectFill
-                let url = URL(string: self.vm.memory.memoryImages[i].memoryImage)!
-                
-                imageView.kf.setImage(with: url)
-                self.imagePageView.addSubview(imageView)
-                
-                
-            }
-            self.imagePageView.contentSize.width = self.view.frame.width * CGFloat(self.vm.memory.memoryImages.count)
-        }
-        
-    }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let value = imagePageView.contentOffset.x/UIScreen.main.bounds.width
-        pageControl.currentPage = Int(value)
-        imageCountLB.text = "\(Int(round(value))+1)/\(vm.memory.memoryImages.count)"
-    }
-    
-}

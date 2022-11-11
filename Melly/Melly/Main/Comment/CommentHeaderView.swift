@@ -12,6 +12,7 @@ class CommentHeaderView: UICollectionReusableView {
     
     static let identifier = "CommentHeader"
     
+    
     let imageView = UIImageView(image: UIImage(named: "memory_no_comment"))
     
     let titleView = UILabel().then {
