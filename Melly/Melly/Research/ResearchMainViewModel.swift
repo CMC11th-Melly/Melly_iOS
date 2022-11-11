@@ -44,6 +44,7 @@ class ResearchMainViewModel {
         let goToMainValue = PublishRelay<Void>()
     }
     
+    
     init() {
         
         input.researchOneObserver.subscribe(onNext: { value in
@@ -124,7 +125,8 @@ class ResearchMainViewModel {
                     
                     if let place = result.success as? Place {
                         UserDefaults.standard.setValue("no", forKey: "initialUser")
-                        MainMapViewModel.instance.output.locationValue.accept(place)
+                        UserDefaults.standard.set(try? PropertyListEncoder().encode(place), forKey: "RecommendPlace")
+                        
                         self.output.goToMainValue.accept(())
                     }
                     
@@ -279,7 +281,7 @@ class ResearchMainViewModel {
                             
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                
+                                print(json)
                                 if json.message == "장소 상세 조회" {
                                     
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data as Any) {

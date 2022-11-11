@@ -10,9 +10,8 @@
 	</array>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applink:cmc11th.page.link</string>
-		<string>applink:minjuling.notion.site/MELLY-10251f84ed7940b0bb75778357193684</string>
-		<string>applink:cmc11th.page.link/invite_group</string>
+		<string>applinks:cmc11th.page.link</string>
+		<string>applinks:minjuling.notion.site/MELLY-10251f84ed7940b0bb75778357193684</string>
 	</array>
 </dict>
 </plist>

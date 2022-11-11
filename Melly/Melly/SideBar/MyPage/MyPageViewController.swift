@@ -37,6 +37,7 @@ class MyPageViewController:UIViewController {
     let imageView = UIImageView(image: UIImage(named: "profile")).then {
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 12
+        $0.contentMode = .scaleAspectFill
     }
     
     let nicknameLB = UILabel().then {

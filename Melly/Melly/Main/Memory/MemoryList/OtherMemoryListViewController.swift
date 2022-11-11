@@ -214,7 +214,7 @@ extension OtherMemoryListViewController {
                     self.memories += value
                     self.dataCV.reloadData()
                     self.isLoading = false
-                    self.isNoData = value.isEmpty ? true : false
+                    self.isNoData = self.memories.isEmpty ? true : false
                 }
             }).disposed(by: disposeBag)
         

@@ -19,6 +19,8 @@ class MemoryDetailViewModel {
     
     var memory:Memory
     
+    var commentID:Int?
+    
     lazy var keywordData:Observable<[String]> = {
         return Observable<[String]>.just(memory.keyword)
     }()
@@ -32,10 +34,16 @@ class MemoryDetailViewModel {
         let deleteMemoryObserver = PublishRelay<Void>()
         let textFieldEditObserver = PublishRelay<String?>()
         let likeButtonClicked = PublishRelay<Comment?>()
+        
         let commentEditObserver = PublishRelay<Comment>()
         let commentDeleteObserver = PublishRelay<Comment>()
         let blockMemoryObserver = PublishRelay<Void>()
         let blockCommentObserver = PublishRelay<Comment>()
+        
+        let reviseCommentObserver = PublishRelay<Comment>()
+        
+        
+        
     }
     
     struct Output {
@@ -45,6 +53,8 @@ class MemoryDetailViewModel {
         let isDeleteMemory = PublishRelay<Void>()
         let completeDelete = PublishRelay<Void>()
         let commentEdit = PublishRelay<Comment>()
+        let commentRevise = PublishRelay<Comment>()
+        
     }
     
     
@@ -84,6 +94,8 @@ class MemoryDetailViewModel {
         input.textFieldEditObserver
             .flatMap(addComment)
             .subscribe(onNext: { result in
+                self.commentID = nil
+                self.isRecommented = false
                 if let error = result.error {
                     self.output.errorValue.accept(error.msg)
                 } else {
@@ -134,6 +146,14 @@ class MemoryDetailViewModel {
                 } else {
                     self.input.refreshComment.accept(())
                 }
+            }).disposed(by: disposeBag)
+        
+        input.reviseCommentObserver
+            .subscribe(onNext: { value in
+                
+                self.commentID = value.id
+                self.isRecommented = true
+                self.output.commentRevise.accept(value)
             }).disposed(by: disposeBag)
         
     }
@@ -258,44 +278,87 @@ class MemoryDetailViewModel {
             if let user = User.loginedUser,
                let text = text, text != ""{
                 
-                let header:HTTPHeaders = [
-                    "Connection":"keep-alive",
-                    "Content-Type": "application/json",
-                    "Authorization" : "Bearer \(user.jwtToken)"
-                ]
-                
-                let parameters:Parameters = [
-                    "content": text,
-                    "memoryId": self.memory.memoryId
-                ]
-                
-                AF.request("https://api.melly.kr/api/comment", method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: header)
-                    .responseData { response in
-                        switch response.result {
-                        case .success(let data):
-                            let decoder = JSONDecoder()
-                            if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                
-                                if json.message == "댓글 추가 완료" {
-                                    observer.onNext(result)
+                if let commentId = self.commentID {
+                    
+                    let header:HTTPHeaders = [
+                        "Connection":"keep-alive",
+                        "Content-Type": "application/json",
+                        "Authorization" : "Bearer \(user.jwtToken)"
+                    ]
+                    
+                    let parameters:Parameters = [
+                        "content": text
+                    ]
+                    
+                    AF.request("https://api.melly.kr/api/comment/\(commentId)", method: .put, parameters: parameters, encoding: JSONEncoding.default, headers: header)
+                        .responseData { response in
+                            switch response.result {
+                            case .success(let data):
+                                let decoder = JSONDecoder()
+                                if let json = try? decoder.decode(ResponseData.self, from: data) {
+                                    
+                                    if json.message == "성공" {
+                                        observer.onNext(result)
+                                    } else {
+                                        let error = MellyError(code: Int(json.code) ?? 0 , msg: json.message)
+                                        result.error = error
+                                        observer.onNext(result)
+                                    }
+                                    
                                 } else {
-                                    let error = MellyError(code: Int(json.code) ?? 0 , msg: json.message)
+                                    let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
                                     result.error = error
                                     observer.onNext(result)
                                 }
                                 
-                            } else {
-                                let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
-                                result.error = error
+                            case .failure(let error):
+                                let mellyError = MellyError(code: 999, msg: error.localizedDescription)
+                                result.error = mellyError
                                 observer.onNext(result)
                             }
-                        case .failure(let error):
-                            let mellyError = MellyError(code: 999, msg: error.localizedDescription)
-                            result.error = mellyError
-                            observer.onNext(result)
                         }
-                    }
-                
+                    
+                } else {
+                    
+                    let header:HTTPHeaders = [
+                        "Connection":"keep-alive",
+                        "Content-Type": "application/json",
+                        "Authorization" : "Bearer \(user.jwtToken)"
+                    ]
+                    
+                    let parameters:Parameters = [
+                        "content": text,
+                        "memoryId": self.memory.memoryId
+                    ]
+                    
+                    AF.request("https://api.melly.kr/api/comment", method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: header)
+                        .responseData { response in
+                            switch response.result {
+                            case .success(let data):
+                                let decoder = JSONDecoder()
+                                if let json = try? decoder.decode(ResponseData.self, from: data) {
+                                    
+                                    if json.message == "댓글 추가 완료" {
+                                        observer.onNext(result)
+                                    } else {
+                                        let error = MellyError(code: Int(json.code) ?? 0 , msg: json.message)
+                                        result.error = error
+                                        observer.onNext(result)
+                                    }
+                                    
+                                } else {
+                                    let error = MellyError(code: 999, msg: "관리자에게 문의 부탁드립니다.")
+                                    result.error = error
+                                    observer.onNext(result)
+                                }
+                            case .failure(let error):
+                                let mellyError = MellyError(code: 999, msg: error.localizedDescription)
+                                result.error = mellyError
+                                observer.onNext(result)
+                            }
+                        }
+                    
+                }
                 
             } else {
                 let error = MellyError(code: 999, msg: "댓글을 입력해주세요")
@@ -365,7 +428,7 @@ class MemoryDetailViewModel {
                             case .success(let data):
                                 let decoder = JSONDecoder()
                                 if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                    print(json)
+                                
                                     if json.message == "댓글에 좋아요 추가 완료" {
                                         observer.onNext(result)
                                     } else {

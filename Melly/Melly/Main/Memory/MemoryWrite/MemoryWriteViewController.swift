@@ -592,6 +592,7 @@ extension MemoryWriteViewController {
                                 let imgView = UIImageView(image: image).then {
                                     $0.layer.cornerRadius = 12
                                     $0.clipsToBounds = true
+                                    $0.contentMode = .scaleAspectFill
                                 }
                                 views.append(imgView)
                             }

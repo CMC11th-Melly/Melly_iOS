@@ -19,6 +19,21 @@ class NoticeViewController: UIViewController {
         $0.text = "알림"
     }
     
+    
+    let noDataView = UIView().then {
+        $0.alpha = 0
+    }
+    
+    let noDataFrame = UIView()
+    
+    let noDataImg = UIImageView(image: UIImage(named: "push_no_data"))
+    
+    let noDataLabel = UILabel().then {
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-Medium", size: 20)
+        $0.text = "현재 받은 알림이 없습니다."
+    }
+    
     let noticeCV:UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
@@ -56,11 +71,40 @@ extension NoticeViewController {
             $0.leading.equalTo(backBT.snp.trailing).offset(12)
         }
         
+        safeArea.addSubview(noDataView)
+        noDataView.snp.makeConstraints {
+            $0.top.equalTo(titleLB.snp.bottom).offset(33)
+            $0.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        noDataView.addSubview(noDataFrame)
+        noDataFrame.snp.makeConstraints {
+            $0.centerX.centerY.equalToSuperview()
+            $0.height.equalTo(92)
+        }
+        
+        noDataFrame.addSubview(noDataImg)
+        noDataImg.snp.makeConstraints {
+            $0.centerX.top.equalToSuperview()
+            $0.height.width.equalTo(46)
+        }
+        
+        noDataFrame.addSubview(noDataLabel)
+        noDataLabel.snp.makeConstraints {
+            $0.top.equalTo(noDataImg.snp.bottom).offset(16)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(30)
+        }
+        
+        
         safeArea.addSubview(noticeCV)
         noticeCV.snp.makeConstraints {
             $0.top.equalTo(titleLB.snp.bottom).offset(33)
             $0.leading.trailing.bottom.equalToSuperview()
         }
+        
+        
+        
     }
     
     private func bind() {
@@ -114,6 +158,18 @@ extension NoticeViewController {
             vc.modalTransitionStyle = .coverVertical
             vc.modalPresentationStyle = .fullScreen
             self.present(vc, animated: true)
+            
+        }).disposed(by: disposeBag)
+        
+        vm.output.isNoData.subscribe(onNext: { value in
+            
+            if value {
+                self.noDataView.alpha = 1
+                self.noticeCV.alpha = 0
+            } else {
+                self.noDataView.alpha = 0
+                self.noticeCV.alpha = 1
+            }
             
         }).disposed(by: disposeBag)
         

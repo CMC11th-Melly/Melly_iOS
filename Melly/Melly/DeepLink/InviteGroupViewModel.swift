@@ -40,11 +40,11 @@ class InviteGroupViewModel {
             .subscribe(onNext: { value in
                 if let error = value.error {
                     self.output.errorValue.accept(error.msg)
-                    
                 } else {
                     self.output.successValue.accept(())
                 }
             }).disposed(by: disposeBag)
+        
         
         input.initObserver
             .flatMap(getInitialValue)
@@ -70,18 +70,17 @@ class InviteGroupViewModel {
                     
                     if let error = group.error {
                         result.error = error
+                        observer.onNext(result)
                     } else if let error = nickname.error {
                         result.error = error
+                        observer.onNext(result)
                     } else {
                         let nicknameValue = nickname.success as? String ?? ""
                         let groupName = group.success as? String ?? ""
                         
-                        result.success = [nickname, groupName]
+                        result.success = [nicknameValue, groupName]
+                        observer.onNext(result)
                     }
-                    
-                    
-                    observer.onNext(result)
-                    
                     
                 }).disposed(by: self.disposeBag)
             
@@ -108,7 +107,7 @@ class InviteGroupViewModel {
                     "Authorization" : "Bearer \(user.jwtToken)"
                 ]
                 
-                AF.request("https://api.melly.kr/api/group", method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: header)
+                AF.request("https://api.melly.kr/api/user/group", method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: header)
                     .responseData { response in
                         switch response.result {
                         case .success(let data):
@@ -116,14 +115,9 @@ class InviteGroupViewModel {
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
                                 
-                                if json.message == "그룹 추가 완료" {
-                                    if let data = try? JSONSerialization.data(withJSONObject: json.data?["data"] as Any) {
-                                        
-                                        if let group = try? decoder.decode(Group.self, from: data) {
-                                            result.success = group
-                                            observer.onNext(result)
-                                        }
-                                    }
+                                if json.message == "성공" {
+                                    
+                                    observer.onNext(result)
                                     
                                 } else {
                                     let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
@@ -179,8 +173,8 @@ class InviteGroupViewModel {
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
                                 
                                 if json.message == "성공" {
-                                    if let nickname = json.data?["data"] as? String {
-                                        result.success = nickname
+                                    if let data = json.data {
+                                        result.success = data["data"] as? String ?? ""
                                         observer.onNext(result)
                                         
                                     }
@@ -239,8 +233,8 @@ class InviteGroupViewModel {
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
                                 
                                 if json.message == "성공" {
-                                    if let name = json.data?["data"] as? String {
-                                        result.success = name
+                                    if let data = json.data  {
+                                        result.success = data["groupName"] as? String ?? ""
                                         observer.onNext(result)
                                         
                                     }

@@ -31,7 +31,7 @@ class InviteGroupViewController: UIViewController {
         $0.textColor = UIColor(red: 0.059, green: 0.053, blue: 0.363, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Bold", size: 26)
         $0.text = "소피아님이 애인님을\n그룹에 초대하셨어요"
-        $0.numberOfLines = 2
+        $0.numberOfLines = 0
         $0.textAlignment = .center
     }
     
@@ -43,7 +43,7 @@ class InviteGroupViewController: UIViewController {
         $0.text = "우리 오빠는 뭘까 그룹에\n새로운 멤버를 초대해보세요!"
         $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Medium", size: 21)
-        $0.numberOfLines = 2
+        $0.numberOfLines = 0
         $0.textAlignment = .center
     }
     
@@ -97,8 +97,8 @@ extension InviteGroupViewController {
         contentView.addSubview(titleLB)
         titleLB.snp.makeConstraints {
             $0.top.equalToSuperview().offset(36)
-            $0.centerX.equalToSuperview()
-            $0.height.equalTo(72)
+            $0.leading.equalToSuperview().offset(30)
+            $0.trailing.equalToSuperview().offset(-30)
         }
         
         contentView.addSubview(imgView)
@@ -112,7 +112,8 @@ extension InviteGroupViewController {
         contentView.addSubview(groupTitleLB)
         groupTitleLB.snp.makeConstraints {
             $0.top.equalTo(imgView.snp.bottom).offset(24)
-            $0.centerX.equalToSuperview()
+            $0.leading.equalToSuperview().offset(30)
+            $0.trailing.equalToSuperview().offset(-30)
             $0.height.equalTo(64)
         }
         
@@ -184,7 +185,7 @@ extension InviteGroupViewController {
         if let user = User.loginedUser {
             
             titleLB.text =  "\(value[0])님이 \(user.nickname)님을\n그룹에 초대하셨어요"
-            groupTitleLB.text = "\(value[1])는 뭘까 그룹에\n새로운 멤버를 초대해보세요!"
+            groupTitleLB.text = "\(value[1]) 그룹에\n새로운 멤버를 초대해보세요!"
             
         }
         

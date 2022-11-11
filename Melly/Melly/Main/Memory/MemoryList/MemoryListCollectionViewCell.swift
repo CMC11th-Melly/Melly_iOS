@@ -23,6 +23,7 @@ class MemoryListCollectionViewCell: UICollectionViewCell {
     let imgView = UIImageView().then {
         $0.clipsToBounds = true
         $0.backgroundColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1)
+        $0.contentMode = .scaleAspectFill
     }
     
     let groupTitleLB = UILabel().then {

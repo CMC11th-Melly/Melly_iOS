@@ -33,6 +33,7 @@ class MyProfileViewController: UIViewController {
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 22
         $0.image = UIImage(named: "profile")
+        $0.contentMode = .scaleAspectFill
     }
     
     let separator = UIView().then {

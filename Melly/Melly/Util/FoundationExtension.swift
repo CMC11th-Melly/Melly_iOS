@@ -149,3 +149,12 @@ extension Date {
         
     }
 }
+
+extension NSNotification {
+    
+    static let InviteGroupNotification = Notification.Name.init(rawValue: "InviteGroup")
+    
+    static let MemoryShareNotification = Notification.Name.init(rawValue: "MemoryShare")
+    
+    
+}

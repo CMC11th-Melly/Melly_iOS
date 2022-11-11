@@ -42,19 +42,60 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         NaverThirdPartyLoginConnection.getSharedInstance()?.receiveAccessToken(URLContexts.first?.url)
         
         
-        
-        
     }
     
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
         if let incomingURL = userActivity.webpageURL {
-            let linkHandled = DynamicLinks.dynamicLinks().handleUniversalLink(incomingURL) { dynamicLink, error in
-                print(dynamicLink)
+            _ = DynamicLinks.dynamicLinks().handleUniversalLink(incomingURL) { dynamicLink, error in
+                self.handleDynamicLink(dynamicLink)
             }
         }
     }
     
     
+    
+    func handleDynamicLink(_ dynamicLink: DynamicLink?) {
+        guard let dynamicLink = dynamicLink, let deepLink = dynamicLink.url else {
+            return
+        }
+
+        
+        let components = URLComponents(string: deepLink.absoluteString)?.path
+        
+        if let components = components {
+            
+            if components == "/invite_group" {
+                let queryItems = URLComponents(url: deepLink, resolvingAgainstBaseURL: true)?.queryItems
+                
+                let groupId = queryItems?.filter({$0.name == "groupId"}).first?.value ?? ""
+                let userId = queryItems?.filter({$0.name == "userId"}).first?.value ?? ""
+                
+                if let _ = User.loginedUser {
+                    NotificationCenter.default.post(name: NSNotification.InviteGroupNotification, object: [groupId, userId])
+                } else {
+                    UserDefaults.standard.setValue([groupId, userId], forKey: "InviteGroup")
+                }
+                
+                
+            } else {
+                let queryItems = URLComponents(url: deepLink, resolvingAgainstBaseURL: true)?.queryItems
+                
+                let memoryId = queryItems?.filter({$0.name == "memoryId"}).first?.value ?? ""
+                
+                if let _ = User.loginedUser {
+                    NotificationCenter.default.post(name: NSNotification.MemoryShareNotification, object: memoryId)
+                } else {
+                    UserDefaults.standard.setValue(memoryId, forKey: "MemoryShare")
+                }
+                
+            }
+            
+        }
+        
+       
+
+        
+    }
 
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.

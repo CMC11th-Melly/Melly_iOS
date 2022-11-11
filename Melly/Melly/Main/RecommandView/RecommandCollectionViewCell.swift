@@ -26,6 +26,7 @@ class RecommandCollectionViewCell: UICollectionViewCell {
         $0.isUserInteractionEnabled = true
         $0.layer.masksToBounds = true
         $0.layer.cornerRadius = 12
+        $0.contentMode = .scaleAspectFill
     }
     
     let categoryView = UIView().then {

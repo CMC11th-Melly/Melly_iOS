@@ -38,6 +38,7 @@ class MyScrapViewModel {
         let goToScrapDetail = PublishRelay<Void>()
         let placeValue = PublishRelay<[Place]>()
         let removeBookmark = PublishRelay<Void>()
+        let isNoData = PublishRelay<Bool>()
     }
     
     struct ScrapOption {
@@ -56,6 +57,7 @@ class MyScrapViewModel {
                     self.output.errorValue.accept(error.msg)
                 } else if let scraps = result.success as? [ScrapCount] {
                     self.output.scrapValue.accept(scraps)
+                    self.output.isNoData.accept(scraps.isEmpty)
                 }
                 
             }).disposed(by: disposeBag)

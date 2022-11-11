@@ -25,6 +25,20 @@ class MyScrapViewController: UIViewController {
         $0.text = "스크랩"
     }
     
+    let noDataView = UIView().then {
+        $0.alpha = 0
+    }
+    
+    let noDataFrame = UIView()
+    
+    let noDataImg = UIImageView(image: UIImage(named: "push_no_data"))
+    
+    let noDataLabel = UILabel().then {
+        $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
+        $0.font = UIFont(name: "Pretendard-Medium", size: 20)
+        $0.text = "내가 스크랩한 장소가 없습니다."
+    }
+    
     let dataCV:UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
@@ -67,6 +81,31 @@ extension MyScrapViewController {
             $0.top.equalToSuperview().offset(13)
             $0.height.equalTo(24)
             $0.leading.equalTo(backBT.snp.trailing).offset(12)
+        }
+        
+        safeArea.addSubview(noDataView)
+        noDataView.snp.makeConstraints {
+            $0.top.equalTo(headerView.snp.bottom).offset(36)
+            $0.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        noDataView.addSubview(noDataFrame)
+        noDataFrame.snp.makeConstraints {
+            $0.centerX.centerY.equalToSuperview()
+            $0.height.equalTo(92)
+        }
+        
+        noDataFrame.addSubview(noDataImg)
+        noDataImg.snp.makeConstraints {
+            $0.centerX.top.equalToSuperview()
+            $0.height.width.equalTo(46)
+        }
+        
+        noDataFrame.addSubview(noDataLabel)
+        noDataLabel.snp.makeConstraints {
+            $0.top.equalTo(noDataImg.snp.bottom).offset(16)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(30)
         }
         
         safeArea.addSubview(dataCV)
@@ -119,6 +158,16 @@ extension MyScrapViewController {
                 self.navigationController?.pushViewController(vc, animated: true)
             }).disposed(by: disposeBag)
         
+        vm.output.isNoData
+            .subscribe(onNext: { value in
+                if value {
+                    self.noDataView.alpha = 1
+                    self.dataCV.alpha = 0
+                } else {
+                    self.noDataView.alpha = 0
+                    self.dataCV.alpha = 1
+                }
+            }).disposed(by: disposeBag)
         
     }
     

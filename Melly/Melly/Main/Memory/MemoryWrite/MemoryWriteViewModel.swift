@@ -12,7 +12,9 @@ import Alamofire
 
 class MemoryWriteViewModel {
     
-    let place:Place
+    var place:Place
+    //var editMode = false
+    //var memory:Memory?
     
     private let disposeBag = DisposeBag()
     let keywordData = ["행복해요", "즐거워요", "재밌어요", "기뻐요", "좋아요", "그냥 그래요"]
@@ -68,10 +70,24 @@ class MemoryWriteViewModel {
             self.placeCategory = place.placeCategory
         }
         
+//        init(_ memory: Memory) {
+//            
+//            self.lat = 0
+//            self.lng = 0
+//            self.placeName = memory.placeName
+//            self.title = memory.title
+//            self.content = memory.content
+//            self.keyword = memory.keyword
+//            
+//        }
+        
     }
     
-    init(_ place: Place) {
+    init(_ place: Place) { //(, _ memory: Memory? = nil, _ editMode:Bool = false) {
         self.place = place
+//        self.memory = memory
+//        self.editMode = editMode
+        
         
         getGroupName()
             .subscribe(onNext: { result in

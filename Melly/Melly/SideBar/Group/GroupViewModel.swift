@@ -175,8 +175,8 @@ class GroupViewModel {
                             
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                if json.message == "My 그룹 조회" {
-                                    
+                                if json.message == "성공" {
+
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data?["groupInfo"] as Any) {
                                         
                                         if let groups = try? decoder.decode([Group].self, from: data) {

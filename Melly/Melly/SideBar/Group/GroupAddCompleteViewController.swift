@@ -40,7 +40,7 @@ class GroupAddCompleteViewController: UIViewController {
     }
     
     lazy var groupTitleLB = UILabel().then {
-        $0.text = "우리 오빠는 뭘까 그룹에\n새로운 멤버를 초대해보세요!"
+        $0.text = "\(group.groupName) 그룹에\n새로운 멤버를 초대해보세요!"
         $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Medium", size: 21)
         $0.numberOfLines = 2
@@ -191,27 +191,31 @@ extension GroupAddCompleteViewController {
     }
     
     func createDynamicLink() {
-        let link = URL(string: "https://minjuling.notion.site/ff86bf42bbec40c4ac8dc8432c24f0c5?/groupId=\(group.groupId)&userId=\(User.loginedUser!.userSeq)")
-        let referralLink = DynamicLinkComponents(link: link!, domainURIPrefix: "https://cmc11th.page.link/invite_group")
-        
-        // iOS 설정
-        referralLink?.iOSParameters = DynamicLinkIOSParameters(bundleID: "com.neordinary.CMC11th.Melly")
-        referralLink?.iOSParameters?.minimumAppVersion = "1.0.0"
-        referralLink?.iOSParameters?.appStoreID = "6444202109"
-        referralLink?.iOSParameters?.customScheme = "invite_group"
-        
-        
-        referralLink?.shorten { (shortURL, warnings, error) in
-            if let shortURL = shortURL {
-                let object = [shortURL]
-                let activityVC = UIActivityViewController(activityItems: object, applicationActivities: nil)
-                activityVC.popoverPresentationController?.sourceView = self.view
-                self.present(activityVC, animated: true, completion: nil)
+        if let user = User.loginedUser {
+            let link = URL(string: "https://cmc11th.page.link/invite_group?groupId=\(group.groupId)&userId=\(user.userSeq)")
+            let referralLink = DynamicLinkComponents(link: link!, domainURIPrefix: "https://cmc11th.page.link")
+            
+            // iOS 설정
+            referralLink?.iOSParameters = DynamicLinkIOSParameters(bundleID: "com.neordinary.CMC11th.Melly")
+            referralLink?.iOSParameters?.minimumAppVersion = "1.0.0"
+            referralLink?.iOSParameters?.appStoreID = "6444202109"
+            
+            referralLink?.shorten { (shortURL, warnings, error) in
+                
+                if let error = error {
+                    print(error)
+                }
+                
+                if let shortURL = shortURL {
+                    let object = [shortURL]
+                    let activityVC = UIActivityViewController(activityItems: object, applicationActivities: nil)
+                    activityVC.popoverPresentationController?.sourceView = self.view
+                    self.present(activityVC, animated: true, completion: nil)
+                }
+                
             }
-            
-            
-            
         }
+        
     }
     
     

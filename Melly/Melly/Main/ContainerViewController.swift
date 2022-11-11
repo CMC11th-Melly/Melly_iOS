@@ -24,11 +24,27 @@ class ContainerViewController: UIViewController {
         super.viewDidLoad()
         setUI()
         bind()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(goToInviteGroup), name: NSNotification.InviteGroupNotification, object: nil)
+        
     }
     
 }
 
 extension ContainerViewController {
+    
+    @objc func goToInviteGroup(_ notification: Notification) {
+        
+        if let value = notification.object as? [String] {
+            let vm = InviteGroupViewModel(userId: value[1], groupId: value[0])
+            let vc = InviteGroupViewController(vm: vm)
+            vc.modalTransitionStyle = .coverVertical
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
+        }
+        
+        
+    }
     
     private func setUI() {
         view.backgroundColor = .white

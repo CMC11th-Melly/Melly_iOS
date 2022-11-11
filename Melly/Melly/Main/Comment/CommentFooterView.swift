@@ -15,7 +15,7 @@ class CommentFooterView: UICollectionReusableView {
     let titleView = UILabel().then {
         $0.textColor = UIColor(red: 0.588, green: 0.623, blue: 0.663, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Medium", size: 14)
-        $0.text = "메모리에 첫 번째 댓글을 남겨주세요!"
+        $0.text = "내 댓글 수정 중"
     }
     
     let cancelBT = UIButton(type: .custom).then {

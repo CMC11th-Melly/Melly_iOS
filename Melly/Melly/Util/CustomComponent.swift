@@ -607,6 +607,7 @@ class CommentView: UIView {
     let profileImageView = UIImageView(image: UIImage(named: "profile")).then {
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 7.2
+        $0.contentMode = .scaleAspectFill
         
     }
     

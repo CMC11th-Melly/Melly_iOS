@@ -35,6 +35,7 @@ class ProfileEditViewController: UIViewController {
         $0.isUserInteractionEnabled = true
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 22
+        $0.contentMode = .scaleAspectFill
     }
     
     let profileSelectBT = UIButton(type: .custom).then {

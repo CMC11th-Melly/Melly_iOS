@@ -125,8 +125,20 @@ class MainMapViewController: UIViewController {
             vc.modalTransitionStyle = .coverVertical
             vc.modalPresentationStyle = .fullScreen
             self.present(vc, animated: true)
-            
+            UserDefaults.standard.set(nil, forKey: "InviteGroup")
         }
+        
+        
+        
+        if let data = UserDefaults.standard.value(forKey: "RecommendPlace") as? Data {
+            
+            if let place = try? PropertyListDecoder().decode(Place.self, from: data) {
+                vm.output.locationValue.accept(place)
+                UserDefaults.standard.set(nil, forKey: "RecommendPlace")
+            }
+        
+        }
+        
         
         vm.input.initMarkerObserver.accept(.all)
     }

@@ -20,11 +20,13 @@ class NoticeViewModel {
     struct Input {
         let initialObserver = PublishRelay<Void>()
         let selectNoticeObserver = PublishRelay<Push>()
+        
     }
     
     struct Output {
         let noticeData = PublishRelay<[Push]>()
         let selectMemory = PublishRelay<Memory>()
+        let isNoData = PublishRelay<Bool>()
         let errorValue = PublishRelay<String>()
     }
     
@@ -38,6 +40,7 @@ class NoticeViewModel {
                     self.output.errorValue.accept(error.msg)
                 } else if let push = result.success as? [Push] {
                     self.output.noticeData.accept(push)
+                    self.output.isNoData.accept(push.isEmpty)
                 }
                 
             }).disposed(by: disposeBag)
@@ -138,7 +141,7 @@ class NoticeViewModel {
                             let decoder = JSONDecoder()
                         
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                print(json)
+                                
                                 if json.message == "알림 조회" {
                                     
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data?["data"] as Any) {

@@ -10,6 +10,7 @@ import RxSwift
 import RxCocoa
 import Then
 import Kingfisher
+import FirebaseDynamicLinks
 
 class MemoryDetailViewController: UIViewController {
     
@@ -27,7 +28,6 @@ class MemoryDetailViewController: UIViewController {
         $0.delegate = self
         $0.isScrollEnabled = true
         $0.isPagingEnabled = true
-        $0.backgroundColor = .orange
         $0.showsVerticalScrollIndicator = false
         $0.showsHorizontalScrollIndicator = false
         $0.bounces = false
@@ -67,7 +67,6 @@ class MemoryDetailViewController: UIViewController {
     
     let shareBT = UIButton(type: .custom).then {
         $0.setImage(UIImage(named: "memory_share"), for: .normal)
-        $0.isHidden = true
     }
     
     lazy var placeLB = UILabel().then {
@@ -443,15 +442,11 @@ extension MemoryDetailViewController {
             .bind(to: vm.input.textFieldEditObserver)
             .disposed(by: disposeBag)
         
-        shareBT.rx.tap
-            .subscribe(onNext: {
-                let object = ["https://cmc11th.page.link/?link=https://minjuling.notion.site/minjuling/1aae3484826f4e64a831e623a6a905d6&apn=com.melly&isi=6444202109&ibi=com.neordinary.CMC11th.Melly&cid=6563168647626591997&_osl=https://cmc11th.page.link/invite_group&_fpb=CNQGEIkDGgVrby1LUg==&_cpt=cpit&_iumenbl=1&_iumchkactval=1&_plt=707&_uit=2424&_cpb=1&_fpb=CNQGEIkDGgVrby1LUg==&_cpt=cpit&_iumenbl=1&_iumchkactval=1&_plt=707&_uit=100356&_cpb=1&_icp=1"]
-                
-                let activityVC = UIActivityViewController(activityItems: object, applicationActivities: nil)
-                activityVC.popoverPresentationController?.sourceView = self.view
-                
-                self.present(activityVC, animated: true, completion: nil)
+        shareBT.rx.tap.asDriver(onErrorJustReturn: ())
+            .drive(onNext: {
+                self.createDynamicLink()
             }).disposed(by: disposeBag)
+            
         
         
         editBT.rx.tap
@@ -462,6 +457,10 @@ extension MemoryDetailViewController {
                 let deleteAction = UIAlertAction(title: "메모리 삭제", style: .default) { _ in
                     self.vm.output.isDeleteMemory.accept(())
                 }
+                
+//                let editAction = UIAlertAction(title: "메모리 수정", style: .default) { _ in
+//
+//                }
                 
                 let reportAction = UIAlertAction(title: "메모리 신고", style: .default) { _ in
                     let vm = ReportViewModel()
@@ -480,7 +479,10 @@ extension MemoryDetailViewController {
                 
                 let cancelAction = UIAlertAction(title: "취소", style: .cancel)
                 
-                if self.vm.memory.loginUserWrite { alert.addAction(deleteAction) }
+                if self.vm.memory.loginUserWrite {
+                    alert.addAction(deleteAction)
+                    //alert.addAction(editAction)
+                }
                 alert.addAction(reportAction)
                 alert.addAction(rejectAction)
                 alert.addAction(cancelAction)
@@ -581,17 +583,58 @@ extension MemoryDetailViewController {
                     self.vm.input.blockCommentObserver.accept(value)
                 }
                 
+                let editAction = UIAlertAction(title: "댓글 수정", style: .default) { _ in
+                    self.vm.input.reviseCommentObserver.accept(value)
+                }
+                
                 
                 let cancelAction = UIAlertAction(title: "취소", style: .cancel)
                 
-                if value.loginUserWrite { alert.addAction(deleteAction) }
-                    
+                if value.loginUserWrite {
+                    alert.addAction(deleteAction)
+                    alert.addAction(editAction)
+                }
+                
                 alert.addAction(blockAction)
                 alert.addAction(reportAction)
                 alert.addAction(cancelAction)
                 self.present(alert, animated: true)
                 
             }).disposed(by: disposeBag)
+        
+        vm.output.commentRevise.subscribe(onNext: { value in
+            self.commentTF.textField.text = value.content
+            self.vm.input.refreshComment.accept(())
+            
+            
+        }).disposed(by: disposeBag)
+        
+    }
+    
+    func createDynamicLink() {
+            let link = URL(string: "https://cmc11th.page.link/share_memory?memoryId=\(vm.memory.memoryId)")
+            let referralLink = DynamicLinkComponents(link: link!, domainURIPrefix: "https://cmc11th.page.link")
+            
+            // iOS 설정
+            referralLink?.iOSParameters = DynamicLinkIOSParameters(bundleID: "com.neordinary.CMC11th.Melly")
+            referralLink?.iOSParameters?.minimumAppVersion = "1.0.0"
+            referralLink?.iOSParameters?.appStoreID = "6444202109"
+            
+            referralLink?.shorten { (shortURL, warnings, error) in
+                
+                if let error = error {
+                    print(error)
+                }
+                
+                if let shortURL = shortURL {
+                    let object = [shortURL]
+                    let activityVC = UIActivityViewController(activityItems: object, applicationActivities: nil)
+                    activityVC.popoverPresentationController?.sourceView = self.view
+                    self.present(activityVC, animated: true, completion: nil)
+                }
+                
+            }
+        
         
     }
     
@@ -667,6 +710,7 @@ extension MemoryDetailViewController: UICollectionViewDelegateFlowLayout, UIColl
         
         if collectionView == commentCV {
             if vm.isRecommented {
+                
                 return CGSize(width: commentCV.bounds.size.width, height: 40)
             } else {
                 return CGSize.zero
@@ -727,6 +771,7 @@ extension MemoryDetailViewController: UIScrollViewDelegate {
                 let imageView = UIImageView()
                 let xPos = self.view.frame.width * CGFloat(i)
                 imageView.frame = CGRect(x: xPos, y: 0, width: self.imagePageView.bounds.width, height: self.imagePageView.bounds.height)
+                imageView.contentMode = .scaleAspectFill
                 let url = URL(string: self.vm.memory.memoryImages[i].memoryImage)!
                 
                 imageView.kf.setImage(with: url)
