@@ -273,6 +273,7 @@ extension OtherMemoryListViewController {
                 self.view.layoutIfNeeded()
                 self.memories = []
                 self.vm.input.otherMemoryRefresh.accept(())
+                
             }).disposed(by: disposeBag)
         
         

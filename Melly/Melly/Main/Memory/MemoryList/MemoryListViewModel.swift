@@ -148,6 +148,16 @@ class MemoryListViewModel {
                 
             }).disposed(by: disposeBag)
         
+        input.otherAllObserver.subscribe(onNext: { value in
+            
+            if value {
+                self.otherUrl = "https://api.melly.kr/api/memory/other/place/\(self.place.placeId)"
+            } else {
+                self.otherUrl = "https://api.melly.kr/api/memory/group/place/\(self.place.placeId)"
+            }
+            self.output.otherAllValue.accept(value)
+        }).disposed(by: disposeBag)
+        
     }
     
     
@@ -251,10 +261,9 @@ class MemoryListViewModel {
                             
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                print(json)
                                 if json.message == "성공" {
                                     
-                                    if let data = try? JSONSerialization.data(withJSONObject: json.data! as Any) {
+                                    if let data = try? JSONSerialization.data(withJSONObject: json.data?["memoryList"] as Any) {
                                         
                                         if let memories = try? decoder.decode(MemoryList.self, from: data) {
                                             if !memories.content.isEmpty {

@@ -89,8 +89,8 @@
 		BFDE617128ED13F70099FF97 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE617028ED13F70099FF97 /* SearchViewController.swift */; };
 		BFDE617328ED179F0099FF97 /* ResearchResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE617228ED179F0099FF97 /* ResearchResultViewController.swift */; };
 		BFDE617628ED59DB0099FF97 /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE617528ED59DB0099FF97 /* LocationViewController.swift */; };
+		BFE717BC2920E7DF005119F9 /* MellySplash.json in Resources */ = {isa = PBXBuildFile; fileRef = BFE717BB2920E7DE005119F9 /* MellySplash.json */; };
 		BFECADA02910EE9500BB7C04 /* GroupAddCompleteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFECAD9F2910EE9500BB7C04 /* GroupAddCompleteViewController.swift */; };
-		BFECAEE2291BB41600590A5A /* MellySplash.json in Resources */ = {isa = PBXBuildFile; fileRef = BFECAEE1291BB41500590A5A /* MellySplash.json */; };
 		BFEE8A7B291A0F20008AE94B /* InviteGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFEE8A7A291A0F20008AE94B /* InviteGroupViewController.swift */; };
 		BFEE8A7D291A4881008AE94B /* InviteGroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFEE8A7C291A4881008AE94B /* InviteGroupViewModel.swift */; };
 		BFF661042908C6F9003E998B /* CommentHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF661032908C6F9003E998B /* CommentHeaderView.swift */; };
@@ -191,8 +191,8 @@
 		BFDE617028ED13F70099FF97 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		BFDE617228ED179F0099FF97 /* ResearchResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResearchResultViewController.swift; sourceTree = "<group>"; };
 		BFDE617528ED59DB0099FF97 /* LocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
+		BFE717BB2920E7DE005119F9 /* MellySplash.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = MellySplash.json; sourceTree = "<group>"; };
 		BFECAD9F2910EE9500BB7C04 /* GroupAddCompleteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupAddCompleteViewController.swift; sourceTree = "<group>"; };
-		BFECAEE1291BB41500590A5A /* MellySplash.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = MellySplash.json; sourceTree = "<group>"; };
 		BFEE8A7A291A0F20008AE94B /* InviteGroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteGroupViewController.swift; sourceTree = "<group>"; };
 		BFEE8A7C291A4881008AE94B /* InviteGroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteGroupViewModel.swift; sourceTree = "<group>"; };
 		BFF661032908C6F9003E998B /* CommentHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentHeaderView.swift; sourceTree = "<group>"; };
@@ -574,7 +574,7 @@
 				BFF84EAD28C6D40B00892CB5 /* SceneDelegate.swift */,
 				BFF84EAB28C6D40B00892CB5 /* AppDelegate.swift */,
 				BFF84EAF28C6D40B00892CB5 /* SplashViewController.swift */,
-				BFECAEE1291BB41500590A5A /* MellySplash.json */,
+				BFE717BB2920E7DE005119F9 /* MellySplash.json */,
 				BFA3398E28C82A4E00C1CD4C /* GoogleService-Info.plist */,
 				BFF84EB428C6D40D00892CB5 /* Assets.xcassets */,
 				BFF84EB628C6D40D00892CB5 /* LaunchScreen.storyboard */,
@@ -682,7 +682,7 @@
 				BF63C38B28DBED2E00A37CF3 /* Pretendard-Medium.otf in Resources */,
 				BF63C38A28DBED2E00A37CF3 /* Pretendard-Bold.otf in Resources */,
 				BFA3398F28C82A4E00C1CD4C /* GoogleService-Info.plist in Resources */,
-				BFECAEE2291BB41600590A5A /* MellySplash.json in Resources */,
+				BFE717BC2920E7DF005119F9 /* MellySplash.json in Resources */,
 				BFF84EB528C6D40D00892CB5 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -986,7 +986,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.neordinary.CMC11th.Melly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1028,7 +1028,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.neordinary.CMC11th.Melly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
