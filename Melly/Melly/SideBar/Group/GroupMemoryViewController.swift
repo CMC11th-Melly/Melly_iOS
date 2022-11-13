@@ -26,6 +26,7 @@ class GroupMemoryViewController: UIViewController {
     
     let searchBT = UIButton(type: .custom).then {
         $0.setImage(UIImage(named: "memory_search"), for: .normal)
+        $0.isHidden = true
     }
     
     var isLoading:Bool = false

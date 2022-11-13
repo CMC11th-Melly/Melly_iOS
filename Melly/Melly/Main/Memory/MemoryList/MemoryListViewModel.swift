@@ -198,8 +198,8 @@ class MemoryListViewModel {
                                         
                                         if let memories = try? decoder.decode(MemoryList.self, from: data) {
                                             if !memories.content.isEmpty {
-                                                self.otherMemory.page += 1
-                                                self.otherMemory.isEnd = memories.last
+                                                self.ourMemory.page += 1
+                                                self.ourMemory.isEnd = memories.last
                                                 
                                                 result.success = memories.content
                                                 
