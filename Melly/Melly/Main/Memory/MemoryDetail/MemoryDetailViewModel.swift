@@ -37,12 +37,14 @@ class MemoryDetailViewModel {
         
         let commentEditObserver = PublishRelay<Comment>()
         let commentDeleteObserver = PublishRelay<Comment>()
+        
+        
+        
         let blockMemoryObserver = PublishRelay<Void>()
         let blockCommentObserver = PublishRelay<Comment>()
         
         let reviseCommentObserver = PublishRelay<Comment>()
         let reviseCancelObserver = PublishRelay<Void>()
-        
         
     }
     
@@ -239,13 +241,13 @@ class MemoryDetailViewModel {
                     "Authorization" : "Bearer \(user.jwtToken)"
                 ]
                 
-                AF.request("https://api.melly.kr/api/comment/\(self.memory.memoryId)", method: .delete, headers: header)
+                AF.request("https://api.melly.kr/api/memory/\(self.memory.memoryId)", method: .delete, headers: header)
                     .responseData { response in
                         switch response.result {
                         case .success(let data):
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                print(json)
+                                
                                 if json.message == "메세지 삭제 완료" {
                                     observer.onNext(result)
                                 } else {
