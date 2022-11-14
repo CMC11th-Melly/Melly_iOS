@@ -18,6 +18,7 @@ class MemoryWriteViewModel {
     
     private let disposeBag = DisposeBag()
     let keywordData = ["행복해요", "즐거워요", "재밌어요", "기뻐요", "좋아요", "그냥 그래요"]
+    let rxDisclosureData = Observable<[String]>.just(["전체 공개", "선택한 메모리 그룹만 공개", "비공개"])
     let rxKeywordData = Observable<[String]>.just(["행복해요", "즐거워요", "재밌어요", "기뻐요", "좋아요", "그냥 그래요"])
     var starData = [false, false, false, false, false]
     var groupData:[Group] = []
@@ -40,7 +41,8 @@ class MemoryWriteViewModel {
         let timeObserver = BehaviorRelay<Date>(value: Date())
         let writeObserver = PublishRelay<Void>()
         let registerServerObserver = PublishRelay<Void>()
-        
+        let openTypeObserver = PublishRelay<MemoryOpenType>()
+        let openTypeCancelObserver = PublishRelay<Void>()
     }
     
     struct Output {
@@ -49,6 +51,8 @@ class MemoryWriteViewModel {
         let groupValue = PublishRelay<Group?>()
         let errorValue = PublishRelay<String>()
         let successValue = PublishRelay<Void>()
+        let goToDisclosurePanel = PublishRelay<Void>()
+        let cancelOpenType = PublishRelay<Void>()
     }
     
     struct MemoryData:Codable {
@@ -62,6 +66,7 @@ class MemoryWriteViewModel {
         var groupId:Int? = nil
         var visitedDate:String = ""
         var star:Int = 0
+        var openType:String = ""
         
         init(_ place:Place) {
             self.lat = place.position.lat
@@ -160,7 +165,7 @@ class MemoryWriteViewModel {
             .map(checkValue)
             .subscribe(onNext: { value in
                 if value == "" {
-                    self.input.registerServerObserver.accept(())
+                    self.output.goToDisclosurePanel.accept(())
                 } else {
                     self.output.errorValue.accept(value)
                 }
@@ -176,6 +181,16 @@ class MemoryWriteViewModel {
                     self.output.successValue.accept(())
                 }
                 
+            }).disposed(by: disposeBag)
+        
+        input.openTypeObserver
+            .subscribe(onNext: { value in
+                self.memoryData.openType = value.rawValue
+            }).disposed(by: disposeBag)
+        
+        input.openTypeCancelObserver
+            .subscribe(onNext: {
+                self.output.cancelOpenType.accept(())
             }).disposed(by: disposeBag)
         
     }

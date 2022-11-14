@@ -35,7 +35,25 @@ enum EmailValid:String {
     case nameCountNotAvailable = "2자리 이상 입력해주세요."
 }
 
-
+enum MemoryOpenType:String {
+    case PRIVATE = "PRIVATE"
+    case ALL = "ALL"
+    case GROUP = "GROUP"
+    
+    static func getValue(_ text: String) -> MemoryOpenType {
+         switch text {
+         case "전체 공개":
+             return .ALL
+         case "선택한 메모리 그룹만 공개":
+             return .GROUP
+         case "비공개":
+             return .PRIVATE
+         default:
+             return .ALL
+         }
+     }
+    
+}
 
 enum GroupFilter: String {
     case family = "FAMILY"

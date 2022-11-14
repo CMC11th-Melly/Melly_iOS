@@ -16,7 +16,7 @@ class ResearchMainViewModel {
     let input = Input()
     let output = Output()
     var searchData = ["","",""]
-    var currentStep = 1
+    var currentStep = 0
     var survey: Survey?
     
     static let instance = ResearchMainViewModel()

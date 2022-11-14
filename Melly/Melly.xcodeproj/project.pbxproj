@@ -23,6 +23,7 @@
 		BF34F88128D1A60400EA1C16 /* DefaultLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF34F88028D1A60300EA1C16 /* DefaultLoginViewController.swift */; };
 		BF3F0E9A28DD701900AED582 /* SignUpZeroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3F0E9928DD701800AED582 /* SignUpZeroViewController.swift */; };
 		BF3F0E9C28DD70F500AED582 /* SignUpZeroViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3F0E9B28DD70F400AED582 /* SignUpZeroViewModel.swift */; };
+		BF52F6D829222A49004E1D71 /* DisclosurePopUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF52F6D729222A49004E1D71 /* DisclosurePopUpViewController.swift */; };
 		BF5A7F4528D0591A000A1B08 /* MainMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5A7F4428D0591A000A1B08 /* MainMapViewController.swift */; };
 		BF5A7F4728D05926000A1B08 /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5A7F4628D05926000A1B08 /* ContainerViewController.swift */; };
 		BF5AEB4628EF0C6400537ED5 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5AEB4528EF0C6400537ED5 /* SearchViewModel.swift */; };
@@ -124,6 +125,7 @@
 		BF34F88028D1A60300EA1C16 /* DefaultLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLoginViewController.swift; sourceTree = "<group>"; };
 		BF3F0E9928DD701800AED582 /* SignUpZeroViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpZeroViewController.swift; sourceTree = "<group>"; };
 		BF3F0E9B28DD70F400AED582 /* SignUpZeroViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpZeroViewModel.swift; sourceTree = "<group>"; };
+		BF52F6D729222A49004E1D71 /* DisclosurePopUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosurePopUpViewController.swift; sourceTree = "<group>"; };
 		BF5A7F4428D0591A000A1B08 /* MainMapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMapViewController.swift; sourceTree = "<group>"; };
 		BF5A7F4628D05926000A1B08 /* ContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerViewController.swift; sourceTree = "<group>"; };
 		BF5AEB4528EF0C6400537ED5 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
@@ -507,6 +509,7 @@
 			children = (
 				BFDDED6128F80665003AE5DA /* MemoryWriteViewController.swift */,
 				BFD664B928F93E890036EBF3 /* MemoryWriteViewModel.swift */,
+				BF52F6D729222A49004E1D71 /* DisclosurePopUpViewController.swift */,
 			);
 			path = MemoryWrite;
 			sourceTree = "<group>";
@@ -766,6 +769,7 @@
 				BF638A9228DAD6050031233F /* FoundationExtension.swift in Sources */,
 				BFB5015029065F21000621DC /* MemoryDetailViewModel.swift in Sources */,
 				BFD6C57428D733260092A6E5 /* SignUpTwoViewModel.swift in Sources */,
+				BF52F6D829222A49004E1D71 /* DisclosurePopUpViewController.swift in Sources */,
 				BF638A9528DADFD10031233F /* Enum.swift in Sources */,
 				BFA3399828C836F300C1CD4C /* MainLoginViewModel.swift in Sources */,
 				BF6DB829290ACDD2009B735F /* SettingViewController.swift in Sources */,

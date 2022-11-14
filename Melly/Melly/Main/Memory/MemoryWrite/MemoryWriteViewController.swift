@@ -424,8 +424,7 @@ extension MemoryWriteViewController {
         
         keywordCV.layoutIfNeeded()
         
-        filterPanel.isRemovalInteractionEnabled
-        filterPanel.layout = MemoryDetailPanel()
+        filterPanel.isRemovalInteractionEnabled = true
         
     }
     
@@ -566,6 +565,7 @@ extension MemoryWriteViewController {
         groupPickerView.rx.tap
             .subscribe(onNext: {
                 let vc = MemoryWriteGroupPickerViewController(vm: self.vm)
+                self.filterPanel.layout = MemoryDetailPanel()
                 self.filterPanel.set(contentViewController: vc)
                 self.filterPanel.addPanel(toParent: self)
             }).disposed(by: disposeBag)
@@ -713,10 +713,23 @@ extension MemoryWriteViewController {
                         self.errorLable.alpha = 0
                     }
                 }
+                
             }).disposed(by: disposeBag)
         
         vm.output.successValue.subscribe(onNext: {
             self.dismiss(animated: true)
+        }).disposed(by: disposeBag)
+        
+        vm.output.goToDisclosurePanel.subscribe(onNext: {
+            let vc = DisclosurePopUpViewController(vm: self.vm)
+            self.filterPanel.layout = MemoryDisclosurePanel()
+            self.filterPanel.set(contentViewController: vc)
+            self.filterPanel.addPanel(toParent: self)
+        }).disposed(by: disposeBag)
+        
+        vm.output.cancelOpenType.subscribe(onNext: {
+            self.filterPanel.view.removeFromSuperview()
+            self.filterPanel.removeFromParent()
         }).disposed(by: disposeBag)
         
     }
@@ -959,6 +972,19 @@ class MemoryDetailPanel: FloatingPanelLayout{
     }
 }
 
+class MemoryDisclosurePanel: FloatingPanelLayout{
+    var position: FloatingPanelPosition = .bottom
+    var initialState: FloatingPanelState = .tip
+    
+    
+    var anchors: [FloatingPanelState: FloatingPanelLayoutAnchoring] {
+        return [
+            .tip: FloatingPanelLayoutAnchor(absoluteInset: 413, edge: .bottom, referenceGuide: .superview)
+        ]
+    }
+}
+
+
 class MemoryWriteGroupPickerViewController: UIViewController {
     
     let vm:MemoryWriteViewModel
@@ -1066,6 +1092,8 @@ class MemoryWriteGroupPickerViewController: UIViewController {
             .map { nil }
             .bind(to: vm.input.groupObserver)
             .disposed(by: disposeBag)
+        
+        
     }
     
     
@@ -1200,5 +1228,5 @@ class SelectGroupCell: UICollectionViewCell {
         
     }
     
-    
 }
+

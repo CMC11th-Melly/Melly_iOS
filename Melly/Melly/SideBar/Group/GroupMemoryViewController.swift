@@ -36,22 +36,17 @@ class GroupMemoryViewController: UIViewController {
     
     
     let noDataView = UIView().then {
-        $0.isHidden = true
+        $0.alpha = 0
     }
     
     let noDataFrame = UIView()
     
-    let noDataImageView = UIImageView(image: UIImage(named: "no_memory"))
+    let noDataImg = UIImageView(image: UIImage(named: "push_no_data"))
     
-    let noDataLB = UILabel().then {
-        $0.text = "내가 작성한 메모리가 없습니다."
+    let noDataLabel = UILabel().then {
         $0.textColor = UIColor(red: 0.302, green: 0.329, blue: 0.376, alpha: 1)
-        $0.textAlignment = .center
         $0.font = UIFont(name: "Pretendard-Medium", size: 20)
-    }
-    
-    let noDataBT = CustomButton(title: "새 메모리 작성하기").then {
-        $0.isEnabled = true
+        $0.text = "내가 스크랩한 장소가 없습니다."
     }
     
     let filterView = UIView()
@@ -160,32 +155,29 @@ extension GroupMemoryViewController {
             $0.leading.trailing.bottom.equalToSuperview()
         }
         
+        safeArea.addSubview(noDataView)
+        noDataView.snp.makeConstraints {
+            $0.top.equalTo(headerView.snp.bottom).offset(36)
+            $0.leading.trailing.bottom.equalToSuperview()
+        }
+        
         noDataView.addSubview(noDataFrame)
         noDataFrame.snp.makeConstraints {
-            $0.leading.height.equalToSuperview()
-            $0.height.equalTo(189)
-            $0.centerY.equalToSuperview()
+            $0.centerX.centerY.equalToSuperview()
+            $0.height.equalTo(92)
         }
         
-        noDataFrame.addSubview(noDataImageView)
-        noDataImageView.snp.makeConstraints {
-            $0.width.height.equalTo(46)
-            $0.top.equalToSuperview()
-            $0.centerX.equalToSuperview()
+        noDataFrame.addSubview(noDataImg)
+        noDataImg.snp.makeConstraints {
+            $0.centerX.top.equalToSuperview()
+            $0.height.width.equalTo(46)
         }
         
-        noDataFrame.addSubview(noDataLB)
-        noDataLB.snp.makeConstraints {
-            $0.top.equalTo(noDataImageView.snp.bottom).offset(16)
+        noDataFrame.addSubview(noDataLabel)
+        noDataLabel.snp.makeConstraints {
+            $0.top.equalTo(noDataImg.snp.bottom).offset(16)
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(30)
-        }
-        
-        noDataFrame.addSubview(noDataBT)
-        noDataBT.snp.makeConstraints {
-            $0.top.equalTo(noDataLB.snp.bottom).offset(42)
-            $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(55)
         }
         
         filterPanel.layout = MyMemoryPanelLayout()

@@ -100,18 +100,17 @@ extension ResearchMainViewController {
     
     private func bindOutput() {
         
-        vm.output.nextBackValid.asDriver(onErrorJustReturn: 0)
+        vm.output.nextBackValid.asDriver(onErrorJustReturn: -1)
             .drive(onNext: { value in
                 
-                if value == 0 {
+                if value == -1 {
                     self.navigationController?.popViewController(animated: true)
-                } else if value == 4 {
+                } else if value == 3 {
                     let vc = ResearchLoadingViewController()
                     vc.modalTransitionStyle = .crossDissolve
                     vc.modalPresentationStyle = .fullScreen
                     self.navigationController?.pushViewController(vc, animated: true)
                 } else {
-                    let value = value - 1
                     let contentOffset = CGPoint(x: Int(self.view.frame.width) * value, y: 0)
                     self.researchView.setContentOffset(contentOffset, animated: true)
                     self.nextBT.isEnabled = false
