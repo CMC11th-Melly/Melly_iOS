@@ -590,6 +590,8 @@ extension MemoryDetailViewController {
                 self.dismiss(animated: true)
             }).disposed(by: disposeBag)
         
+        
+        
         vm.output.errorValue
             .subscribe(onNext: { value in
                 self.errorAlert.labelView.text = value

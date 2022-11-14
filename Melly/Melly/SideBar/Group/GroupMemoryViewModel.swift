@@ -28,6 +28,7 @@ class GroupMemoryViewModel {
     }
     
     struct Input {
+        let viewAppearObserver = PublishRelay<Void>()
         let ourMemoryRefresh = PublishRelay<Void>()
         let ourMemorySelect = PublishRelay<Memory>()
         let sortObserver = PublishRelay<String>()
@@ -45,6 +46,13 @@ class GroupMemoryViewModel {
     init(group:Group) {
         self.group = group
         self.url = "https://api.melly.kr/api/user/group/\(group.groupId)/memory"
+        
+        input.viewAppearObserver
+            .subscribe(onNext: {
+                self.ourMemory.page = 0
+                self.ourMemory.isEnd = false
+                self.input.ourMemoryRefresh.accept(())
+            }).disposed(by: disposeBag)
         
         input.ourMemoryRefresh
             .flatMap(getOurPlace)

@@ -45,10 +45,12 @@ class MemoryListViewModel {
         
         let ourSortObserver = PublishRelay<String>()
         let ourGroupFilterObserver = PublishRelay<GroupFilter>()
+        let ourViewAppear = PublishRelay<Void>()
         
         let otherSortObserver = PublishRelay<String>()
         let otherGroupFilterObserver = PublishRelay<GroupFilter>()
         let otherAllObserver = PublishRelay<Bool>()
+        let otherViewAppear = PublishRelay<Void>()
         
     }
     
@@ -79,6 +81,20 @@ class MemoryListViewModel {
     init(place: Place) {
         
         self.place = place
+        
+        input.ourViewAppear
+            .subscribe(onNext: {
+                self.ourMemory.isEnd = false
+                self.ourMemory.page = 0
+                self.input.ourMemoryRefresh.accept(())
+            }).disposed(by: disposeBag)
+        
+        input.otherViewAppear
+            .subscribe(onNext: {
+                self.otherMemory.isEnd = false
+                self.otherMemory.page = 0
+                self.input.otherMemoryRefresh.accept(())
+            }).disposed(by: disposeBag)
         
         input.ourMemoryRefresh
             .flatMap(getOurPlace)

@@ -95,7 +95,7 @@ class MyMemoryViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        vm.input.ourMemoryRefresh.accept(())
+        vm.input.viewAppearObserver.accept(())
     }
     
     

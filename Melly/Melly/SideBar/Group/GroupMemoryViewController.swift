@@ -78,6 +78,7 @@ class GroupMemoryViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        memories = []
         vm.input.ourMemoryRefresh.accept(())
     }
     

@@ -130,7 +130,7 @@ extension DisclosurePopUpViewController {
             .disposed(by: disposeBag)
         
         confirmBT.rx.tap
-            .bind(to: vm.input.writeObserver)
+            .bind(to: vm.input.registerServerObserver)
             .disposed(by: disposeBag)
         
     }

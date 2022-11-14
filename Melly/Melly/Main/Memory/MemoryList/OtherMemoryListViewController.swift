@@ -82,7 +82,8 @@ class OtherMemoryListViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        vm.input.otherMemoryRefresh.accept(())
+        memories = []
+        vm.input.otherViewAppear.accept(())
     }
     
 }
