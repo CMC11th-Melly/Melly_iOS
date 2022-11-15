@@ -94,18 +94,21 @@ class MemoryListCollectionViewCell: UICollectionViewCell {
             $0.width.height.equalTo(38)
         }
         
-        addSubview(titleLB)
-        titleLB.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(20)
-            $0.top.equalTo(imgView.snp.bottom).offset(19)
-        }
-        
         addSubview(dateLB)
         dateLB.snp.makeConstraints {
             $0.top.equalTo(imgView.snp.bottom).offset(20)
             $0.trailing.equalToSuperview().offset(-18)
-            $0.leading.greaterThanOrEqualTo(titleLB.snp.leading).offset(6)
+            
         }
+        
+        addSubview(titleLB)
+        titleLB.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(20)
+            $0.top.equalTo(imgView.snp.bottom).offset(19)
+            $0.trailing.lessThanOrEqualTo(dateLB.snp.leading).offset(-6)
+        }
+        
+        
         
     }
     

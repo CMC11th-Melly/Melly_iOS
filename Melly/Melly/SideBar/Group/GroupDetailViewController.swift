@@ -177,6 +177,7 @@ extension GroupDetailViewController {
         groupLB.snp.makeConstraints {
             $0.top.equalToSuperview().offset(23)
             $0.leading.equalToSuperview().offset(29)
+            
             $0.height.equalTo(17)
         }
         
@@ -192,6 +193,7 @@ extension GroupDetailViewController {
             $0.top.equalTo(groupLB.snp.bottom).offset(24)
             $0.height.equalTo(34)
             $0.leading.equalTo(groupImageView.snp.trailing).offset(10)
+            $0.trailing.equalToSuperview().offset(-30)
         }
         
         bodyView.addSubview(stOne)

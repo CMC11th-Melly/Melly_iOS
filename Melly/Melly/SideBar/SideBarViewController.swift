@@ -155,7 +155,8 @@ extension SideBarViewController {
         
         contentView.addSubview(myPageBT)
         myPageBT.snp.makeConstraints {
-            $0.leading.equalTo(userNameLb.snp.trailing).offset(2)
+            $0.leading.greaterThanOrEqualTo(userNameLb.snp.trailing).offset(2)
+            
             $0.top.equalToSuperview().offset(48)
         }
         

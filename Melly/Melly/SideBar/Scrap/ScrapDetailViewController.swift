@@ -254,6 +254,7 @@ final class ScrapPlaceCell: UICollectionViewCell {
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 12
         $0.isUserInteractionEnabled = true
+        $0.contentMode = .scaleAspectFill
     }
     
     let bookmarkBT = UIButton(type: .custom).then {
