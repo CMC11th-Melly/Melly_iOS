@@ -249,6 +249,8 @@ extension MainLoginViewController {
                     self.present(nav, animated: true)
                 } else {
                     User.loginedUser = value.1
+                    UserDefaults.standard.set(try? PropertyListEncoder().encode(value.1), forKey: "loginUser")
+                    UserDefaults.standard.set(value.1.jwtToken, forKey: "token")
                     let vc = ContainerViewController()
                     vc.modalTransitionStyle = .crossDissolve
                     vc.modalPresentationStyle = .fullScreen

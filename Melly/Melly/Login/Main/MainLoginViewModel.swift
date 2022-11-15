@@ -172,6 +172,8 @@ class MainLoginViewModel {
                             if let dic = json.data?["user"] as? [String:Any],
                                let newUser = json.data?["newUser"] as? Bool{
                                 if var user = dictionaryToObject(objectType: User.self, dictionary: dic) {
+                                    let jwtToken = json.data?["token"] as? String ?? ""
+                                    user.jwtToken = jwtToken
                                     user.provider = type.rawValue
                                     result.success = (newUser, user)
                                     observer.onNext(result)
