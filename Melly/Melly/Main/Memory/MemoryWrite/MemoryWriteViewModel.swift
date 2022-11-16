@@ -365,6 +365,8 @@ class MemoryWriteViewModel {
             return "사진을 등록해주세요"
         } else if memoryData.title == "" {
             return "제목을 입력해주세요"
+        } else if memoryData.title.count > 15 {
+            return "메모리 이름은 15자이하입니다."
         } else if memoryData.content.count <= 20 {
             return "메모리를 최소 20자 이상 적어주세요"
         } else if memoryData.groupId == nil {
