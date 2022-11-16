@@ -314,18 +314,20 @@ extension MemoryDetailViewController {
             $0.width.centerX.top.bottom.equalToSuperview()
         }
         
-        contentView.addSubview(titleLB)
-        titleLB.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(24)
-            $0.leading.equalToSuperview().offset(34)
-            $0.height.equalTo(28)
-        }
         
         contentView.addSubview(shareBT)
         shareBT.snp.makeConstraints {
             $0.top.equalToSuperview().offset(26)
             $0.trailing.equalToSuperview().offset(-30)
             $0.height.width.equalTo(24)
+        }
+        
+        contentView.addSubview(titleLB)
+        titleLB.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(24)
+            $0.leading.equalToSuperview().offset(34)
+            $0.trailing.lessThanOrEqualTo(shareBT.snp.leading).offset(-6)
+            $0.height.equalTo(28)
         }
         
         contentView.addSubview(placeLB)
@@ -589,6 +591,8 @@ extension MemoryDetailViewController {
             .subscribe(onNext: {
                 self.dismiss(animated: true)
             }).disposed(by: disposeBag)
+        
+        
         
         vm.output.errorValue
             .subscribe(onNext: { value in

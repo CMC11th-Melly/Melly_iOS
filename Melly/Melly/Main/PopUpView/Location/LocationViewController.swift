@@ -178,7 +178,7 @@ extension LocationViewController {
                 if place.otherMemoryCount == 0 {
                     ourMemoryLB.text = "장소에 저장된 메모리가 없어요"
                 } else {
-                    ourMemoryLB.text = "이 장소에 저장된 메모리 \(place.otherMemoryCount)개"
+                    ourMemoryLB.text = "이 장소 메모리 \(place.otherMemoryCount)개"
                 }
                 
             }

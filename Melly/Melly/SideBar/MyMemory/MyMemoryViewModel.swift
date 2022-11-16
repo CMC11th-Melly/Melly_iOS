@@ -34,6 +34,7 @@ class MyMemoryViewModel {
         let ourMemoryRefresh = PublishRelay<Void>()
         let sortObserver = PublishRelay<String>()
         let groupFilterObserver = PublishRelay<GroupFilter>()
+        let viewAppearObserver = PublishRelay<Void>()
     }
     
     struct Output {
@@ -44,6 +45,14 @@ class MyMemoryViewModel {
     }
     
     init() {
+        
+        input.viewAppearObserver
+            .subscribe(onNext: {
+                self.memories = []
+                self.ourMemory.isEnd = false
+                self.ourMemory.page = 0
+                self.input.ourMemoryRefresh.accept(())
+            }).disposed(by: disposeBag)
         
         input.ourMemoryRefresh
             .flatMap(getOurPlace)

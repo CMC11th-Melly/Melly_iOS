@@ -396,6 +396,8 @@ class GroupViewModel {
         
         if groupName == "" {
             return "그룹명을 입력해주세요."
+        } else if groupName.count > 12 {
+            return "그룹명은 12자 이하입니다."
         } else if self.groupType == "" {
             return "그룹 카테고리를 선택해주세요."
         } else if self.groupIcon == -1 {
