@@ -24,7 +24,8 @@ class ResearchResultViewController: UIViewController {
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 22)
     }
     
-    let titleImageView = UIImageView(image: UIImage(named: "research_complete")).then {
+    lazy var titleImageView = UIImageView().then {
+        $0.image = UIImage(named: "research_complete_\(vm.searchData[2])")
         $0.contentMode = .scaleAspectFit
     }
     

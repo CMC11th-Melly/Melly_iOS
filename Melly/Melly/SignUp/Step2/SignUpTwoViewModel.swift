@@ -53,7 +53,7 @@ class SignUpTwoViewModel {
      - Returns:Bool
      */
     func isValidName(_ name: String) -> Bool {
-        let nickRegEx = "[가-힣A-Za-z0-9]{2,8}"
+        let nickRegEx = "[가-힣A-Za-z0-9]{2,6}"
         let pred = NSPredicate(format:"SELF MATCHES %@", nickRegEx)
         return pred.evaluate(with: name)
     }
