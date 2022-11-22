@@ -11,8 +11,6 @@ struct User: Codable, Identifiable, Equatable {
     
     static var loginedUser:User?
     
-    
-    
     enum Codingkeys: String, CodingKey {
         case uid
         case email
@@ -55,17 +53,12 @@ struct User: Codable, Identifiable, Equatable {
         self.uid = uid
     }
     
-    
-    
-    
 }
 
 struct UserInitial:Codable {
-    
     let nickname:String
     let ageGroup:String?
     let profileImage:String?
     let gender:String
-    
 }
 

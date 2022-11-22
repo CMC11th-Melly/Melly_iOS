@@ -139,11 +139,10 @@ class ResearchMainViewModel {
     
     
     /**
-     푸시 알림 선택 시 해당 메모리로 이동
-     - Parameters:
-     -push: Push
+     해당 설문조사 결과를 서버로 전송
+     - Parameters:None
      - Throws: MellyError
-     - Returns:Memory
+     - Returns:None
      */
     func inputSurvey() -> Observable<Result> {
         
@@ -184,8 +183,8 @@ class ResearchMainViewModel {
                                     observer.onNext(result)
                                 }
                             }
-                        case .failure(let error):
-                            let error = MellyError(code: 0, msg: error.localizedDescription)
+                        case .failure(_):
+                            let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
                             result.error = error
                             observer.onNext(result)
                         }
@@ -198,11 +197,10 @@ class ResearchMainViewModel {
     }
     
     /**
-     푸시 알림 선택 시 해당 메모리로 이동
-     - Parameters:
-     -push: Push
+     해당 유저의 설문조사 결과를 가져옴
+     - Parameters:None
      - Throws: MellyError
-     - Returns:Memory
+     - Returns:Servey
      */
     func getSurvey() -> Observable<Result> {
         
@@ -243,8 +241,8 @@ class ResearchMainViewModel {
                                     observer.onNext(result)
                                 }
                             }
-                        case .failure(let error):
-                            let error = MellyError(code: 0, msg: error.localizedDescription)
+                        case .failure(_):
+                            let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
                             result.error = error
                             observer.onNext(result)
                         }
@@ -256,7 +254,12 @@ class ResearchMainViewModel {
         
     }
     
-    
+    /**
+     설문조사 결과로 받은 장소의 위치를 Place모델로 변환
+     - Parameters:None
+     - Throws: MellyError
+     - Returns:Place
+     */
     func transferPlace() -> Observable<Result> {
         
         return Observable.create { observer in
@@ -277,11 +280,8 @@ class ResearchMainViewModel {
                     .responseData { response in
                         switch response.result {
                         case .success(let data):
-                            
-                            
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                print(json)
                                 if json.message == "장소 상세 조회" {
                                     
                                     if let data = try? JSONSerialization.data(withJSONObject: json.data as Any) {
@@ -290,9 +290,7 @@ class ResearchMainViewModel {
                                             result.success = place
                                             observer.onNext(result)
                                         }
-                                        
                                     }
-                                    
                                 } else {
                                     let error = MellyError(code: Int(json.code) ?? 0, msg: json.message)
                                     result.error = error
@@ -304,8 +302,8 @@ class ResearchMainViewModel {
                                 result.error = error
                                 observer.onNext(result)
                             }
-                        case .failure(let error):
-                            let error = MellyError(code: 999, msg: error.localizedDescription)
+                        case .failure(_):
+                            let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
                             result.error = error
                             observer.onNext(result)
                         }
