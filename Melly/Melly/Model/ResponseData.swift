@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 struct ResponseData: Decodable {
     
     var code:String
@@ -29,9 +30,9 @@ struct ResponseData: Decodable {
     
 }
 
+
+
 struct Result {
-    
     var error:MellyError? = nil
     var success:Any? = nil
-    
 }
