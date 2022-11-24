@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 struct User: Codable, Identifiable, Equatable {
     
     static var loginedUser:User?
@@ -54,6 +55,7 @@ struct User: Codable, Identifiable, Equatable {
     }
     
 }
+
 
 struct UserInitial:Codable {
     let nickname:String
