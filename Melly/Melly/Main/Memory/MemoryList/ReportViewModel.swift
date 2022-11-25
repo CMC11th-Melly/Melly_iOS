@@ -72,9 +72,13 @@ class ReportViewModel {
                 }
             }).disposed(by: disposeBag)
             
-        
     }
     
+    
+    /**
+     해당 메모리 혹은 댓글을 신고하는 함수
+     - Throws: MellyError
+     */
     func report() -> Observable<Result> {
         
         return Observable.create { observer in
@@ -122,9 +126,9 @@ class ReportViewModel {
                                     result.error = error
                                     observer.onNext(result)
                                 }
-                            case .failure(let error):
-                                let mellyError = MellyError(code: 1, msg: error.localizedDescription)
-                                result.error = mellyError
+                            case .failure(_):
+                                let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                                result.error = error
                                 observer.onNext(result)
                             }
                         }

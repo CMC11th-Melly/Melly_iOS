@@ -641,7 +641,7 @@ class MemoryDetailViewModel {
                         case .success(let data):
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                print(json)
+                                
                                 if json.message == "성공" {
                                     observer.onNext(result)
                                 } else {

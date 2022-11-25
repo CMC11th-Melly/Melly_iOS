@@ -114,12 +114,14 @@ class MemoryListViewController: UIViewController {
 
 extension MemoryListViewController {
     
+    //Notification 연결
     func setNC() {
         NotificationCenter.default.addObserver(self, selector: #selector(goToInviteGroup), name: NSNotification.InviteGroupNotification, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(shareMemory), name: NSNotification.MemoryShareNotification, object: nil)
     }
     
+    //그룹 초대함수
     @objc func goToInviteGroup(_ notification: Notification) {
         
         if let value = notification.object as? [String] {
@@ -132,6 +134,7 @@ extension MemoryListViewController {
         
     }
     
+    //메모리 공유함수
     @objc func shareMemory(_ notification:Notification) {
         
         if let memoryId = notification.object as? String {
@@ -155,6 +158,7 @@ extension MemoryListViewController {
         }
         
     }
+    
     
     private func setUI() {
         view.backgroundColor = .white

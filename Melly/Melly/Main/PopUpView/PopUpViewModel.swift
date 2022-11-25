@@ -77,7 +77,13 @@ class PopUpViewModel {
         
     }
     
-    
+    /**
+     해당 Place 북마크 제거
+     - Parameters:
+        -place : Place
+     - Throws: MellyError
+     - Returns:None
+     */
     func removeBookmark(_ place: Place) -> Observable<Result> {
         return Observable.create { observer in
             var result = Result()
@@ -134,7 +140,13 @@ class PopUpViewModel {
         }
     }
     
-    
+    /**
+     해당 장소를 북마크하는 함수
+     - Parameters:
+        -place : Place
+     - Throws: MellyError
+     - Returns:None
+     */
     func addBookMark(_ place:Place) -> Observable<Result> {
         
         return Observable.create { observer in
