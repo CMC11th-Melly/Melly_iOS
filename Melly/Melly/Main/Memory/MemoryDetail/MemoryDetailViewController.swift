@@ -701,21 +701,8 @@ extension MemoryDetailViewController {
 //MARK: - ScrollView, TextView Delegate
 extension MemoryDetailViewController: UIScrollViewDelegate {
     
-    //scrollView에서 스크롤이 시작되어도 키보드가 있으면 사라지게 함
-//    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-//        self.view.endEditing(true)
-//    }
-//
     //키보드 관련 이벤트를 scrollview에 설정
     func setSV() {
-        
-//        let singleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(myTapMethod))
-//        singleTapGestureRecognizer.numberOfTapsRequired = 1
-//        singleTapGestureRecognizer.isEnabled = true
-//
-//        singleTapGestureRecognizer.cancelsTouchesInView = false
-//
-//        scrollView.addGestureRecognizer(singleTapGestureRecognizer)
         
         NotificationCenter.default.addObserver(self,selector: #selector(self.keyboardDidShow(notification:)),
                                                name: UIResponder.keyboardDidShowNotification, object: nil)
@@ -758,6 +745,7 @@ extension MemoryDetailViewController: UIScrollViewDelegate {
         scrollView.scrollIndicatorInsets = UIEdgeInsets.zero
     }
     
+    //메모리에 저장된 이미지를 표시
     private func addContentScrollView() {
         DispatchQueue.main.async {
             for i in 0..<self.vm.memory.memoryImages.count {
@@ -778,6 +766,7 @@ extension MemoryDetailViewController: UIScrollViewDelegate {
         
     }
     
+    //이미지 페이지 뷰일 경우 이미지를 페이지 처럼 넘김
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView == imagePageView {
             let value = imagePageView.contentOffset.x/UIScreen.main.bounds.width
@@ -871,7 +860,7 @@ extension MemoryDetailViewController: UICollectionViewDelegateFlowLayout, UIColl
         
     }
     
-    
+    //댓글 collectionView의 cell이 0개일 경우 헤더 표시
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         
         if collectionView == commentCV {

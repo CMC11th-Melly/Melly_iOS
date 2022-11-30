@@ -340,8 +340,9 @@ extension SignUpThreeViewController {
             .drive(onNext: { value in
                 
                 if let value = value {
-                    //MARK: 에러처리
-                    print(value)
+                    let alert = UIAlertController(title: "에러", message: value, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "확인", style: .cancel))
+                    self.present(alert, animated: true)
                 } else {
                     self.dismiss(animated: true)
                 }

@@ -124,9 +124,9 @@ class DefaultLoginViewModel {
                             result.error = error
                             observer.onNext(result)
                         }
-                    case .error(let error):
-                        let mellyError = MellyError(code: 2, msg: error.localizedDescription)
-                        result.error = mellyError
+                    case .error(_):
+                        let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                        result.error = error
                         observer.onNext(result)
                     case .completed:
                         break

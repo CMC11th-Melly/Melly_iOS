@@ -1103,6 +1103,7 @@ class MemoryWriteGroupPickerViewController: UIViewController {
 
 extension MemoryWriteGroupPickerViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return vm.groupData.count
     }

@@ -74,6 +74,14 @@ class MainLoginViewModel {
             }).disposed(by: disposeBag)
     }
     
+    /**
+     구글로 로그인 할 때 실행
+     >회원가입 유무 확인 후 회원가입 페이지 or 메인화면으로 이동
+     - Parameters:
+        - vc: UIViewController
+     - Throws: MellyError
+     - Returns:User
+     */
     func googleLogin(_ vc: UIViewController) -> Observable<Result> {
         
         return Observable.create { observer in
@@ -100,6 +108,13 @@ class MainLoginViewModel {
         }
     }
     
+    /**
+     카카오로 로그인 할 때 실행
+     >회원가입 유무 확인 후 회원가입 페이지 or 메인화면으로 이동
+     - Parameters:None
+     - Throws: MellyError
+     - Returns:User
+     */
     func kakaoLogin() -> Observable<Result> {
         
         
@@ -116,9 +131,9 @@ class MainLoginViewModel {
                                 }).disposed(by: self.disposeBag)
                         case .completed:
                             break
-                        case .error(let error):
-                            let mellyError = MellyError(code: 2, msg: error.localizedDescription)
-                            result.error = mellyError
+                        case .error(_):
+                            let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                            result.error = error
                             observer.onNext(result)
                         }
                     }
@@ -134,9 +149,9 @@ class MainLoginViewModel {
                                 }).disposed(by: self.disposeBag)
                         case .completed:
                             break
-                        case .error(let error):
-                            let mellyError = MellyError(code: 2, msg: error.localizedDescription)
-                            result.error = mellyError
+                        case .error(_):
+                            let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                            result.error = error
                             observer.onNext(result)
                         }
                     }
@@ -149,6 +164,14 @@ class MainLoginViewModel {
         
     }
     
+    /**
+     회원가입 유무 확인 후 회원가입 페이지 or 메인화면으로 이동
+     - Parameters:
+        - token : String
+        - type: LoginType
+     - Throws: MellyError
+     - Returns:User
+     */
     func checkUser(token: String, type: LoginType) -> Observable<Result> {
         
         return Observable.create { observer in
@@ -184,9 +207,9 @@ class MainLoginViewModel {
                             result.error = error
                             observer.onNext(result)
                         }
-                    case .error(let error):
-                        let mellyError = MellyError(code: 2, msg: error.localizedDescription)
-                        result.error = mellyError
+                    case .error(_):
+                        let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                        result.error = error
                         observer.onNext(result)
                     case .completed:
                         break

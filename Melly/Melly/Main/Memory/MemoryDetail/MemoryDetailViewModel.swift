@@ -38,8 +38,6 @@ class MemoryDetailViewModel {
         let commentEditObserver = PublishRelay<Comment>()
         let commentDeleteObserver = PublishRelay<Comment>()
         
-        
-        
         let blockMemoryObserver = PublishRelay<Void>()
         let blockCommentObserver = PublishRelay<Comment>()
         
@@ -216,9 +214,9 @@ class MemoryDetailViewModel {
                                 result.error = error
                                 observer.onNext(result)
                             }
-                        case .failure(let error):
-                            let mellyError = MellyError(code: 999, msg: error.localizedDescription)
-                            result.error = mellyError
+                        case .failure(_):
+                            let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                            result.error = error
                             observer.onNext(result)
                         }
                     }
@@ -229,6 +227,13 @@ class MemoryDetailViewModel {
         
     }
     
+    
+    /**
+     해당 메모리를 삭제하는 함수
+     - Parameters:None
+     - Throws: MellyError
+     - Returns:None
+     */
     func deleteMemory() -> Observable<Result> {
         
         return Observable.create { observer in
@@ -261,9 +266,9 @@ class MemoryDetailViewModel {
                                 result.error = error
                                 observer.onNext(result)
                             }
-                        case .failure(let error):
-                            let mellyError = MellyError(code: 999, msg: error.localizedDescription)
-                            result.error = mellyError
+                        case .failure(_):
+                            let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                            result.error = error
                             observer.onNext(result)
                         }
                     }
@@ -278,6 +283,14 @@ class MemoryDetailViewModel {
         
     }
     
+    
+    /**
+     댓글을 추가하는 함수
+     - Parameters:
+        -text: String
+     - Throws: MellyError
+     - Returns:None
+     */
     func addComment(_ text: String?) -> Observable<Result> {
         
         return Observable.create { observer in
@@ -320,9 +333,9 @@ class MemoryDetailViewModel {
                                     observer.onNext(result)
                                 }
                                 
-                            case .failure(let error):
-                                let mellyError = MellyError(code: 999, msg: error.localizedDescription)
-                                result.error = mellyError
+                            case .failure(_):
+                                let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                                result.error = error
                                 observer.onNext(result)
                             }
                         }
@@ -360,9 +373,9 @@ class MemoryDetailViewModel {
                                     result.error = error
                                     observer.onNext(result)
                                 }
-                            case .failure(let error):
-                                let mellyError = MellyError(code: 999, msg: error.localizedDescription)
-                                result.error = mellyError
+                            case .failure(_):
+                                let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                                result.error = error
                                 observer.onNext(result)
                             }
                         }
@@ -378,10 +391,16 @@ class MemoryDetailViewModel {
             
             return Disposables.create()
         }
-        
-        
     }
     
+    
+    /**
+     댓글에 좋아요를 추가 혹은 삭제하는 함수
+     - Parameters:
+        -comment: Comment?
+     - Throws: MellyError
+     - Returns:None
+     */
     func likeComment(_ comment: Comment?) -> Observable<Result> {
         
         return Observable.create { observer in
@@ -405,7 +424,6 @@ class MemoryDetailViewModel {
                             case .success(let data):
                                 let decoder = JSONDecoder()
                                 if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                    print(json)
                                     if json.message == "댓글에 좋아요 삭제 완료" {
                                         observer.onNext(result)
                                     } else {
@@ -419,9 +437,9 @@ class MemoryDetailViewModel {
                                     result.error = error
                                     observer.onNext(result)
                                 }
-                            case .failure(let error):
-                                let mellyError = MellyError(code: 999, msg: error.localizedDescription)
-                                result.error = mellyError
+                            case .failure(_):
+                                let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                                result.error = error
                                 observer.onNext(result)
                             }
                         }
@@ -451,9 +469,9 @@ class MemoryDetailViewModel {
                                     result.error = error
                                     observer.onNext(result)
                                 }
-                            case .failure(let error):
-                                let mellyError = MellyError(code: 999, msg: error.localizedDescription)
-                                result.error = mellyError
+                            case .failure(_):
+                                let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                                result.error = error
                                 observer.onNext(result)
                             }
                         }
@@ -472,6 +490,14 @@ class MemoryDetailViewModel {
         
     }
     
+    
+    /**
+    댓글을 삭제하는 함수
+     - Parameters:
+        -comment: Comment
+     - Throws: MellyError
+     - Returns:None
+     */
     func deleteComment(_ comment: Comment) -> Observable<Result> {
         
         return Observable.create { observer in
@@ -505,9 +531,9 @@ class MemoryDetailViewModel {
                                 result.error = error
                                 observer.onNext(result)
                             }
-                        case .failure(let error):
-                            let mellyError = MellyError(code: 999, msg: error.localizedDescription)
-                            result.error = mellyError
+                        case .failure(_):
+                            let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                            result.error = error
                             observer.onNext(result)
                         }
                     }
@@ -526,6 +552,12 @@ class MemoryDetailViewModel {
         
     }
     
+    /**
+     해당 메모리 차단
+     - Parameters:None
+     - Throws: MellyError
+     - Returns:None
+     */
     func blockMemory() -> Observable<Result> {
         
         return Observable.create { observer in
@@ -550,7 +582,7 @@ class MemoryDetailViewModel {
                         case .success(let data):
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                print(json)
+                                
                                 if json.message == "성공" {
                                     observer.onNext(result)
                                 } else {
@@ -564,9 +596,9 @@ class MemoryDetailViewModel {
                                 result.error = error
                                 observer.onNext(result)
                             }
-                        case .failure(let error):
-                            let mellyError = MellyError(code: 999, msg: error.localizedDescription)
-                            result.error = mellyError
+                        case .failure(_):
+                            let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                            result.error = error
                             observer.onNext(result)
                         }
                     }
@@ -579,6 +611,13 @@ class MemoryDetailViewModel {
         
     }
     
+    /**
+     해당 댓글 차단
+     - Parameters:
+        -comment: Comment
+     - Throws: MellyError
+     - Returns:None
+     */
     func blockComment(_ comment: Comment) -> Observable<Result> {
         
         return Observable.create { observer in
@@ -602,7 +641,7 @@ class MemoryDetailViewModel {
                         case .success(let data):
                             let decoder = JSONDecoder()
                             if let json = try? decoder.decode(ResponseData.self, from: data) {
-                                print(json)
+                                
                                 if json.message == "성공" {
                                     observer.onNext(result)
                                 } else {
@@ -616,9 +655,9 @@ class MemoryDetailViewModel {
                                 result.error = error
                                 observer.onNext(result)
                             }
-                        case .failure(let error):
-                            let mellyError = MellyError(code: 999, msg: error.localizedDescription)
-                            result.error = mellyError
+                        case .failure(_):
+                            let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                            result.error = error
                             observer.onNext(result)
                         }
                     }

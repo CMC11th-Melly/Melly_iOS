@@ -8,6 +8,10 @@
 import UIKit
 import Then
 
+/**
+ 댓글 collection View header
+ > 댓글이 0개일 때 표시
+ */
 class CommentHeaderView: UICollectionReusableView {
     
     static let identifier = "CommentHeader"

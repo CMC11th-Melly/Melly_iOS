@@ -10,6 +10,11 @@ import Then
 import RxSwift
 import RxCocoa
 
+
+/**
+ 댓글 collection View footer
+ > 댓글 수정 혹은 대댓글 작성시 사용
+ */
 class CommentFooterView: UICollectionReusableView {
     
     private let disposeBag = DisposeBag()

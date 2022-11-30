@@ -105,6 +105,12 @@ class SearchViewModel {
         
     }
     
+    /**
+     최근 검색한 내역들을 가져오는 함수
+     - Parameters:None
+     - Throws: MellyError
+     - Returns:[Search]
+     */
     func getRecentSearch() -> [Search] {
         
         
@@ -124,6 +130,14 @@ class SearchViewModel {
         return []
     }
     
+    
+    /**
+     메모리 검색과 주소검색을 통합하여 리턴하는 함수
+     - Parameters:
+        -text: String
+     - Throws: MellyError
+     - Returns:[Search]
+     */
     func search(_ text: String) -> Observable<Result> {
         
         return Observable.create { observer in
@@ -155,7 +169,13 @@ class SearchViewModel {
         
     }
     
-    
+    /**
+     메모리 검색한 결과를 가져오는 함수
+     - Parameters:
+        -text: String
+     - Throws: MellyError
+     - Returns:[Search]
+     */
     func searchMemory(_ text:String) -> Observable<Result> {
         
         return Observable.create { observer in
@@ -223,7 +243,13 @@ class SearchViewModel {
         
     }
     
-    
+    /**
+     장소를 검색한 결과를 가져오는 함수
+     - Parameters:
+        -text: String
+     - Throws: MellyError
+     - Returns:[Search]
+     */
     func searchNaver(_ text: String) -> Observable<Result> {
         
         return Observable.create { observer in
@@ -269,7 +295,13 @@ class SearchViewModel {
         
     }
     
-    
+    /**
+     검색결과를 Place 모델로 변환하여 리턴
+     - Parameters:
+        -search: Search
+     - Throws: MellyError
+     - Returns:Place
+     */
     func transferPlace(_ search: Search) -> Observable<Result> {
         
         return Observable.create { observer in
@@ -386,7 +418,13 @@ class SearchViewModel {
     }
     
     
-    
+    /**
+     검색을 한 후 최근 검색내역에 저장하는 함수
+     - Parameters:
+        -search: Search
+     - Throws: MellyError
+     - Returns:None
+     */
     func addRecentSearch(_ search: Search) {
         
         if let user = User.loginedUser {
@@ -417,6 +455,13 @@ class SearchViewModel {
         
     }
     
+    /**
+     최근 검색 내역 중 1개의 내역 삭제
+     - Parameters:
+        -search: Search
+     - Throws: MellyError
+     - Returns:[Search]
+     */
     func removeRecentSearch(_ search: Search) -> Observable<[Search]> {
         
         return Observable.create { observer in
@@ -445,6 +490,11 @@ class SearchViewModel {
         
     }
     
+    /**
+     최근 검색내역 모두 삭제
+     - Throws: MellyError
+     - Returns:[Search]
+     */
     func removeAllRecentSearch() -> [Search] {
         
         if let user = User.loginedUser {

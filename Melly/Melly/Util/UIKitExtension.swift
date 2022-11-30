@@ -28,44 +28,7 @@ extension UIViewController {
     }
 }
 
-extension UIScrollView {
-    func updateContentSize() {
-        let unionCalculatedTotalRect = recursiveUnionInDepthFor(view: self)
-        
-        // 계산된 크기로 컨텐츠 사이즈 설정
-        self.contentSize = CGSize(width: unionCalculatedTotalRect.width, height: unionCalculatedTotalRect.height + 20)
-    }
-    
-    private func recursiveUnionInDepthFor(view: UIView) -> CGRect {
-        var totalRect: CGRect = .zero
-        
-        // 모든 자식 View의 컨트롤의 크기를 재귀적으로 호출하며 최종 영역의 크기를 설정
-        for subView in view.subviews {
-            totalRect = totalRect.union(recursiveUnionInDepthFor(view: subView))
-        }
-        
-        // 최종 계산 영역의 크기를 반환
-        return totalRect.union(view.frame)
-    }
-}
 
-extension UIImage {
-    
-    class func getSegRect(color: CGColor, size: CGSize) -> UIImage {
-        
-        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
-        let context = UIGraphicsGetCurrentContext()
-        context?.setFillColor(color)
-        let rectangle = CGRect(x: 0.0, y: 0.0, width: size.width, height: size.height)
-        context?.fill(rectangle)
-        
-        let rectangleImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return rectangleImage!
-    }
-    
-    
-}
 
 extension UISegmentedControl {
     
@@ -108,7 +71,6 @@ extension UISegmentedControl {
             underLine.frame.origin.x = xPosition
         }
         
-        
     }
 }
 
@@ -133,26 +95,3 @@ extension UIPageViewController {
     }
 }
 
-extension UIView {
-    func fadeIn(_ duration: TimeInterval = 0.2, onCompletion: (() -> Void)? = nil) {
-        self.alpha = 0
-        self.isHidden = false
-        UIView.animate(withDuration: duration,
-                       animations: { self.alpha = 1 },
-                       completion: { (value: Bool) in
-            if let complete = onCompletion { complete() }
-        }
-        )
-    }
-    
-    func fadeOut(_ duration: TimeInterval = 0.2, onCompletion: (() -> Void)? = nil) {
-        UIView.animate(withDuration: duration,
-                       animations: { self.alpha = 0 },
-                       completion: { (value: Bool) in
-            self.isHidden = true
-            if let complete = onCompletion { complete() }
-        }
-        )
-    }
-    
-}

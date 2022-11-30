@@ -76,7 +76,6 @@ class SignUpThreeViewModel {
                     self.output.userValue.accept(error.msg)
                     
                 } else {
-                    
                     if let user = result.success as? User {
                         User.loginedUser = user
                         UserDefaults.standard.set(try? PropertyListEncoder().encode(user), forKey: "loginUser")
@@ -156,8 +155,8 @@ class SignUpThreeViewModel {
                             observer.onNext(result)
                         }
                     }
-                case .failure(let error):
-                    let error = MellyError(code: 999, msg: error.localizedDescription)
+                case .failure(_):
+                    let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
                     result.error = error
                     observer.onNext(result)
                 }

@@ -12,6 +12,14 @@ import Alamofire
 
 class ShareMemoryViewModel {
     
+    
+    /**
+     메모리 id를 통해 메모리 모델을 가져오는 함수
+     - Parameters:
+            -memoryId: String
+     - Throws: MellyError
+     - Returns:Memory
+     */
     static func getMemory(_ memoryId:String) -> Observable<Result> {
         
         return Observable.create { observer in

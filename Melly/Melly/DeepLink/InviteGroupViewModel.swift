@@ -57,10 +57,14 @@ class InviteGroupViewModel {
                 }
             }).disposed(by: disposeBag)
             
-        
-        
     }
     
+    /**
+     초대받은 그룹명과 유저명을 가져오는 함수
+     - Parameters:None
+     - Throws: MellyError
+     - Returns:[String]
+     */
     func getInitialValue() -> Observable<Result> {
         
         return Observable.create { observer in
@@ -91,6 +95,12 @@ class InviteGroupViewModel {
         
     }
     
+    /**
+     해당 유저가 초대받은 그룹에 가입하는 함수
+     - Parameters:None
+     - Throws: MellyError
+     - Returns:None
+     */
     func inviteGroup() -> Observable<Result> {
         
         return Observable.create { observer in
@@ -150,6 +160,12 @@ class InviteGroupViewModel {
         
     }
     
+    /**
+     초대하는 유저의 닉네임을 받아오는 함수
+     - Parameters:None
+     - Throws: MellyError
+     - Returns:String
+     */
     func getRootNickname() -> Observable<Result> {
         
         return Observable.create { observer in
@@ -210,6 +226,12 @@ class InviteGroupViewModel {
         
     }
     
+    /**
+     초대하는 유저의 그룹명을 받아오는 함수
+     - Parameters:None
+     - Throws: MellyError
+     - Returns:String
+     */
     func getGroupName() -> Observable<Result> {
         
         return Observable.create { observer in

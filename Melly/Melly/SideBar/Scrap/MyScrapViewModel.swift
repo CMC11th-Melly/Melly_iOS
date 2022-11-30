@@ -239,6 +239,14 @@ class MyScrapViewModel {
         
     }
     
+    
+    /**
+     북마크 제거함수
+     - Parameters:
+        - place: Place
+     - Throws: MellyError
+     - Returns:None
+     */
     func removeBookmark(_ place: Place) -> Observable<Result> {
         
         return Observable.create { observer in

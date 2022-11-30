@@ -21,7 +21,7 @@ class ResearchMainViewController: UIViewController {
         $0.showsVerticalScrollIndicator = false
         $0.isPagingEnabled = true
         $0.alwaysBounceVertical = false
-        $0.isScrollEnabled = true
+        $0.isScrollEnabled = false
         $0.bounces = false
         $0.backgroundColor = .clear
     }
@@ -129,6 +129,8 @@ extension ResearchMainViewController {
         
     }
     
+    
+    //스크롤뷰 페이징 처리
     private func addContentScrollView() {
         researchView.frame = UIScreen.main.bounds
         researchView.contentSize = CGSize(width: UIScreen.main.bounds.width * CGFloat(childView.count), height:  UIScreen.main.bounds.height)
@@ -236,19 +238,23 @@ class ResearchOneView: UIView, UICollectionViewDelegateFlowLayout {
         
     }
     
+    //collectionView 간격 설정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 23
     }
     
+    //collectionView 간격 설정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 26
     }
     
+    //collectionView item 사이즈 설정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = (frame.width-86)/2
         return CGSize(width: width, height: 89)
     }
     
+    //collectionView item 두번 클릭시 선택 해제
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
            guard let cell = collectionView.cellForItem(at: indexPath) as? ResearchViewCell else {
                return true
@@ -353,19 +359,23 @@ class ResearchTwoView: UIView, UICollectionViewDelegateFlowLayout {
         
     }
     
+    //collectionView 간격 설정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 23
     }
     
+    //collectionView 간격 설정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 26
     }
     
+    //collectionView item 사이즈 설정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = (frame.width-86)/2
         return CGSize(width: width, height: 89)
     }
     
+    //collectionView item 두번 클릭시 선택 해제
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
            guard let cell = collectionView.cellForItem(at: indexPath) as? ResearchViewCell else {
                return true
@@ -470,19 +480,23 @@ class ResearchThreeView: UIView, UICollectionViewDelegateFlowLayout {
         
     }
     
+    //collectionView 간격 설정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 23
     }
     
+    //collectionView 간격 설정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 26
     }
     
+    //collectionView item 사이즈 설정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = (frame.width-86)/2
         return CGSize(width: width, height: 89)
     }
     
+    //collectionView item 두번 클릭시 선택 해제
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
            guard let cell = collectionView.cellForItem(at: indexPath) as? ResearchViewCell else {
                return true
