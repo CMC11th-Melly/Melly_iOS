@@ -226,6 +226,13 @@ class MainMapViewModel {
         
     }
     
+    /**
+     mainView로 다시 돌아오면 마커를 삭제하고 다시 최신화
+     - Parameters
+        - filter :GroupFilter
+     - Throws: MellyError
+     - Returns:GroupFilter
+     */
     func removeMarker(_ filter: GroupFilter) -> GroupFilter {
         
         for marker in totalMarkers {

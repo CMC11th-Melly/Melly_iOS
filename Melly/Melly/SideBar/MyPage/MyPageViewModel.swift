@@ -160,7 +160,6 @@ class MyPageViewModel {
                     "ageGroup": self.user.ageGroup,
                     "deleteImage" : self.deleteImage
                 ]
-                print(parameters)
                 AF.upload(multipartFormData: { multipartFormData in
                     
                     if let profileData = self.profileData {
@@ -177,7 +176,7 @@ class MyPageViewModel {
                     case .success(let response):
                         let decoder = JSONDecoder()
                         if let json = try? decoder.decode(ResponseData.self, from: response) {
-                            print(json)
+                            
                             if json.message == "프로필 수정 완료" {
                                 observer.onNext(result)
                             } else {
@@ -186,9 +185,9 @@ class MyPageViewModel {
                                 observer.onNext(result)
                             }
                         }
-                    case .failure(let error):
-                        let mellyError = MellyError(code: 2, msg: error.localizedDescription)
-                        result.error = mellyError
+                    case .failure(_):
+                        let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                        result.error = error
                         observer.onNext(result)
                     }
                 }
@@ -254,9 +253,9 @@ class MyPageViewModel {
                             }
                             
                             
-                        case .failure(let error):
-                            let mellyError = MellyError(code: 2, msg: error.localizedDescription)
-                            result.error = mellyError
+                        case .failure(_):
+                            let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                            result.error = error
                             observer.onNext(result)
                         }
                     }
@@ -268,6 +267,10 @@ class MyPageViewModel {
         
     }
     
+    /**
+     유저의 기본정보를 최신화하는 함수
+     - Throws: MellyError
+     */
     func getUserData() -> Observable<Result> {
         
         return Observable.create { observer in
@@ -320,9 +323,9 @@ class MyPageViewModel {
                                 observer.onNext(result)
                             }
                             
-                        case .failure(let error):
-                            let mellyError = MellyError(code: 2, msg: error.localizedDescription)
-                            result.error = mellyError
+                        case .failure(_):
+                            let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                            result.error = error
                             observer.onNext(result)
                         }
                     }
@@ -334,6 +337,10 @@ class MyPageViewModel {
         
     }
     
+    /**
+     유저 회원탈퇴
+     - Throws: MellyError
+     */
     func withDrawUser() -> Observable<Result> {
         
         return Observable.create { observer in
@@ -371,9 +378,9 @@ class MyPageViewModel {
                                 observer.onNext(result)
                             }
                             
-                        case .failure(let error):
-                            let mellyError = MellyError(code: 2, msg: error.localizedDescription)
-                            result.error = mellyError
+                        case .failure(_):
+                            let error = MellyError(code: 2, msg: "네트워크 상태를 확인해주세요.")
+                            result.error = error
                             observer.onNext(result)
                         }
                     }
