@@ -11,7 +11,6 @@ import RxSwift
 
 protocol GoPlaceDelegate:AnyObject {
     func showLocationPopupView(_ place: Place)
-    func goToAddMemoryView(_ place: Place)
     func goToMemoryView(_ memory: Memory)
 }
 
@@ -20,6 +19,7 @@ class SearchViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private let vm:SearchViewModel
     
+    weak var memoryWriteVm:MemoryWriteViewModel?
     weak var delegate:GoPlaceDelegate?
     
     var isSearch:Bool = false {
@@ -252,14 +252,16 @@ extension SearchViewController {
         
         vm.output.getPlaceValue.subscribe(onNext: { value in
             
-            self.delegate?.showLocationPopupView(value)
+            if let delegate = self.delegate {
+                delegate.showLocationPopupView(value)
+            }
+            
+            if let vm = self.memoryWriteVm {
+                vm.input.getPlaceObserver.accept(value)
+            }
+            
             self.dismiss(animated: true)
             
-        }).disposed(by: disposeBag)
-        
-        vm.output.goToMemoryValue.subscribe(onNext: { value in
-            self.delegate?.goToAddMemoryView(value)
-            self.dismiss(animated: true)
         }).disposed(by: disposeBag)
         
         

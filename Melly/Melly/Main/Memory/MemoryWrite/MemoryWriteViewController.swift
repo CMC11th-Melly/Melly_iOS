@@ -12,6 +12,7 @@ import Then
 import Photos
 import PhotosUI
 import FloatingPanel
+import Kingfisher
 
 class MemoryWriteViewController: UIViewController {
     
@@ -27,16 +28,14 @@ class MemoryWriteViewController: UIViewController {
     let contentView = UIView()
     let bottomView = UIView()
     
-    lazy private var placeNameLB = UILabel().then {
-        $0.text = vm.place.placeName
+    let placeNameLB = UILabel().then {
+        $0.text = "장소를 설정해주세요"
         $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Bold", size: 20)
     }
     
-    lazy private var placeCategoryLB = UILabel().then {
-        $0.text = vm.place.placeCategory
-        $0.textColor = UIColor(red: 0.545, green: 0.584, blue: 0.631, alpha: 1)
-        $0.font = UIFont(name: "Pretendard-Medium", size: 14)
+    let selectPlaceButton = UIButton(type: .custom).then {
+        $0.setImage(UIImage(named: "memory_select_place"), for: .normal)
     }
     
     let imageScrollView = UIScrollView().then {
@@ -101,7 +100,6 @@ class MemoryWriteViewController: UIViewController {
     
     let groupPickerView = DropMenuButton()
     let filterPanel = FloatingPanelController()
-    
     
     let dateLB = UILabel().then {
         $0.text = "날짜 *"
@@ -188,11 +186,88 @@ class MemoryWriteViewController: UIViewController {
         setSV()
         bind()
         setNC()
+        setData()
     }
+    
     
 }
 
 extension MemoryWriteViewController {
+    
+    func setData() {
+        setPlace()
+        
+        if let memory = vm.memory {
+            titleTF.textField.text = memory.title
+            contentsTF.text = memory.content
+            
+            DispatchQueue.main.async {
+                self.imageContentView.subviews.forEach { $0.removeFromSuperview() }
+                self.viewDidLayoutSubviews()
+            }
+            
+            
+            DispatchQueue.main.async {
+                self.imageContentView.subviews.forEach { $0.removeFromSuperview() }
+                let imagesView:[UIImageView] = {
+                    var views:[UIImageView] = []
+                    for imageValue in memory.memoryImages {
+                        
+                        let url = URL(string: imageValue.memoryImage)!
+                        
+                        let imgView = UIImageView().then {
+                            $0.layer.cornerRadius = 12
+                            $0.clipsToBounds = true
+                            $0.kf.setImage(with: url)
+                            $0.contentMode = .scaleAspectFill
+                        }
+                        views.append(imgView)
+                    }
+                    return views
+                }()
+                
+                for i in 0..<memory.memoryImages.count {
+                    self.imageContentView.addSubview(imagesView[i])
+                    if i == 0 {
+                        imagesView[i].snp.makeConstraints {
+                            $0.top.equalToSuperview().offset(11)
+                            $0.leading.equalToSuperview().offset(5)
+                            $0.width.equalTo(330)
+                            $0.height.equalTo(170)
+                        }
+                    } else {
+                        imagesView[i].snp.makeConstraints {
+                            $0.top.equalToSuperview().offset(11)
+                            $0.leading.equalTo(imagesView[i-1].snp.trailing).offset(5)
+                            $0.width.equalTo(330)
+                            $0.height.equalTo(170)
+                        }
+                    }
+                }
+                
+                self.imageContentView.addSubview(self.imageButton)
+                self.imageButton.snp.makeConstraints {
+                    $0.top.equalToSuperview().offset(11)
+                    $0.leading.equalTo(imagesView[imagesView.count-1].snp.trailing).offset(5)
+                    $0.trailing.equalToSuperview()
+                    $0.width.equalTo(330)
+                    $0.height.equalTo(170)
+                }
+                
+                self.imageScrollView.contentSize = CGSize(width: 335 * (memory.memoryImages.count + 1), height: 192)
+                self.viewDidLayoutSubviews()
+            }
+            
+            vm.input.starObserver.accept(memory.stars)
+            
+        }
+    }
+    
+    func setPlace() {
+        if let place = vm.place {
+            placeNameLB.text = place.placeName
+        }
+    }
     
     func setNC() {
         NotificationCenter.default.addObserver(self, selector: #selector(goToInviteGroup), name: NSNotification.InviteGroupNotification, object: nil)
@@ -284,6 +359,13 @@ extension MemoryWriteViewController {
         placeNameLB.snp.makeConstraints {
             $0.top.equalToSuperview().offset(9)
             $0.leading.equalToSuperview().offset(30)
+        }
+        
+        contentView.addSubview(selectPlaceButton)
+        selectPlaceButton.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(10)
+            $0.leading.equalTo(placeNameLB.snp.trailing).offset(4)
+            $0.width.height.equalTo(24)
         }
         
         contentView.addSubview(imageScrollView)
@@ -496,6 +578,8 @@ extension MemoryWriteViewController {
             .bind(to: vm.input.contentObserver)
             .disposed(by: disposeBag)
         
+        
+        
         dateBT.rx.tap
             .subscribe(onNext: {
                 let datePicker = UIDatePicker()
@@ -505,11 +589,13 @@ extension MemoryWriteViewController {
                 
                 let dateAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
                 dateAlert.view.addSubview(datePicker)
+                
                 dateAlert.addAction(UIAlertAction(title: "선택 완료", style: .cancel, handler: { _ in
                     let date = datePicker.date
                     self.vm.input.dateObserver.accept(date)
                     self.dateBT.changeDate(date, isTime: true)
                 }))
+                
                 let height : NSLayoutConstraint = NSLayoutConstraint(item: dateAlert.view, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.1, constant: 300)
                 dateAlert.view.addConstraint(height)
                 
@@ -536,6 +622,14 @@ extension MemoryWriteViewController {
                 self.present(dateAlert, animated: true)
             }).disposed(by: disposeBag)
         
+        selectPlaceButton.rx.tap
+            .subscribe(onNext: {
+                let vm = SearchViewModel()
+                let vc = SearchViewController(vm: vm)
+                vc.memoryWriteVm = self.vm
+                vc.modalTransitionStyle = .coverVertical
+                self.present(vc, animated: true)
+            }).disposed(by: disposeBag)
         
         oneStarBT.rx.tap
             .map { 0 }
@@ -730,6 +824,10 @@ extension MemoryWriteViewController {
         vm.output.cancelOpenType.subscribe(onNext: {
             self.filterPanel.view.removeFromSuperview()
             self.filterPanel.removeFromParent()
+        }).disposed(by: disposeBag)
+        
+        vm.output.placeValue.subscribe(onNext: { value in
+            self.placeNameLB.text = value.placeName
         }).disposed(by: disposeBag)
         
     }
