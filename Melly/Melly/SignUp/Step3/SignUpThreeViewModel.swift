@@ -25,7 +25,7 @@ class SignUpThreeViewModel {
         let genderObserver = PublishRelay<String>()
         let ageObserver = PublishRelay<String>()
         let profileImgObserver = PublishRelay<UIImage?>()
-        let signUpObserver = PublishSubject<Void>()
+        let signUpObserver = PublishRelay<Void>()
     }
     
     struct Output {

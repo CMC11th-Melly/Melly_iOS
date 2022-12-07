@@ -16,7 +16,6 @@ class SearchViewModel {
     let input = Input()
     let output = Output()
     
-    let isSearch:Bool
     
     struct Input {
         let searchObserver = PublishRelay<String>()
@@ -32,13 +31,11 @@ class SearchViewModel {
         let searchValue = PublishRelay<[Search]>()
         let switchValue = PublishRelay<Bool>()
         let getPlaceValue = PublishRelay<Place>()
-        let goToMemoryValue = PublishRelay<Place>()
         let tfRightViewValue = PublishRelay<Bool>()
         let errorValue = PublishRelay<String>()
     }
     
-    init(_ isSearch: Bool) {
-        self.isSearch = isSearch
+    init() {
         
         input.recentCVObserver
             .map(getRecentSearch)
@@ -73,15 +70,8 @@ class SearchViewModel {
                 if let error = result.error {
                     self.output.errorValue.accept(error.msg)
                 } else if let place = result.success as? Place {
-                    print(place)
-                    if self.isSearch {
-                        self.output.getPlaceValue.accept(place)
-                    } else {
-                        self.output.goToMemoryValue.accept(place)
-                    }
-                    
+                    self.output.getPlaceValue.accept(place)
                 }
-                
             }).disposed(by: disposeBag)
         
         input.searchTextObserver

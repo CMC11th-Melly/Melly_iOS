@@ -12,11 +12,12 @@ import Alamofire
 
 class MemoryWriteViewModel {
     
-    var place:Place
-    //var editMode = false
-    //var memory:Memory?
+    var place:Place?
+    var memory:Memory?
+    var memoryData:MemoryData
     
     private let disposeBag = DisposeBag()
+    
     let keywordData = ["행복해요", "즐거워요", "재밌어요", "기뻐요", "좋아요", "그냥 그래요"]
     let rxDisclosureData = Observable<[String]>.just(["전체 공개", "선택한 메모리 그룹만 공개", "비공개"])
     let rxKeywordData = Observable<[String]>.just(["행복해요", "즐거워요", "재밌어요", "기뻐요", "좋아요", "그냥 그래요"])
@@ -28,7 +29,7 @@ class MemoryWriteViewModel {
     
     let input = Input()
     let output = Output()
-    lazy var memoryData = MemoryData(place)
+    
     
     struct Input {
         let starObserver = PublishRelay<Int>()
@@ -43,6 +44,8 @@ class MemoryWriteViewModel {
         let registerServerObserver = PublishRelay<Void>()
         let openTypeObserver = PublishRelay<MemoryOpenType>()
         let openTypeCancelObserver = PublishRelay<Void>()
+        
+        let getPlaceObserver = PublishRelay<Place>()
     }
     
     struct Output {
@@ -51,15 +54,16 @@ class MemoryWriteViewModel {
         let groupValue = PublishRelay<Group?>()
         let errorValue = PublishRelay<String>()
         let successValue = PublishRelay<Void>()
+        let placeValue = PublishRelay<Place>()
         let goToDisclosurePanel = PublishRelay<Void>()
         let cancelOpenType = PublishRelay<Void>()
     }
     
     struct MemoryData:Codable {
-        let lat:Double
-        let lng:Double
-        let placeName:String
-        let placeCategory:String
+        var lat:Double = -1
+        var lng:Double = -1
+        var placeName:String = ""
+        var placeCategory:String = ""
         var title:String = ""
         var content:String = ""
         var keyword:[String] = []
@@ -68,6 +72,10 @@ class MemoryWriteViewModel {
         var star:Int = 0
         var openType:String = ""
         
+        init() {
+            
+        }
+        
         init(_ place:Place) {
             self.lat = place.position.lat
             self.lng = place.position.lng
@@ -75,24 +83,39 @@ class MemoryWriteViewModel {
             self.placeCategory = place.placeCategory
         }
         
-//        init(_ memory: Memory) {
-//            
-//            self.lat = 0
-//            self.lng = 0
-//            self.placeName = memory.placeName
-//            self.title = memory.title
-//            self.content = memory.content
-//            self.keyword = memory.keyword
-//            
-//        }
+        init(_ place: Place, _ memory: Memory) {
+            
+            self.lat = place.position.lat
+            self.lng = place.position.lng
+            self.placeName = place.placeName
+            self.placeCategory = place.placeCategory
+            
+            self.title = memory.title
+            self.content = memory.content
+            self.keyword = memory.keyword
+            self.visitedDate = memory.visitedDate
+            self.star = memory.stars
+            
+        }
+        
         
     }
     
-    init(_ place: Place) { //(, _ memory: Memory? = nil, _ editMode:Bool = false) {
+    init(_ place: Place? = nil, _ memory: Memory? = nil) {
         self.place = place
-//        self.memory = memory
-//        self.editMode = editMode
+        self.memory = memory
         
+        if let place = place {
+            
+            if let memory = memory {
+                self.memoryData = MemoryData(place, memory)
+            } else {
+                self.memoryData = MemoryData(place)
+            }
+            
+        } else {
+            self.memoryData = MemoryData()
+        }
         
         getGroupName()
             .subscribe(onNext: { result in
@@ -191,6 +214,16 @@ class MemoryWriteViewModel {
         input.openTypeCancelObserver
             .subscribe(onNext: {
                 self.output.cancelOpenType.accept(())
+            }).disposed(by: disposeBag)
+        
+        input.getPlaceObserver
+            .subscribe(onNext: { place in
+                self.place = place
+                self.memoryData.lat = place.position.lat
+                self.memoryData.lng = place.position.lng
+                self.memoryData.placeName = place.placeName
+                self.memoryData.placeCategory = place.placeCategory
+                self.output.placeValue.accept(place)
             }).disposed(by: disposeBag)
         
     }

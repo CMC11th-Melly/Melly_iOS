@@ -291,7 +291,7 @@ extension MainMapViewController {
             }).disposed(by: disposeBag)
         
         goSearchBT.rx.tap.subscribe(onNext: {
-            let vm = SearchViewModel(true)
+            let vm = SearchViewModel()
             let vc = SearchViewController(vm: vm)
             vc.delegate = self
             vc.modalTransitionStyle = .crossDissolve
@@ -349,9 +349,8 @@ extension MainMapViewController {
             .disposed(by: disposeBag)
         
         addGroupBT.rx.tap.subscribe(onNext: {
-            let vm = SearchViewModel(false)
-            let vc = SearchViewController(vm: vm)
-            vc.delegate = self
+            let vm = MemoryWriteViewModel()
+            let vc = MemoryWriteViewController(vm: vm)
             vc.modalTransitionStyle = .crossDissolve
             vc.modalPresentationStyle = .fullScreen
             self.present(vc, animated: true)
@@ -440,24 +439,6 @@ extension MainMapViewController: GoPlaceDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             let vm = MemoryDetailViewModel(memory)
             let vc = MemoryDetailViewController(vm: vm)
-            vc.modalTransitionStyle = .crossDissolve
-            vc.modalPresentationStyle = .fullScreen
-            self.present(vc, animated: true)
-        }
-    }
-    
-    /**
-     해당 Place에 메모리 쓰기 뷰를 띄워준다.
-     - Parameters:
-     - place : Place
-     - Throws: None
-     - Returns:None
-     */
-    func goToAddMemoryView(_ place: Place) {
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            let vm = MemoryWriteViewModel(place)
-            let vc = MemoryWriteViewController(vm: vm)
             vc.modalTransitionStyle = .crossDissolve
             vc.modalPresentationStyle = .fullScreen
             self.present(vc, animated: true)

@@ -513,9 +513,9 @@ extension MemoryDetailViewController {
                     self.vm.output.isDeleteMemory.accept(())
                 }
                 
-//                let editAction = UIAlertAction(title: "메모리 수정", style: .default) { _ in
-//
-//                }
+                let editAction = UIAlertAction(title: "메모리 수정", style: .default) { _ in
+
+                }
                 
                 let reportAction = UIAlertAction(title: "메모리 신고", style: .default) { _ in
                     let vm = ReportViewModel()
@@ -761,6 +761,7 @@ extension MemoryDetailViewController: UIScrollViewDelegate {
                 
                 
             }
+            
             self.imagePageView.contentSize.width = self.view.frame.width * CGFloat(self.vm.memory.memoryImages.count)
         }
         
