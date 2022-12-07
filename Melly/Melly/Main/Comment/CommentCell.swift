@@ -21,6 +21,9 @@ class CommentCell: UICollectionViewCell {
     var comment: Comment? {
         didSet {
             commentView.comment = comment
+            
+            
+            
         }
     }
     

@@ -26,6 +26,31 @@ extension UIViewController {
             return safeArea
         }
     }
+    
+    var apiLoadingView:UIAlertController {
+        get {
+            let alert = UIAlertController(title: "", message: nil, preferredStyle: .alert)
+            
+            let indicator = UIActivityIndicatorView(frame: .zero).then {
+                $0.style = .large
+                $0.hidesWhenStopped = true
+                $0.startAnimating()
+                $0.tintColor =  UIColor(red: 0.274, green: 0.173, blue: 0.9, alpha: 1)
+            }
+            
+            alert.view.addSubview(indicator)
+            indicator.snp.makeConstraints {
+                $0.centerY.centerX.equalToSuperview()
+                $0.width.height.equalTo(50)
+            }
+            
+            
+            
+            return alert
+        }
+    }
+    
+    
 }
 
 

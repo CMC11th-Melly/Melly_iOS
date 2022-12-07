@@ -25,6 +25,8 @@ class MemoryWriteViewController: UIViewController {
         $0.delegate = self
     }
     
+    var isLoading:Bool = false
+    
     let contentView = UIView()
     let bottomView = UIView()
     
@@ -676,6 +678,12 @@ extension MemoryWriteViewController {
     
     private func bindOutput() {
         
+        vm.input.registerServerObserver
+            .subscribe(onNext: {
+                self.isLoading = true
+                self.present(self.apiLoadingView, animated: true)
+            }).disposed(by: disposeBag)
+        
         vm.output.starValue.asDriver(onErrorJustReturn: [false, false, false, false, false])
             .drive(onNext: { value in
                 
@@ -799,6 +807,12 @@ extension MemoryWriteViewController {
         vm.output.errorValue.asDriver(onErrorJustReturn: "")
             .drive(onNext: { value in
                 
+                if self.isLoading {
+                    self.isLoading = false
+                    self.dismiss(animated: true)
+                }
+                
+                
                 self.errorLable.labelView.text = value
                 self.errorLable.alpha = 1
                 
@@ -808,10 +822,13 @@ extension MemoryWriteViewController {
                     }
                 }
                 
+                
             }).disposed(by: disposeBag)
         
         vm.output.successValue.subscribe(onNext: {
-            self.dismiss(animated: true)
+            self.dismiss(animated: true) {
+                self.dismiss(animated: true)
+            }
         }).disposed(by: disposeBag)
         
         vm.output.goToDisclosurePanel.subscribe(onNext: {

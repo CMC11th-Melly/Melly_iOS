@@ -311,14 +311,22 @@ extension SignUpThreeViewController {
             }).disposed(by: disposeBag)
         
         nextBT.rx.tap
-            .bind(to: vm.input.signUpObserver)
+            .subscribe(onNext: {
+                self.present(self.apiLoadingView, animated: true)
+                self.vm.input.signUpObserver.accept(())
+            })
             .disposed(by: disposeBag)
         
         skipBT.rx.tap
-            .bind(to: vm.input.signUpObserver)
+            .subscribe(onNext: {
+                self.present(self.apiLoadingView, animated: true)
+                self.vm.input.signUpObserver.accept(())
+            })
             .disposed(by: disposeBag)
         
     }
+    
+    
     
     func bindOutput() {
         
@@ -339,12 +347,17 @@ extension SignUpThreeViewController {
         vm.output.userValue.asDriver(onErrorJustReturn: nil)
             .drive(onNext: { value in
                 
-                if let value = value {
-                    let alert = UIAlertController(title: "에러", message: value, preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "확인", style: .cancel))
-                    self.present(alert, animated: true)
-                } else {
-                    self.dismiss(animated: true)
+                self.dismiss(animated: true) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        if let value = value {
+                            let alert = UIAlertController(title: "에러", message: value, preferredStyle: .alert)
+                            alert.addAction(UIAlertAction(title: "확인", style: .cancel))
+                            self.present(alert, animated: true)
+                        } else {
+                            self.dismiss(animated: true)
+                            
+                        }
+                    }
                 }
                 
             }).disposed(by: disposeBag)
@@ -392,6 +405,7 @@ extension SignUpThreeViewController {
         
         
     }
+    
     
 }
 

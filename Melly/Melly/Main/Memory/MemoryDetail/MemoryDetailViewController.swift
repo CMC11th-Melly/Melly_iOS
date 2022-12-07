@@ -536,7 +536,7 @@ extension MemoryDetailViewController {
                 
                 if self.vm.memory.loginUserWrite {
                     alert.addAction(deleteAction)
-                    alert.addAction(editAction)
+                    //alert.addAction(editAction)
                 }
                 alert.addAction(reportAction)
                 alert.addAction(rejectAction)
@@ -761,6 +761,7 @@ extension MemoryDetailViewController: UIScrollViewDelegate {
                 
                 
             }
+            
             self.imagePageView.contentSize.width = self.view.frame.width * CGFloat(self.vm.memory.memoryImages.count)
         }
         
