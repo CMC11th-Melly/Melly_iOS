@@ -370,11 +370,9 @@ extension SignUpThreeViewController {
         genderCV.rx.setDelegate(self).disposed(by: disposeBag)
         genderCV.register(SignUpCell.self, forCellWithReuseIdentifier: "gender")
         
-        
         vm.genderData
             .bind(to: genderCV.rx.items(cellIdentifier: "gender", cellType: SignUpCell.self)) { row, element, cell in
                 cell.textLB.text = element
-                
             }.disposed(by: disposeBag)
         
         genderCV.rx.itemSelected
@@ -400,9 +398,6 @@ extension SignUpThreeViewController {
             .bind(to: ageCV.rx.items(cellIdentifier: "age", cellType: SignUpCell.self)) { row, element, cell in
                 cell.textLB.text = element
             }.disposed(by: disposeBag)
-        
-        
-        
         
     }
     

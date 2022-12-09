@@ -727,21 +727,21 @@ class CommentView: UIView {
             $0.height.equalTo(19)
         }
         
-//        bottomView.addSubview(stTwo)
-//        stTwo.snp.makeConstraints {
-//            $0.centerY.equalToSuperview()
-//            $0.leading.equalTo(likeBT.snp.trailing).offset(4)
-//            $0.width.equalTo(1)
-//            $0.height.equalTo(12)
-//        }
-//
-//
-//        bottomView.addSubview(reCommentBT)
-//        reCommentBT.snp.makeConstraints {
-//            $0.top.equalToSuperview()
-//            $0.leading.equalTo(stTwo.snp.trailing).offset(8)
-//            $0.height.equalTo(19)
-//        }
+        bottomView.addSubview(stTwo)
+        stTwo.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalTo(likeBT.snp.trailing).offset(4)
+            $0.width.equalTo(1)
+            $0.height.equalTo(12)
+        }
+
+
+        bottomView.addSubview(reCommentBT)
+        reCommentBT.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.leading.equalTo(stTwo.snp.trailing).offset(8)
+            $0.height.equalTo(19)
+        }
         
     }
     

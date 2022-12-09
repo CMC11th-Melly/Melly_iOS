@@ -71,7 +71,7 @@ class MemoryDetailViewModel {
                     
                     if let data = result.success as? CommentData {
                         self.comment = data.comments
-                        self.output.commentCountValue.accept(data.comments.count)
+                        self.output.commentCountValue.accept(data.commentCount)
                         self.output.completeRefresh.accept(())
                     }
                     

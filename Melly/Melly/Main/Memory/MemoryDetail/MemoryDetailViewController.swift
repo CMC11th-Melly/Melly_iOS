@@ -838,8 +838,26 @@ extension MemoryDetailViewController: UICollectionViewDelegateFlowLayout, UIColl
             
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "comment", for: indexPath) as! CommentCell
             cell.comment = vm.comment[indexPath.row]
+            var height:CGFloat = 97
+            
             cell.commentView.commentLB.sizeToFit()
-            let height = cell.commentView.commentLB.frame.height + 76
+            height += cell.commentView.commentLB.frame.height
+            
+            if !cell.subCommentView.isEmpty {
+                
+                for i in 0..<cell.subCommentView.count {
+                    cell.subCommentView[i].commentLB.sizeToFit()
+                    if i == 0 {
+                        height += (cell.subCommentView[i].commentLB.frame.height + 76)
+                    } else {
+                        height += (cell.subCommentView[i].commentLB.frame.height + 86)
+                    }
+                }
+                
+            }
+            
+            
+            
             return CGSize(width: self.view.frame.width, height: height)
         }
         
