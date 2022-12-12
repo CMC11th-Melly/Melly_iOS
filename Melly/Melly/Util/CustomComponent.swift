@@ -567,8 +567,6 @@ class CommentView: UIView {
         }
     }
     
-    var height:CGFloat = 65
-    
     func setData() {
         if let comment = comment {
             if let image = comment.profileImage {
@@ -576,14 +574,31 @@ class CommentView: UIView {
                 profileImageView.kf.setImage(with: url)
             }
             if let text = comment.nickname {
+                
                 nameLB.text = text
+                
             } else {
                 nameLB.text = "삭제된 댓글"
             }
             
-            commentLB.text = comment.content
+            if let mention = comment.mentionUserName {
+                let text = "@\(mention) \(comment.content)"
+                let attributedString = NSMutableAttributedString(string: text)
+                let font = UIFont(name: "Pretendard-Medium", size: 13)!
+                let highlightFont = UIFont(name: "Pretendard-SemiBold", size: 13)!
+                let color = UIColor(red: 0.472, green: 0.503, blue: 0.55, alpha: 1)
+                let highlightColor = UIColor(red: 0.249, green: 0.161, blue: 0.788, alpha: 1)
+                attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: text.count))
+                attributedString.addAttribute(.foregroundColor, value: color, range: NSRange(location: 0, length: text.count))
+                attributedString.addAttribute(.font, value: highlightFont, range: (text as NSString).range(of: "@\(mention)"))
+                attributedString.addAttribute(.foregroundColor, value: highlightColor, range: (text as NSString).range(of: "@\(mention)"))
+                
+                commentLB.attributedText = attributedString
+                
+            } else {
+                commentLB.text = comment.content
+            }
             
-            height += commentLB.frame.height
             
             if comment.loginUserLike {
                 likeBT.heartImageView.image = UIImage(named: "comment_heart_fill")
@@ -723,25 +738,25 @@ class CommentView: UIView {
         likeBT.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.leading.equalTo(stOne.snp.trailing).offset(4)
-            $0.width.equalTo(72.5)
+            $0.width.equalTo(54.5)
             $0.height.equalTo(19)
         }
         
-//        bottomView.addSubview(stTwo)
-//        stTwo.snp.makeConstraints {
-//            $0.centerY.equalToSuperview()
-//            $0.leading.equalTo(likeBT.snp.trailing).offset(4)
-//            $0.width.equalTo(1)
-//            $0.height.equalTo(12)
-//        }
-//
-//
-//        bottomView.addSubview(reCommentBT)
-//        reCommentBT.snp.makeConstraints {
-//            $0.top.equalToSuperview()
-//            $0.leading.equalTo(stTwo.snp.trailing).offset(8)
-//            $0.height.equalTo(19)
-//        }
+        bottomView.addSubview(stTwo)
+        stTwo.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalTo(likeBT.snp.trailing).offset(4)
+            $0.width.equalTo(1)
+            $0.height.equalTo(12)
+        }
+
+
+        bottomView.addSubview(reCommentBT)
+        reCommentBT.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.leading.equalTo(stTwo.snp.trailing).offset(8)
+            $0.height.equalTo(19)
+        }
         
     }
     

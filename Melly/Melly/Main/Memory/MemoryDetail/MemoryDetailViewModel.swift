@@ -20,6 +20,7 @@ class MemoryDetailViewModel {
     var memory:Memory
     
     var commentID:Int?
+    var recomment:Comment?
     
     lazy var keywordData:Observable<[String]> = {
         return Observable<[String]>.just(memory.keyword)
@@ -40,6 +41,8 @@ class MemoryDetailViewModel {
         
         let blockMemoryObserver = PublishRelay<Void>()
         let blockCommentObserver = PublishRelay<Comment>()
+        
+        let recommentObserver = PublishRelay<(Comment, Int?)>()
         
         let reviseCommentObserver = PublishRelay<Comment>()
         let reviseCancelObserver = PublishRelay<Void>()
@@ -71,7 +74,7 @@ class MemoryDetailViewModel {
                     
                     if let data = result.success as? CommentData {
                         self.comment = data.comments
-                        self.output.commentCountValue.accept(data.comments.count)
+                        self.output.commentCountValue.accept(data.commentCount)
                         self.output.completeRefresh.accept(())
                     }
                     
@@ -88,7 +91,6 @@ class MemoryDetailViewModel {
                     self.output.completeDelete.accept(())
                 }
                 
-                
             }).disposed(by: disposeBag)
         
         input.textFieldEditObserver
@@ -96,6 +98,7 @@ class MemoryDetailViewModel {
             .subscribe(onNext: { result in
                 self.commentID = nil
                 self.isRecommented = false
+                self.recomment = nil
                 if let error = result.error {
                     self.output.errorValue.accept(error.msg)
                 } else {
@@ -150,7 +153,6 @@ class MemoryDetailViewModel {
         
         input.reviseCommentObserver
             .subscribe(onNext: { value in
-                
                 self.commentID = value.id
                 self.isRecommented = true
                 self.output.commentRevise.accept(value)
@@ -160,7 +162,18 @@ class MemoryDetailViewModel {
             .subscribe(onNext: { value in
                 self.commentID = nil
                 self.isRecommented = false
+                self.recomment = nil
                 self.input.refreshComment.accept(())
+            }).disposed(by: disposeBag)
+        
+        input.recommentObserver
+            .subscribe(onNext: { value in
+                
+                self.recomment = value.0
+                self.commentID = value.1
+                self.isRecommented = true
+                self.input.refreshComment.accept(())
+                
             }).disposed(by: disposeBag)
         
     }
@@ -300,7 +313,8 @@ class MemoryDetailViewModel {
             if let user = User.loginedUser,
                let text = text, text != ""{
                 
-                if let commentId = self.commentID {
+                if let commentId = self.commentID,
+                   self.recomment == nil {
                     
                     let header:HTTPHeaders = [
                         "Connection":"keep-alive",
@@ -348,10 +362,15 @@ class MemoryDetailViewModel {
                         "Authorization" : "Bearer \(user.jwtToken)"
                     ]
                     
-                    let parameters:Parameters = [
+                    var parameters:Parameters = [
                         "content": text,
                         "memoryId": self.memory.memoryId
                     ]
+                    
+                    if let recomment = self.recomment {
+                        parameters["mentionUserId"] = recomment.writerId
+                        parameters["parentId"] = self.commentID == nil ? recomment.id : self.commentID!
+                    }
                     
                     AF.request("https://api.melly.kr/api/comment", method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: header)
                         .responseData { response in
