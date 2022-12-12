@@ -114,19 +114,43 @@ class CommentCell: UICollectionViewCell {
     }
     
     private func bind() {
-        if let vm = vm {
+        if let vm = vm,
+           let comment = comment {
             
             commentView.likeBT.rx.tap
-                .map { self.comment }
+                .map { comment }
                 .bind(to: vm.input.likeButtonClicked)
                 .disposed(by: disposeBag)
             
             commentView.editBT.rx.tap
-                .map { self.comment!}
+                .map { comment}
                 .bind(to: vm.input.commentEditObserver)
                 .disposed(by: disposeBag)
             
+            commentView.reCommentBT.rx.tap
+                .map { (comment, comment.id) }
+                .bind(to: vm.input.recommentObserver)
+                .disposed(by: disposeBag)
             
+            for i in 0..<subCommentView.count {
+                
+                subCommentView[i].likeBT.rx.tap
+                    .map { comment.children[i] }
+                    .bind(to: vm.input.likeButtonClicked)
+                    .disposed(by: disposeBag)
+                
+                subCommentView[i].editBT.rx.tap
+                    .map { comment.children[i]}
+                    .bind(to: vm.input.commentEditObserver)
+                    .disposed(by: disposeBag)
+                
+                subCommentView[i].reCommentBT.rx.tap
+                    .map { (comment.children[i], comment.id) }
+                    .bind(to: vm.input.recommentObserver)
+                    .disposed(by: disposeBag)
+                
+                
+            }
             
         }
     }

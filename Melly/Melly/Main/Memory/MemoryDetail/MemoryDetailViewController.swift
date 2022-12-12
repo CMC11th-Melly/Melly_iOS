@@ -193,8 +193,6 @@ class MemoryDetailViewController: UIViewController {
         $0.alpha = 0
     }
     
-    let keyboardView = UIView()
-    
     
     init(vm: MemoryDetailViewModel) {
         self.vm = vm
@@ -435,6 +433,7 @@ extension MemoryDetailViewController {
             $0.top.equalTo(commentCV.snp.bottom)
             $0.height.equalTo(95)
             $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview()
         }
         
         bottomView.addSubview(commentTF)
@@ -445,12 +444,6 @@ extension MemoryDetailViewController {
             $0.height.equalTo(56)
         }
         
-        contentView.addSubview(keyboardView)
-        keyboardView.snp.makeConstraints {
-            $0.top.equalTo(commentTF.snp.bottom)
-            $0.leading.bottom.trailing.equalToSuperview()
-            $0.height.equalTo(1)
-        }
         
         
         view.addSubview(errorAlert)
@@ -560,11 +553,6 @@ extension MemoryDetailViewController {
                 DispatchQueue.main.async {
                     self.commentTF.textField.text = nil
                     self.commentCV.reloadData()
-                    self.commentCV.layoutSubviews()
-                    self.commentCV.snp.updateConstraints {
-                        $0.height.equalTo(self.commentCV.intrinsicContentSize.height)
-                    }
-                    print(self.commentCV.intrinsicContentSize.height)
                                         
                 }
                 
@@ -664,7 +652,6 @@ extension MemoryDetailViewController {
             self.commentTF.textField.text = value.content
             self.vm.input.refreshComment.accept(())
             
-            
         }).disposed(by: disposeBag)
         
     }
@@ -717,32 +704,19 @@ extension MemoryDetailViewController: UIScrollViewDelegate {
     
     //키보드가 나타날 때 scrollview의 inset 변경
     @objc func keyboardDidShow(notification: NSNotification) {
-        let info = notification.userInfo
-        let keyBoardSize = info![UIResponder.keyboardFrameEndUserInfoKey] as! CGRect
-        
-        keyboardView.snp.remakeConstraints {
-            $0.top.equalTo(commentTF.snp.bottom)
-            $0.leading.bottom.trailing.equalToSuperview()
-            $0.height.equalTo(10)
-            
-        }
-        
-        scrollView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyBoardSize.height, right: 0.0)
-        scrollView.scrollIndicatorInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyBoardSize.height, right: 0.0)
+        let userInfo = notification.userInfo!
+        var keyboardFrame:CGRect = (userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
+        keyboardFrame = self.view.convert(keyboardFrame, from: nil)
+
+        var contentInset:UIEdgeInsets = self.scrollView.contentInset
+        contentInset.bottom = keyboardFrame.size.height
+        self.scrollView.contentInset = contentInset
     }
     
     //키보드가 사라질때 scrollview의 inset 변경
     @objc func keyboardDidHide(notification: NSNotification) {
-        
-        keyboardView.snp.remakeConstraints {
-            $0.top.equalTo(commentTF.snp.bottom)
-            $0.leading.bottom.trailing.equalToSuperview()
-            $0.height.equalTo(1)
-            
-        }
-        
-        scrollView.contentInset = UIEdgeInsets.zero
-        scrollView.scrollIndicatorInsets = UIEdgeInsets.zero
+        let contentInset:UIEdgeInsets = UIEdgeInsets.zero
+        self.scrollView.contentInset = contentInset
     }
     
     //메모리에 저장된 이미지를 표시
@@ -868,7 +842,6 @@ extension MemoryDetailViewController: UICollectionViewDelegateFlowLayout, UIColl
         
         if collectionView == commentCV {
             if vm.isRecommented {
-                
                 return CGSize(width: commentCV.bounds.size.width, height: 40)
             } else {
                 return CGSize.zero
@@ -905,6 +878,18 @@ extension MemoryDetailViewController: UICollectionViewDelegateFlowLayout, UIColl
             if kind == UICollectionView.elementKindSectionFooter {
                 let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: CommentFooterView.identifier, for: indexPath) as! CommentFooterView
                 commentFooterView = footerView
+                
+                if let recomment = vm.recomment {
+                    if let nickname = recomment.nickname {
+                        footerView.titleView.text = "\(nickname)에게 답글 남기는 중"
+                    } else {
+                        footerView.titleView.text = "삭제된 댓글에게 답글 남기는 중"
+                    }
+                    
+                } else {
+                    footerView.titleView.text = "내 댓글 수정 중"
+                }
+                
                 return footerView
             } else if kind == UICollectionView.elementKindSectionHeader {
                 let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: CommentHeaderView.identifier, for: indexPath) as! CommentHeaderView
