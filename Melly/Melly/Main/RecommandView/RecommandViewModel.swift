@@ -14,6 +14,9 @@ class RecommandViewModel {
     
     static let instance = RecommandViewModel()
     
+    var hotDatas:[ItLocation] = []
+    var recommendData:[ItLocation] = []
+    
     private let disposeBag = DisposeBag()
     let input = Input()
     let output = Output()
@@ -26,8 +29,7 @@ class RecommandViewModel {
     }
     
     struct Output {
-        let hotLocationObserver = PublishRelay<[ItLocation]>()
-        let trendsLocationObserver = PublishRelay<[ItLocation]>()
+        let successValue = PublishRelay<Void>()
         let goToPlace = PublishRelay<Place>()
         let errorValue = PublishRelay<String>()
         let goToMemory = PublishRelay<Memory>()
@@ -41,15 +43,16 @@ class RecommandViewModel {
                     .subscribe(onNext: { hotResult, trendResult in
                         if let error = hotResult.error {
                             self.output.errorValue.accept(error.msg)
-                        }
-                        if let error = trendResult.error {
+                        } else if let error = trendResult.error {
                             self.output.errorValue.accept(error.msg)
-                        }
-                        if let hot = hotResult.success as? [ItLocation] {
-                            self.output.hotLocationObserver.accept(hot)
-                        }
-                        if let trends = trendResult.success as? [ItLocation] {
-                            self.output.trendsLocationObserver.accept(trends)
+                        } else {
+                            if let hot = hotResult.success as? [ItLocation] {
+                                self.hotDatas = hot
+                            }
+                            if let trends = trendResult.success as? [ItLocation] {
+                                self.recommendData = trends
+                            }
+                            self.output.successValue.accept(())
                         }
                         
                     }).disposed(by: self.disposeBag)
