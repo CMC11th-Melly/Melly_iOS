@@ -233,9 +233,6 @@ class RecommandViewModel {
                         }
                     }
                 
-                
-                
-                
             } else {
                 //로그아웃 메서드
             }

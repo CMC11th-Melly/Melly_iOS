@@ -11,6 +11,7 @@ import Then
 import RxSwift
 import RxCocoa
 import FloatingPanel
+import SkeletonView
 
 class OurMemoryListViewController: UIViewController {
     
@@ -57,6 +58,7 @@ class OurMemoryListViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.isSkeletonable = true
         return collectionView
     }()
     
@@ -77,6 +79,8 @@ class OurMemoryListViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         memories = []
+        let animation = SkeletonAnimationBuilder().makeSlidingAnimation(withDirection: .leftRight)
+        dataCV.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .lightGray), animation: animation, transition: .crossDissolve(0.5))
         vm.input.ourViewAppear.accept(())
     }
     
@@ -124,7 +128,6 @@ extension OurMemoryListViewController {
             $0.top.equalTo(noDataImageView.snp.bottom).offset(19)
             $0.centerX.equalToSuperview()
         }
-        
         
         
         view.addSubview(dataCV)
@@ -181,6 +184,8 @@ extension OurMemoryListViewController {
                 DispatchQueue.main.async {
                     self.memories += value
                     self.dataCV.reloadData()
+                    self.dataCV.stopSkeletonAnimation()
+                    self.dataCV.hideSkeleton(reloadDataAfter: true)
                     self.isLoading = false
                     self.isNoData = value.isEmpty ? true : false
                 }
@@ -239,7 +244,11 @@ extension OurMemoryListViewController {
 }
 
 //MARK: - CollectionView delegate
-extension OurMemoryListViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
+extension OurMemoryListViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SkeletonCollectionViewDataSource {
+    
+    func collectionSkeletonView(_ skeletonView: UICollectionView, cellIdentifierForItemAt indexPath: IndexPath) -> SkeletonView.ReusableCellIdentifier {
+        return "cell"
+    }
     
     //collectionview cell의 개수
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -455,6 +464,7 @@ class OurMemoryFilterViewController: UIViewController {
             .map { "stars,asc" }
             .bind(to: vm.input.ourSortObserver)
             .disposed(by: disposeBag)
+        
     }
     
 }

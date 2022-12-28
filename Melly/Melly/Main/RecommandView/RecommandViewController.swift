@@ -100,8 +100,9 @@ class RecommandViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        recommandCV.showSkeleton(usingColor: .gray)
-        hotLocationCV.showSkeleton(usingColor: .gray)
+        let animation = SkeletonAnimationBuilder().makeSlidingAnimation(withDirection: .leftRight)
+        recommandCV.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .lightGray), animation: animation, transition: .crossDissolve(0.5))
+        hotLocationCV.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .lightGray), animation: animation, transition: .crossDissolve(0.5))
         vm.input.viewAppearObserver.accept(())
     }
     
