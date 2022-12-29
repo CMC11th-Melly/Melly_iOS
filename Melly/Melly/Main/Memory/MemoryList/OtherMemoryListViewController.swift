@@ -10,7 +10,7 @@ import UIKit
 import Then
 import RxSwift
 import RxCocoa
-
+import SkeletonView
 
 class OtherMemoryListViewController: UIViewController {
     
@@ -63,6 +63,9 @@ class OtherMemoryListViewController: UIViewController {
     let dataCV:UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.isSkeletonable = true
         return collectionView
     }()
     
@@ -83,6 +86,8 @@ class OtherMemoryListViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         memories = []
+        let animation = SkeletonAnimationBuilder().makeSlidingAnimation(withDirection: .leftRight)
+        dataCV.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .lightGray), animation: animation, transition: .crossDissolve(0.5))
         vm.input.otherViewAppear.accept(())
     }
     
@@ -214,6 +219,8 @@ extension OtherMemoryListViewController {
                 DispatchQueue.main.async {
                     self.memories += value
                     self.dataCV.reloadData()
+                    self.dataCV.stopSkeletonAnimation()
+                    self.dataCV.hideSkeleton(reloadDataAfter: true)
                     self.isLoading = false
                     self.isNoData = self.memories.isEmpty ? true : false
                 }
@@ -282,7 +289,11 @@ extension OtherMemoryListViewController {
 }
 
 //MARK: - CollectionView delegate
-extension OtherMemoryListViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension OtherMemoryListViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SkeletonCollectionViewDataSource {
+    
+    func collectionSkeletonView(_ skeletonView: UICollectionView, cellIdentifierForItemAt indexPath: IndexPath) -> SkeletonView.ReusableCellIdentifier {
+        return "cell"
+    }
     
     //collectionview cell의 개수
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

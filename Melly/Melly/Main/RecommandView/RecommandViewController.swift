@@ -9,6 +9,7 @@ import UIKit
 import FloatingPanel
 import RxSwift
 import RxCocoa
+import SkeletonView
 
 
 class RecommandViewController: UIViewController {
@@ -51,6 +52,8 @@ class RecommandViewController: UIViewController {
         collectionView.isUserInteractionEnabled = true
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.isSkeletonable = true
+        
         return collectionView
     }()
     
@@ -84,6 +87,7 @@ class RecommandViewController: UIViewController {
         collectionView.isUserInteractionEnabled = true
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.isSkeletonable = true
         return collectionView
     }()
     
@@ -96,6 +100,9 @@ class RecommandViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        let animation = SkeletonAnimationBuilder().makeSlidingAnimation(withDirection: .leftRight)
+        recommandCV.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .lightGray), animation: animation, transition: .crossDissolve(0.5))
+        hotLocationCV.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .lightGray), animation: animation, transition: .crossDissolve(0.5))
         vm.input.viewAppearObserver.accept(())
     }
     
@@ -167,25 +174,15 @@ extension RecommandViewController {
     }
     
    private func setCV() {
-        recommandCV.dataSource = nil
-        recommandCV.delegate = nil
-        recommandCV.rx.setDelegate(self).disposed(by: disposeBag)
+        recommandCV.dataSource = self
+        recommandCV.delegate = self
         recommandCV.register(RecommandCollectionViewCell.self, forCellWithReuseIdentifier: "recommand")
         
-        vm.output.trendsLocationObserver
-            .bind(to: recommandCV.rx.items(cellIdentifier: "recommand", cellType: RecommandCollectionViewCell.self)) { row, element, cell in
-                cell.itLocation = element
-            }.disposed(by: disposeBag)
         
-        hotLocationCV.dataSource = nil
-        hotLocationCV.delegate = nil
-        hotLocationCV.rx.setDelegate(self).disposed(by: disposeBag)
+        hotLocationCV.dataSource = self
+        hotLocationCV.delegate = self
         hotLocationCV.register(RecommandCollectionViewCell.self, forCellWithReuseIdentifier: "hot")
         
-        vm.output.hotLocationObserver
-            .bind(to: hotLocationCV.rx.items(cellIdentifier: "hot", cellType: RecommandCollectionViewCell.self)) { row, element, cell in
-                cell.itLocation = element
-            }.disposed(by: disposeBag)
     }
     
    private func bind() {
@@ -194,8 +191,6 @@ extension RecommandViewController {
             .subscribe(onNext: { value in
                 self.delegate?.showLocationPopupView(value)
             }).disposed(by: disposeBag)
-       
-       
        
        vm.output.errorValue.asDriver(onErrorJustReturn: "")
            .drive(onNext: { value in
@@ -213,13 +208,62 @@ extension RecommandViewController {
            self.delegate?.goToMemoryView(memory)
        }).disposed(by: disposeBag)
        
+       vm.output.successValue
+           .subscribe(onNext: {
+               DispatchQueue.main.async {
+                   self.recommandCV.reloadData()
+                   self.hotLocationCV.reloadData()
+                   self.recommandCV.stopSkeletonAnimation()
+                   self.recommandCV.hideSkeleton(reloadDataAfter: true)
+                   self.hotLocationCV.stopSkeletonAnimation()
+                   self.hotLocationCV.hideSkeleton(reloadDataAfter: true)
+                   
+               }
+           }).disposed(by: disposeBag)
+       
     }
     
 }
 
 
+
+extension RecommandViewController: SkeletonCollectionViewDataSource {
+    
+    func collectionSkeletonView(_ skeletonView: UICollectionView, cellIdentifierForItemAt indexPath: IndexPath) -> SkeletonView.ReusableCellIdentifier {
+        if skeletonView == recommandCV {
+            return "recommand"
+        } else {
+            return "hot"
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if collectionView == recommandCV {
+            return vm.recommendData.count
+        } else {
+            return vm.hotDatas.count
+        }
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if collectionView == recommandCV {
+            
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "recommand", for: indexPath) as! RecommandCollectionViewCell
+            cell.itLocation = vm.recommendData[indexPath.row]
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "hot", for: indexPath) as! RecommandCollectionViewCell
+            cell.itLocation = vm.hotDatas[indexPath.row]
+            return cell
+        }
+    }
+    
+}
+
 //MARK: - UICollectionView Delegate
 extension RecommandViewController: UICollectionViewDelegateFlowLayout {
+    
     
     //collectionView 자체의 레이아웃
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {

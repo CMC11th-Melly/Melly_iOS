@@ -9,6 +9,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 import Kingfisher
+import SkeletonView
 
 class RecommandCollectionViewCell: UICollectionViewCell {
     
@@ -27,6 +28,8 @@ class RecommandCollectionViewCell: UICollectionViewCell {
         $0.layer.masksToBounds = true
         $0.layer.cornerRadius = 12
         $0.contentMode = .scaleAspectFill
+        $0.isSkeletonable = true
+        $0.skeletonCornerRadius = 10
     }
     
     let categoryView = UIView().then {
@@ -52,12 +55,16 @@ class RecommandCollectionViewCell: UICollectionViewCell {
         $0.text = "트러플에이커피 서울역점"
         $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.font = UIFont(name: "Pretendard-Bold", size: 18)
+        $0.isSkeletonable = true
+        $0.linesCornerRadius = 5
     }
     
     let locationCategoryLB = UILabel().then {
         $0.textColor = UIColor(red: 0.545, green: 0.584, blue: 0.631, alpha: 1)
         $0.text = "카페, 디저트"
         $0.font = UIFont(name: "Pretendard-Medium", size: 14)
+        $0.isSkeletonable = true
+        $0.linesCornerRadius = 5
     }
     
     let memoryCV:UICollectionView = {
@@ -70,6 +77,9 @@ class RecommandCollectionViewCell: UICollectionViewCell {
         collectionView.isUserInteractionEnabled = true
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.isSkeletonable = true
+        collectionView.skeletonCornerRadius = 10
+        
         return collectionView
     }()
     
@@ -77,6 +87,8 @@ class RecommandCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
+        let animation = SkeletonAnimationBuilder().makeSlidingAnimation(withDirection: .leftRight)
+        memoryCV.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .lightGray), animation: animation, transition: .crossDissolve(0.5))
     }
     
     required init?(coder: NSCoder) {
@@ -180,6 +192,8 @@ class RecommandCollectionViewCell: UICollectionViewCell {
             memoryCV.delegate = self
             DispatchQueue.main.async {
                 self.memoryCV.reloadData()
+                self.memoryCV.stopSkeletonAnimation()
+                self.memoryCV.hideSkeleton(reloadDataAfter: true)
             }
             
         }
@@ -251,6 +265,8 @@ class RecommandMemoryCell: UICollectionViewCell {
         $0.backgroundColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1)
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 10
+        $0.isSkeletonable = true
+        $0.skeletonCornerRadius = 10
     }
     
     let bubbleDateLB = UILabel().then {
@@ -264,6 +280,8 @@ class RecommandMemoryCell: UICollectionViewCell {
         $0.text = "꽤 괜찮은 하루였다."
         $0.numberOfLines = 1
         $0.lineBreakMode = .byTruncatingTail
+        $0.isSkeletonable = true
+        $0.linesCornerRadius = 5
     }
     
     let bubbleContentLB = UILabel().then {
@@ -272,6 +290,8 @@ class RecommandMemoryCell: UICollectionViewCell {
         $0.numberOfLines = 2
         $0.lineBreakMode = .byTruncatingTail
         $0.text = "오늘은 트러플에이커피에서 오빠랑 함께 놀았다. 그래 특히 기분이 더 좋았다. 역시 노는게 최고"
+        $0.isSkeletonable = true
+        $0.linesCornerRadius = 5
     }
     
     override init(frame: CGRect) {
@@ -285,7 +305,7 @@ class RecommandMemoryCell: UICollectionViewCell {
     
     
     private func setUI() {
-        
+        self.isSkeletonable = true
         addSubview(bubbleView)
         bubbleView.snp.makeConstraints {
             $0.edges.equalToSuperview()

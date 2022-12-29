@@ -9,6 +9,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 import FloatingPanel
+import SkeletonView
 
 class GroupMemoryViewController: UIViewController {
     
@@ -59,6 +60,7 @@ class GroupMemoryViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.isSkeletonable = true
         return collectionView
     }()
     
@@ -79,6 +81,8 @@ class GroupMemoryViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         memories = []
+        let animation = SkeletonAnimationBuilder().makeSlidingAnimation(withDirection: .leftRight)
+        dataCV.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .lightGray), animation: animation, transition: .crossDissolve(0.5))
         vm.input.ourMemoryRefresh.accept(())
     }
     
@@ -234,6 +238,8 @@ extension GroupMemoryViewController {
                 DispatchQueue.main.async {
                     self.memories += value
                     self.dataCV.reloadData()
+                    self.dataCV.stopSkeletonAnimation()
+                    self.dataCV.hideSkeleton(reloadDataAfter: true)
                     self.isLoading = false
                     if value.isEmpty {
                         self.noDataView.alpha = 1
@@ -294,7 +300,11 @@ extension GroupMemoryViewController {
 }
 
 //MARK: - CollectionView delegate
-extension GroupMemoryViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
+extension GroupMemoryViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SkeletonCollectionViewDataSource{
+    
+    func collectionSkeletonView(_ skeletonView: UICollectionView, cellIdentifierForItemAt indexPath: IndexPath) -> SkeletonView.ReusableCellIdentifier {
+        return "cell"
+    }
     
     //collectionview cell의 개수
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

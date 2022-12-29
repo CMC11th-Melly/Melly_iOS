@@ -8,6 +8,7 @@
 import UIKit
 import Then
 import Kingfisher
+import SkeletonView
 import Foundation
 
 class MemoryListCollectionViewCell: UICollectionViewCell {
@@ -24,6 +25,8 @@ class MemoryListCollectionViewCell: UICollectionViewCell {
         $0.clipsToBounds = true
         $0.backgroundColor = UIColor(red: 0.886, green: 0.898, blue: 0.914, alpha: 1)
         $0.contentMode = .scaleAspectFill
+        $0.isSkeletonable = true
+        $0.skeletonCornerRadius = 10
     }
     
     let groupTitleLB = UILabel().then {
@@ -48,12 +51,16 @@ class MemoryListCollectionViewCell: UICollectionViewCell {
         $0.textColor = UIColor(red: 0.208, green: 0.235, blue: 0.286, alpha: 1)
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 18)
         $0.text = "오늘도 행복한 날!"
+        $0.isSkeletonable = true
+        $0.linesCornerRadius = 5
     }
     
     let dateLB = UILabel().then {
         $0.textColor = UIColor(red: 0.588, green: 0.623, blue: 0.663, alpha: 1)
         $0.text = "6월 14일"
         $0.font = UIFont(name: "Pretendard-Medium", size: 14)
+        $0.isSkeletonable = true
+        $0.linesCornerRadius = 5
     }
     
     

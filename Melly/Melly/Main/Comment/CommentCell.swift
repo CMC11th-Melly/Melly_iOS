@@ -11,6 +11,7 @@ import Kingfisher
 import Foundation
 import RxCocoa
 import RxSwift
+import SkeletonView
 
 
 /// 댓글 collection View Cell
@@ -53,6 +54,10 @@ class CommentCell: UICollectionViewCell {
     
     private func setUI() {
         
+        isSkeletonable = true
+        commentView.isSkeletonable = true
+        commentView.skeletonCornerRadius = 8
+        
         contentView.addSubview(commentView)
         commentView.snp.makeConstraints {
             $0.top.equalToSuperview()
@@ -79,6 +84,8 @@ class CommentCell: UICollectionViewCell {
                 for i in 0..<comment.children.count {
                     let commentSubView = CommentView()
                     commentSubView.comment = comment.children[i]
+                    commentSubView.isSkeletonable = true
+                    commentSubView.skeletonCornerRadius = 8
                     self.subCommentView.append(commentSubView)
                 }
                 
