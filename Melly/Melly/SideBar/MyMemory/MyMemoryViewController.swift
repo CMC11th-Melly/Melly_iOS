@@ -79,14 +79,23 @@ class MyMemoryViewController: UIViewController {
     let groupFilter = CategoryPicker(title: "카테고리")
     let sortFilter = CategoryPicker(title: "최신 순")
     
-    let dataCV:UICollectionView = {
+    lazy var dataCV:UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.isSkeletonable = true
+        collectionView.refreshControl = refreshControl
         return collectionView
     }()
+    
+    lazy var refreshControl = UIRefreshControl().then {
+        $0.addTarget(self, action: #selector(refresh), for: .valueChanged)
+    }
+    
+    @objc func refresh() {
+        vm.input.viewAppearObserver.accept(())
+    }
     
     
     override func viewDidLoad() {
@@ -294,6 +303,7 @@ extension MyMemoryViewController {
                     self.dataCV.stopSkeletonAnimation()
                     self.dataCV.hideSkeleton(reloadDataAfter: true)
                     self.isLoading = false
+                    self.refreshControl.endRefreshing()
                     self.isNoData = self.vm.memories.isEmpty ? true : false
                 }
             }).disposed(by: disposeBag)

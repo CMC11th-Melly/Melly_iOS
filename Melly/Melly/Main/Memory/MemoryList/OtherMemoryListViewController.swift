@@ -60,12 +60,22 @@ class OtherMemoryListViewController: UIViewController {
         $0.text = "공개 범위가 전체인 메모리만 표시됩니다."
     }
     
-    let dataCV:UICollectionView = {
+    lazy var refreshControl = UIRefreshControl().then {
+        $0.addTarget(self, action: #selector(refresh), for: .valueChanged)
+    }
+    
+    @objc func refresh() {
+        memories = []
+        vm.input.otherViewAppear.accept(())
+    }
+    
+    lazy var dataCV:UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.isSkeletonable = true
+        collectionView.refreshControl = refreshControl
         return collectionView
     }()
     
@@ -221,6 +231,7 @@ extension OtherMemoryListViewController {
                     self.dataCV.reloadData()
                     self.dataCV.stopSkeletonAnimation()
                     self.dataCV.hideSkeleton(reloadDataAfter: true)
+                    self.refreshControl.endRefreshing()
                     self.isLoading = false
                     self.isNoData = self.memories.isEmpty ? true : false
                 }

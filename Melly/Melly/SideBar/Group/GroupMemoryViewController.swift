@@ -55,14 +55,25 @@ class GroupMemoryViewController: UIViewController {
     let sortFilter = CategoryPicker(title: "최신 순")
     let userFilter = CategoryPicker(title: "멤버별")
     
-    let dataCV:UICollectionView = {
+    lazy var dataCV:UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.isSkeletonable = true
+        collectionView.refreshControl = refreshControl
         return collectionView
     }()
+    
+    lazy var refreshControl = UIRefreshControl().then {
+        $0.addTarget(self, action: #selector(refresh), for: .valueChanged)
+    }
+    
+    @objc func refresh() {
+        memories = []
+        vm.input.viewAppearObserver.accept(())
+    }
+    
     
     init(_ vm: GroupMemoryViewModel) {
         self.vm = vm
@@ -241,6 +252,7 @@ extension GroupMemoryViewController {
                     self.dataCV.stopSkeletonAnimation()
                     self.dataCV.hideSkeleton(reloadDataAfter: true)
                     self.isLoading = false
+                    self.refreshControl.endRefreshing()
                     if value.isEmpty {
                         self.noDataView.alpha = 1
                         self.dataCV.alpha = 0
