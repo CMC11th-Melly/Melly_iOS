@@ -53,12 +53,22 @@ class OurMemoryListViewController: UIViewController {
     let groupFilter = CategoryPicker(title: "카테고리")
     let sortFilter = CategoryPicker(title: "최신 순")
     
-    let dataCV:UICollectionView = {
+    lazy var refreshControl = UIRefreshControl().then {
+        $0.addTarget(self, action: #selector(refresh), for: .valueChanged)
+    }
+    
+    @objc func refresh() {
+        memories = []
+        vm.input.ourViewAppear.accept(())
+    }
+    
+    lazy var dataCV:UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.isSkeletonable = true
+        collectionView.refreshControl = refreshControl
         return collectionView
     }()
     
@@ -188,6 +198,7 @@ extension OurMemoryListViewController {
                     self.dataCV.hideSkeleton(reloadDataAfter: true)
                     self.isLoading = false
                     self.isNoData = value.isEmpty ? true : false
+                    self.refreshControl.endRefreshing()
                 }
             }).disposed(by: disposeBag)
         
@@ -210,6 +221,7 @@ extension OurMemoryListViewController {
                 self.view.layoutIfNeeded()
                 self.memories = []
                 self.vm.input.ourMemoryRefresh.accept(())
+                self.refreshControl.endRefreshing()
             }).disposed(by: disposeBag)
         
         vm.output.ourGroupFilterValue.asDriver(onErrorJustReturn: .all)
@@ -236,6 +248,7 @@ extension OurMemoryListViewController {
                 self.view.layoutIfNeeded()
                 self.memories = []
                 self.vm.input.ourMemoryRefresh.accept(())
+                self.refreshControl.endRefreshing()
             }).disposed(by: disposeBag)
         
         
