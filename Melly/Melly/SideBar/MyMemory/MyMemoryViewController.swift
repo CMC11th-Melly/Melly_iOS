@@ -73,7 +73,6 @@ class MyMemoryViewController: UIViewController {
         $0.isEnabled = true
     }
     
-    
     let filterView = UIView()
     
     let groupFilter = CategoryPicker(title: "카테고리")
@@ -100,6 +99,7 @@ class MyMemoryViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setUI()
         bind()
         setNC()
