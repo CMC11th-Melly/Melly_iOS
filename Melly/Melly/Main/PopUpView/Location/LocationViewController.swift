@@ -142,9 +142,10 @@ extension LocationViewController {
         writeMemoryBT.rx.tap.subscribe(onNext: {
             let vm = MemoryWriteViewModel(self.place!)
             let vc = MemoryWriteViewController(vm: vm)
-            vc.modalTransitionStyle = .crossDissolve
-            vc.modalPresentationStyle = .fullScreen
-            self.present(vc, animated: true)
+            let nav = UINavigationController(rootViewController: vc)
+            nav.modalTransitionStyle = .coverVertical
+            nav.modalPresentationStyle = .fullScreen
+            self.present(nav, animated: true)
             
         }).disposed(by: disposeBag)
     }

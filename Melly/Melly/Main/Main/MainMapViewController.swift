@@ -351,9 +351,10 @@ extension MainMapViewController {
         addGroupBT.rx.tap.subscribe(onNext: {
             let vm = MemoryWriteViewModel()
             let vc = MemoryWriteViewController(vm: vm)
-            vc.modalTransitionStyle = .crossDissolve
-            vc.modalPresentationStyle = .fullScreen
-            self.present(vc, animated: true)
+            let nav = UINavigationController(rootViewController: vc)
+            nav.modalTransitionStyle = .coverVertical
+            nav.modalPresentationStyle = .fullScreen
+            self.present(nav, animated: true)
         }).disposed(by: disposeBag)
         
     }

@@ -32,6 +32,8 @@ class MemoryWriteViewModel {
     
     
     struct Input {
+        let viewWillAppearObserver = PublishRelay<Void>()
+        
         let starObserver = PublishRelay<Int>()
         let imagesObserver = PublishRelay<[UIImage]>()
         let keywordObserver = PublishRelay<String>()
@@ -117,7 +119,8 @@ class MemoryWriteViewModel {
             self.memoryData = MemoryData()
         }
         
-        getGroupName()
+        input.viewWillAppearObserver
+            .flatMap(getGroupName)
             .subscribe(onNext: { result in
                 
                 if let error = result.error {
@@ -127,6 +130,7 @@ class MemoryWriteViewModel {
                 }
                 
             }).disposed(by: disposeBag)
+            
         
         input.titleObserver.subscribe(onNext: { value in
             self.memoryData.title = value

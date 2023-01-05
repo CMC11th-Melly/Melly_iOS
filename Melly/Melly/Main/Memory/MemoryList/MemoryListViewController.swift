@@ -259,9 +259,10 @@ extension MemoryListViewController {
         writeMemoryBT.rx.tap.subscribe(onNext: {
             let vm = MemoryWriteViewModel(self.vm.place)
             let vc = MemoryWriteViewController(vm: vm)
-            vc.modalTransitionStyle = .coverVertical
-            vc.modalPresentationStyle = .fullScreen
-            self.present(vc, animated: true)
+            let nav = UINavigationController(rootViewController: vc)
+            nav.modalTransitionStyle = .coverVertical
+            nav.modalPresentationStyle = .fullScreen
+            self.present(nav, animated: true)
         }).disposed(by: disposeBag)
         
     }
