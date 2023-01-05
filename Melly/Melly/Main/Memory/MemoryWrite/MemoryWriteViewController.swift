@@ -99,6 +99,14 @@ class MemoryWriteViewController: UIViewController {
         $0.font = UIFont(name: "Pretendard-SemiBold", size: 16)
     }
     
+    let addGroupBT = UIButton(type: .custom).then {
+        let string = "+ 그룹추가"
+        let attributedString = NSMutableAttributedString(string: string)
+        attributedString.addAttribute(.font, value: UIFont(name: "Pretendard-Medium", size: 14)!, range: NSRange(location: 0, length: string.count))
+        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.4, green: 0.435, blue: 0.486, alpha: 1), range: NSRange(location: 0, length: string.count))
+        $0.setAttributedTitle(attributedString, for: .normal)
+        $0.backgroundColor = .clear
+    }
     
     let groupPickerView = DropMenuButton()
     let filterPanel = FloatingPanelController()
@@ -189,6 +197,10 @@ class MemoryWriteViewController: UIViewController {
         bind()
         setNC()
         setData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        vm.input.viewWillAppearObserver.accept(())
     }
     
     
@@ -314,6 +326,7 @@ extension MemoryWriteViewController {
     }
     
     private func setUI() {
+        navigationController?.isNavigationBarHidden = true
         view.backgroundColor = .white
         
         safeArea.addSubview(bottomView)
@@ -438,8 +451,15 @@ extension MemoryWriteViewController {
         groupLB.snp.makeConstraints {
             $0.top.equalTo(contentsTFView.snp.bottom).offset(30)
             $0.leading.equalToSuperview().offset(30)
+            $0.height.equalTo(26)
         }
         
+        contentView.addSubview(addGroupBT)
+        addGroupBT.snp.makeConstraints {
+            $0.top.equalTo(contentsTFView.snp.bottom).offset(30)
+            $0.trailing.equalToSuperview().offset(-30)
+            $0.height.equalTo(26)
+        }
         
         contentView.addSubview(groupPickerView)
         groupPickerView.snp.makeConstraints {
@@ -674,6 +694,15 @@ extension MemoryWriteViewController {
             .subscribe(onNext: {
                 self.dismiss(animated: true)
             }).disposed(by: disposeBag)
+        
+        addGroupBT.rx.tap
+            .subscribe(onNext: {
+                
+                let vc = GroupAddViewController()
+                self.navigationController?.pushViewController(vc, animated: true)
+                
+            }).disposed(by: disposeBag)
+        
     }
     
     private func bindOutput() {
