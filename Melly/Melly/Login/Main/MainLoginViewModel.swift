@@ -8,6 +8,7 @@
 import Foundation
 import RxSwift
 import RxCocoa
+import FirebaseAuth
 import Firebase
 import GoogleSignIn
 import KakaoSDKUser
@@ -84,19 +85,20 @@ class MainLoginViewModel {
      */
     func googleLogin(_ vc: UIViewController) -> Observable<Result> {
         
+        
         return Observable.create { observer in
-            var result = Result()
-            let clientID = FirebaseApp.app()?.options.clientID ?? ""
-            let signInConfig = GIDConfiguration.init(clientID: clientID)
             
-            GIDSignIn.sharedInstance.signIn(with: signInConfig, presenting: vc) { user, error in
+            var result = Result()
+            
+            GIDSignIn.sharedInstance.signIn(withPresenting: vc) { user, error in
                 if let error = error {
                     let mellyError = MellyError(code: 2, msg: error.localizedDescription)
                     result.error = mellyError
                     observer.onNext(result)
                 }
                 
-                if let userToken = user?.authentication.idToken {
+                if  let auth = user?.user,
+                    let userToken = auth.idToken?.tokenString {
                     self.checkUser(token: userToken, type: .google)
                         .subscribe(onNext: { result in
                             observer.onNext(result)

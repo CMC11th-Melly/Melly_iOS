@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8A6B155365F0AD9DE2737496 /* Pods_Melly.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A7603E7F416A7C7EC318D97 /* Pods_Melly.framework */; };
+		963939EC1BD54E8908E9404E /* Pods_Melly.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A9AE0A4BD783CF609112C5D /* Pods_Melly.framework */; };
 		BF03B8F128FE465400CBAE97 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF03B8F028FE465400CBAE97 /* Group.swift */; };
 		BF075F8128E52BC500E581E7 /* Marker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF075F8028E52BC500E581E7 /* Marker.swift */; };
 		BF075F8428E52D6B00E581E7 /* MainMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF075F8328E52D6B00E581E7 /* MainMapViewModel.swift */; };
@@ -107,9 +107,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		071A50D0B491B33B25C24E7C /* Pods-Melly.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Melly.debug.xcconfig"; path = "Target Support Files/Pods-Melly/Pods-Melly.debug.xcconfig"; sourceTree = "<group>"; };
-		3A7603E7F416A7C7EC318D97 /* Pods_Melly.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Melly.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		8ABC0D681966E3BF5094BEBD /* Pods-Melly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Melly.release.xcconfig"; path = "Target Support Files/Pods-Melly/Pods-Melly.release.xcconfig"; sourceTree = "<group>"; };
+		1A9AE0A4BD783CF609112C5D /* Pods_Melly.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Melly.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5B2498F9308B2D05304B8E19 /* Pods-Melly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Melly.release.xcconfig"; path = "Target Support Files/Pods-Melly/Pods-Melly.release.xcconfig"; sourceTree = "<group>"; };
+		A486A299F0B60E4A9BE7D9F9 /* Pods-Melly.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Melly.debug.xcconfig"; path = "Target Support Files/Pods-Melly/Pods-Melly.debug.xcconfig"; sourceTree = "<group>"; };
 		BF03B8F028FE465400CBAE97 /* Group.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
 		BF075F8028E52BC500E581E7 /* Marker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Marker.swift; sourceTree = "<group>"; };
 		BF075F8328E52D6B00E581E7 /* MainMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMapViewModel.swift; sourceTree = "<group>"; };
@@ -216,18 +216,26 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8A6B155365F0AD9DE2737496 /* Pods_Melly.framework in Frameworks */,
+				963939EC1BD54E8908E9404E /* Pods_Melly.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0494F60FEDABAB6D79D2C9CA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1A9AE0A4BD783CF609112C5D /* Pods_Melly.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		5E641E69FB9F32094F1D0756 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				071A50D0B491B33B25C24E7C /* Pods-Melly.debug.xcconfig */,
-				8ABC0D681966E3BF5094BEBD /* Pods-Melly.release.xcconfig */,
+				A486A299F0B60E4A9BE7D9F9 /* Pods-Melly.debug.xcconfig */,
+				5B2498F9308B2D05304B8E19 /* Pods-Melly.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -549,7 +557,7 @@
 				BFF84EAA28C6D40B00892CB5 /* Melly */,
 				BFF84EA928C6D40B00892CB5 /* Products */,
 				5E641E69FB9F32094F1D0756 /* Pods */,
-				D1B2ED6D40475CC2E290BCA9 /* Frameworks */,
+				0494F60FEDABAB6D79D2C9CA /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -611,14 +619,6 @@
 			path = MyPage;
 			sourceTree = "<group>";
 		};
-		D1B2ED6D40475CC2E290BCA9 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				3A7603E7F416A7C7EC318D97 /* Pods_Melly.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -626,11 +626,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BFF84EBC28C6D40D00892CB5 /* Build configuration list for PBXNativeTarget "Melly" */;
 			buildPhases = (
-				DB440BEA8BD619320549F003 /* [CP] Check Pods Manifest.lock */,
+				03A6EC4DD3BC1B85EC54CCD3 /* [CP] Check Pods Manifest.lock */,
 				BFF84EA428C6D40B00892CB5 /* Sources */,
 				BFF84EA528C6D40B00892CB5 /* Frameworks */,
 				BFF84EA628C6D40B00892CB5 /* Resources */,
-				4993B8C6364770EEF5FFE7B4 /* [CP] Embed Pods Frameworks */,
+				3BD3EEF3F582B3E9742BF828 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -693,24 +693,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		4993B8C6364770EEF5FFE7B4 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Melly/Pods-Melly-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Melly/Pods-Melly-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Melly/Pods-Melly-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		DB440BEA8BD619320549F003 /* [CP] Check Pods Manifest.lock */ = {
+		03A6EC4DD3BC1B85EC54CCD3 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -730,6 +713,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		3BD3EEF3F582B3E9742BF828 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Melly/Pods-Melly-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Melly/Pods-Melly-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Melly/Pods-Melly-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -962,7 +962,7 @@
 		};
 		BFF84EBD28C6D40D00892CB5 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 071A50D0B491B33B25C24E7C /* Pods-Melly.debug.xcconfig */;
+			baseConfigurationReference = A486A299F0B60E4A9BE7D9F9 /* Pods-Melly.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -1004,7 +1004,7 @@
 		};
 		BFF84EBE28C6D40D00892CB5 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8ABC0D681966E3BF5094BEBD /* Pods-Melly.release.xcconfig */;
+			baseConfigurationReference = 5B2498F9308B2D05304B8E19 /* Pods-Melly.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
