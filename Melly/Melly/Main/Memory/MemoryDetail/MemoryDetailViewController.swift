@@ -11,6 +11,8 @@ import RxCocoa
 import Then
 import Kingfisher
 import FirebaseDynamicLinks
+import RxKeyboard
+import RxGesture
 
 class MemoryDetailViewController: UIViewController {
     
@@ -171,6 +173,7 @@ class MemoryDetailViewController: UIViewController {
     }
     
     lazy var commentCV:DynamicHeightCollectionView = {
+        
         let flowLayout = UICollectionViewFlowLayout()
         let collectionView = DynamicHeightCollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.isScrollEnabled = true
@@ -182,7 +185,9 @@ class MemoryDetailViewController: UIViewController {
         collectionView.register(CommentCell.self, forCellWithReuseIdentifier: "comment")
         collectionView.register(CommentFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: CommentFooterView.identifier)
         collectionView.register(CommentHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CommentHeaderView.identifier)
+        
         return collectionView
+        
     }()
     
     let bottomView = UIView()
@@ -424,8 +429,7 @@ extension MemoryDetailViewController {
         commentCV.snp.makeConstraints {
             $0.top.equalTo(commentCountLB.snp.bottom).offset(20)
             $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(600)
-            
+            $0.height.equalTo(0)
         }
         
         contentView.addSubview(bottomView)
@@ -443,8 +447,6 @@ extension MemoryDetailViewController {
             $0.trailing.equalToSuperview().offset(-30)
             $0.height.equalTo(56)
         }
-        
-        
         
         view.addSubview(errorAlert)
         errorAlert.snp.makeConstraints {
@@ -553,7 +555,10 @@ extension MemoryDetailViewController {
                 DispatchQueue.main.async {
                     self.commentTF.textField.text = nil
                     self.commentCV.reloadData()
-                                        
+                    self.commentCV.layoutSubviews()
+                    self.commentCV.snp.updateConstraints {
+                        $0.height.equalTo(self.commentCV.intrinsicContentSize.height)
+                    }
                 }
                 
             }).disposed(by: disposeBag)
@@ -688,40 +693,40 @@ extension MemoryDetailViewController {
 //MARK: - ScrollView, TextView Delegate
 extension MemoryDetailViewController: UIScrollViewDelegate {
     
-    //키보드 관련 이벤트를 scrollview에 설정
     func setSV() {
         
-        NotificationCenter.default.addObserver(self,selector: #selector(self.keyboardDidShow(notification:)),
-                                               name: UIResponder.keyboardDidShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self,selector: #selector(self.keyboardDidHide(notification:)),
-                                               name: UIResponder.keyboardDidHideNotification, object: nil)
-    }
-    
-    //키보드 이외에 다른 곳을 터치할 때 키보드 사라지게 하기
-    @objc func myTapMethod(sender: UITapGestureRecognizer) {
-        self.view.endEditing(true)
-    }
-    
-    //키보드가 나타날 때 scrollview의 inset 변경
-    @objc func keyboardDidShow(notification: NSNotification) {
-        let userInfo = notification.userInfo!
-        var keyboardFrame:CGRect = (userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
-        keyboardFrame = self.view.convert(keyboardFrame, from: nil)
-
-        var contentInset:UIEdgeInsets = self.scrollView.contentInset
-        contentInset.bottom = keyboardFrame.size.height
-        self.scrollView.contentInset = contentInset
-    }
-    
-    //키보드가 사라질때 scrollview의 inset 변경
-    @objc func keyboardDidHide(notification: NSNotification) {
-        let contentInset:UIEdgeInsets = UIEdgeInsets.zero
-        self.scrollView.contentInset = contentInset
+        scrollView.rx
+            .tapGesture()
+            .when(.recognized)
+            .subscribe { event in
+                switch event {
+                case .next(_):
+                    self.view.endEditing(true)
+                default:
+                    break
+                }
+            }.disposed(by: disposeBag)
+        
+        RxKeyboard.instance.visibleHeight
+            .skip(1)
+            .drive(onNext: { [unowned self] keyboardVisibleHeight in
+                
+                scrollView.snp.updateConstraints {
+                    $0.bottom.equalToSuperview().inset(keyboardVisibleHeight)
+                }
+                
+                view.layoutIfNeeded()
+                
+                scrollView.setContentOffset(CGPoint(x: 0, y: scrollView.contentSize.height - scrollView.bounds.height), animated: true)
+                
+            }).disposed(by: disposeBag)
     }
     
     //메모리에 저장된 이미지를 표시
     private func addContentScrollView() {
+        
         DispatchQueue.main.async {
+            
             for i in 0..<self.vm.memory.memoryImages.count {
                 
                 let imageView = UIImageView()
@@ -733,7 +738,6 @@ extension MemoryDetailViewController: UIScrollViewDelegate {
                 imageView.kf.setImage(with: url)
                 self.imagePageView.addSubview(imageView)
                 
-                
             }
             
             self.imagePageView.contentSize.width = self.view.frame.width * CGFloat(self.vm.memory.memoryImages.count)
@@ -743,6 +747,7 @@ extension MemoryDetailViewController: UIScrollViewDelegate {
     
     //이미지 페이지 뷰일 경우 이미지를 페이지 처럼 넘김
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
         if scrollView == imagePageView {
             let value = imagePageView.contentOffset.x/UIScreen.main.bounds.width
             pageControl.currentPage = Int(value)
@@ -795,6 +800,7 @@ extension MemoryDetailViewController: UICollectionViewDelegateFlowLayout, UIColl
     
     //열과 열 사이의 간격 설정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        
         if collectionView == commentCV {
             return 20
         } else {
@@ -830,8 +836,6 @@ extension MemoryDetailViewController: UICollectionViewDelegateFlowLayout, UIColl
                 
             }
             
-            
-            
             return CGSize(width: self.view.frame.width, height: height)
         }
         
@@ -849,7 +853,6 @@ extension MemoryDetailViewController: UICollectionViewDelegateFlowLayout, UIColl
         } else {
             return CGSize.zero
         }
-        
     }
     
     //댓글 collectionView의 cell이 0개일 경우 헤더 표시
@@ -866,7 +869,6 @@ extension MemoryDetailViewController: UICollectionViewDelegateFlowLayout, UIColl
         } else {
             return CGSize.zero
         }
-        
         
     }
     
