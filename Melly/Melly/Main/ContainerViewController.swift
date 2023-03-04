@@ -14,6 +14,7 @@ class ContainerViewController: UIViewController {
    
     private let disposeBag = DisposeBag()
     let vm = ContainerViewModel.instance
+    
     private var menuState:MenuState = .closed
     
     let sideBarVC = SideBarViewController()
@@ -123,6 +124,15 @@ extension ContainerViewController {
 
 //MARK: - Home Custom Delegate
 extension ContainerViewController: HomeViewControllerDelegate {
+    var state: MenuState {
+        get {
+            return menuState
+        }
+        set {
+            menuState = newValue
+        }
+    }
+    
     
     /**
      sidebar를 열고 닫는 함수

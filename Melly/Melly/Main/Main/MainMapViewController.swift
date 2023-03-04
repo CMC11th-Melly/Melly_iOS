@@ -14,6 +14,9 @@ import NMapsMap
 import CoreLocation
 
 protocol HomeViewControllerDelegate:AnyObject {
+    
+    var state:MenuState { get set }
+    
     func didTapMenuButton()
 }
 
@@ -141,6 +144,13 @@ class MainMapViewController: UIViewController {
         
         
         vm.input.initMarkerObserver.accept(.all)
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let state = delegate?.state,
+           state == .opened{
+            delegate?.didTapMenuButton()
+        }
     }
     
 }
