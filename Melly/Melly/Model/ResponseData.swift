@@ -19,7 +19,6 @@ struct ResponseData: Decodable {
         self.code = (try? values.decode(String.self, forKey: .code)) ?? "0"
         self.message = (try? values.decode(String.self, forKey: .message)) ?? "관리자에게 문의해주세요."
         self.data = (try? values.decode([String:Any].self, forKey: .data))
-
     }
 
     enum CodingKeys: CodingKey {
